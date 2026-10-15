@@ -2,6 +2,8 @@ node_modules/
 dist/
 storybook-static/
 apps/*/dist/
+apps/prototype/build/
+apps/prototype/.react-router/
 packages/*/dist/
 apps/storybook/fluent-stories/
 apps/storybook/src/stories/templates/*.mdx

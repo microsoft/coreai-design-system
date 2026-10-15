@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { componentToRegistryPage, type ComponentContent } from './component-content';
 
 export interface Anchor {

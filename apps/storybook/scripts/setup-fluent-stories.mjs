@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 // Provisions `fluent-stories/` — a pinned, shallow, sparse checkout of
 // microsoft/fluentui whose canonical Fluent UI v9 stories the Storybook
 // playground previews against. This is the single source of truth for the

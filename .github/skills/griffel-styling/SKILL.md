@@ -1,6 +1,6 @@
 ---
 name: griffel-styling
-description: 'Author and debug Fluent UI v9 styles built on the Griffel CSS-in-JS engine. Use when writing or fixing makeStyles, makeResetStyles, mergeClasses, shorthands, tokens, custom style hooks (useXStyles_unstable / CustomStyleHooksProvider_unstable), RTL/@noflip handling, build-time style transforms, or when diagnosing override-precedence and class-collision bugs.'
+description: 'Author and debug Fluent UI v9 styles built on the Griffel CSS-in-JS engine. Use when writing or fixing makeStyles, makeResetStyles, mergeClasses, shorthands, tokens, custom style hooks (useXStyles_unstable / CustomStyleHooksProvider_unstable), RendererProvider, CSS Modules cascade layers, Griffel patches, RTL/@noflip handling, build-time style transforms, or when diagnosing override-precedence and class-collision bugs. IGNORE and DO NOT use when editing ./apps/prototype'
 ---
 
 Griffel is Fluent UI v9's CSS-in-JS engine. Read the relevant doc below before writing or debugging `makeStyles`/`mergeClasses` code — do not guess at API shape or merge semantics.
@@ -19,6 +19,17 @@ Griffel is Fluent UI v9's CSS-in-JS engine. Read the relevant doc below before w
 
 ## Known gotchas relevant to this repo
 
+For CSS Modules override/layering work:
+
+1. Read [Styling with CSS Modules](../../../apps/storybook/src/stories/docs/StylingWithCssModules.mdx).
+2. Use an app-owned renderer through `RendererProvider`; do not patch shared
+   `node_modules` or add a global Griffel override.
+3. Preserve buckets and tuple metadata, and create the renderer once above
+   `CoreAIFluentProvider`.
+4. Check the installed insertion API after Griffel/Fluent upgrades.
+5. Verify actual computed overrides, responsive rules, and portals in development
+   and production preview. Layer extracted static CSS separately when applicable.
+
 - `mergeClasses` is **not** real CSS cascade — it resolves per-CSS-property conflicts via `Object.assign`-style last-argument-wins, before the browser ever sees the CSS. A losing class's declarations are dropped entirely, even if written with `!important`.
 - The canonical, documented merge order for a custom style hook's root slot is `mergeClasses(state.root.className, themeClasses, getSlotClassNameProp_unstable(state.root))` per [Advanced Styling Techniques](./advanced-styling-techniques.md) — re-applying the slot's original className last so instance-level overrides win over theme styles. Compare this against any `applyToRoot`-style helpers in `packages/react-components/src/components/*.styles.ts` when debugging override-precedence bugs.
 - This 3-argument pattern gives a full **stock default < CoreAI theme < instance className** priority, including for properties that stock Fluent's own base styles also set (e.g. Table's `borderCollapse`) — `getSlotClassNameProp_unstable` recovers only the consumer's original className (captured before Fluent fuses default+instance), so re-applying it last always lets it win regardless of what the fused blob or theme classes contain.
@@ -29,4 +40,3 @@ See [`packages/react-components/code-conventions.md`](../../../packages/react-co
 for the mandatory `mergeClasses` order used by every custom style hook in
 `packages/react-components/src/components/*.styles.ts`, plus the two
 "wrong" 2-tier patterns to avoid.
-

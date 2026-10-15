@@ -27,14 +27,17 @@ Component-test may inspect these files as supporting evidence but does not edit 
 
 ## Quality checks
 
-Before opening the PR, run this repository's formatter and linter from the workspace root:
+Before opening the PR, run this repository's license-header check, formatter, and linter from the
+workspace root:
 
 ```sh
+npm run license:check
 npm run format
 npm run lint
 ```
 
-Resolve any lint failures. If the formatter changes files, review and commit those changes before opening the PR.
+Resolve any missing license headers with `npm run license:fix`, then rerun the check. Resolve any
+lint failures. If either fixer changes files, review and commit those changes before opening the PR.
 
 Then open the PR with the `gh` CLI (`gh pr create`). Use only `gh` for this — if it isn't installed or the user isn't authenticated, prompt them to install it (https://cli.github.com) or run `gh auth login`, and stop until that's resolved.
 

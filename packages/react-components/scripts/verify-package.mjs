@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { log } from 'node:console';
@@ -44,6 +47,7 @@ try {
   assert.equal(manifest.private, false);
   assert.equal(manifest.publishConfig.registry, 'https://registry.npmjs.org/');
   assert.equal(manifest.publishConfig.access, 'public');
+  assert.equal(manifest.license, 'MIT');
   assert.equal(manifest.main, './dist/index.js');
   assert.equal(manifest.types, './dist/index.d.ts');
   assert.deepEqual(manifest.exports, {
@@ -91,12 +95,7 @@ try {
     !/url\s*\(/i.test(read('package/src/fonts/fonts.css')),
     'The public font stylesheet must not reference bundled or remotely downloaded font binaries',
   );
-  if (manifest.license !== 'UNLICENSED') {
-    assert.ok(
-      entries.includes('package/LICENSE') || entries.includes('package/LICENSE.md'),
-      'A licensed public package must include its approved license text',
-    );
-  }
+  assert.ok(entries.includes('package/LICENSE'), 'The package must include its MIT license text');
   log(
     `Verified ${manifest.name}@${manifest.version}: ${entries.length} packed files, compiled exports, no font binaries.`,
   );

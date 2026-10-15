@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import * as React from 'react';
 import {
   Button,
@@ -49,7 +52,7 @@ export function CoreAISkill() {
           </Text>
           <Text as="p" foreground={2}>
             Download <code>SKILL.md</code>, then add it to the consuming repository at{' '}
-            <code>.github/skills/coreai-ds-react-components/SKILL.md</code>. Coding agents that
+            <code>.github/skills/coreai-ds-fluentui-react/SKILL.md</code>. Coding agents that
             support workspace skills load it automatically; for other clients, use the equivalent
             skills directory.
           </Text>
@@ -76,7 +79,7 @@ export function CoreAISkill() {
             language="markdown"
             header={
               <Text preset="heading6" foreground={3}>
-                .github/skills/coreai-ds-react-components/SKILL.md
+                .github/skills/coreai-ds-fluentui-react/SKILL.md
               </Text>
             }
             headerAppearance="subtle"

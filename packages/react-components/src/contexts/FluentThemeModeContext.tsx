@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Detects whether the active Fluent theme is a light or dark theme and
  * publishes the answer as a simple `'light' | 'dark'` mode.

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * `DateTimePicker` wraps our `Input` and restricts `type` to HTML's native
  * temporal input types, rendering the browser's own picker UI instead of the

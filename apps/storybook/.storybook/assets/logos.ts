@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 // CoreAI wordmark for the Storybook sidebar brand slot, inlined as base64 data
 // URIs. Storybook manager builder does not bundle static .svg imports from
 // manager.tsx, so the logo must be an inline string. Data URIs also paint on

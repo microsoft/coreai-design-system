@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Dialog-specific CSS overrides, applied via FluentProvider's
  * `customStyleHooks_unstable`. Each Fluent Dialog sub-component gets its

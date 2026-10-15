@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { Button, Tooltip, type JSXElement, type TooltipProps } from '@coreai-ds/react-components';
 import { figmaDesign } from '../../utils/figma';
 

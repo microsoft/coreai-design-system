@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Wrapped `Card` with CoreAI defaults plus a `floatingActionPosition` prop.
  *

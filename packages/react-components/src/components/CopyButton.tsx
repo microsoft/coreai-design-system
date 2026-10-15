@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * `CopyButton` — a `Button` preset for copy-to-clipboard actions.
  *

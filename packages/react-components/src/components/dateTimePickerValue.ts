@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * `Date` <-> native-input-string conversion for `DateTimePicker`.
  *

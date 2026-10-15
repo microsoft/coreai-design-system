@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Wrapped `Input` that extends Fluent UI's Input with an inline `label`
  * rendered inside the control (before the text), plus the same

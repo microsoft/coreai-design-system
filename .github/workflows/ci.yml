@@ -25,9 +25,11 @@ jobs:
           node-version: 22
           cache: npm
       - name: Test public-source safeguards
-        run: node --test scripts/check-public-source.test.mjs .github/workflows/scripts/check-hosting-auth.test.mjs
+        run: node --test scripts/check-public-source.test.mjs scripts/license-headers.test.mjs .github/workflows/scripts/check-hosting-auth.test.mjs
       - name: Check public source
         run: npm run check:public-source
+      - name: Check license headers
+        run: npm run license:check
       - run: npm ci --prefer-offline
       - run: npm run format:check
       - run: npm run lint -- --max-warnings=0

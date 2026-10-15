@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 // Generates a lean, auto-generated `{Name}.mdx` doc page next to every
 // copy-paste template component (src/stories/templates/{Name}.tsx), so its
 // real source shows up verbatim in both the Storybook UI and MCP's

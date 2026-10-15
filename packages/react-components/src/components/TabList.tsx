@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Wrapped `TabList` with an extra `appearance="elevated"` value.
  *

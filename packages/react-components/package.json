@@ -2,7 +2,7 @@
   "name": "@coreai-ds/react-components",
   "version": "0.11.1",
   "description": "CoreAI Design System — a Fluent UI v9 theme and extension for Azure and CoreAI products",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "private": false,
   "repository": {
     "type": "git",

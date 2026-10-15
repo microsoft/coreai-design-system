@@ -1,0 +1,303 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta
+  title="Docs/React Grab"
+  summary="Add development-only React Grab with Fluent-aware component context, Bippy source mapping, and a complete copy-paste plugin."
+/>
+
+# React Grab with CoreAI component context
+
+[React Grab](https://react-grab.com) copies context from a selected UI element
+for a coding agent. This app-owned plugin customizes that context for CoreAI
+components built on Fluent UI. It adapts the prototype's original Vellum
+reference mapping without adding a Vellum dependency or inspector UI.
+
+The plugin uses Bippy to inspect React's component tree and resolve source
+locations. It keeps useful project frames, removes framework noise, and
+collapses consecutive same-name wrappers to retain their outer call site.
+
+**Development only:** importing the plugin registers it with React Grab.
+Do not import it unconditionally or enable it in a production application.
+This page documents the plugin; it does not activate React Grab in Storybook.
+
+## 1. Install the dependencies
+
+These instructions match the prototype's tested versions: React Grab `0.2.0`
+and Bippy `0.6.1`, with React 18 and Vite.
+
+From this repository's root:
+
+```sh
+npm install --save-dev --workspace apps/prototype react-grab@0.2.0 bippy@0.6.1
+```
+
+For another Vite app, run this from that app's package directory:
+
+```sh
+npm install --save-dev react-grab@0.2.0 bippy@0.6.1
+```
+
+React Grab already depends on Bippy. Declare Bippy directly as well because
+the app-owned plugin imports its APIs. Use compatible versions that resolve
+to the same Bippy instance.
+
+## 2. Copy the complete plugin
+
+Create `app/dev/reactGrab.ts` with the following source. This is the complete
+implementation from the
+[prototype plugin](../../../../prototype/app/dev/reactGrab.ts).
+
+```ts
+import {
+  getDisplayName,
+  getFiberFromHostInstance,
+  isCompositeFiber,
+  isInstrumentationActive,
+  type Fiber,
+} from 'bippy';
+import { getSource, normalizeFileName, type FiberSource } from 'bippy/source';
+import { registerPlugin, unregisterPlugin, type Plugin } from 'react-grab';
+
+const FRAMEWORK_COMPONENTS = new Set([
+  'RouterProvider',
+  'HydratedRouter',
+  'Router',
+  'DataRoutes',
+  'RenderedRoute',
+  'Outlet',
+  'ScrollRestoration',
+  'Scripts',
+]);
+const NOISY_PROPS = new Set(['children', 'params', 'loaderData', 'matches', 'ref', 'className']);
+const CSS_MODULE_CLASS = /^_([a-zA-Z][a-zA-Z0-9]*)_[a-z0-9]+(?:_\d+)?$/;
+const GRIFFEL_CLASS = /^[fr][a-z0-9]{5,7}$/;
+
+interface ComponentContext {
+  name: string;
+  fiber: Fiber;
+  source: FiberSource | null;
+}
+
+function includeComponent(name: string): boolean {
+  const unnumbered = name.replace(/\d+$/, '');
+  return (
+    !name.startsWith('_') &&
+    !name.startsWith('Anonymous') &&
+    !name.startsWith('WithComponentProps') &&
+    !['Provider', 'Context', 'Consumer', 'ErrorBoundary', 'Trigger'].some((suffix) =>
+      unnumbered.endsWith(suffix),
+    ) &&
+    !FRAMEWORK_COMPONENTS.has(unnumbered)
+  );
+}
+
+function sourcePath(source: FiberSource): string {
+  const path = normalizeFileName(source.fileName).replace(/\\/g, '/');
+  const workspacePath = /(?:^|\/)((?:apps\/prototype|packages\/react-components)\/.*)$/.exec(path);
+  return workspacePath?.[1] ?? path;
+}
+
+function isProjectComponent(
+  component: ComponentContext,
+): component is ComponentContext & { source: FiberSource } {
+  if (!component.source?.fileName) return false;
+  const path = sourcePath(component.source);
+  return !path.includes('node_modules') && !path.includes('chunk-') && !path.startsWith('../../');
+}
+
+function describeElement(element: Element): string {
+  const classes = Array.from(element.classList)
+    .filter(
+      (name) => !name.startsWith('fui-') && !name.startsWith('___') && !GRIFFEL_CLASS.test(name),
+    )
+    .map((name) => CSS_MODULE_CLASS.exec(name)?.[1] ?? name);
+  const parts = [element.tagName.toLowerCase() + (classes.length ? `.${classes.join('.')}` : '')];
+  if (element.children.length) {
+    parts.push(`${element.children.length} child${element.children.length === 1 ? '' : 'ren'}`);
+  }
+  const text = (element instanceof HTMLElement ? element.innerText : element.textContent)
+    ?.replace(/\s+/g, ' ')
+    .trim();
+  if (text) parts.push(JSON.stringify(text.length > 80 ? `${text.slice(0, 80)}...` : text));
+  return parts.join(', ');
+}
+
+function describeProps(fiber: Fiber): string | null {
+  const props: unknown = fiber.memoizedProps;
+  if (!props || typeof props !== 'object') return null;
+  const entries = Object.entries(props)
+    .filter(
+      ([key, value]) =>
+        !NOISY_PROPS.has(key) &&
+        value !== '' &&
+        ['string', 'number', 'boolean'].includes(typeof value),
+    )
+    .map(([key, value]) => {
+      const display =
+        typeof value === 'string' && value.length > 100 ? `${value.slice(0, 100)}...` : value;
+      return `${key}: ${JSON.stringify(display)}`;
+    });
+  return entries.length ? `props: { ${entries.join(', ')} }` : null;
+}
+
+async function elementContext(element: Element): Promise<string | null> {
+  let host: Fiber | null = null;
+  for (let current: Element | null = element; current && !host; current = current.parentElement) {
+    host = getFiberFromHostInstance(current);
+  }
+  if (!host) return null;
+
+  const ancestors: { name: string; fiber: Fiber }[] = [];
+  for (let fiber: Fiber | null = host; fiber && ancestors.length < 25; fiber = fiber.return) {
+    if (!isCompositeFiber(fiber)) continue;
+    const name = getDisplayName(fiber.type);
+    if (name && includeComponent(name)) ancestors.push({ name, fiber });
+  }
+  const resolved = await Promise.all(
+    ancestors.map(async (component) => {
+      const source = await getSource(component.fiber, true).catch((error: unknown) => {
+        console.warn(`[React Grab] Could not resolve source for ${component.name}:`, error);
+        return null;
+      });
+      return { ...component, source };
+    }),
+  );
+  // Keep the outer call site when Fluent and router wrappers share a component name.
+  const tree = resolved
+    .filter(isProjectComponent)
+    .filter((component, index, components) => components[index + 1]?.name !== component.name);
+  const nearest = tree[0];
+  if (!nearest) return null;
+
+  const intermediate = resolved
+    .slice(0, resolved.indexOf(nearest))
+    .find((component) => !isProjectComponent(component));
+  const names = [nearest.name];
+  if (intermediate && intermediate.name !== nearest.name) names.push(intermediate.name);
+  const lines = [`${names.join(' > ')} > ${describeElement(element)}`];
+  const props = describeProps(nearest.fiber);
+  if (props) lines.push(props);
+  for (const component of tree) {
+    const source = component.source;
+    const location =
+      sourcePath(source) +
+      (source.lineNumber ? `:${source.lineNumber}` : '') +
+      (source.lineNumber && source.columnNumber ? `:${source.columnNumber}` : '');
+    lines.push(`in ${component.name} (${location})`);
+  }
+  return lines.join('\n');
+}
+
+export async function transformCopyContent(content: string, elements: Element[]): Promise<string> {
+  if (!isInstrumentationActive() || !elements.length) {
+    console.warn('[React Grab] Component inspection is unavailable; keeping the original context.');
+    return content;
+  }
+  const contexts = await Promise.all(elements.map(elementContext));
+  if (contexts.some((context) => !context)) {
+    console.warn(
+      '[React Grab] Project source was not resolved for every selection; keeping the original context.',
+    );
+    return content;
+  }
+  return contexts.join('\n\n---\n\n');
+}
+
+const plugin: Plugin = {
+  name: 'coreai-copy-context',
+  hooks: { transformCopyContent },
+};
+
+registerPlugin(plugin);
+import.meta.hot?.dispose(() => unregisterPlugin(plugin.name));
+```
+
+For a different repository layout, adjust the `workspacePath` expression in
+`sourcePath` to match your app and component-package directories. Unmatched
+paths retain Bippy's normalized form. Review `FRAMEWORK_COMPONENTS` and the
+component-name filters if your app uses different wrappers.
+
+## 3. Load it only in the development browser
+
+Add this at module scope in `app/root.tsx`, after its imports:
+
+```tsx
+if (import.meta.env.DEV && typeof window !== 'undefined') {
+  import('./dev/reactGrab').catch((error: unknown) => {
+    console.error('Failed to configure React Grab:', error);
+  });
+}
+```
+
+Replace an existing development-only `import('react-grab')` with this import.
+The plugin imports React Grab itself, which initializes its selector, and
+registers the `coreai-copy-context` plugin through the public plugin API.
+It does not create a second selector instance.
+
+The `DEV` condition lets Vite remove this import from production builds.
+The browser check prevents initialization during server rendering or
+prerendering. Vite's hot-module replacement unregisters the old plugin before
+loading its replacement.
+
+## 4. Select an element and copy its context
+
+Start the development app. Hover over an element and use React Grab's
+**Ctrl+C** (Windows) or **Cmd+C** (macOS) selection shortcut. Paste the result
+into your coding agent.
+
+For example, selecting the prototype's **Create agent** button produces:
+
+```text
+Button > button, "Create agent"
+props: { appearance: "primary" }
+in Button (apps/prototype/app/routes/build/agents.tsx:16:13)
+in PageHeader (apps/prototype/app/components/common/Pages/TabbedPageLayout.tsx:27:15)
+in PageLayout (apps/prototype/app/components/common/Pages/TabbedPageLayout.tsx:26:5)
+in TabbedPageLayout (apps/prototype/app/routes/build/agents.tsx:6:5)
+in Build (route.tsx:4:19)
+in NavLayoutContent (apps/prototype/app/components/shell/NavLayout.tsx:46:5)
+in AppContent (apps/prototype/app/root.tsx:60:7)
+in Layout (root.tsx:38:25)
+```
+
+### How to read this output
+
+- **First line:** the nearest retained project component, an intermediate
+  dependency component when applicable, and the selected DOM element with
+  cleaned classes, child count, and a short text preview.
+- **Props:** primitive props from the nearest retained component. Functions,
+  objects, children, class names, and common routing props are omitted.
+- **`in` lines:** project component ancestry, nearest first, with source
+  locations when available. The Button location points to the page where it
+  is used, rather than Fluent's Button implementation.
+
+This is **render ancestry**, not strictly JSX ownership. In this example,
+the Button is created in the agents page and passed through `headerActions`.
+`PageHeader` still appears because it renders that content.
+Locations can describe JSX call sites or component bodies, depending on the
+source information Bippy resolves. A basename such as `route.tsx` is retained
+when Bippy does not provide a longer path. Line numbers change as files change.
+
+## What the customization changes
+
+React Grab calls the asynchronous `transformCopyContent(content, elements)`
+hook before writing to the clipboard. The returned string replaces its
+default generated selection context:
+
+- Source locations are resolved with `bippy/source`.
+- Dependency sources, bundler chunks, providers, private components, and
+  common framework/router wrappers are removed from the project ancestry.
+- Consecutive same-name components are collapsed to their outer call site.
+  This is a name-based rule; it can also collapse intentionally nested
+  components with the same name.
+- Fluent `fui-` classes and Griffel hashes are hidden. CSS Module class names
+  are decoded to their local names.
+- Multiple selected elements receive separate blocks divided by `---`.
+- If any selected element lacks usable project context, the plugin logs a
+  warning and retains React Grab's original text for the entire selection.
+- React Grab prepends user comments after the transform; they are not part
+  of the string received by this hook.
+
+The plugin does not patch React Grab, Fluent, or Bippy. React inspection and
+source resolution depend on React internals and available development source
+information, so validate this behavior when upgrading those dependencies.

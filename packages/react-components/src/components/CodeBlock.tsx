@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * `CodeBlock` — render a string of source code with syntax highlighting.
  *

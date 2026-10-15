@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { InfoLabel, Link, type InfoLabelProps, type JSXElement } from '@coreai-ds/react-components';
 import { figmaDesign } from '../../utils/figma';
 

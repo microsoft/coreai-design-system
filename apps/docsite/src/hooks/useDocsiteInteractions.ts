@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import * as React from 'react';
 import { useThemeMode, type ThemePreference } from '../theme/ThemeProvider';
 import { getShortcutAction } from '../utils/shortcut-action.mjs';

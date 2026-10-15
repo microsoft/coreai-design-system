@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import * as React from 'react';
 import { Card as CoreAICard, type CardProps as CoreAICardProps } from '@coreai-ds/react-components';
 import type { LinkProps as RouterLinkProps } from 'react-router-dom';

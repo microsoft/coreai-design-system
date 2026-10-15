@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import type { RegistryPage } from './registry-builder';
 import { faqGroups } from './faqs';
 import { resourceGroups } from './resources';

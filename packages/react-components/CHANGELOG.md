@@ -7,12 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Historical release scope
 
-Versions 0.2.0 through 0.11.1 below document **pre-public releases**. Their dates
-and behavior changes are preserved as historical facts, not claims of publication
-on public npm. The new repository starts with fresh history: legacy issue numbers
-are historical identifiers, not issues in `microsoft/coreai-design-system`, and
-legacy commits, pull requests, and tags are not transplanted. Version links point
-to headings in this changelog rather than nonexistent public tags or comparisons.
+Versions 0.2.0 through 0.11.1 below preserve earlier package changes. Historical
+issue numbers refer to the issue tracker used at the time. Version links point to
+headings in this changelog.
 
 <!--
   Keep entries concise and factual — one line per change, no marketing prose.
@@ -33,10 +30,11 @@ to headings in this changelog rather than nonexistent public tags or comparisons
 
 ### Changed
 
+- Consumer agent guidance uses the public CoreAI documentation MCP, delegates setup to the docsite guide, and keeps repository-specific exceptions in local proxy skills.
+- CSS Modules guidance uses an opt-in, app-owned layered Griffel renderer instead of patching shared dependencies.
 - `Accordion` removes the default `AccordionHeader` button padding and `AccordionPanel` margin so content aligns with its surroundings, and keeps the expand icon vertically centered without stretching alongside tall header content.
 - Added Inter as the proportional and numeric fallback after Aptos; the hosted apps load normal and italic Inter faces at weights 400, 600, and 700 from Google Fonts.
-- Prepared public npm distribution with no consumer authentication; remove obsolete Azure Artifacts `@coreai-ds` scope routing when migrating to an approved public release. Publication remains disabled until explicit open-source and package/access approval, and requires manual confirmation through a protected GitHub environment.
-- Source, issues, and pull requests target `microsoft/coreai-design-system`; GitHub Actions replaces the Azure publishing pipeline. Package tarball verification checks compiled exports and excludes source files and locally installed font assets.
+- Package tarball verification checks compiled exports and excludes source files and locally installed font assets.
 
 ### Fixed
 
@@ -47,8 +45,8 @@ to headings in this changelog rather than nonexistent public tags or comparisons
 
 ### Fixed
 
-- `Text` resets browser default margins for semantic elements such as headings and paragraphs, and unset typography properties inherit from the CSS parent. Fixes pre-public issue 246.
-- CoreAI typography uses responsive letter spacing based on each element's computed font size to improve perceived word spacing. Fixes pre-public issue 264.
+- `Text` resets browser default margins for semantic elements such as headings and paragraphs, and unset typography properties inherit from the CSS parent. Fixes historical issue 246.
+- CoreAI typography uses responsive letter spacing based on each element's computed font size to improve perceived word spacing. Fixes historical issue 264.
 
 ## [0.11.0] - 2026-09-08
 
@@ -57,10 +55,10 @@ to headings in this changelog rather than nonexistent public tags or comparisons
 - Lowered the minimum supported `@fluentui/react-components` version from `9.74.0` to `9.70.0`, the first release supporting React 19 and containing every Fluent API currently used or re-exported by this package.
 - Fluent development dependencies now track the latest exact releases while CI separately validates the peer minimums (`react-components` `9.70.0`, `react-icons` `2.0.316`).
 - Added Vite SSR and Vitest guidance for working around Fluent Icons' invalid Node ESM output.
-- Source code, pull requests, and CI/CD moved from GitHub to Azure DevOps during the pre-public period. At that time, the former GitHub repository remained the issue tracker.
+- Source code, pull requests, and CI/CD moved from GitHub to Azure DevOps. The former GitHub repository remained the issue tracker.
 - Agent and MCP setup guidance now requires user confirmation before writing skill files, changing client configuration, or filing GitHub issues.
 - MCP setup guidance no longer requires corp-network access (VPN or Devbox/SAW); documented hosted access uses a Microsoft sign-in in the browser, with no VPN, headers, or secrets.
-- The hosted `coreai-ds-docs` MCP server renews its session without a repeat sign-in, so agent sessions are no longer interrupted when the previous token expires. Fixes pre-public issue 468.
+- The hosted `coreai-ds-docs` MCP server renews its session without a repeat sign-in, so agent sessions are no longer interrupted when the previous token expires. Fixes historical issue 468.
 - `Select` now defaults to `appearance="filled-darker"` when CoreAI component defaults are enabled; pass `appearance="outline"` to retain Fluent's default appearance.
 - `LinkButton` accepts an anchor-compatible component through `as`, enabling framework router links while retaining its Button API and anchor semantics.
 - Anchor-backed `Card` and `Tab` components no longer inherit native link underlines.
@@ -83,12 +81,12 @@ to headings in this changelog rather than nonexistent public tags or comparisons
 
 ### Changed
 
-- `LinkButton` now renders CoreAI `Button` with a native anchor root, supports the complete Button content and visual API plus native anchor attributes, and adds Link's `external` behavior. Fixes pre-public issue 299.
+- `LinkButton` now renders CoreAI `Button` with a native anchor root, supports the complete Button content and visual API plus native anchor attributes, and adds Link's `external` behavior. Fixes historical issue 299.
 
 ### Fixed
 
 - Interactive `Card` no longer overrides custom colors on nested `Text` components.
-- `TabList` no longer emits invalid `:not[disabled]` CSS that Chromium rejects during stylesheet insertion. Fixes pre-public issue 381.
+- `TabList` no longer emits invalid `:not[disabled]` CSS that Chromium rejects during stylesheet insertion. Fixes historical issue 381.
 
 ## [0.9.0] - 2026-08-17
 
@@ -99,7 +97,7 @@ to headings in this changelog rather than nonexistent public tags or comparisons
 
 ### Fixed
 
-- Wrapped component exports are independently tree-shakeable, so importing one component no longer makes unrelated Fluent component packages reachable. Fixes pre-public issue 334.
+- Wrapped component exports are independently tree-shakeable, so importing one component no longer makes unrelated Fluent component packages reachable. Fixes historical issue 334.
 
 ## [0.8.1] - 2026-08-07
 
@@ -134,8 +132,8 @@ to headings in this changelog rather than nonexistent public tags or comparisons
 
 ### Fixed
 
-- `DataGrid` `resizableColumns` works again. The wrapped `DataGridHeaderCell`/`DataGridCell` always passed a `style` prop (`undefined` when there was no `columnFlexOptions` override), and Fluent spreads caller props _after_ its column-sizing props — so the `width`/`minWidth`/`maxWidth` from `columnSizingOptions` and from dragging were overwritten and columns never changed width. `style` is now only forwarded when there is one. No consumer action needed. Fixes pre-public issue 273.
-- `Card` `appearance="subtle"` hover background now uses `colorNeutralBackground3Hover` instead of Fluent's default `colorSubtleBackgroundHover`, matching the side nav hover weight in light mode. Fixes pre-public issue 271.
+- `DataGrid` `resizableColumns` works again. The wrapped `DataGridHeaderCell`/`DataGridCell` always passed a `style` prop (`undefined` when there was no `columnFlexOptions` override), and Fluent spreads caller props _after_ its column-sizing props — so the `width`/`minWidth`/`maxWidth` from `columnSizingOptions` and from dragging were overwritten and columns never changed width. `style` is now only forwarded when there is one. No consumer action needed. Fixes historical issue 273.
+- `Card` `appearance="subtle"` hover background now uses `colorNeutralBackground3Hover` instead of Fluent's default `colorSubtleBackgroundHover`, matching the side nav hover weight in light mode. Fixes historical issue 271.
 
 ## [0.7.1] - 2026-07-29
 

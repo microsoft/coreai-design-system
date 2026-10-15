@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Storybook story file for the Filterable List template.
  * The component and all its code live in FilterableList.tsx.

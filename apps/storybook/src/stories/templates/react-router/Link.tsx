@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import * as React from 'react';
 import { Link as CoreAILink, type LinkProps as CoreAILinkProps } from '@coreai-ds/react-components';
 import type { LinkProps as RouterLinkProps } from 'react-router-dom';

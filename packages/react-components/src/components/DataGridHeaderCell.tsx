@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Wrapped `DataGridHeaderCell` that automatically applies the current column's
  * `columnFlexOptions` override (set via the `DataGrid` wrapper's `columnFlexOptions`

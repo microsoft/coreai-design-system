@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import * as React from 'react';
 import { DataGridHeader, DataGridRow, createTableColumn } from '@fluentui/react-components';
 import { afterEach, expect, test, vi } from 'vitest';

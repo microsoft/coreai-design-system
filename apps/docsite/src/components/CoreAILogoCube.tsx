@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import * as React from 'react';
 import { EffectComposer } from '@react-three/postprocessing';
 import { OrbitControls, RoundedBox } from '@react-three/drei';

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Wrapped `Combobox` that extends Fluent UI's Combobox with an inline `label`
  * rendered inside the control (before the input) instead of a separate

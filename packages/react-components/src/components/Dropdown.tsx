@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Wrapped `Dropdown` that extends Fluent UI's Dropdown with:
  *   - an inline `label` that is rendered inside the trigger (instead of a

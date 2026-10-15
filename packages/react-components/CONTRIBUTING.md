@@ -55,9 +55,8 @@ Contributions from consuming teams are welcome. To submit a change:
 - **Decision making:** Major architectural changes require core team approval. Bug fixes and minor
   enhancements can be approved by any designated reviewer.
 - **Releases:** The core team manages version bumps (following [Semantic Versioning](https://semver.org/))
-  and release timing. Publishing requires recorded open-source approval, package/access
-  review, and manual dispatch through the protected `npm-production` environment.
-  It is disabled by default and never runs automatically on merge; see
+  and release timing. Publishing requires package/access review and manual dispatch
+  through the protected `npm-production` environment. It never runs automatically on merge; see
   [RELEASING.md](RELEASING.md).
 - **Automation:** GitHub Actions handles testing, building, and approved publishing.
   [Changesets](https://github.com/changesets/changesets) will be considered when

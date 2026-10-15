@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { assertFluentStoryVersion } from './fluent-story-version.mjs';

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import * as React from 'react';
 import { type JSXElement, Markdown } from '@coreai-ds/react-components';
 // `Markdown` renders a Markdown string as themed Fluent UI content. Fenced code

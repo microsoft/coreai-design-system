@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import test from 'node:test';
@@ -35,10 +38,11 @@ test('docsite destinations follow the repository README', async () => {
   ]);
   const skillName = agentSkill.match(/^name: ([^\r\n]+)$/m)?.[1];
   assert.ok(skillName, 'The package skill must declare a frontmatter name.');
+  const installedSkillDirectory = 'coreai-ds-fluentui-react';
 
   assert.match(readme, /https:\/\/github\.com\/microsoft\/coreai-design-system/);
-  assert.match(readme, /The source code is available under/);
-  assert.doesNotMatch(readme, /private while review is pending|Entra-authenticated|Entra-authed/);
+  assert.match(readme, /source code is available\s+under/);
+  assert.doesNotMatch(readme, /Entra-authenticated|Entra-authed/);
   assert.match(readme, /https:\/\/coreai-ds-storybook\.azurewebsites\.net\s+\|/);
 
   assert.match(links, /const repo = 'https:\/\/github\.com\/microsoft\/coreai-design-system'/);
@@ -92,12 +96,12 @@ test('docsite destinations follow the repository README', async () => {
   for (const content of [readme, packageReadme, resources, faqs, packagePage, homePage]) {
     assert.doesNotMatch(
       content,
-      /public npm|publication is pending|Once published|After publication|npm \(pending\)|Azure Artifacts|obsolete.*registry|separate Fluent MCP connection/,
+      /Azure Artifacts|obsolete.*registry|separate Fluent MCP connection/,
     );
   }
-  assert.match(skillPage, new RegExp(`\\.github/skills/${skillName}/SKILL\\.md`));
-  assert.match(packageReadme, new RegExp(`\\.github/skills/${skillName}/SKILL\\.md`));
-  assert.match(packageReadme, new RegExp(`\\.claude/skills/${skillName}/SKILL\\.md`));
+  assert.match(skillPage, new RegExp(`\\.github/skills/${installedSkillDirectory}/SKILL\\.md`));
+  assert.match(packageReadme, new RegExp(`\\.github/skills/${installedSkillDirectory}/SKILL\\.md`));
+  assert.match(packageReadme, new RegExp(`\\.claude/skills/${installedSkillDirectory}/SKILL\\.md`));
   assert.match(homePage, /<span>npm<\/span>/);
   assert.match(
     packageReadme,
@@ -138,7 +142,7 @@ test('repository legal section identifies source and hosted MCP terms separately
   const readme = await read('README.md');
   const legal = readme.slice(readme.indexOf('## Legal'));
   assert.match(legal, /### License and hosted-service terms/);
-  assert.match(legal, /\[MIT license\]\(LICENSE\.txt\)/);
+  assert.match(legal, /\[MIT license\]\(LICENSE-CODE\)/);
   assert.match(legal, /Use of the hosted MCP endpoint is subject to the/);
   assert.match(
     legal,

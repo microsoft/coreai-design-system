@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import changelogJson from '../../changelog.json';
 
 export interface ChangelogSection {

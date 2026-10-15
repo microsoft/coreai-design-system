@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 export function generateContent(options?: {
   outputDirectory?: string;
   snapshotPath?: string | URL;

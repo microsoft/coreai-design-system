@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Storybook story file for the Empty State template.
  * The component and all its code live in EmptyState.tsx.

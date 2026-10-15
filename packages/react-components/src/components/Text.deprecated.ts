@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Deprecated Fluent `Text` preset components (e.g. `Body1`, `Caption1`).
  *

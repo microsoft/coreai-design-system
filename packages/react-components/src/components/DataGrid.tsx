@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Wrapped `DataGrid` adding `columnFlexOptions`: a CSS-only, non-interactive alternative to
  * `resizableColumns` for static layouts. Provide a `flexGrow`/`flexShrink`/`flexBasis`/`minWidth`/

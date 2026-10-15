@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Surface / interaction CSS for `Card`, applied via FluentProvider's
  * `customStyleHooks_unstable` (registered as `useCardStyles_unstable`).

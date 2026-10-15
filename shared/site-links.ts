@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 const repo = 'https://github.com/microsoft/coreai-design-system';
 const storybook = 'https://coreai-ds-storybook.azurewebsites.net/';
 

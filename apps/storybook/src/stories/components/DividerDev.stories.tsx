@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { Divider } from '@coreai-ds/react-components';
 
 export const DefaultDev = () => {

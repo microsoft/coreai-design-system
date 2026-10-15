@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import * as React from 'react';
 import { Text } from '@coreai-ds/react-components';
 import { Outlet, useLocation } from 'react-router-dom';

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { createHash } from 'node:crypto';
 import { constants } from 'node:fs';
 import { copyFile, mkdir, readFile, readdir, realpath, stat, writeFile } from 'node:fs/promises';

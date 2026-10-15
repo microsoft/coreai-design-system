@@ -2,172 +2,159 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 <Meta
   title="Docs/Styling with CSS Modules"
-  summary="Patch Griffel to use CSS cascade layers so plain CSS/CSS Modules can override Fluent styles."
+  summary="Use RendererProvider to scope Griffel/Fluent styles into a CSS cascade `@layer`s so plain CSS/CSS Modules can override CoreAI component styles."
 />
 
 # Styling with CSS Modules
 
-Fluent UI generates its styles at runtime with
-[**Griffel**](https://github.com/microsoft/griffel)
-([`@griffel/core`](https://www.npmjs.com/package/@griffel/core)) and injects them
-into the page as `<style>` rules. Because those rules are injected in an
-unpredictable order and carry atomic-class specificity, overriding a component's
-look with your own plain CSS or
-[CSS Modules](https://github.com/css-modules/css-modules) usually means fighting
-the cascade with higher specificity selectors or `!important`.
+Fluent UI generates component styles with
+[Griffel](https://github.com/microsoft/griffel) and inserts CSS rules at runtime.
+An app that uses plain CSS or CSS Modules can opt into an app-owned renderer
+that wraps those rules in a CSS cascade layer named `griffel`.
 
-A small, opt-in patch to `@griffel/core` fixes this by wrapping **every**
-Griffel rule in a
-[CSS cascade layer](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@layer)
-named `griffel`. Any **unlayered** CSS you write — a CSS Module class, a plain
-stylesheet, an inline `style` — then wins over Fluent's styles automatically,
-regardless of specificity or source order.
+Normal, unlayered CSS then outranks normal rules in that layer, regardless of
+selector specificity or insertion order. This allows a CSS Module class to
+override Fluent layout or appearance without `!important`.
 
-> **Opt-in:** This is not applied by `@coreai-ds/react-components` out of the box.
-> Apply the patch in your own app if you want CSS Modules to be able to override
-> Fluent component styles. Everything below still works without it — you just
-> lose the "unlayered always wins" guarantee.
+**Use `RendererProvider`, not a dependency patch.** The renderer applies only to
+its React subtree. Do not edit `node_modules`, install a `patch-package` hook,
+or globally replace Griffel for other workspaces.
 
----
+> **Opt-in:** `@coreai-ds/react-components` does not enable layering automatically.
+> The prototype uses this method. The docsite, Storybook, and package consumers
+> retain their default renderers unless they explicitly opt in.
 
 ## Why cascade layers
 
-In the CSS cascade, **unlayered styles always beat layered styles**, no matter
-their specificity or source order:
+For normal declarations, unlayered author styles take priority over layered
+author styles:
 
 ```css
 /* Fluent / Griffel styles — high specificity, but layered = lowest priority */
 @layer griffel {
-  .r1f29ykk {
-    /* .fui-Button */
-    background-color: var(--colorNeutralBackground1);
-    color: var(--colorNeutralForeground1);
+  .f1w7gpdv {
+    /* .fui-Link */
+    display: block;
   }
 }
 
 /* Your CSS Module — a single class, unlayered = always wins */
-.cta {
-  background-color: hotpink;
+.navLink {
+  display: flex;
+  align-items: center;
 }
 ```
 
-Even though the Fluent selector has higher specificity and could be injected
-later, `.cta` wins because unlayered rules outrank anything in a layer. So once
-Fluent's styles live inside `@layer griffel`, a single class from a CSS Module
-overrides them — no `!important`, no specificity hacks, no reliance on which
-`<style>` tag was injected last.
+Here `.navLink` wins even if the Griffel selector is more specific or its rule
+is inserted later. This is a browser cascade rule, not a change to
+`mergeClasses`. Griffel class merging still resolves conflicts before the
+browser sees the CSS.
 
----
+`!important` reverses layer priority. Do not treat "unlayered wins" as a
+guarantee for important declarations.
 
-## The patch
+## Set up an app-owned renderer
 
-The patch targets [`@griffel/core`](https://www.npmjs.com/package/@griffel/core)
-and changes the DOM renderer to wrap each rule it inserts in the `griffel` layer.
-Griffel ships two builds of the renderer — CJS (`createDOMRenderer.cjs.js`) and
-ESM (`createDOMRenderer.esm.js`) — and the edit differs slightly between them
-(the CJS build calls `safeInsertRule.safeInsertRule`, the ESM build calls
-`safeInsertRule`), so both files must be patched:
+### 1. Add the renderer dependency
 
-```diff
-diff --git a/node_modules/@griffel/core/renderer/createDOMRenderer.cjs.js b/node_modules/@griffel/core/renderer/createDOMRenderer.cjs.js
-index 50359d2..63aec99 100644
---- a/node_modules/@griffel/core/renderer/createDOMRenderer.cjs.js
-+++ b/node_modules/@griffel/core/renderer/createDOMRenderer.cjs.js
-@@ -45,12 +45,13 @@ function createDOMRenderer(targetDocument = typeof document === 'undefined' ? un
-           if (process.env.NODE_ENV !== 'production' && isDevToolsEnabled.isDevToolsEnabled) {
-             store.debugData.addCSSRule(ruleCSS);
-           }
-+          const layeredRuleCSS = `@layer griffel{${ruleCSS}}`;
-           if (unstable_filterCSSRule) {
-             if (unstable_filterCSSRule(ruleCSS)) {
--              safeInsertRule.safeInsertRule(sheet, ruleCSS);
-+              safeInsertRule.safeInsertRule(sheet, layeredRuleCSS);
-             }
-           } else {
--            safeInsertRule.safeInsertRule(sheet, ruleCSS);
-+            safeInsertRule.safeInsertRule(sheet, layeredRuleCSS);
-           }
-         }
-       }
-diff --git a/node_modules/@griffel/core/renderer/createDOMRenderer.esm.js b/node_modules/@griffel/core/renderer/createDOMRenderer.esm.js
-index 5ca99a7..8351957 100644
---- a/node_modules/@griffel/core/renderer/createDOMRenderer.esm.js
-+++ b/node_modules/@griffel/core/renderer/createDOMRenderer.esm.js
-@@ -43,12 +43,13 @@ function createDOMRenderer(targetDocument = typeof document === 'undefined' ? un
-           if (process.env.NODE_ENV !== 'production' && isDevToolsEnabled) {
-             debugData.addCSSRule(ruleCSS);
-           }
-+          const layeredRuleCSS = `@layer griffel{${ruleCSS}}`;
-           if (unstable_filterCSSRule) {
-             if (unstable_filterCSSRule(ruleCSS)) {
--              safeInsertRule(sheet, ruleCSS);
-+              safeInsertRule(sheet, layeredRuleCSS);
-             }
-           } else {
--            safeInsertRule(sheet, ruleCSS);
-+            safeInsertRule(sheet, layeredRuleCSS);
-           }
-         }
-       }
+Declare `@griffel/react` as a direct dependency of the consuming app. Choose a
+version compatible with its Fluent dependencies:
+
+```sh
+npm install @griffel/react
 ```
 
----
+In a monorepo, install it in the app workspace. Keep the provider and Fluent
+components on the same Griffel React instance; duplicate installations can
+create separate contexts.
 
-## Applying the patch
+### 2. Create the layered renderer
 
-The patch is distributed as a
-[`patch-package`](https://www.npmjs.com/package/patch-package) diff.
+Copy this into an app-owned `createLayeredRenderer.ts`:
 
-1. Generate the patch against **your** installed `@griffel/core` version rather
-   than copying an existing `.patch` verbatim. `patch-package` filenames and the
-   surrounding source (line numbers, hashes, `isDevToolsEnabled` naming) are
-   version-specific, and a mismatched diff can fail to apply or corrupt the
-   file. Apply the two edits above by hand, then run
-   `npx patch-package @griffel/core` to capture
-   `patches/@griffel+core+<version>.patch`.
-2. Pin `@griffel/core` to the patched version so the diff applies cleanly:
+```ts
+import { createDOMRenderer, type GriffelRenderer } from '@griffel/react';
 
-   ```json
-   // package.json
-   "devDependencies": {
-     "@griffel/core": "1.XX.XX"
-   }
-   ```
+type CSSRulesByBucket = Parameters<GriffelRenderer['insertCSSRules']>[0];
 
-3. Run `patch-package` after install:
+export function createLayeredRenderer(targetDocument?: Document): GriffelRenderer {
+  const renderer = createDOMRenderer(targetDocument);
+  const insertCSSRules = renderer.insertCSSRules.bind(renderer);
 
-   ```json
-   // package.json
-   "scripts": {
-     "postinstall": "patch-package"
-   }
-   ```
+  renderer.insertCSSRules = (rules) => {
+    const layeredRules: CSSRulesByBucket = {};
 
-4. Reinstall dependencies (`npm install`) so the postinstall hook applies the
-   patch.
+    for (const bucket of Object.keys(rules) as (keyof CSSRulesByBucket)[]) {
+      layeredRules[bucket] = rules[bucket]?.map((entry) => {
+        // Tuple metadata controls Griffel's media/container stylesheet ordering.
+        if (typeof entry === 'string') {
+          return `@layer griffel{${entry}}`;
+        }
+        return [`@layer griffel{${entry[0]}}`, entry[1]];
+      });
+    }
 
-> Using pnpm or Yarn? Use their native patch tooling
-> ([pnpm patch \<pkg\>](https://pnpm.io/cli/patch) /
-> [yarn patch \<package\>](https://yarnpkg.com/cli/patch)) instead of
-> `patch-package` — the diff is the same.
->
-> Because the patch only edits the renderer's rule-insertion path, it applies
-> cleanly across `@griffel/core` versions as long as that code is unchanged. If
-> a Griffel upgrade moves this logic, re-generate the diff against the new
-> source.
+    insertCSSRules(layeredRules);
+  };
 
----
+  return renderer;
+}
+```
 
-## Using it
+The wrapper changes rule text but retains rule buckets and tuple metadata.
+The original renderer still manages stylesheets, query ordering, and insertion
+deduplication. Do not flatten the buckets or drop media/container metadata.
 
-With the patch in place, style any Fluent / CoreAI component by attaching a
-class from a CSS Module. Your rule wins because it is unlayered:
+The prototype's implementation is
+[`createLayeredRenderer.ts`](../../../../prototype/app/theme/createLayeredRenderer.ts).
+
+### 3. Supply the renderer above the theme provider
+
+Create the renderer once per provider instance, not on every render:
+
+```tsx
+import { useState, type PropsWithChildren } from 'react';
+import { RendererProvider } from '@griffel/react';
+import { CoreAIFluentProvider, coreaiLightTheme } from '@coreai-ds/react-components';
+import { createLayeredRenderer } from './createLayeredRenderer';
+
+export function AppProvider({ children }: PropsWithChildren) {
+  const [renderer] = useState(() => createLayeredRenderer());
+
+  return (
+    <RendererProvider renderer={renderer}>
+      <CoreAIFluentProvider theme={coreaiLightTheme}>{children}</CoreAIFluentProvider>
+    </RendererProvider>
+  );
+}
+```
+
+The provider selects the renderer through React context. Components outside
+this subtree use their usual renderer. Portals retain React context, so dialogs
+and popovers inside the subtree also use the layered renderer.
+
+For child windows or iframes, create the renderer for the target document and
+pass that same document to `RendererProvider`. See Griffel's
+[`createDOMRenderer` documentation](https://griffel.js.org/react/api/create-dom-renderer/).
+
+### 4. Declare the layer order
+
+Load this declaration before component styles:
+
+```css
+@layer griffel, common;
+```
+
+The `common` layer is optional. Use it for app-owned shared base styles if your
+app needs that intermediate priority. Leave page-specific CSS Modules unlayered.
+Declaring the layers alone does not wrap Griffel's rules; the renderer does that.
+
+## Use CSS Modules normally
 
 ```css
 /* Button.module.css */
 .cta {
-  background-color: hotpink;
-  border-radius: 4px;
+  border-radius: var(--borderRadiusLarge);
 }
 ```
 
@@ -176,26 +163,57 @@ import { Button } from '@coreai-ds/react-components';
 import styles from './Button.module.css';
 
 export function Cta() {
-  // The CSS Module class overrides Fluent's layered styles — no !important.
-  return <Button className={styles.cta}>Buy now</Button>;
+  return <Button className={styles.cta}>Continue</Button>;
 }
 ```
 
----
+Prefer documented component props and theme tokens when they express the
+desired behavior. Layering is useful for app-owned CSS overrides; it does not
+replace CoreAI's component defaults or the correct `mergeClasses` order.
 
-## Caveats
+## Production builds and CSS extraction
 
-- **All Fluent styles drop below unlayered CSS.** Any global unlayered rule in
-  your app can now unintentionally override Fluent components. Keep your own base
-  styles scoped (CSS Modules do this for you).
-- **Version-sensitive.** The patch filename encodes the `@griffel/core` version
-  it was generated for. It applies across versions while the renderer's
-  insertion code is unchanged; when a Griffel upgrade touches that code,
-  re-generate the patch against the new source.
-- **Runtime insertion only.** The patch layers styles that Griffel injects at
-  runtime; it does not change build-time CSS extraction. If you use
-  `@griffel/vite-plugin` or another extraction tool, layer that output
-  separately.
-- **Token overrides still use `makeStyles`.** Prefer Griffel `makeStyles` +
-  design tokens for theme-aware styling; reach for CSS Modules when you need a
-  one-off visual override that the token system doesn't express.
+A normal production build does not bypass this renderer. Runtime-inserted rules
+still pass through it in the browser. Precomputing Griffel style definitions
+also remains compatible when the resulting code still inserts rules at runtime.
+
+**Static CSS extraction is different.** Extracted CSS files load directly in
+the browser and bypass the renderer. If you adopt extraction, configure the
+build to wrap that generated CSS in `@layer griffel` too. The former dependency
+patch had the same limitation.
+
+For SSR, use a request-owned renderer and Griffel's style collection/rehydration
+setup. Do not share a mutable renderer between requests. See Griffel's
+[SSR guide](https://griffel.js.org/react/guides/ssr-usage/).
+
+## Limits and upgrade checks
+
+- **Public provider, internal insertion method.** `RendererProvider` and
+  `createDOMRenderer` are public APIs. Griffel marks `insertCSSRules` as private.
+  This adapter is not a documented layer option. Revalidate it after upgrading
+  Griffel or Fluent.
+- **Scoped, not global.** A nested renderer provider can replace this one.
+  Components using another Griffel context do not inherit it.
+- **Only renderer-managed rules.** Theme-variable style tags and unrelated
+  stylesheets are not automatically layered.
+- **Small extra work.** The adapter maps rule arrays and wraps strings before
+  cache checks. No performance benchmark is implied.
+- **Keep base styles scoped.** Unlayered global rules can now override normal
+  component styles unintentionally.
+- **Browser support.** The app must target browsers that support CSS cascade
+  layers.
+
+After an upgrade, inspect the rules under `style[data-make-styles-bucket]` and
+confirm they are inside `@layer griffel`. Check a real CSS Module override in
+development and production preview, including query styles, focus/hover states,
+portals, and navigation. In the prototype, the top-navigation brand link should
+compute to `display: flex` and the neutral foreground color, with its logo and
+text horizontally aligned at desktop width.
+
+## Migrating from the dependency patch
+
+Add and validate the app-owned renderer first. Then remove the old Griffel patch,
+its version pin if used only for that patch, and its installation hook if no
+other patches need it. Restore an unpatched dependency installation before
+validation. Do not run both approaches: that can wrap rules twice and keeps the
+unwanted shared-installation behavior.

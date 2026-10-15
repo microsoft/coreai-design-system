@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import * as React from 'react';
 import { DitheringTypes, imageDitheringFragmentShader } from '@paper-design/shaders';
 import { useThree } from '@react-three/fiber';

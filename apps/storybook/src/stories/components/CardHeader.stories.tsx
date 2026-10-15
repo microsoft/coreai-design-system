@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import type { StoryObj } from '@storybook/react-vite';
 import { figmaDesign } from '../../utils/figma';
 import { Button, Text, CardHeader } from '@coreai-ds/react-components';

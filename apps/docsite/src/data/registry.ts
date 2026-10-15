@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import registryJson from '../../site-registry.json';
 import { componentContents } from './components';
 import { buildSiteRegistry, type RegistryPage, type SiteRegistry } from './registry-builder';

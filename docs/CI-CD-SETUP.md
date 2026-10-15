@@ -2,15 +2,15 @@
 
 Source and pull requests: <https://github.com/microsoft/coreai-design-system>.
 The [GitHub Actions overview](GITHUB-ACTIONS.md) covers CI and
-dependency automation. Publishing has a separate approval process documented in
+dependency automation. The separate publishing process is documented in
 [RELEASING.md](../packages/react-components/RELEASING.md).
 
 ## Package consumption in CI
 
 Consumers install `@coreai-ds/react-components` from npm at
 `https://registry.npmjs.org/`.
-Check npm for available versions. Maintainer publication remains a separate
-approval-gated operation.
+Check npm for available versions. Maintainer publication is a separate manual
+operation.
 
 For this repository, run `npm ci` with Node.js 22 at the root. The docsite and
 Storybook use the local package workspace, not a separately published artifact.
@@ -37,9 +37,8 @@ Before enabling deployment, an administrator must:
    workflow evaluates it before starting environment jobs.
 
 Deploying these sites does not publish an npm
-package or make the sites public. It does not require `OSS_RELEASE_APPROVED`.
-Keep `OSS_RELEASE_APPROVED` and `NPM_PUBLISH_ENABLED` absent/false until the
-separate package-release approvals are complete.
+package or make the sites public. Keep `NPM_PUBLISH_ENABLED` absent or `false`
+until the package publishing setup is complete.
 
 The exact repository and main-ref checks also prevent a copied repository or a
 manual feature-branch run from deploying. An unset/false approval variable skips

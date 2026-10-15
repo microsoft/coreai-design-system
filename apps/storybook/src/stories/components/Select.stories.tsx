@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { Select, useId, type JSXElement, type SelectProps } from '@coreai-ds/react-components';
 
 import * as React from 'react';

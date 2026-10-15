@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { figmaDesign } from '../../utils/figma';
 import {
   MessageBarActions,

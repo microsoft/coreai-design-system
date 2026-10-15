@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import type { StoryObj } from '@storybook/react-vite';
 import { CopyButton } from '@coreai-ds/react-components';
 

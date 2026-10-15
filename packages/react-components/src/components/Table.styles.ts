@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Table-family CSS overrides, applied via FluentProvider's
  * `customStyleHooks_unstable`. Each Fluent Table subcomponent gets its own

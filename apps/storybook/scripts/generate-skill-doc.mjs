@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 // Mirrors packages/react-components/agent/SKILL.md — the canonical,
 // npm-shipped agent-usage doc — into a generated `src/stories/docs/AgentSkill.mdx`
 // page, so the same authored source is also addressable through the MCP tools

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Tag CSS override, applied via FluentProvider's `customStyleHooks_unstable`.
  *

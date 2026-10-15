@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * CoreAI Design System uses Fluent UI v9 as its foundation. Fluent provides
  * the components and their behavior, such as buttons, inputs, and menus.

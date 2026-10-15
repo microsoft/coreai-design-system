@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Boolean context that tells wrapped components (built via
  * `withComponentDefaults`) whether to apply the theme's default props.

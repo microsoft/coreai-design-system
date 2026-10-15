@@ -3,7 +3,7 @@ name: component-test
 description: >
   Analyze a requested CoreAI component test scope, add or update focused
   Vitest Browser Mode regression tests, run them in Playwright Chromium, and
-  report product behavior problems without changing production code.
+  report product behavior problems without changing production code. IGNORE and DO NOT use when editing ./apps/prototype
 argument-hint: 'component, behavior, file, GitHub issue number, or GitHub issue URL'
 ---
 

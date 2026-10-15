@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import * as React from 'react';
 import { Tab as CoreAITab, type TabProps as CoreAITabProps } from '@coreai-ds/react-components';
 import type { NavLinkProps } from 'react-router-dom';

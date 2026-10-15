@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Wrapped `Text` that adds `foreground` and `preset` props to Fluent UI's Text.
  *

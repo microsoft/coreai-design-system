@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 // Consolidated infrastructure for the CoreAI Design System hosted apps.
 //
 // Provisions ONE Linux App Service Plan shared by two web apps:

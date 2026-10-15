@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Styled drag-and-drop / browse surface powered by react-dropzone.
  *

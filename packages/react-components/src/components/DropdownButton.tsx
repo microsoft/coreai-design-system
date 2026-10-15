@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * `DropdownButton` — a `Dropdown` whose trigger is rendered as a secondary
  * button instead of a text-input-style field.

@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 set -euo pipefail
 
 # Keep the same ZIP roots and npm start entry points as the Azure-hosted apps.

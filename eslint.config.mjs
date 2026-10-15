@@ -1,9 +1,14 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import eslint from '@eslint/js';
 import prettier from 'eslint-config-prettier';
 import reactHooks from 'eslint-plugin-react-hooks';
 import storybook from 'eslint-plugin-storybook';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+import { fileURLToPath } from 'node:url';
+import prototypeRules from './apps/prototype/eslint.rules.js';
 
 export default tseslint.config(
   {
@@ -11,6 +16,8 @@ export default tseslint.config(
       '**/dist/**',
       '**/node_modules/**',
       '**/storybook-static/**',
+      'apps/prototype/build/**',
+      'apps/prototype/.react-router/**',
       'apps/docsite/src/assets/vendor/**',
       'apps/storybook/fluent-stories/**',
       'apps/storybook/src/stories/templates/*.mdx',
@@ -44,6 +51,8 @@ export default tseslint.config(
     files: [
       'eslint.config.mjs',
       'apps/docsite/{build.mjs,server.js}',
+      'apps/prototype/*config.ts',
+      'apps/prototype/test/**/*.mjs',
       'apps/docsite/scripts/**/*.{js,mjs}',
       'apps/docsite/src/{site-data,utils}.mjs',
       'apps/storybook/.storybook/**/*.{js,mjs,ts,tsx}',
@@ -61,6 +70,8 @@ export default tseslint.config(
   {
     files: [
       'apps/docsite/src/assets/**/*.{js,mjs}',
+      'apps/prototype/app/**/*.{js,jsx,ts,tsx}',
+      'apps/prototype/test/**/*.mjs',
       'apps/storybook/src/**/*.{js,jsx,ts,tsx}',
       'packages/*/src/**/*.{js,jsx,ts,tsx}',
     ],
@@ -72,7 +83,11 @@ export default tseslint.config(
     },
   },
   {
-    files: ['apps/storybook/src/**/*.{jsx,tsx}', 'packages/*/src/**/*.{jsx,tsx}'],
+    files: [
+      'apps/storybook/src/**/*.{jsx,tsx}',
+      'apps/prototype/app/**/*.{jsx,tsx}',
+      'packages/*/src/**/*.{jsx,tsx}',
+    ],
     plugins: {
       'react-hooks': reactHooks,
     },
@@ -82,5 +97,9 @@ export default tseslint.config(
     },
   },
   ...storybook.configs['flat/recommended'],
+  ...prototypeRules.map((config) => ({
+    ...config,
+    basePath: fileURLToPath(new URL('./apps/prototype', import.meta.url)),
+  })),
   prettier,
 );

@@ -23,9 +23,9 @@ does not satisfy its repository-variable gates.
 
 - [Environment configuration](https://github.com/microsoft/coreai-design-system/settings/environments):
   Azure identity/target variables belong to `azure-production`; npm credentials
-  and release approvals belong to `npm-production`.
+  and protected publishing controls belong to `npm-production`.
 - [Repository variables](https://github.com/microsoft/coreai-design-system/settings/variables/actions):
-  `ENABLE_AZURE_DEPLOY`, `ENABLE_FLUENT_UPDATES`, and the separate npm release gates.
+  `ENABLE_AZURE_DEPLOY`, `ENABLE_FLUENT_UPDATES`, and `NPM_PUBLISH_ENABLED`.
 - Set `ENABLE_AZURE_DEPLOY=false` or disable **Deploy Azure apps** to stop new
   deployments. This does not cancel queued or running work; inspect those runs
   separately before switching deployment systems or rolling back.
@@ -68,8 +68,7 @@ The deployment workflow requires all of:
 1. Repository is exactly `microsoft/coreai-design-system`.
 2. Ref is exactly `refs/heads/main`, including for manual runs.
 3. Repository Actions variable `ENABLE_AZURE_DEPLOY` is exactly `true`.
-   Site deployment is independent of `OSS_RELEASE_APPROVED` and
-   npm publishing; keep package publishing disabled until separately approved.
+   Site deployment is independent of npm publishing.
 4. The reusable CI validation succeeds for the same source revision.
 5. The `azure-production` environment permits only the `main` branch.
 
@@ -135,6 +134,3 @@ on `main` is not a substitute for PR-head checks. Do not bypass branch protectio
 4. Configure dependency-update permissions/labels and opt in separately.
 5. Complete the separate npm publishing approval and authentication setup in
    [RELEASING.md](../packages/react-components/RELEASING.md).
-
-Historical source handoff and retirement of the previous automation are covered
-in [the open-source preparation checklist](OPEN-SOURCE-PREPARATION.md).

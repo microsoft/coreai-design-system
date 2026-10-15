@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Button-family CSS override, applied via FluentProvider's
  * `customStyleHooks_unstable`.

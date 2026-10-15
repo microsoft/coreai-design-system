@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import type { TextPreset } from '@coreai-ds/react-components';
 
 export interface ColorRow {

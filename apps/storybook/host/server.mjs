@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 // Public production host for the complete Storybook build and its stateless MCP endpoint.
 import http from 'node:http';
 import fs from 'node:fs';

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Shared prop surface for the input-family wrappers (`Input`, `Combobox`,
  * `Dropdown`): an inline `label` rendered inside the control plus the

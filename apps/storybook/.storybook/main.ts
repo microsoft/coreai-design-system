@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import type { StorybookConfig } from '@storybook/react-vite';
 import type { Plugin } from 'vite';
 import type { StoryDocsProvider } from 'storybook/internal/types';

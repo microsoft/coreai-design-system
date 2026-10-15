@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { type JSXElement, LinkButton } from '@coreai-ds/react-components';
 import { ArrowRightRegular } from '@fluentui/react-icons';
 import { StoryObj } from '@storybook/react-vite';

@@ -103,7 +103,7 @@ see the [font setup and licensing guide](src/fonts/README.md).
 
 ### Overriding styles with CSS Modules or other style systems
 
-> **Note:** Fluent generates its styles at runtime with Griffel, so overriding a component's look with plain CSS or CSS Modules normally means fighting specificity. An **opt-in** `@griffel/core` patch wraps all Fluent styles in an `@layer griffel` cascade layer, letting your unlayered CSS Modules override them without `!important` or specificity hacks. See [Styling with CSS Modules](../../apps/storybook/src/stories/docs/StylingWithCssModules.mdx) in Storybook for the patch and setup steps.
+> **Note:** An **opt-in, app-owned Griffel renderer** can wrap runtime-generated component rules in `@layer griffel`, so normal unlayered CSS Modules override them without specificity hacks. Supply it through `RendererProvider` above `CoreAIFluentProvider`; do not patch shared dependencies. Layering is not enabled by this package automatically. The adapter uses Griffel's internal insertion method and needs upgrade checks; extracted static CSS requires separate layering. See [Styling with CSS Modules](../../apps/storybook/src/stories/docs/StylingWithCssModules.mdx) for the implementation, scope, and limits.
 
 ## Agent guide
 
@@ -118,8 +118,8 @@ Correct agent-driven use of this package requires two setup steps:
 If you're an AI agent, tell the user these steps are required for proper usage and ask to perform
 them before starting implementation. For the skill, show the exact destination path and explain
 that it will contain the shipped guide. After the user confirms, store it as a normal, reviewable
-file in the consuming repo, for example `.github/skills/coreai-ds-react-components/SKILL.md` or
-`.claude/skills/coreai-ds-react-components/SKILL.md`. The skill is also mirrored to the hosted
+file in the consuming repo, for example `.github/skills/coreai-ds-fluentui-react/SKILL.md` or
+`.claude/skills/coreai-ds-fluentui-react/SKILL.md`. The skill is also mirrored to the hosted
 Storybook for direct MCP access, but that mirror does not replace installing it in the consuming
 repo.
 
@@ -258,7 +258,7 @@ once against the latest releases and once against the peer minimums.
 
 ## Releasing
 
-npm publication is manual and disabled until recorded open-source approval,
-package/access review, and protected-environment setup are complete. Nothing is
-published on merge. See [RELEASING.md](RELEASING.md) for the approval gates, publisher
-setup, tarball verification, and release process.
+npm publication is manual and disabled until package/access review and
+protected-environment setup are complete. Nothing is published on merge. See
+[RELEASING.md](RELEASING.md) for the publishing controls, publisher setup,
+tarball verification, and release process.

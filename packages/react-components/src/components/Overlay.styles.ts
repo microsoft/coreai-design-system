@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Shared CSS overrides for floating surfaces — `Dialog`, `Popover`,
  * `Tooltip`, and `Menu` — applied via FluentProvider's

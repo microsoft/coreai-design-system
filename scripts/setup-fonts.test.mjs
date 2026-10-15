@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import assert from 'node:assert/strict';
 import { Buffer } from 'node:buffer';
 import { createHash, randomUUID } from 'node:crypto';

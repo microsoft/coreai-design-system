@@ -354,8 +354,8 @@ Linux, with the docsite served by `npm start` / `node server.js`.
 Deployment requires all of the following:
 
 - The exact repository `microsoft/coreai-design-system` and branch `main`
-- Repository variable `ENABLE_AZURE_DEPLOY=true`; site deployment
-  does not require OSS release approval or enable npm publishing
+- Repository variable `ENABLE_AZURE_DEPLOY=true`; site deployment does not
+  enable npm publishing
 - Passing CI and main-only access to the `azure-production` environment;
   the protected PR merge is approval, with no second human deployment gate
 - Azure OIDC configuration and existing host identifiers supplied through that

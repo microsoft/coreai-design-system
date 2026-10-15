@@ -1,6 +1,6 @@
 name: Publish npm package
 
-# Intentionally manual and disabled until both repository approval variables are set.
+# Intentionally manual and disabled until the npm publishing variable is set.
 on:
   workflow_dispatch:
     inputs:
@@ -21,7 +21,6 @@ jobs:
     if: >-
       github.repository == 'microsoft/coreai-design-system' &&
       github.ref == 'refs/heads/main' &&
-      vars.OSS_RELEASE_APPROVED == 'true' &&
       vars.NPM_PUBLISH_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -46,8 +45,9 @@ jobs:
           assert.equal(p.repository.url, 'git+https://github.com/microsoft/coreai-design-system.git');
           assert.equal(p.publishConfig.registry, 'https://registry.npmjs.org/');
           assert.equal(p.publishConfig.access, 'public');
-          assert.ok(p.license && p.license !== 'UNLICENSED', 'An approved open-source license is required');
-          assert.ok(fs.existsSync('LICENSE'), 'The approved license file is required');
+          assert.equal(p.license, 'MIT', 'The package must use the approved MIT license');
+          assert.ok(fs.existsSync('LICENSE-CODE'), 'The root MIT license file is required');
+          assert.ok(fs.existsSync('packages/react-components/LICENSE'), 'The package MIT license file is required');
           assert.ok(fs.readFileSync('packages/react-components/CHANGELOG.md', 'utf8').includes(`## [${p.version}] - `), 'Roll the changelog before publishing');
           NODE
 
@@ -62,6 +62,9 @@ jobs:
 
       - name: Check tracked source for public-distribution blockers
         run: npm run check:public-source
+
+      - name: Check source license headers
+        run: npm run license:check
 
       - name: Build and inspect the exact release tarball
         run: |

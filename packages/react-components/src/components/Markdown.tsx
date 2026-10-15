@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * `Markdown` — render a Markdown string as styled Fluent UI content.
  *

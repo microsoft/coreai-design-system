@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 export function assertFluentStoryVersion(expected, installed, source = expected) {
   if (installed !== expected || source !== expected) {
     throw new Error(

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import type { BrandVariants, ColorTokens, Theme } from '@fluentui/react-components';
 
 import { createCoreAIDarkTheme, createCoreAILightTheme, type CoreAITokens } from './theme.js';

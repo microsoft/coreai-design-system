@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import {
   CompoundButton as FluentCompoundButton,
   type CompoundButtonProps as FluentCompoundButtonProps,

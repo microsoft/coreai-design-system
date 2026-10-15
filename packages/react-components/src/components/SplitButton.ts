@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import {
   SplitButton as FluentSplitButton,
   type ForwardRefComponent,

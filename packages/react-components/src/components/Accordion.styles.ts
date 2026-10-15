@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * AccordionHeader CSS overrides, applied via FluentProvider's
  * `customStyleHooks_unstable`.

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * `InfoButton` — a button that reveals supplemental info in a Popover.
  *

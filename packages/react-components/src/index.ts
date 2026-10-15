@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 export * from '@fluentui/react-components';
 
 export * from './theme/theme.js';

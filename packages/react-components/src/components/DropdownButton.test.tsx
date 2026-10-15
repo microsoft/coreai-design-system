@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import * as React from 'react';
 import { makeStyles, Option } from '@fluentui/react-components';
 import { afterEach, expect, test } from 'vitest';

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 export function getShortcutAction(event, options) {
   // Option changes event.key on macOS (for example, Option+S produces "ß").
   const key = event.code || event.key.toLowerCase();

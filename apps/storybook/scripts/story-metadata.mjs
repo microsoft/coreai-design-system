@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { combineParameters } from 'storybook/preview-api';
 
 const inheritedKeys = [

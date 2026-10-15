@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
 /* CoreAI docsite layout + surface styles.
    Ported verbatim from the original hand-tuned stylesheet (git HEAD:apps/docsite/src/assets/docsite.css).
    Aptos / Aptos Mono are preferred, with Inter as the proportional fallback.

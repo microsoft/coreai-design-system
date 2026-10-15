@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { Portal, ToggleButton } from '@coreai-ds/react-components';
 import type { StoryObj } from '@storybook/react-vite';
 

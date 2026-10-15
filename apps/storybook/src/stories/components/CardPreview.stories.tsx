@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import * as React from 'react';
 import { figmaDesign } from '../../utils/figma';
 import { type JSXElement, CardPreview } from '@coreai-ds/react-components';

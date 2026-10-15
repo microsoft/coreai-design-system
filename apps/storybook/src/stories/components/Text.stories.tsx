@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import * as React from 'react';
 import type { StoryObj } from '@storybook/react-vite';
 import { Divider, Text, type TextPreset } from '@coreai-ds/react-components';

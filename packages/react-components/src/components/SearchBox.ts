@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import {
   SearchBox as FluentSearchBox,
   type ForwardRefComponent,

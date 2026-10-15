@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import * as React from 'react';
 import { azureBrandVariants, azureDarkTheme, azureLightTheme } from '@coreai-ds/react-components';
 import { Card } from '@coreai-ds/react-components';

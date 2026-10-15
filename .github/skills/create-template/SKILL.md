@@ -4,7 +4,7 @@ description: >
   Create a new copy-paste template in the CoreAI Design System Storybook.
   Use when asked to add a new template, pattern, or page scaffold under
   Templates/ in Storybook. ALWAYS read apps/storybook/README.md's
-  "Creating a template" section first.
+  "Creating a template" section first. IGNORE and DO NOT use when editing ./apps/prototype
 argument-hint: 'e.g. "create a Detail Page template"'
 ---
 

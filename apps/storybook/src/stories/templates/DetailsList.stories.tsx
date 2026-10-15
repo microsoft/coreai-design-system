@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 /**
  * Storybook story file for the Details List template.
  * The template and all its code live in DetailsList.tsx.

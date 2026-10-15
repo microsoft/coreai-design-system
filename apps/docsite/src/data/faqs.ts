@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { siteLinks } from './content';
 
 export interface FaqLink {

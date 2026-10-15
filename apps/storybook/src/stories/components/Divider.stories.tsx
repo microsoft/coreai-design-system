@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import type { StoryObj } from '@storybook/react-vite';
 import { figmaDesign } from '../../utils/figma';
 import { Divider, Text } from '@coreai-ds/react-components';

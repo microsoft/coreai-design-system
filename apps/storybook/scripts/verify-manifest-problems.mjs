@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 const expectedComponentErrors = new Map([
   ['components-portal-tomountnodeprops', 'No component found'],
   ['templates-shell-and-navigation', 'No component found'],

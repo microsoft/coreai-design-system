@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { coreaiDarkTheme, coreaiLightTheme } from '../../../packages/react-components/src/index.js';
 import type { Theme } from '@fluentui/react-components';
 import './fonts.css';

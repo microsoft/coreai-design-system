@@ -30,6 +30,9 @@ npm run type-check
 npm run lint
 ```
 
+Source files must include the Microsoft MIT license header. Run `npm run license:check` to verify
+headers or `npm run license:fix` to add missing headers automatically.
+
 Run the smallest relevant build or test while developing. Common commands include:
 
 ```bash

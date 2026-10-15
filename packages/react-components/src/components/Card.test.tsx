@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import * as React from 'react';
 import { Card as FluentCard, makeStyles } from '@fluentui/react-components';
 import { afterEach, expect, test } from 'vitest';

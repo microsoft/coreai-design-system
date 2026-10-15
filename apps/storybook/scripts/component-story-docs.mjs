@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { appRoot, generatedRoot } from './generate-component-stories.mjs';
