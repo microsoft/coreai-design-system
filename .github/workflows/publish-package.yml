@@ -1,71 +1,81 @@
 name: Publish npm package
 
-# Intentionally manual and disabled until the npm publishing variable is set.
 on:
-  workflow_dispatch:
-    inputs:
-      confirmation:
-        description: 'Type publish @coreai-ds/react-components@VERSION (the version already on main)'
-        required: true
-        type: string
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
 
 permissions:
   contents: read
 
-concurrency:
-  group: npm-production
-  cancel-in-progress: false
-
 jobs:
-  publish:
+  detect:
     if: >-
       github.repository == 'microsoft/coreai-design-system' &&
-      github.ref == 'refs/heads/main' &&
+      github.event.workflow_run.head_repository.full_name == 'microsoft/coreai-design-system' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.conclusion == 'success' &&
       vars.NPM_PUBLISH_ENABLED == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    environment: npm-production
+    timeout-minutes: 5
+    outputs:
+      changed: ${{ steps.version.outputs.changed }}
     steps:
-      - name: Check out the approved main commit
+      - name: Check out the CI-approved main commit
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
           persist-credentials: false
-
-      - name: Validate release intent and metadata
-        env:
-          CONFIRMATION: ${{ inputs.confirmation }}
+      - name: Detect a version-changing commit
+        id: version
         run: |
           node --input-type=module <<'NODE'
-          import assert from 'node:assert/strict';
-          import fs from 'node:fs';
-          const p = JSON.parse(fs.readFileSync('packages/react-components/package.json', 'utf8'));
-          assert.equal(process.env.CONFIRMATION, `publish ${p.name}@${p.version}`, 'Confirmation must match the checked-out package exactly');
-          assert.equal(p.name, '@coreai-ds/react-components');
-          assert.equal(p.private, false);
-          assert.equal(p.repository.url, 'git+https://github.com/microsoft/coreai-design-system.git');
-          assert.equal(p.publishConfig.registry, 'https://registry.npmjs.org/');
-          assert.equal(p.publishConfig.access, 'public');
-          assert.equal(p.license, 'MIT', 'The package must use the approved MIT license');
-          assert.ok(fs.existsSync('LICENSE-CODE'), 'The root MIT license file is required');
-          assert.ok(fs.existsSync('packages/react-components/LICENSE'), 'The package MIT license file is required');
-          assert.ok(fs.readFileSync('packages/react-components/CHANGELOG.md', 'utf8').includes(`## [${p.version}] - `), 'Roll the changelog before publishing');
+          import { execFileSync } from 'node:child_process';
+          import { appendFileSync, readFileSync } from 'node:fs';
+          const path = 'packages/react-components/package.json';
+          const before = JSON.parse(execFileSync('git', ['show', `HEAD^:${path}`], { encoding: 'utf8' }));
+          const after = JSON.parse(readFileSync(path, 'utf8'));
+          const changed = before.version !== after.version;
+          console.log(changed ? `Release version changed: ${before.version} -> ${after.version}` : 'No version change; nothing to publish.');
+          appendFileSync(process.env.GITHUB_OUTPUT, `changed=${changed}\n`);
           NODE
 
+  publish:
+    needs: detect
+    if: needs.detect.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: npm-production
+    concurrency:
+      group: npm-production
+      cancel-in-progress: false
+    permissions:
+      contents: write
+    env:
+      RELEASE_SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Check out the exact version-changing commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+          persist-credentials: false
       - name: Set up Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22'
           registry-url: https://registry.npmjs.org
-
       - name: Install without dependency lifecycle scripts
         run: npm ci --ignore-scripts
-
-      - name: Check tracked source for public-distribution blockers
-        run: npm run check:public-source
-
-      - name: Check source license headers
-        run: npm run license:check
-
+      - name: Check public source and licenses
+        run: |
+          npm run check:public-source
+          npm run license:check
+      - name: Verify tree shaking
+        run: npm run test:tree-shaking --workspace packages/react-components
       - name: Build and inspect the exact release tarball
         run: |
           npm run clean --workspace packages/react-components
@@ -73,14 +83,23 @@ jobs:
           mkdir package-artifacts
           npm pack --workspace packages/react-components --ignore-scripts --pack-destination package-artifacts
           node packages/react-components/scripts/verify-package.mjs package-artifacts/*.tgz
-
+      - name: Validate release and check npm
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node .github/workflows/scripts/release-package.mjs prepare
       - name: Publish the verified tarball
+        if: steps.release.outputs.publish == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          TARBALL: ${{ steps.release.outputs.tarball }}
+          DIST_TAG: ${{ steps.release.outputs.channel }}
         run: |
           set -euo pipefail
           test -n "$NODE_AUTH_TOKEN" || { echo 'Configure the npm-production environment NPM_TOKEN secret.' >&2; exit 1; }
-          version="$(node -p "require('./packages/react-components/package.json').version")"
-          dist_tag=latest
-          if [[ "$version" == *-* ]]; then dist_tag=next; fi
-          npm publish package-artifacts/*.tgz --ignore-scripts --access public --registry https://registry.npmjs.org/ --tag "$dist_tag"
+          npm publish "$TARBALL" --ignore-scripts --access public --registry https://registry.npmjs.org/ --tag "$DIST_TAG"
+      - name: Verify npm and create the Git tag and GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_INTEGRITY: ${{ steps.release.outputs.integrity }}
+        run: node .github/workflows/scripts/release-package.mjs record
