@@ -23,6 +23,8 @@ headings in this changelog.
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-10-16
+
 ### Breaking
 
 - The package is renamed from `@coreai/fluentui-react` to `@coreai-ds/react-components`; update package dependencies, imports, and the npm registry scope. The workspace directory is now `packages/react-components`.
@@ -250,6 +252,8 @@ Initial release to the Azure DevOps **coreai** Artifacts feed (org `coreaidesign
 - Aptos / Aptos Mono `@font-face` declarations shipped via `@coreai-ds/react-components/fonts/fonts.css`.
 
 [Unreleased]: #unreleased
+[0.12.0]: #0120---2026-10-16
+[0.11.2]: #0112---2026-10-05
 [0.11.1]: #0111---2026-09-15
 [0.11.0]: #0110---2026-09-08
 [0.10.0]: #0100---2026-08-21
