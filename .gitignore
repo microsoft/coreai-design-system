@@ -43,3 +43,6 @@ apps/*/dist/
 # agent files
 .playwright*
 .vitest-attachments/
+
+# Generated test screenshots
+__screenshots__/
