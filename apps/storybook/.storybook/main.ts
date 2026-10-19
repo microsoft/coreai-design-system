@@ -293,6 +293,11 @@ const config: StorybookConfig = {
       //    Fluent / React-Router packages import named exports from them
       //    (`unstable_NormalPriority`, `useSyncExternalStore`).
       optimizeDeps: {
+        // The CoreAI barrel is workspace source, so Vite's persistent cache
+        // can otherwise reuse a pre-bundle created before a new export was
+        // added. Rebuild it whenever Storybook starts; the source watcher
+        // above handles subsequent edits during the same dev session.
+        force: true,
         include: [
           '@coreai-ds/react-components',
           'scheduler',

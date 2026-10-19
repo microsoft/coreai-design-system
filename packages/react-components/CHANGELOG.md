@@ -23,6 +23,10 @@ headings in this changelog.
 
 ## [Unreleased]
 
+### Added
+
+- Added `Illicon`, which converts filled Fluent icons or plain SVG elements into illustrations with fixed 2px dots and 3px gaps while preserving aspect ratio and inheriting `currentColor`.
+
 ### Breaking
 
 - The package is renamed from `@coreai/fluentui-react` to `@coreai-ds/react-components`; update package dependencies, imports, and the npm registry scope. The workspace directory is now `packages/react-components`.
