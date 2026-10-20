@@ -40,6 +40,6 @@
     "gray-matter": "^4.0.3",
     "rimraf": "^6.0.1",
     "typescript": "~5.5.4",
-    "vite": "^6.3.5"
+    "vite": "^6.4.4"
   }
 }
