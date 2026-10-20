@@ -3,12 +3,13 @@
 Source, pull requests, and automation live in
 <https://github.com/microsoft/coreai-design-system>.
 
-| Workflow                | Definition                                                                | Trigger                                                            |
-| ----------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| CI / Validate           | [ci.yml](../.github/workflows/ci.yml)                                     | Pull requests and pushes to `main`; manual; reusable               |
-| Deploy Azure apps       | [deploy.yml](../.github/workflows/deploy.yml)                             | Every push to `main`; manual; disabled until enabled               |
-| Check Fluent UI updates | [check-fluent-updates.yml](../.github/workflows/check-fluent-updates.yml) | Monday 09:00 UTC; manual; disabled until enabled                   |
-| Publish package         | [publish-package.yml](../.github/workflows/publish-package.yml)           | See the [release guide](../packages/react-components/RELEASING.md) |
+| Workflow                | Definition                                                                        | Trigger                                                                  |
+| ----------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| CI / Validate           | [ci.yml](../.github/workflows/ci.yml)                                             | Pull requests and pushes to `main`; manual; reusable                     |
+| Deploy Azure apps       | [deploy.yml](../.github/workflows/deploy.yml)                                     | Every push to `main`; manual; disabled until enabled                     |
+| Check Fluent UI updates | [check-fluent-updates.yml](../.github/workflows/check-fluent-updates.yml)         | Monday 09:00 UTC; manual; disabled until enabled                         |
+| Publish package         | [publish-package.yml](../.github/workflows/publish-package.yml)                   | See the [release guide](../packages/react-components/RELEASING.md)       |
+| Complete npm release    | [complete-package-release.yml](../.github/workflows/complete-package-release.yml) | Manual on `main`; verify a retained artifact and finish Git records only |
 
 Site deployment and npm publication are independent. Merging to main can deploy
 the sites; npm publication additionally requires a package version change,
@@ -20,17 +21,21 @@ Open [Actions](https://github.com/microsoft/coreai-design-system/actions), selec
 the workflow, and inspect the failed job and step. For a manual run, select
 **Run workflow** and choose `main`; deployment rejects other branches.
 Automatic publishing follows successful **CI** push runs on `main`, not manual CI dispatches.
-Retry publication by rerunning its original failed **Publish npm package** run;
-do not merge an unrelated change to retry a release.
+If npm publication succeeded but verification or release recording failed, run
+**Complete npm release** with the original publishing run ID and exact confirmation.
+It reuses the retained tarball and never publishes. Do not merge an unrelated change
+or bump the version to repair release records.
 If the workflow itself needed a fix, use the release guide's
 [manual recovery](../packages/react-components/RELEASING.md#recover-after-a-publishing-workflow-fix)
 on `main` with the original successful CI run ID and exact package/version confirmation.
+Publication uses npm trusted publishing, not the old `NPM_TOKEN` secret.
+Configure the npm relationship before merging the OIDC migration.
 Disabled workflows must be enabled before they can run. Enabling a workflow alone
 does not satisfy its repository-variable gates.
 
 - [Environment configuration](https://github.com/microsoft/coreai-design-system/settings/environments):
-  Azure identity/target variables belong to `azure-production`; npm credentials
-  and protected publishing controls belong to `npm-production`.
+  Azure identity/target variables belong to `azure-production`; protected npm
+  publishing controls belong to `npm-production`, which is bound to npm OIDC trust.
 - [Repository variables](https://github.com/microsoft/coreai-design-system/settings/variables/actions):
   `ENABLE_AZURE_DEPLOY`, `ENABLE_FLUENT_UPDATES`, and `NPM_PUBLISH_ENABLED`.
 - Set `ENABLE_AZURE_DEPLOY=false` or disable **Deploy Azure apps** to stop new

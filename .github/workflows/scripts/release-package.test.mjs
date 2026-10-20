@@ -2,12 +2,12 @@
 // Licensed under the MIT license.
 
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, execSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import { resolveReleaseTarget } from './release-target.mjs';
+import { resolveCompletionArtifact, resolveReleaseTarget } from './release-target.mjs';
 import {
   checkTag,
   main,
@@ -16,6 +16,9 @@ import {
   recordRelease,
   validateRelease,
   verifyPublication,
+  verifyRegistry,
+  loadBundle,
+  releaseSummary,
 } from './release-package.mjs';
 
 const integrity = 'sha512-test';
@@ -101,7 +104,8 @@ test('recovery rejects other workflows, failed CI, PRs, forks, and malformed sou
 
 test('workflow publishes an explicit local tarball and pins both checkouts to the approved SHA', () => {
   const workflow = readFileSync(new URL('../publish-package.yml', import.meta.url), 'utf8');
-  assert.ok(workflow.includes('npm publish "./$TARBALL" --ignore-scripts'));
+  assert.ok(workflow.includes('npm publish "$TARBALL" --ignore-scripts'));
+  assert.ok(workflow.includes('npm publish ./package-artifacts/*.tgz --dry-run'));
   assert.ok(workflow.includes('ref: ${{ steps.target.outputs.sha }}'));
   assert.ok(workflow.includes('ref: ${{ needs.detect.outputs.sha }}'));
   assert.ok(workflow.includes('RELEASE_SHA: ${{ needs.detect.outputs.sha }}'));
@@ -293,10 +297,15 @@ test('release commands keep the version-changing commit even when main advances'
   const directory = mkdtempSync(join(tmpdir(), 'coreai-release-test-'));
   const cwd = process.cwd();
   const saved = Object.fromEntries(
-    ['GH_TOKEN', 'RELEASE_SHA', 'RELEASE_INTEGRITY', 'GITHUB_OUTPUT'].map((key) => [
-      key,
-      process.env[key],
-    ]),
+    [
+      'GH_TOKEN',
+      'RELEASE_SHA',
+      'RELEASE_INTEGRITY',
+      'GITHUB_OUTPUT',
+      'GITHUB_RUN_ID',
+      'GITHUB_RUN_ATTEMPT',
+      'CONFIRMATION',
+    ].map((key) => [key, process.env[key]]),
   );
   t.after(() => {
     process.chdir(cwd);
@@ -343,10 +352,19 @@ test('release commands keep the version-changing commit even when main advances'
   process.env.GH_TOKEN = 'test-only';
   process.env.RELEASE_SHA = releaseSha;
   process.env.GITHUB_OUTPUT = join(directory, 'output');
+  process.env.GITHUB_RUN_ID = '12345';
+  process.env.GITHUB_RUN_ATTEMPT = '1';
   let published = null;
   const writes = [];
   t.mock.method(globalThis, 'fetch', async (url, options) => {
     if (url.startsWith('https://registry.npmjs.org/')) {
+      if (url.endsWith('/dist-tags')) return Response.json(published['dist-tags']);
+      if (url.endsWith('/0.12.0') && published)
+        return Response.json({
+          name: manifest.name,
+          version: '0.12.0',
+          dist: published.versions['0.12.0'].dist,
+        });
       return { status: published ? 200 : 404, json: async () => published };
     }
     assert.ok(url.startsWith('https://api.github.com/repos/microsoft/coreai-design-system/'));
@@ -354,6 +372,7 @@ test('release commands keep the version-changing commit even when main advances'
     writes.push(JSON.parse(options.body));
     return { ok: true, status: 201, json: async () => ({}) };
   });
+  await main('bundle');
   await main('prepare');
   const outputs = Object.fromEntries(
     readFileSync(process.env.GITHUB_OUTPUT, 'utf8')
@@ -367,16 +386,251 @@ test('release commands keep the version-changing commit even when main advances'
   assert.equal(outputs.publish, 'true');
   assert.equal(outputs.version, '0.12.0');
   assert.equal(outputs.channel, 'latest');
-  assert.equal(outputs.tarball, 'package-artifacts/package.tgz');
+  assert.equal(outputs.tarball, './package-artifacts/package.tgz');
   assert.match(outputs.integrity, /^sha512-/);
   assert.deepEqual(writes, [], 'Preparation must not write tags or releases');
   published = metadata(['0.12.0'], { latest: '0.12.0' });
   published.versions['0.12.0'].dist.integrity = outputs.integrity;
   process.env.RELEASE_INTEGRITY = outputs.integrity;
+  await assert.rejects(main('record'), /ENOENT/);
+  await main('verify');
   await main('record');
   assert.equal(writes[0].ref, 'refs/tags/v0.12.0');
   assert.equal(writes[0].sha, releaseSha);
   assert.equal(writes[1].target_commitish, releaseSha);
+  process.env.GITHUB_RUN_ATTEMPT = '2';
+  await assert.rejects(main('record'), /current workflow attempt/);
   process.env.RELEASE_SHA = 'wrong-sha';
-  await assert.rejects(main('prepare'), /CI-approved commit/);
+  await assert.rejects(main('prepare'), /Artifact source mismatch/);
+  delete process.env.RELEASE_SHA;
+  git('checkout', 'main');
+  assert.equal(
+    loadBundle().sha,
+    releaseSha,
+    'Completion uses the retained source, not current HEAD',
+  );
+  process.env.CONFIRMATION = 'complete @coreai-ds/react-components@0.12.1';
+  await assert.rejects(main('inspect'), /does not match artifact/);
+  process.env.CONFIRMATION = 'complete @coreai-ds/react-components@0.12.0';
+  await main('inspect');
+  const originalBundle = readFileSync('package-artifacts/release.json', 'utf8');
+  const bundle = JSON.parse(originalBundle);
+  for (const [change, expected] of [
+    [{ filename: '../package.tgz' }, /Unsafe release tarball/],
+    [{ notes: 'Different notes' }, /release notes differ/],
+    [{ version: '0.12.1' }, /version differs/],
+    [{ sha: 'main' }, /Invalid artifact source SHA/],
+  ]) {
+    writeFileSync('package-artifacts/release.json', JSON.stringify({ ...bundle, ...change }));
+    assert.throws(() => loadBundle(), expected);
+  }
+  writeFileSync('package-artifacts/release.json', originalBundle);
+  writeFileSync('package-artifacts/package.tgz', 'changed artifact');
+  assert.throws(() => loadBundle(), /checksum mismatch/);
+});
+
+test('verification retries exact-version visibility and channel propagation for over five minutes', async () => {
+  let calls = 0;
+  const waits = [];
+  const logs = [];
+  await verifyRegistry('0.12.0', integrity, {
+    sleep: async (delay) => waits.push(delay),
+    log: (line) => logs.push(line),
+    request: async (url) => {
+      calls++;
+      if (calls < 9)
+        return new Response(null, { status: 404, headers: { age: '12', 'x-cache': 'HIT' } });
+      if (url.endsWith('/dist-tags')) return Response.json({ latest: '0.12.0' });
+      assert.ok(url.endsWith('/0.12.0'));
+      return Response.json({ name: manifest.name, version: '0.12.0', dist: { integrity } });
+    },
+  });
+  assert.equal(calls, 10);
+  assert.equal(
+    waits.reduce((sum, delay) => sum + delay, 0),
+    315_000,
+  );
+  assert.ok(
+    logs.some(
+      (line) =>
+        line.includes('HTTP 404') && line.includes('age=12') && line.includes('x-cache=HIT'),
+    ),
+  );
+});
+
+test('verification retries rate limits, server errors, network failures, and stale channels', async () => {
+  const replies = [
+    new Response(null, { status: 429 }),
+    new Response(null, { status: 503 }),
+    new Error('connection reset'),
+    Response.json({ name: manifest.name, version: '0.12.0', dist: { integrity } }),
+    Response.json({ latest: '0.11.2' }),
+    Response.json({ name: manifest.name, version: '0.12.0', dist: { integrity } }),
+    Response.json({ latest: '0.12.0' }),
+  ];
+  await verifyRegistry('0.12.0', integrity, {
+    delays: [0, 1, 1, 1, 1],
+    sleep: async () => {},
+    log: () => {},
+    request: async () => {
+      const reply = replies.shift();
+      if (reply instanceof Error) throw reply;
+      return reply;
+    },
+  });
+  assert.equal(replies.length, 0);
+});
+
+test('verification fails immediately on authorization, malformed data, integrity mismatch and channel advancement', async () => {
+  for (const response of [
+    new Response(null, { status: 401 }),
+    new Response(null, { status: 403 }),
+    new Response('{', { status: 200 }),
+    Response.json({ name: manifest.name, version: '0.12.0', dist: { integrity: 'wrong' } }),
+  ]) {
+    let calls = 0;
+    await assert.rejects(
+      verifyRegistry('0.12.0', integrity, {
+        log: () => {},
+        request: async () => {
+          calls++;
+          return response;
+        },
+        sleep: async () => assert.fail('Must not retry a permanent error'),
+      }),
+    );
+    assert.equal(calls, 1);
+  }
+  let calls = 0;
+  await assert.rejects(
+    verifyRegistry('0.12.0', integrity, {
+      log: () => {},
+      request: async () =>
+        ++calls === 1
+          ? Response.json({ name: manifest.name, version: '0.12.0', dist: { integrity } })
+          : Response.json({ latest: '0.12.1' }),
+    }),
+    /advanced/,
+  );
+});
+
+test('verification timeout reports the last failure and warns against republishing', async () => {
+  await assert.rejects(
+    verifyRegistry('0.12.0', integrity, {
+      delays: [0, 1],
+      sleep: async () => {},
+      log: () => {},
+      request: async () => new Response(null, { status: 404 }),
+    }),
+    /after 2 attempts: npm verification HTTP 404.*do not republish blindly/,
+  );
+});
+
+test('stage summary distinguishes successful publication from incomplete verification and records', () => {
+  const summary = releaseSummary({
+    PUBLISH_RESULT: 'success',
+    VERIFY_RESULT: 'failure',
+    RECORD_RESULT: 'skipped',
+    ARTIFACT_RESULT: 'success',
+  });
+  assert.match(summary, /Published to npm/);
+  assert.match(summary, /Public verification: failure/);
+  assert.match(summary, /Git tag \/ GitHub release: skipped/);
+  assert.match(summary, /Complete npm release/);
+  assert.match(releaseSummary({ PUBLISH_DECISION: 'false' }), /publication skipped/);
+  assert.match(releaseSummary({ PUBLISH_RESULT: 'failure' }), /inspect npm/);
+  assert.match(releaseSummary({}), /did not run/);
+});
+
+test('completion selects only retained artifacts from a finished publishing run on main', async () => {
+  const run = {
+    ...approvedRun,
+    path: '.github/workflows/publish-package.yml',
+    event: 'workflow_run',
+    conclusion: 'failure',
+  };
+  const event = { inputs: { publish_run_id: '123' } };
+  const artifacts = {
+    total_count: 3,
+    artifacts: [
+      { id: 1, name: 'npm-release-1', expired: false },
+      { id: 2, name: 'npm-release-2', expired: false },
+      { id: 3, name: 'unrelated', expired: false },
+    ],
+  };
+  const read = (value) => async (url) => ({
+    ok: true,
+    json: async () => (url.endsWith('/artifacts?per_page=100') ? value : run),
+  });
+  assert.equal(await resolveCompletionArtifact(event, recoveryEnv, read(artifacts)), 2);
+  await assert.rejects(
+    resolveCompletionArtifact(
+      event,
+      recoveryEnv,
+      read({ total_count: 1, artifacts: [{ id: 1, name: 'npm-release-1', expired: true }] }),
+    ),
+    /No retained bundle/,
+  );
+  for (const invalid of [
+    { path: '.github/workflows/ci.yml' },
+    { head_branch: 'feature' },
+    { head_repository: { full_name: 'other/repository' } },
+    { status: 'in_progress' },
+  ]) {
+    await assert.rejects(
+      resolveCompletionArtifact(event, recoveryEnv, async () => ({
+        ok: true,
+        json: async () => ({ ...run, ...invalid }),
+      })),
+    );
+  }
+});
+
+test('completion has neither a publication command nor an npm token or OIDC permission', () => {
+  const workflow = readFileSync(
+    new URL('../complete-package-release.yml', import.meta.url),
+    'utf8',
+  );
+  assert.ok(!workflow.includes('npm publish'));
+  assert.ok(!workflow.includes('id-token:'));
+  assert.ok(!workflow.includes('NPM_TOKEN'));
+  assert.ok(workflow.includes('release-package.mjs verify'));
+  assert.ok(workflow.includes('release-package.mjs record'));
+  const publish = readFileSync(new URL('../publish-package.yml', import.meta.url), 'utf8');
+  assert.ok(publish.includes('id-token: write'));
+  assert.ok(!publish.includes('secrets.NPM_TOKEN'));
+  assert.ok(
+    publish.indexOf('actions/upload-artifact@') <
+      publish.indexOf('- name: Publish the verified tarball'),
+  );
+});
+
+test('actual npm dry-run accepts the retained local tarball without publishing', (t) => {
+  const directory = mkdtempSync(join(tmpdir(), 'coreai-npm-path-test-'));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  mkdirSync(join(directory, 'package-artifacts'));
+  writeFileSync(
+    join(directory, 'package.json'),
+    JSON.stringify({
+      name: 'coreai-release-path-smoke-test',
+      version: '0.0.0',
+      license: 'MIT',
+    }),
+  );
+  const env = { ...process.env };
+  delete env.NODE_AUTH_TOKEN;
+  delete env.NPM_TOKEN;
+  const options = {
+    cwd: directory,
+    env,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+    timeout: 30_000,
+  };
+  execSync('npm pack --ignore-scripts --pack-destination package-artifacts', options);
+  const output = execSync(
+    'npm publish ./package-artifacts/coreai-release-path-smoke-test-0.0.0.tgz --dry-run --ignore-scripts --access public --registry https://registry.npmjs.org/ --json',
+    options,
+  );
+  assert.equal(JSON.parse(output).id, 'coreai-release-path-smoke-test@0.0.0');
 });

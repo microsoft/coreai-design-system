@@ -38,7 +38,12 @@ publishes the version-changing main commit after CI succeeds and tags it `vVERSI
    rewrite exports. Do not claim checks passed unless they ran successfully.
 6. Check release readiness without reading secret values: the repository's
    `NPM_PUBLISH_ENABLED` variable, main review/CI rules, `npm-production` main-only
-   environment, presence of the `NPM_TOKEN` secret, and Actions tag/release permissions.
+   environment, npm trusted-publisher readiness, and Actions tag/release permissions.
+   npm trust must name `microsoft/coreai-design-system`, `publish-package.yml`, and
+   `npm-production`. Do not treat an old `NPM_TOKEN` secret as OIDC readiness.
+   Require owner confirmation if npm settings cannot be inspected; never claim that
+   an untested or expired relationship works. Finish incomplete prior release records
+   before the next release; completion recovery must not republish.
    Missing publishing setup must be reported in the PR; never enable it yourself.
    Distinguish a confirmed npm package 404 from an authentication/network failure.
 7. Commit only release-scoped changes, including the required Copilot co-author
