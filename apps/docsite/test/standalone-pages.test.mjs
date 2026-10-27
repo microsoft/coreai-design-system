@@ -7,7 +7,11 @@ import path from 'node:path';
 import test from 'node:test';
 import matter from 'gray-matter';
 import ts from 'typescript';
-import { readReferencePages } from '../scripts/read-reference-pages.mjs';
+import {
+  readReferencePages,
+  standaloneRendererNames,
+  wholePageRendererNames,
+} from '../scripts/read-reference-pages.mjs';
 import {
   expandStandaloneMarkdown,
   rewriteDocumentationLinks,
@@ -247,6 +251,25 @@ test('registered custom views keep readable fallbacks, heading IDs and code-fenc
     /Unclosed page view/,
   );
   assert.throws(() => renderGuidance('<!-- view:constructor -->'), /Unknown page view/);
+});
+
+test('standalone renderers stay bounded and whole-page views are explicit', () => {
+  assert.deepEqual(standaloneRendererNames, [
+    'home',
+    'colors',
+    'typography',
+    'materials',
+    'resources',
+    'faqs',
+    'package',
+    'changelog',
+    'package-skill',
+    'agent-workflow',
+    'content',
+  ]);
+  assert.ok(wholePageRendererNames.every((name) => standaloneRendererNames.includes(name)));
+  assert.ok(!wholePageRendererNames.includes('home'));
+  assert.ok(!wholePageRendererNames.includes('colors'));
 });
 
 test('custom foundation views and published Markdown share authored tokens, presets and fonts', async () => {

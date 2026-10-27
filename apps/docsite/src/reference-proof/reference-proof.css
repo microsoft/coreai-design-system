@@ -81,6 +81,65 @@
   margin-block-start: 0;
 }
 
+.component-markdown,
+.standalone-guidance {
+  min-width: 0;
+  color: var(--colorNeutralForeground1);
+}
+
+.component-markdown > :is(p, ul, ol, blockquote),
+.standalone-guidance > :is(p, ul, ol, blockquote) {
+  max-width: 760px;
+}
+
+.component-markdown :is(p, ul, ol, blockquote),
+.standalone-guidance :is(p, ul, ol, blockquote) {
+  margin-block: 0 16px;
+}
+
+.component-markdown :is(ul, ol),
+.standalone-guidance :is(ul, ol) {
+  padding-inline-start: 24px;
+}
+
+.component-markdown li + li,
+.standalone-guidance li + li {
+  margin-block-start: 6px;
+}
+
+.component-markdown > h2,
+.standalone-guidance > h2 {
+  margin-block: 48px 16px;
+}
+
+.component-markdown > h3,
+.standalone-guidance > h3 {
+  margin-block: 32px 12px;
+  font-size: var(--fontSizeBase400);
+  line-height: var(--lineHeightBase400);
+}
+
+.component-markdown > h4,
+.standalone-guidance > h4 {
+  margin-block: 24px 8px;
+  font-size: var(--fontSizeBase300);
+  line-height: var(--lineHeightBase300);
+}
+
+.component-markdown blockquote,
+.standalone-guidance blockquote {
+  padding: 16px 20px;
+  border: 1px solid var(--colorNeutralStrokeAlpha);
+  border-inline-start: 3px solid var(--colorBrandStroke1);
+  border-radius: var(--borderRadiusLarge);
+  background: var(--colorNeutralBackground2);
+}
+
+.component-markdown blockquote > :last-child,
+.standalone-guidance blockquote > :last-child {
+  margin-block-end: 0;
+}
+
 .reference-shell .component-resource-card strong {
   font-weight: var(--fontWeightRegular);
 }

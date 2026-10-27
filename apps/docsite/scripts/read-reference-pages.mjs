@@ -5,6 +5,30 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import matter from 'gray-matter';
 
+export const standaloneRendererNames = [
+  'home',
+  'colors',
+  'typography',
+  'materials',
+  'resources',
+  'faqs',
+  'package',
+  'changelog',
+  'package-skill',
+  'agent-workflow',
+  'content',
+];
+
+export const wholePageRendererNames = [
+  'resources',
+  'faqs',
+  'package',
+  'changelog',
+  'package-skill',
+  'agent-workflow',
+  'content',
+];
+
 export async function readReferencePages(contentDirectory) {
   const pages = [];
   async function walk(directory) {
@@ -134,7 +158,7 @@ export async function readReferencePages(contentDirectory) {
           fail('reference.label must be a nonempty string.');
         if (
           reference.renderer !== undefined &&
-          !['home', 'colors', 'typography', 'materials'].includes(reference.renderer)
+          !standaloneRendererNames.includes(reference.renderer)
         )
           fail('Unknown page renderer.');
         if (reference.renderer && reference.component)

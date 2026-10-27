@@ -16,7 +16,11 @@ import { guidanceMarkdown, renderGuidance } from '../../../shared/guidance.mjs';
 import { extractStorySource } from './sources/story-source.mjs';
 import { readStoryDescriptions } from './sources/story-descriptions.mjs';
 import { assertFluentStoryVersion } from './sources/fluent-story-version.mjs';
-import { readReferencePages } from './read-reference-pages.mjs';
+import {
+  readReferencePages,
+  standaloneRendererNames,
+  wholePageRendererNames,
+} from './read-reference-pages.mjs';
 import { readSourceCatalog } from './sources/catalog.mjs';
 import { createComponentApiReader, componentApiMarkdown } from './sources/component-api.mjs';
 import {
@@ -402,15 +406,16 @@ export function standalonePageHtml(page, metadata) {
     html: true,
   });
   const parts = pageGuidanceParts(markdown, page.resources);
-  const body = renderGuidance(parts.body, {
+  const bodyMarkdown = wholePageRendererNames.includes(page.renderer)
+    ? `<!-- view:${page.renderer} -->\n\n${parts.body}\n\n<!-- /view:${page.renderer} -->`
+    : parts.body;
+  const body = renderGuidance(bodyMarkdown, {
     examples: Object.fromEntries(page.examples.map((example) => [example.id, example])),
-    views: {
-      colors: true,
-      'data-visualization': true,
-      'font-families': true,
-      typography: true,
-      materials: true,
-    },
+    views: Object.fromEntries([
+      ...standaloneRendererNames.map((name) => [name, true]),
+      ['data-visualization', true],
+      ['font-families', true],
+    ]),
   }).html;
   return `<div class="reference-page-introduction${page.renderer === 'home' ? ' reference-home-introduction' : ''}">${pageTemplateHeader(page, metadata, parts)}${pageTemplateResources(page, metadata)}${page.renderer === 'home' ? homeHeroFallback(page, metadata, parts) : ''}<article class="standalone-guidance${page.renderer === 'home' ? ' home-documentation' : ''}">${tokenSwatches(body)}</article></div>`;
 }
