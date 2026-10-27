@@ -278,6 +278,16 @@ test('overview pages opt into their Markdown-backed rich views', async () => {
   assert.equal(pages.find((page) => page.route === 'overview/faqs')?.renderer, 'faqs');
 });
 
+test('package guidance opts into its Markdown-backed setup view', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  const page = pages.find((candidate) => candidate.route === 'guides/package');
+  assert.ok(page);
+  assert.equal(page.renderer, 'package');
+  const guidance = await fs.readFile(path.join(appRoot, 'content', page.guidance), 'utf8');
+  assert.match(guidance, /## Let your agent handle setup/);
+  assert.match(guidance, /<!-- include: package-readme -->/);
+});
+
 test('custom foundation views and published Markdown share authored tokens, presets and fonts', async () => {
   const data = await readFoundationData(appRoot);
   const sections = await standaloneSections({

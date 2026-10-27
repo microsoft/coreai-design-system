@@ -4,6 +4,7 @@ title: NPM package
 summary: Install the package, configure the provider, and find implementation guidance.
 resources: []
 reference:
+  renderer: package
   aliases: [/package/, /guidance/]
   migratedFrom:
     - apps/docsite/src/pages/Package.tsx
