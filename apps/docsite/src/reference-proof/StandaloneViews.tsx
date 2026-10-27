@@ -7,6 +7,7 @@ import {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
+  Badge,
   Button,
   Card,
   CodeBlock,
@@ -69,6 +70,22 @@ interface ChangelogRelease {
   title: string;
   summary: string;
   sections: ChangelogSection[];
+}
+
+interface ContentStep {
+  title: string;
+  descriptionHtml: string;
+  details: string[];
+  link?: { href: string; label: string };
+}
+
+interface ContentPrinciple {
+  id: string;
+  title: string;
+  description: string;
+  bad: string;
+  better: string;
+  details: string[];
 }
 
 function documentFrom(sourceHtml: string) {
@@ -585,10 +602,330 @@ function PackageSkillView({ sourceHtml }: PageWidgetProps) {
   );
 }
 
+function headingGroups(elements: Element[], tagName: 'H3' | 'H4') {
+  return elements
+    .map((element, index) => {
+      if (element.tagName !== tagName) return null;
+      const body: Element[] = [];
+      for (let bodyIndex = index + 1; bodyIndex < elements.length; bodyIndex++) {
+        if (elements[bodyIndex].tagName === tagName) break;
+        body.push(elements[bodyIndex]);
+      }
+      return { heading: element, body };
+    })
+    .filter((group): group is { heading: Element; body: Element[] } => group !== null);
+}
+
+function contentSteps(document: Document, sectionId: string): ContentStep[] {
+  return headingGroups(sectionElements(document, sectionId, ['H2']), 'H3').map(
+    ({ heading, body }) => {
+      const link = body
+        .flatMap((element) => [...element.querySelectorAll<HTMLAnchorElement>('a[href]')])
+        .at(-1);
+      return {
+        title: heading.textContent?.trim() ?? '',
+        descriptionHtml: body.find((element) => element.tagName === 'P')?.innerHTML ?? '',
+        details: body
+          .flatMap((element) => [...element.querySelectorAll('li')])
+          .map((item) => item.innerHTML),
+        link: link ? { href: link.href, label: link.textContent?.trim() ?? '' } : undefined,
+      };
+    },
+  );
+}
+
+function ContentStepList({ steps }: { steps: ContentStep[] }) {
+  return (
+    <div className="content-flow">
+      {steps.map((step, index) => (
+        <div className="content-step" key={step.title}>
+          <span className="content-step__number">{index + 1}</span>
+          <div className="content-step__content">
+            <Text as="h3" weight="semibold">
+              {step.title}
+            </Text>
+            <div dangerouslySetInnerHTML={{ __html: step.descriptionHtml }} />
+            {step.details.length ? (
+              <ul className="content-guidance-list">
+                {step.details.map((detail, detailIndex) => (
+                  <li
+                    key={`${step.title}-${detailIndex}`}
+                    dangerouslySetInnerHTML={{ __html: detail }}
+                  />
+                ))}
+              </ul>
+            ) : null}
+            {step.link ? (
+              <Link href={step.link.href} external>
+                {step.link.label}
+              </Link>
+            ) : null}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ContentSectionHeader({ title, description }: { title: string; description?: string }) {
+  return (
+    <div className="content-section__header">
+      <Text as="h2" size={500} weight="semibold">
+        {title}
+      </Text>
+      {description ? (
+        <Text as="p" className="section-intro" size={300} foreground={2}>
+          {description}
+        </Text>
+      ) : null}
+    </div>
+  );
+}
+
+function ContentView({ sourceHtml }: PageWidgetProps) {
+  const [view, setView] = React.useState<'principles' | 'process'>('principles');
+  const model = React.useMemo(() => {
+    const document = documentFrom(sourceHtml);
+    const principles = headingGroups(
+      sectionElements(document, 'guidance-write-clear-useful-content', ['H2']),
+      'H3',
+    ).map(({ heading, body }): ContentPrinciple => {
+      const comparisons = body.filter(
+        (element) => element.tagName === 'P' && element.querySelector('strong'),
+      );
+      const comparisonText = (element: Element | undefined) => {
+        const clone = element?.cloneNode(true) as Element | undefined;
+        clone?.querySelector('strong')?.remove();
+        return clone?.textContent?.replace(/^:\s*/, '').trim() ?? '';
+      };
+      return {
+        id: heading.id,
+        title: heading.textContent?.trim() ?? '',
+        description:
+          body
+            .find((element) => element.tagName === 'P' && !element.querySelector('strong'))
+            ?.textContent?.trim() ?? '',
+        bad: comparisonText(comparisons[0]),
+        better: comparisonText(comparisons[1]),
+        details: body
+          .flatMap((element) => [...element.querySelectorAll('li')])
+          .map((item) => item.textContent?.trim() ?? ''),
+      };
+    });
+    const checklistElements = sectionElements(document, 'guidance-before-you-publish', ['H2']);
+    const processElements = sectionElements(document, 'guidance-do-content-design', ['H2']);
+    const helpElements = sectionElements(document, 'guidance-get-help', ['H2']);
+    return {
+      principles,
+      checklistDescription:
+        checklistElements.find((element) => element.tagName === 'P')?.textContent?.trim() ?? '',
+      checklist: checklistElements
+        .flatMap((element) => [...element.querySelectorAll('li')])
+        .map((item) => item.textContent?.trim() ?? ''),
+      processDescription:
+        processElements.find((element) => element.tagName === 'P')?.textContent?.trim() ?? '',
+      process: contentSteps(document, 'guidance-do-content-design'),
+      helpDescription:
+        helpElements.find((element) => element.tagName === 'P')?.textContent?.trim() ?? '',
+      help: contentSteps(document, 'guidance-get-help'),
+    };
+  }, [sourceHtml]);
+  return (
+    <div className="content-page">
+      <TabList
+        aria-label="Content guidance"
+        className="content-tabs"
+        appearance="elevated"
+        selectedValue={view}
+        onTabSelect={(_event, data) => setView(data.value as 'principles' | 'process')}
+      >
+        <Tab value="principles">Principles</Tab>
+        <Tab value="process">Process</Tab>
+      </TabList>
+      {view === 'principles' ? (
+        <div className="content-principles">
+          <section className="page-section content-section">
+            <ContentSectionHeader title="Write clear, useful content" />
+            <Accordion className="content-principle-list" multiple collapsible>
+              {model.principles.map((principle, index) => (
+                <AccordionItem
+                  className="content-principle"
+                  key={principle.id}
+                  value={principle.id}
+                >
+                  <AccordionHeader expandIconPosition="end" size="large">
+                    <span className="content-principle__trigger">
+                      <span className="content-principle__number">{index + 1}</span>
+                      <span className="content-principle__heading">
+                        <Text size={400} weight="semibold">
+                          {principle.title}
+                        </Text>
+                        <Text size={300} foreground={2}>
+                          {principle.description}
+                        </Text>
+                      </span>
+                    </span>
+                  </AccordionHeader>
+                  <AccordionPanel>
+                    <div className="content-principle__content">
+                      <div className="content-example-grid">
+                        <div className="content-example content-example--avoid">
+                          <Badge appearance="filled" color="danger" shape="rounded" size="medium">
+                            Bad
+                          </Badge>
+                          <div className="content-example__body">
+                            <Text as="p" size={300} foreground={2}>
+                              {principle.bad}
+                            </Text>
+                          </div>
+                        </div>
+                        <div className="content-example content-example--prefer">
+                          <Badge appearance="filled" color="success" shape="rounded" size="medium">
+                            Better
+                          </Badge>
+                          <div className="content-example__body">
+                            <Text as="p" size={300}>
+                              {principle.better}
+                            </Text>
+                          </div>
+                        </div>
+                      </div>
+                      <ul className="content-guidance-list">
+                        {principle.details.map((detail) => (
+                          <li key={detail}>{detail}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </AccordionPanel>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </section>
+          <section className="page-section content-section">
+            <ContentSectionHeader
+              title="Before you publish"
+              description={model.checklistDescription}
+            />
+            <ul className="content-publish-checklist">
+              {model.checklist.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </section>
+        </div>
+      ) : (
+        <div className="content-guide">
+          <section className="page-section content-section content-section--primary">
+            <ContentSectionHeader
+              title="Do content design"
+              description={model.processDescription}
+            />
+            <ContentStepList steps={model.process} />
+          </section>
+          <section className="page-section content-section">
+            <ContentSectionHeader title="Get help" description={model.helpDescription} />
+            <ContentStepList steps={model.help} />
+          </section>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AgentWorkflowView({ sourceHtml }: PageWidgetProps) {
+  const model = React.useMemo(() => {
+    const document = documentFrom(sourceHtml);
+    const startElements = sectionElements(document, 'guidance-start-here', ['H2']);
+    const steps = [
+      ...(startElements.find((element) => element.tagName === 'OL')?.children ?? []),
+    ].map((item) => {
+      const clone = item.cloneNode(true) as Element;
+      const heading = clone.querySelector('strong');
+      const title = heading?.textContent?.replace(/\.$/, '').trim() ?? '';
+      heading?.remove();
+      return { title, html: clone.innerHTML.trim() };
+    });
+    const mappingElements = sectionElements(document, 'guidance-direct-url-mapping', ['H2']);
+    const mapping = mappingElements
+      .flatMap((element) => [...element.querySelectorAll('li')])
+      .map((item) => item.textContent?.trim() ?? '')
+      .join('\n');
+    const remaining = [...document.querySelectorAll('h2')]
+      .filter(
+        (heading) => !['guidance-start-here', 'guidance-direct-url-mapping'].includes(heading.id),
+      )
+      .map((heading) => ({
+        id: heading.id,
+        title: heading.textContent?.trim() ?? '',
+        html: followingUntil(heading, (candidate) => candidate.tagName === 'H2')
+          .map((element) => element.outerHTML)
+          .join(''),
+      }));
+    return {
+      baseHtml: startElements.find((element) => element.tagName === 'P')?.innerHTML ?? '',
+      steps,
+      mapping,
+      mappingHtml: mappingElements
+        .filter((element) => element.tagName !== 'UL')
+        .map((element) => element.outerHTML)
+        .join(''),
+      remaining,
+    };
+  }, [sourceHtml]);
+  return (
+    <div className="agent-workflow-view">
+      <MessageBar intent="brand" layout="multiline" icon={null}>
+        <MessageBarBody>
+          <MessageBarTitle>Use CoreAI Markdown over ordinary HTTPS.</MessageBarTitle>
+          <span dangerouslySetInnerHTML={{ __html: model.baseHtml }} />
+        </MessageBarBody>
+      </MessageBar>
+      <div className="package-install">
+        {model.steps.map((step, index) => (
+          <div className="package-step" key={step.title}>
+            <span className="package-step__number">{index + 1}</span>
+            <div className="package-step__content">
+              <Text as="h3" weight="semibold">
+                {step.title}
+              </Text>
+              <div dangerouslySetInnerHTML={{ __html: step.html }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <section className="agent-workflow-mapping">
+        <Text as="h2" preset="heading3">
+          Direct URL mapping
+        </Text>
+        <CodeBlock code={model.mapping} language="text" />
+        <div
+          className="standalone-guidance"
+          dangerouslySetInnerHTML={{ __html: model.mappingHtml }}
+        />
+      </section>
+      <div className="agent-workflow-sections">
+        {model.remaining.map((section) => (
+          <section className="agent-workflow-section" id={section.id} key={section.id}>
+            <Text as="h2" preset="heading3">
+              {section.title}
+            </Text>
+            <div
+              className="standalone-guidance"
+              dangerouslySetInnerHTML={{ __html: section.html }}
+            />
+          </section>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export const standaloneViews: Record<string, React.ComponentType<PageWidgetProps>> = {
   resources: ResourcesView,
   faqs: FaqsView,
   package: PackageView,
   changelog: ChangelogView,
   'package-skill': PackageSkillView,
+  content: ContentView,
+  'agent-workflow': AgentWorkflowView,
 };

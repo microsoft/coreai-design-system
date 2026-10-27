@@ -153,6 +153,43 @@
   margin-block-start: 48px;
 }
 
+.content-step__content > div > p,
+.agent-workflow-view .package-step__content > div > p {
+  margin: 0;
+}
+
+.agent-workflow-view,
+.agent-workflow-mapping,
+.agent-workflow-sections,
+.agent-workflow-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.agent-workflow-view {
+  gap: 32px;
+}
+
+.agent-workflow-mapping,
+.agent-workflow-section {
+  gap: 16px;
+}
+
+.agent-workflow-sections {
+  gap: 48px;
+}
+
+.agent-workflow-mapping h2,
+.agent-workflow-section h2 {
+  margin: 0;
+}
+
+.agent-workflow-section {
+  padding: 24px;
+  border: 1px solid var(--colorNeutralStrokeAlpha);
+  border-radius: var(--borderRadiusXLarge);
+}
+
 .reference-home-introduction {
   display: block;
 }

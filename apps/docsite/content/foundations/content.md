@@ -4,6 +4,7 @@ title: Content
 summary: 'Write clear, useful product content and get the right level of design support.'
 resources: []
 reference:
+  renderer: content
   route: foundations/content
   aliases:
     - /content/

@@ -303,6 +303,22 @@ test('release and skill pages opt into scanning views without duplicating their 
   assert.match(skillSource, /<!-- include: package-skill -->/);
 });
 
+test('workflow and content pages use bounded views backed by their complete Markdown', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  const workflow = pages.find((candidate) => candidate.route === 'guides/agent-workflow');
+  const content = pages.find((candidate) => candidate.route === 'foundations/content');
+  assert.equal(workflow?.renderer, 'agent-workflow');
+  assert.equal(content?.renderer, 'content');
+  const workflowSource = await fs.readFile(
+    path.join(appRoot, 'content', workflow.guidance),
+    'utf8',
+  );
+  const contentSource = await fs.readFile(path.join(appRoot, 'content', content.guidance), 'utf8');
+  assert.match(workflowSource, /\*\*Find the index\.\*\*/);
+  assert.match(contentSource, /\*\*Bad:\*\*[\s\S]*\*\*Better:\*\*/);
+  assert.match(contentSource, /## Get help/);
+});
+
 test('custom foundation views and published Markdown share authored tokens, presets and fonts', async () => {
   const data = await readFoundationData(appRoot);
   const sections = await standaloneSections({

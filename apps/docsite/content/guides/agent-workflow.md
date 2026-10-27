@@ -3,23 +3,24 @@ id: agent-workflow
 title: Agent workflow
 summary: Find the right CoreAI Markdown page, retrieve only what you need, and verify the result.
 resources: []
-reference: {}
+reference:
+  renderer: agent-workflow
 ---
 
 ## Start here
 
 Base URL: https://microsoft.github.io/coreai-design-system/
 
-1. Read [llms.txt](/llms.txt) once per task. It lists page purposes and package
+1. **Find the index.** Read [llms.txt](/llms.txt) once per task. It lists page purposes and package
    versions. Reuse it rather than fetching the entire catalog.
-2. Check the consuming app's manifest and lockfile. This site documents the
+2. **Check installed versions.** Check the consuming app's manifest and lockfile. This site documents the
    current release. If versions differ, inspect installed TypeScript declarations
    and state the mismatch before relying on newer APIs.
-3. Choose only the pages needed for the user's task. Read their UX guidance as
+3. **Read only what you need.** Choose only the pages needed for the user's task. Read their UX guidance as
    well as the Default example, API summaries, and relevant additional examples.
-4. Use ordinary HTTPS GET with a web-fetch or HTTP tool. Check HTTP status and
+4. **Fetch over HTTPS.** Use ordinary HTTPS GET with a web-fetch or HTTP tool. Check HTTP status and
    reject HTML returned where Markdown was expected.
-5. Validate the implementation with the app's type checks, tests, and browser
+5. **Verify the result.** Validate the implementation with the app's type checks, tests, and browser
    checks. Report what you verified and any unavailable guidance.
 
 ## Direct URL mapping
