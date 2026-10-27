@@ -439,7 +439,7 @@ function shell(title, body, metadata, assets, navigation, currentPath = '') {
 ${assets.css.map((file) => `<link rel="stylesheet" href="${metadata.basePath}${file}">`).join('\n')}
 </head><body><div id="reference-root"><div id="reference-content"><div class="app-shell reference-shell"><a class="skip-link" href="#main">Skip to content</a>
 <div class="app-body"><aside class="app-sidenav" id="app-navigation" aria-label="Site navigation">
-<div class="app-sidenav__header"><div class="app-sidenav__search-row"><button type="button" class="app-sidenav__search-logo" data-shell-logo aria-label="Hide navigation" aria-expanded="true" aria-controls="app-navigation-links"></button>
+<div class="app-sidenav__header"><div class="app-sidenav__search-row"><a class="app-sidenav__search-logo" data-shell-logo href="${metadata.basePath}" aria-label="CoreAI home"></a>
 <div data-shell-search></div><div data-shell-theme></div><button type="button" class="app-sidenav__dismiss" data-close-navigation aria-label="Close navigation"><span></span><span></span><span></span></button></div></div>
 <nav class="app-sidenav__nav" id="app-navigation-links" aria-label="Documentation">${navigation}</nav>
 <div class="app-sidenav__footer"><a class="app-sidenav__link" href="https://github.com/microsoft/coreai-design-system/issues">Questions?</a><a class="app-sidenav__link" href="https://github.com/microsoft/coreai-design-system/issues/new">Feedback</a></div></aside>

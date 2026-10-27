@@ -950,6 +950,11 @@ try {
   await noJavaScript.close();
   await page.goto(`${root}components/button/`);
   await page.locator('[data-reference-ready="true"]').waitFor();
+  await page.getByRole('link', { name: 'CoreAI home', exact: true }).click();
+  await page.getByRole('heading', { name: 'CoreAI Design System', exact: true }).waitFor();
+  assert.equal(new URL(page.url()).pathname, metadata.basePath);
+  await page.goto(`${root}components/button/`);
+  await page.locator('[data-reference-ready="true"]').waitFor();
   await page.keyboard.press('Alt+s');
   await page.locator('.app-sidenav.is-collapsed').waitFor();
   assert.equal(

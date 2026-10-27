@@ -138,17 +138,9 @@ function DocumentationShell({
 
   React.useEffect(() => {
     const sidebar = contentRef.current?.querySelector<HTMLElement>('#app-navigation');
-    const logo = slots.logo;
     sidebar?.classList.toggle('is-collapsed', collapsed && window.innerWidth > 1100);
     localStorage.setItem('coreai-docsite-sidebar-collapsed', String(collapsed));
-    logo?.setAttribute(
-      'aria-label',
-      collapsed && !navigationOpen ? 'Show navigation' : 'Hide navigation',
-    );
-    logo?.setAttribute('aria-expanded', String(!collapsed || navigationOpen));
-    logo?.addEventListener('click', toggleNavigation);
-    return () => logo?.removeEventListener('click', toggleNavigation);
-  }, [collapsed, navigationOpen, slots, toggleNavigation]);
+  }, [collapsed, slots]);
 
   React.useLayoutEffect(() => {
     const home = pathname === '/' && page.status === 'ready';
