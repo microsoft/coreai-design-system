@@ -85,12 +85,13 @@ jobs:
         run: |
           set -euo pipefail
           az webapp deploy --resource-group "$AZURE_RESOURCE_GROUP" --name "$DOCSITE_APP_NAME" \
-            --src-path .deployment/deploy-docsite.zip --type zip --output none
+            --src-path .deployment/deploy-docsite.zip --type zip --clean true --output none
       - name: Deploy Storybook and MCP
         shell: bash
         run: |
           set -euo pipefail
           az webapp deploy --resource-group "$AZURE_RESOURCE_GROUP" --name "$STORYBOOK_APP_NAME" \
-            --src-path .deployment/deploy-storybook.zip --type zip --track-status false --output none
+            --src-path .deployment/deploy-storybook.zip --type zip --clean true \
+            --track-status false --output none
       - name: Verify hosting access policy after deployment (read only)
         run: node .github/workflows/scripts/check-hosting-auth.mjs
