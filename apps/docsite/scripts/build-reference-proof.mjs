@@ -799,6 +799,17 @@ ${sourceHtml(source.source, `template-${page.id}-${index}`, source.path, basePat
     'assets/favicon.svg',
     await fs.readFile(path.join(appRoot, 'public/assets/favicon.svg')),
   );
+  for (const frame of [
+    'single-logo-effect1-white.png',
+    'single-logo-effect2-white.png',
+    'single-logo-effect3-white.png',
+    'single-logo-effect4-white.png',
+  ]) {
+    await write(
+      `logo-effects/${frame}`,
+      await fs.readFile(path.join(appRoot, 'public/logo-effects', frame)),
+    );
+  }
   const listing = pages
     .map(
       (page) =>
