@@ -397,20 +397,9 @@
   padding-inline: 48px;
 }
 
-.reference-navigation-tree {
-  padding-block: 8px;
-}
-
-.reference-tree-link {
-  display: block;
+.reference-shell .app-sidenav__nav .fui-Tab {
   width: 100%;
-  color: inherit;
-  text-decoration: none;
-}
-
-.reference-navigation-tree .fui-TreeItem[aria-current='page'] > .fui-TreeItemLayout {
-  background: var(--colorNeutralBackground1Selected, #ddd);
-  font-weight: 600;
+  justify-content: flex-start;
 }
 
 .reference-retry {

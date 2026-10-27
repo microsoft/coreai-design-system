@@ -2,13 +2,21 @@
 // Licensed under the MIT license.
 
 import * as React from 'react';
-import { Tree, TreeItem, TreeItemLayout, type TreeItemValue } from '@coreai-ds/react-components';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Accordion,
+  AccordionHeader,
+  AccordionItem,
+  AccordionPanel,
+  Tab,
+  TabList,
+} from '@coreai-ds/react-components';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { normalizeReferencePath } from './navigation.mjs';
 
 export interface NavigationEntry {
   path: string;
   title: string;
+  summary: string;
 }
 
 export interface NavigationTreeHandle {
@@ -31,105 +39,109 @@ export const NavigationTree = React.forwardRef<
     { value: 'components', label: 'Components' },
     { value: 'templates', label: 'Templates' },
   ];
-  const [openItems, setOpenItems] = React.useState<TreeItemValue[]>(() => [
+  const [openItems, setOpenItems] = React.useState<string[]>(() => [
     'overview',
     activePath.split('/')[1] || 'overview',
-    ...(activePath.startsWith('/templates/react-router-') ? ['react-router'] : []),
   ]);
   React.useImperativeHandle(ref, () => ({
     collapseAll: () => setOpenItems([]),
-    expandAll: () => setOpenItems([...groups.map((group) => group.value), 'react-router']),
+    expandAll: () => setOpenItems(groups.map((group) => group.value)),
   }));
   const needle = query.trim().toLowerCase();
-  const visible = entries.filter((entry) => !needle || entry.title.toLowerCase().includes(needle));
+  const results = entries.filter(
+    (entry) =>
+      !needle ||
+      entry.title.toLowerCase().includes(needle) ||
+      entry.path.toLowerCase().includes(needle) ||
+      entry.summary.toLowerCase().includes(needle),
+  );
 
   React.useEffect(() => {
-    const parents = [activePath.split('/')[1] || 'overview'];
-    if (activePath.startsWith('/templates/react-router-')) parents.push('react-router');
-    setOpenItems((current) => [...new Set([...current, ...parents])]);
+    const parent = activePath.split('/')[1] || 'overview';
+    setOpenItems((current) => [...new Set([...current, parent])]);
   }, [activePath]);
 
-  function leaf(entry: NavigationEntry, label = entry.title) {
-    const active = entry.path === activePath;
+  function HighlightedText({ text }: { text: string }) {
+    const start = text.toLowerCase().indexOf(needle);
+    if (start < 0) return text;
     return (
-      <TreeItem
-        key={entry.path}
-        itemType="leaf"
-        value={entry.path}
-        aria-label={label}
-        aria-current={active ? 'page' : undefined}
-        onKeyDown={(event) => {
-          if (
-            event.key === 'Enter' &&
-            event.target === event.currentTarget &&
-            !event.altKey &&
-            !event.ctrlKey &&
-            !event.metaKey &&
-            !event.shiftKey
-          ) {
-            event.preventDefault();
-            navigate(entry.path);
-          }
-        }}
-      >
-        <TreeItemLayout>
-          <Link
-            className="reference-tree-link"
-            data-navigation-entry=""
-            to={entry.path}
-            tabIndex={-1}
-            aria-current={active ? 'page' : undefined}
-          >
-            {label}
-          </Link>
-        </TreeItemLayout>
-      </TreeItem>
+      <>
+        {text.slice(0, start)}
+        <mark>{text.slice(start, start + needle.length)}</mark>
+        {text.slice(start + needle.length)}
+      </>
+    );
+  }
+
+  if (needle) {
+    return (
+      <div className="app-search-results">
+        <div className="app-search-results__header" role="status">
+          {results.length} {results.length === 1 ? 'result' : 'results'} for “{query.trim()}”
+        </div>
+        {results.length ? (
+          <ul className="app-search-results__list">
+            {results.map((entry) => (
+              <li key={entry.path}>
+                <button
+                  type="button"
+                  className="app-search-result"
+                  onClick={() => navigate(entry.path)}
+                >
+                  <span className="app-search-result__path">{entry.path}</span>
+                  <span className="app-search-result__title">
+                    <HighlightedText text={entry.title} />
+                  </span>
+                  <span className="app-search-result__excerpt">
+                    <HighlightedText text={entry.summary} />
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="app-search-results__empty">Try a different word or phrase.</p>
+        )}
+      </div>
     );
   }
 
   return (
-    <>
-      {needle && !visible.length ? <p role="status">No pages match your filter.</p> : null}
-      <Tree
-        aria-label="Documentation pages"
-        className="reference-navigation-tree"
-        openItems={needle ? [...groups.map((group) => group.value), 'react-router'] : openItems}
-        onOpenChange={(_event, data) => setOpenItems([...data.openItems])}
+    <div className="app-sidenav__section-shell">
+      <Accordion
+        multiple
+        collapsible
+        openItems={openItems}
+        onToggle={(_event, data) => setOpenItems(data.openItems as string[])}
       >
         {groups.map((group) => {
-          const items = visible.filter(
+          const items = entries.filter(
             (entry) => (entry.path.split('/')[1] || 'overview') === group.value,
           );
-          const routerTemplates = items.filter((entry) =>
-            entry.path.startsWith('/templates/react-router-'),
-          );
           return items.length ? (
-            <TreeItem
-              key={group.value}
-              itemType="branch"
-              value={group.value}
-              aria-label={group.label}
-            >
-              <TreeItemLayout>{group.label}</TreeItemLayout>
-              <Tree>
-                {items
-                  .filter((entry) => !entry.path.startsWith('/templates/react-router-'))
-                  .map((entry) => leaf(entry))}
-                {routerTemplates.length ? (
-                  <TreeItem itemType="branch" value="react-router" aria-label="React Router">
-                    <TreeItemLayout>React Router</TreeItemLayout>
-                    <Tree>
-                      {routerTemplates.map((entry) =>
-                        leaf(entry, entry.title.replace(/^React Router \/ /, '')),
-                      )}
-                    </Tree>
-                  </TreeItem>
-                ) : null}
-              </Tree>
-            </TreeItem>
+            <AccordionItem value={group.value} key={group.value}>
+              <AccordionHeader expandIconPosition="end" size="small">
+                {group.label}
+              </AccordionHeader>
+              <AccordionPanel>
+                <TabList
+                  vertical
+                  appearance="subtle"
+                  size="medium"
+                  selectedValue={activePath}
+                  onTabSelect={(_event, data) => navigate(String(data.value))}
+                >
+                  {items.map((entry) => (
+                    <Tab key={entry.path} value={entry.path}>
+                      {entry.title}
+                    </Tab>
+                  ))}
+                </TabList>
+              </AccordionPanel>
+            </AccordionItem>
           ) : null;
         })}
-      </Tree>
-    </>
+      </Accordion>
+    </div>
   );
 });

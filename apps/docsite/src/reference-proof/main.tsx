@@ -42,8 +42,15 @@ const entries: NavigationEntry[] = [
     ),
   ),
   title: link.textContent?.trim() ?? '',
+  summary: link.dataset.navigationSummary ?? '',
 }));
 const paths = new Set(entries.map((entry) => entry.path));
+const logoEffectFrames = [
+  'single-logo-effect1-white.png',
+  'single-logo-effect2-white.png',
+  'single-logo-effect3-white.png',
+  'single-logo-effect4-white.png',
+];
 
 function DocumentationShell({
   page,
@@ -316,7 +323,21 @@ function DocumentationShell({
   return (
     <div className="reference-application">
       <div ref={contentRef} dangerouslySetInnerHTML={markup} />
-      {slots.logo ? createPortal(<CoreAILogo />, slots.logo) : null}
+      {slots.logo
+        ? createPortal(
+            <>
+              <span className="app-sidenav__search-logo-static">
+                <CoreAILogo />
+              </span>
+              <span className="app-sidenav__search-logo-effects" aria-hidden="true">
+                {logoEffectFrames.map((frame) => (
+                  <img key={frame} src={`${basePath}logo-effects/${frame}`} alt="" />
+                ))}
+              </span>
+            </>,
+            slots.logo,
+          )
+        : null}
       {slots.navigation
         ? createPortal(
             <NavigationTree ref={treeRef} entries={entries} query={query} />,
@@ -336,13 +357,22 @@ function DocumentationShell({
         ? createPortal(
             <SearchBox
               ref={searchRef}
-              aria-label="Filter navigation"
+              aria-label="Search navigation"
               placeholder="Search"
-              title="Search documentation titles"
+              title="Search documentation"
               contentBefore={null}
               contentAfter={
                 <span className="app-sidenav__search-shortcut" aria-hidden="true">
-                  {isApplePlatform ? 'Cmd' : 'Ctrl'} K
+                  <span
+                    className={
+                      isApplePlatform
+                        ? 'app-sidenav__search-shortcut-command'
+                        : 'app-sidenav__search-shortcut-control'
+                    }
+                  >
+                    {isApplePlatform ? '⌘' : 'Ctrl'}
+                  </span>
+                  <span className="app-sidenav__search-shortcut-key">K</span>
                 </span>
               }
               value={query}

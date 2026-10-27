@@ -736,7 +736,7 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
           .filter((page) => page.kind === kind)
           .map(
             (page) =>
-              `<a class="reference-nav-link" data-navigation-entry href="${basePath}${page.route}${page.route ? '/' : ''}">${escapeHtml(page.id.startsWith('react-router-') ? `React Router / ${page.label}` : page.label)}</a>`,
+              `<a class="reference-nav-link" data-navigation-entry data-navigation-summary="${escapeHtml(page.summary)}" href="${basePath}${page.route}${page.route ? '/' : ''}">${escapeHtml(page.id.startsWith('react-router-') ? `React Router / ${page.label}` : page.label)}</a>`,
           )
           .join('') +
         '</details>',
