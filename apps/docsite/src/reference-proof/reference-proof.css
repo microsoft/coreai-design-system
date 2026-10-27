@@ -42,6 +42,8 @@
     .reference-tree-link,
     .component-resource-card,
     .app-sidenav__quick-link,
+    .app-sidenav__link,
+    .app-sidenav__search-logo,
     .font-card-link
   ) {
   color: var(--colorBrandForegroundLink, #005a9e);
@@ -476,11 +478,6 @@
 
 .reference-retry {
   margin: 8px 24px;
-}
-
-.reference-shell .app-sidenav__footer {
-  gap: 12px;
-  padding: 16px;
 }
 
 .reference-footer {
