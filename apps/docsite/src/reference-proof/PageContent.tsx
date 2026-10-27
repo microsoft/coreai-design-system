@@ -13,6 +13,16 @@ import {
 } from './PagePresentation';
 import type { PageWidgetProps } from './FoundationViews';
 
+const standaloneViewNames = new Set([
+  'resources',
+  'faqs',
+  'package',
+  'changelog',
+  'package-skill',
+  'agent-workflow',
+  'content',
+]);
+
 export interface ReferencePage {
   path: string;
   title: string;
@@ -100,18 +110,21 @@ export function PageContent({
       pageWidgets.some((widget) => widget.name !== 'home')
         ? import('./FoundationViews').then((module) => module.foundationViews)
         : Promise.resolve({}),
+      pageWidgets.some((widget) => standaloneViewNames.has(widget.name))
+        ? import('./StandaloneViews').then((module) => module.standaloneViews)
+        : Promise.resolve({}),
       pageWidgets.some((widget) => widget.name === 'home')
         ? import('./HomeView').then((module) => ({ home: module.default }))
         : Promise.resolve({}),
     ])
-      .then(([loaded, foundationViews, homeView]) => {
+      .then(([loaded, foundationViews, standaloneViews, homeView]) => {
         if (!active) return;
         for (const container of containers) container.replaceChildren();
         header.replaceChildren();
         resources?.replaceChildren();
         for (const widget of pageWidgets) widget.element.replaceChildren();
         setPresentation({ model, header, resources });
-        setViews({ ...foundationViews, ...homeView });
+        setViews({ ...foundationViews, ...standaloneViews, ...homeView });
         setWidgets(pageWidgets);
         setExamples(
           Object.fromEntries(loaded.flatMap((module) => Object.entries(module.examples))),

@@ -272,6 +272,12 @@ test('standalone renderers stay bounded and whole-page views are explicit', () =
   assert.ok(!wholePageRendererNames.includes('colors'));
 });
 
+test('overview pages opt into their Markdown-backed rich views', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  assert.equal(pages.find((page) => page.route === 'overview/resources')?.renderer, 'resources');
+  assert.equal(pages.find((page) => page.route === 'overview/faqs')?.renderer, 'faqs');
+});
+
 test('custom foundation views and published Markdown share authored tokens, presets and fonts', async () => {
   const data = await readFoundationData(appRoot);
   const sections = await standaloneSections({

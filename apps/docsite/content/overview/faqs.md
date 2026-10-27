@@ -4,6 +4,7 @@ title: FAQs
 summary: 'Answers about CoreAI, Fluent, setup, components, and agents.'
 resources: []
 reference:
+  renderer: faqs
   route: overview/faqs
   aliases:
     - /faqs/

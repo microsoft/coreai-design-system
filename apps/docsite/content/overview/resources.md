@@ -4,6 +4,7 @@ title: Resources
 summary: 'Design libraries, package resources, fonts, and support.'
 resources: []
 reference:
+  renderer: resources
   route: overview/resources
   aliases:
     - /resources/
