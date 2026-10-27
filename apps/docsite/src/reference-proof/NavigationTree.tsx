@@ -107,41 +107,49 @@ export const NavigationTree = React.forwardRef<
   }
 
   return (
-    <div className="app-sidenav__section-shell">
-      <Accordion
-        multiple
-        collapsible
-        openItems={openItems}
-        onToggle={(_event, data) => setOpenItems(data.openItems as string[])}
-      >
-        {groups.map((group) => {
-          const items = entries.filter(
-            (entry) => (entry.path.split('/')[1] || 'overview') === group.value,
-          );
-          return items.length ? (
-            <AccordionItem value={group.value} key={group.value}>
-              <AccordionHeader expandIconPosition="end" size="small">
-                {group.label}
-              </AccordionHeader>
-              <AccordionPanel>
-                <TabList
-                  vertical
-                  appearance="subtle"
-                  size="medium"
-                  selectedValue={activePath}
-                  onTabSelect={(_event, data) => navigate(String(data.value))}
-                >
-                  {items.map((entry) => (
-                    <Tab key={entry.path} value={entry.path}>
-                      {entry.title}
-                    </Tab>
-                  ))}
-                </TabList>
-              </AccordionPanel>
-            </AccordionItem>
-          ) : null;
-        })}
-      </Accordion>
-    </div>
+    <>
+      {groups.map((group) => {
+        const items = entries.filter(
+          (entry) => (entry.path.split('/')[1] || 'overview') === group.value,
+        );
+        return items.length ? (
+          <div className="app-sidenav__section-shell" key={group.value}>
+            <Accordion
+              collapsible
+              openItems={openItems.includes(group.value) ? [group.value] : []}
+              onToggle={(_event, data) => {
+                const isOpen = (data.openItems as string[]).includes(group.value);
+                setOpenItems((current) =>
+                  isOpen
+                    ? [...new Set([...current, group.value])]
+                    : current.filter((value) => value !== group.value),
+                );
+              }}
+            >
+              <AccordionItem value={group.value} key={group.value}>
+                <AccordionHeader expandIconPosition="end" size="small">
+                  {group.label}
+                </AccordionHeader>
+                <AccordionPanel>
+                  <TabList
+                    vertical
+                    appearance="subtle"
+                    size="medium"
+                    selectedValue={activePath}
+                    onTabSelect={(_event, data) => navigate(String(data.value))}
+                  >
+                    {items.map((entry) => (
+                      <Tab key={entry.path} value={entry.path}>
+                        {entry.title}
+                      </Tab>
+                    ))}
+                  </TabList>
+                </AccordionPanel>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        ) : null;
+      })}
+    </>
   );
 });
