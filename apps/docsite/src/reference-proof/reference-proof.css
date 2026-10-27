@@ -474,6 +474,7 @@
 .reference-shell .app-sidenav__nav .fui-Tab {
   width: 100%;
   justify-content: flex-start;
+  text-align: left;
 }
 
 .reference-retry {
