@@ -424,7 +424,7 @@ export function componentPageGuidanceHtml(page, metadata) {
   const parts = pageGuidanceParts(page.guidance, page.resources);
   const basic = page.examples?.find((example) => example.id === page.defaultExampleId);
   const api = componentApiMarkdown(page.api);
-  return `<div class="reference-page-introduction">${pageTemplateHeader(page, metadata, parts)}${basic ? exampleHtml(basic, metadata.basePath, true) : ''}${api ? `<section class="reference-api" aria-labelledby="guidance-api">${renderGuidance(api).html}</section>` : ''}${pageTemplateResources(page, metadata)}<div class="component-markdown">${renderGuidance(parts.body).html}</div></div>`;
+  return `<div class="reference-page-introduction">${pageTemplateHeader(page, metadata, parts)}${basic ? exampleHtml(basic, metadata.basePath, true) : ''}${pageTemplateResources(page, metadata)}<div class="component-markdown">${renderGuidance(parts.body).html}</div>${api ? `<section class="reference-api"><details><summary><strong>API reference</strong><span>Generated CoreAI prop and type summaries</span></summary><div class="reference-api__content">${renderGuidance(api).html}</div></details></section>` : ''}</div>`;
 }
 
 function shell(title, body, metadata, assets, navigation, currentPath = '') {

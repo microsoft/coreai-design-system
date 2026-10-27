@@ -393,6 +393,7 @@
 
 .reference-shell .home-foreground {
   max-width: 480px;
+  transform: translateY(24px);
 }
 
 .home-agent-entry {
@@ -512,13 +513,33 @@
 
 .reference-api {
   min-width: 0;
+  padding-block-start: 24px;
+  border-block-start: 1px solid var(--colorNeutralStroke2);
 }
 
-.reference-api > h2 {
-  margin-block-start: 0;
+.reference-api > details > summary {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: fit-content;
+  cursor: pointer;
+  list-style-position: outside;
 }
 
-.reference-api > h3 {
+.reference-api > details > summary span {
+  color: var(--colorNeutralForeground3);
+  font-size: var(--fontSizeBase200);
+}
+
+.reference-api__content {
+  margin-block-start: 32px;
+}
+
+.reference-api__content > h2 {
+  display: none;
+}
+
+.reference-api__content > h3 {
   margin-block-start: 32px;
 }
 
@@ -531,7 +552,19 @@
   padding: 24px;
   border: 1px solid var(--colorNeutralStroke2, #ccc);
   border-radius: var(--borderRadiusLarge, 8px);
+  background: var(--colorNeutralBackground2);
   overflow-x: auto;
+}
+
+.reference-basic-example .preview {
+  display: grid;
+  min-height: 220px;
+  align-items: center;
+}
+
+.reference-basic-example .preview > * {
+  max-width: 100%;
+  justify-self: center;
 }
 
 .source-actions {
@@ -549,6 +582,42 @@
   border-radius: 4px;
   padding: 4px 12px;
   cursor: pointer;
+}
+
+@media (max-width: 800px) {
+  .reference-shell .home-landing {
+    min-height: auto;
+    gap: 32px;
+    padding-block: 112px 48px;
+  }
+
+  .reference-shell .home-foreground {
+    width: calc(100% - 56px);
+    margin: 0;
+    transform: none;
+  }
+
+  .reference-shell .home-visual {
+    position: relative;
+    inset: auto;
+    width: min(calc(100% - 48px), 420px);
+    height: 300px;
+    aspect-ratio: auto;
+    align-self: center;
+    overflow: hidden;
+  }
+
+  .reference-shell .home-visual .coreai-logo-cube {
+    top: 50%;
+    left: 50%;
+    width: 140%;
+    transform: translate(-50%, -50%);
+  }
+
+  .home-page-actions {
+    top: 16px;
+    right: 56px;
+  }
 }
 
 .reference-shell pre {

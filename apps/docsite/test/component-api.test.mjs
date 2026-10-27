@@ -219,8 +219,9 @@ test('Default precedes separate APIs and guidance without duplicating the exampl
   assert.doesNotMatch(markdown, /\| Name \| Type \|/);
   const html = componentPageGuidanceHtml(page, metadata);
   assert.ok(html.indexOf('data-page-header') < html.indexOf('data-basic-example'));
-  assert.ok(html.indexOf('data-basic-example') < html.indexOf('class="reference-api"'));
-  assert.ok(html.indexOf('class="reference-api"') < html.indexOf('Best practices'));
+  assert.ok(html.indexOf('data-basic-example') < html.indexOf('Best practices'));
+  assert.ok(html.indexOf('Best practices') < html.indexOf('class="reference-api"'));
+  assert.match(html, /<details><summary><strong>API reference<\/strong>/);
   assert.match(html, /<details class="reference-basic-source"><summary>View example source/);
   assert.equal((html.match(/data-example-id="button--default"/g) ?? []).length, 1);
 });
