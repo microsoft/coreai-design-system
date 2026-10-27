@@ -288,6 +288,21 @@ test('package guidance opts into its Markdown-backed setup view', async () => {
   assert.match(guidance, /<!-- include: package-readme -->/);
 });
 
+test('release and skill pages opt into scanning views without duplicating their sources', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  const changelog = pages.find((candidate) => candidate.route === 'overview/changelog');
+  const skill = pages.find((candidate) => candidate.route === 'guides/package-skill');
+  assert.equal(changelog?.renderer, 'changelog');
+  assert.equal(skill?.renderer, 'package-skill');
+  const changelogSource = await fs.readFile(
+    path.join(appRoot, 'content', changelog.guidance),
+    'utf8',
+  );
+  const skillSource = await fs.readFile(path.join(appRoot, 'content', skill.guidance), 'utf8');
+  assert.match(changelogSource, /<!-- include: package-release-notes -->/);
+  assert.match(skillSource, /<!-- include: package-skill -->/);
+});
+
 test('custom foundation views and published Markdown share authored tokens, presets and fonts', async () => {
   const data = await readFoundationData(appRoot);
   const sections = await standaloneSections({

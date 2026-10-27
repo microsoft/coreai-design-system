@@ -7,17 +7,22 @@ import {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
+  Button,
   Card,
   CodeBlock,
   CopyButton,
   Link,
+  Markdown,
   MessageBar,
   MessageBarActions,
   MessageBarBody,
   MessageBarTitle,
+  Tab,
+  TabList,
   Text,
 } from '@coreai-ds/react-components';
-import { ExternalIcon } from '../components/Icons';
+import { ArrowDownload20Regular } from '@fluentui/react-icons';
+import { ChevronRight, ExternalIcon } from '../components/Icons';
 import { ResourceIcon } from './PagePresentation';
 import type { PageWidgetProps } from './FoundationViews';
 
@@ -50,6 +55,20 @@ interface PackageSection {
   html: string;
   code?: string;
   language?: string;
+}
+
+interface ChangelogSection {
+  title: string;
+  items: string[];
+}
+
+interface ChangelogRelease {
+  id: string;
+  version: string;
+  date?: string;
+  title: string;
+  summary: string;
+  sections: ChangelogSection[];
 }
 
 function documentFrom(sourceHtml: string) {
@@ -325,8 +344,251 @@ Follow the README's instructions for npm installation, optional Aptos setup and 
   );
 }
 
+function releaseSections(elements: Element[], headingTag: 'H3' | 'H4') {
+  const sections: ChangelogSection[] = [];
+  for (let index = 0; index < elements.length; index++) {
+    const heading = elements[index];
+    if (heading.tagName !== headingTag) continue;
+    const items: string[] = [];
+    for (let itemIndex = index + 1; itemIndex < elements.length; itemIndex++) {
+      if (elements[itemIndex].tagName === headingTag) break;
+      items.push(...[...elements[itemIndex].querySelectorAll('li')].map((item) => item.innerHTML));
+    }
+    sections.push({
+      title: heading.textContent?.trim() ?? '',
+      items,
+    });
+  }
+  return sections;
+}
+
+function changelogReleases(document: Document) {
+  const earlierHeading = document.getElementById('guidance-earlier-site-release-summaries');
+  if (!earlierHeading) throw new Error('Missing earlier release summaries.');
+  const curated = new Map<string, { title: string; summary: string }>();
+  const earlierElements = followingUntil(earlierHeading, () => false);
+  for (let index = 0; index < earlierElements.length; index++) {
+    const heading = earlierElements[index];
+    if (heading.tagName !== 'H3') continue;
+    const match = heading.textContent
+      ?.trim()
+      .match(/^(\d+\.\d+\.\d+)\s+—\s+(.+?)\s+\(\d{4}-\d{2}-\d{2}\)$/);
+    if (!match) continue;
+    const summary = earlierElements
+      .slice(index + 1)
+      .find((element) => ['H3', 'H4'].includes(element.tagName) || element.tagName === 'P');
+    curated.set(match[1], {
+      title: match[2],
+      summary: summary?.tagName === 'P' ? (summary.textContent?.trim() ?? '') : '',
+    });
+  }
+  const releases: ChangelogRelease[] = [];
+  for (const heading of document.querySelectorAll('h2')) {
+    const match = heading.textContent
+      ?.trim()
+      .match(/^(Unreleased|\d+\.\d+\.\d+)(?:\s+-\s+(\d{4}-\d{2}-\d{2}))?$/);
+    if (!match) continue;
+    const elements = followingUntil(heading, (candidate) => candidate.tagName === 'H2');
+    const sections = releaseSections(elements, 'H3');
+    const details = curated.get(match[1]);
+    releases.push({
+      id: heading.id,
+      version: match[1],
+      date: match[2] || undefined,
+      title:
+        details?.title ??
+        (match[1] === 'Unreleased' ? 'Changes planned for the next release' : 'Package update'),
+      summary:
+        details?.summary ||
+        `${sections.map((section) => section.title).join(', ')} updates in this release.`,
+      sections,
+    });
+  }
+  return releases;
+}
+
+const monthFormatter = new Intl.DateTimeFormat('en-US', {
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+
+function ChangelogView({ sourceHtml }: PageWidgetProps) {
+  const model = React.useMemo(() => {
+    const document = documentFrom(sourceHtml);
+    const introductionHeading = document.getElementById('guidance-package-release-history');
+    if (!introductionHeading) throw new Error('Missing package release history.');
+    const releases = changelogReleases(document);
+    const groups = new Map<string, ChangelogRelease[]>();
+    for (const release of releases) {
+      const month = release.date?.slice(0, 7) ?? 'unreleased';
+      groups.set(month, [...(groups.get(month) ?? []), release]);
+    }
+    return {
+      introductionHtml: followingUntil(
+        introductionHeading,
+        (candidate) => candidate.tagName === 'H2',
+      )
+        .map((element) => element.outerHTML)
+        .join(''),
+      groups: [...groups],
+    };
+  }, [sourceHtml]);
+  return (
+    <div className="reference-changelog-view">
+      <div
+        className="changelog-intro standalone-guidance"
+        dangerouslySetInnerHTML={{ __html: model.introductionHtml }}
+      />
+      <div className="changelog-list">
+        {model.groups.map(([month, releases]) => (
+          <details className="changelog-month" key={month} open>
+            <summary className="changelog-month__header">
+              <Text as="h2" size={500} weight="semibold">
+                {month === 'unreleased'
+                  ? 'Unreleased'
+                  : monthFormatter.format(new Date(`${month}-01T00:00:00Z`))}
+              </Text>
+              <ChevronRight className="changelog-month__chevron" aria-hidden="true" />
+            </summary>
+            <div className="changelog-month__entries">
+              {releases.map((release) => (
+                <article className="changelog-entry" id={release.id} key={release.version}>
+                  <div className="changelog-entry__version">
+                    <a href={`#${release.id}`}>
+                      {release.version === 'Unreleased'
+                        ? 'Unreleased'
+                        : `Version ${release.version}`}
+                    </a>
+                    {release.date ? (
+                      <time dateTime={release.date}>
+                        {dateFormatter.format(new Date(`${release.date}T00:00:00Z`))}
+                      </time>
+                    ) : null}
+                  </div>
+                  <div className="changelog-entry__content">
+                    <div className="changelog-entry__summary">
+                      <Text as="h3" weight="semibold">
+                        {release.title}
+                      </Text>
+                      <Text as="p" foreground={2}>
+                        {release.summary}
+                      </Text>
+                    </div>
+                    <div className="changelog-entry__sections">
+                      {release.sections.map((section) => (
+                        <section className="changelog-entry__section" key={section.title}>
+                          <Text as="h4" weight="semibold">
+                            {section.title}
+                          </Text>
+                          <ul>
+                            {section.items.map((item, index) => (
+                              <li
+                                key={`${section.title}-${index}`}
+                                dangerouslySetInnerHTML={{ __html: item }}
+                              />
+                            ))}
+                          </ul>
+                        </section>
+                      ))}
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function stripFrontmatter(source: string) {
+  return source.replace(/^---\n[\s\S]*?\n---\n/, '').trimStart();
+}
+
+function PackageSkillView({ sourceHtml }: PageWidgetProps) {
+  const [view, setView] = React.useState<'markdown' | 'text'>('markdown');
+  const model = React.useMemo(() => {
+    const document = documentFrom(sourceHtml);
+    const sourceHeading = document.getElementById('guidance-skill-source');
+    if (!sourceHeading) throw new Error('Missing skill source.');
+    const source = followingUntil(sourceHeading, () => false)
+      .find((element) => element.tagName === 'PRE')
+      ?.querySelector('code')?.textContent;
+    const download = document.querySelector<HTMLAnchorElement>(
+      'a[href$="/source/package/SKILL.md"]',
+    );
+    if (!source || !download) throw new Error('Missing downloadable skill source.');
+    return {
+      guidanceHtml: [...document.querySelectorAll('h2')]
+        .filter((heading) => heading !== sourceHeading)
+        .flatMap((heading) => [
+          heading.outerHTML,
+          ...followingUntil(heading, (candidate) => candidate.tagName === 'H2').map(
+            (element) => element.outerHTML,
+          ),
+        ])
+        .join(''),
+      source,
+      downloadHref: download.href,
+    };
+  }, [sourceHtml]);
+  return (
+    <div className="coreai-skill-view">
+      <div
+        className="coreai-skill-guidance standalone-guidance"
+        dangerouslySetInnerHTML={{ __html: model.guidanceHtml }}
+      />
+      <div className="coreai-skill-toolbar">
+        <TabList
+          appearance="elevated"
+          selectedValue={view}
+          onTabSelect={(_event, data) => setView(data.value as 'markdown' | 'text')}
+        >
+          <Tab value="markdown">Markdown</Tab>
+          <Tab value="text">Rendered</Tab>
+        </TabList>
+        <Button
+          as="a"
+          href={model.downloadHref}
+          download="SKILL.md"
+          appearance="outline"
+          icon={<ArrowDownload20Regular />}
+        >
+          Download
+        </Button>
+      </div>
+      {view === 'markdown' ? (
+        <CodeBlock
+          className="coreai-skill-code"
+          code={model.source}
+          language="markdown"
+          header={
+            <Text preset="heading6" foreground={3}>
+              .github/skills/coreai-ds-fluentui-react/SKILL.md
+            </Text>
+          }
+          headerAppearance="subtle"
+        />
+      ) : (
+        <Markdown content={stripFrontmatter(model.source)} />
+      )}
+    </div>
+  );
+}
+
 export const standaloneViews: Record<string, React.ComponentType<PageWidgetProps>> = {
   resources: ResourcesView,
   faqs: FaqsView,
   package: PackageView,
+  changelog: ChangelogView,
+  'package-skill': PackageSkillView,
 };

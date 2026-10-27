@@ -4,6 +4,7 @@ title: Changelog
 summary: Release history from the package's canonical changelog.
 resources: []
 reference:
+  renderer: changelog
   aliases: [/changelog/]
   migratedFrom:
     - apps/docsite/src/pages/Changelog.tsx
