@@ -950,6 +950,12 @@ try {
   await noJavaScript.close();
   await page.goto(`${root}components/button/`);
   await page.locator('[data-reference-ready="true"]').waitFor();
+  assert.match(
+    await page
+      .locator('.app-sidenav__footer')
+      .evaluate((element) => getComputedStyle(element).boxShadow),
+    /0px -16px 24px 4px/,
+  );
   await page.getByRole('link', { name: 'CoreAI home', exact: true }).click();
   await page.getByRole('heading', { name: 'CoreAI Design System', exact: true }).waitFor();
   assert.equal(new URL(page.url()).pathname, metadata.basePath);
