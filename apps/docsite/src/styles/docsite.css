@@ -923,7 +923,7 @@ code:not(pre code) {
 }
 
 .app-sidenav .app-sidenav__nav .fui-AccordionHeader__button {
-  padding: 0 8px;
+  padding: 0 6px 0 8px;
   font-family: var(--mf-font-code);
   font-size: var(--fontSizeBase100);
   font-weight: var(--fontWeightSemibold, 600);
