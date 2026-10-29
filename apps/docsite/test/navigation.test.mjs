@@ -244,7 +244,7 @@ test('collapsed navigation overlays the page and shortcut toggles do not focus t
   assert.match(styles, /\.app-sidenav__nav \.fui-Tab \{\s*padding-left: 16px;/);
   assert.match(
     styles,
-    /\.app-sidenav \.app-sidenav__nav \.fui-AccordionHeader__button \{\s*padding: 0 6px;/,
+    /\.app-sidenav \.app-sidenav__nav \.fui-AccordionHeader__button \{\s*padding: 0 8px;/,
   );
 });
 
