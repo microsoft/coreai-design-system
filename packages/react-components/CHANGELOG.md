@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Historical release scope
 
-Versions 0.2.0 through 0.11.1 below preserve earlier package changes. Historical
+Versions 0.2.0 through 0.11.2 below preserve earlier privately distributed package changes. Historical
 issue numbers refer to the issue tracker used at the time. Version links point to
 headings in this changelog.
 
@@ -27,6 +27,8 @@ headings in this changelog.
 
 - Added `Illicon`, which converts filled Fluent icons or plain SVG elements into illustrations with fixed 2px dots and 3px gaps while preserving aspect ratio and inheriting `currentColor`.
 
+## [0.12.0] - 2026-10-16
+
 ### Breaking
 
 - The package is renamed from `@coreai/fluentui-react` to `@coreai-ds/react-components`; update package dependencies, imports, and the npm registry scope. The workspace directory is now `packages/react-components`.
@@ -34,6 +36,7 @@ headings in this changelog.
 
 ### Changed
 
+- Version 0.12.0 is the first public npm release as `@coreai-ds/react-components`; earlier versions were distributed privately as `@coreai/fluentui-react`.
 - Consumer agent guidance uses the public CoreAI documentation MCP, delegates setup to the docsite guide, and keeps repository-specific exceptions in local proxy skills.
 - CSS Modules guidance uses an opt-in, app-owned layered Griffel renderer instead of patching shared dependencies.
 - `Accordion` removes the default `AccordionHeader` button padding and `AccordionPanel` margin so content aligns with its surroundings, and keeps the expand icon vertically centered without stretching alongside tall header content.
@@ -42,8 +45,13 @@ headings in this changelog.
 
 ### Fixed
 
-- `CoreAIFluentProvider` is exported directly from the package entry point, removing its circular dependency with the CoreAI theme module.
 - Elevated `TabList` uses interactive hover and pressed colors, preserves selected colors across interaction states, and excludes `aria-disabled` router tabs from enabled hover and pressed styles.
+
+## [0.11.2] - 2026-10-05
+
+### Fixed
+
+- `CoreAIFluentProvider` is exported directly from the package entry point, removing its circular dependency with the CoreAI theme module.
 
 ## [0.11.1] - 2026-09-15
 
@@ -248,6 +256,8 @@ Initial release to the Azure DevOps **coreai** Artifacts feed (org `coreaidesign
 - Aptos / Aptos Mono `@font-face` declarations shipped via `@coreai-ds/react-components/fonts/fonts.css`.
 
 [Unreleased]: #unreleased
+[0.12.0]: #0120---2026-10-16
+[0.11.2]: #0112---2026-10-05
 [0.11.1]: #0111---2026-09-15
 [0.11.0]: #0110---2026-09-08
 [0.10.0]: #0100---2026-08-21

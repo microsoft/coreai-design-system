@@ -258,7 +258,8 @@ once against the latest releases and once against the peer minimums.
 
 ## Releasing
 
-npm publication is manual and disabled until package/access review and
-protected-environment setup are complete. Nothing is published on merge. See
+Once enabled, npm publication follows successful CI on the version-changing
+`main` commit and creates its version tag after npm verification. Publishing requires
+package/access review and a protected publishing environment. See
 [RELEASING.md](RELEASING.md) for the publishing controls, publisher setup,
 tarball verification, and release process.

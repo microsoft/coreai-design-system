@@ -31,6 +31,8 @@ jobs:
       - name: Check license headers
         run: npm run license:check
       - run: npm ci --prefer-offline
+      - name: Test release decisions and recovery
+        run: node --test .github/workflows/scripts/release-package.test.mjs
       - run: npm run format:check
       - run: npm run lint -- --max-warnings=0
       - run: npm run type-check

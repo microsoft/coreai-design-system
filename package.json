@@ -46,6 +46,7 @@
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
     "rimraf": "^6.0.1",
+    "semver": "^7.7.0",
     "typescript": "~5.5.4",
     "typescript-eslint": "^8.65.0",
     "unified": "^11.0.5"

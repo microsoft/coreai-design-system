@@ -9,8 +9,8 @@ dependency automation. The separate publishing process is documented in
 
 Consumers install `@coreai-ds/react-components` from npm at
 `https://registry.npmjs.org/`.
-Check npm for available versions. Maintainer publication is a separate manual
-operation.
+Check npm for available versions. Once enabled, publication follows successful CI
+on the version-changing `main` commit; see the release guide.
 
 For this repository, run `npm ci` with Node.js 22 at the root. The docsite and
 Storybook use the local package workspace, not a separately published artifact.
