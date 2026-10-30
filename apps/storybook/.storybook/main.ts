@@ -23,9 +23,12 @@ if (!fs.existsSync(path.resolve(__dirname, '.cache/component-stories/inventory.j
 }
 
 const config: StorybookConfig = {
-  stories: [
+  stories: async (_stories, { configType }) => [
     '../src/**/*.mdx',
     '../src/stories/templates/**/*.stories.@(ts|tsx)',
+    ...(configType === 'DEVELOPMENT' || process.env.COREAI_HEADLESS_BUTTON === '1'
+      ? ['../src/stories/experiments/**/*.stories.@(ts|tsx)']
+      : []),
     './.cache/component-stories/*.stories.js',
   ],
 
@@ -260,6 +263,13 @@ const config: StorybookConfig = {
           {
             find: /^@coreai-ds\/react-components$/,
             replacement: themeBarrel,
+          },
+          {
+            find: /^@coreai-ds\/react-headless-components$/,
+            replacement: path.resolve(
+              __dirname,
+              '../../../packages/react-headless-components/src/index.ts',
+            ),
           },
           {
             find: /^@coreai-ds\/react-components\/fonts\/(.*)$/,
