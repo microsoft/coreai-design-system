@@ -7,7 +7,7 @@
 @layer coreai-fluent, coreai-overrides;
 
 @layer coreai-fluent {
-  .root {
+  .Button {
     --coreai-button-focus-radius: var(--borderRadiusMedium);
     --coreai-button-focus-stroke: var(--strokeWidthThin);
 
@@ -33,231 +33,312 @@
     transition-duration: var(--durationFaster);
     transition-property: background, border, color;
     transition-timing-function: var(--curveEasyEase);
+
+    &:not([data-disabled], [data-disabled-focusable]) {
+      &:hover {
+        background-color: var(--colorNeutralBackground1Hover);
+        border-color: var(--colorNeutralStroke1Hover);
+        color: var(--colorNeutralForeground1Hover);
+        cursor: pointer;
+      }
+
+      &:hover:active,
+      &:active:focus-visible {
+        background-color: var(--colorNeutralBackground1Pressed);
+        border-color: var(--colorNeutralStroke1Pressed);
+        color: var(--colorNeutralForeground1Pressed);
+        outline-style: none;
+      }
+
+      &[data-appearance='outline'] {
+        background-color: var(--colorTransparentBackground);
+
+        &:hover {
+          background-color: var(--colorTransparentBackgroundHover);
+        }
+
+        &:hover:active,
+        &:active:focus-visible {
+          background-color: var(--colorTransparentBackgroundPressed);
+        }
+      }
+
+      &[data-appearance='primary'] {
+        background-color: var(--colorBrandBackground);
+        border-color: transparent;
+        color: var(--colorNeutralForegroundOnBrand);
+
+        &:hover {
+          background-color: var(--colorBrandBackgroundHover);
+          border-color: transparent;
+          color: var(--colorNeutralForegroundOnBrand);
+        }
+
+        &:hover:active,
+        &:active:focus-visible {
+          background-color: var(--colorBrandBackgroundPressed);
+          border-color: transparent;
+          color: var(--colorNeutralForegroundOnBrand);
+        }
+      }
+
+      /* Fluent keeps subtle/transparent hover borders transparent even with keyboard focus. */
+      &:focus-visible:not(:active) {
+        border-color: var(--colorStrokeFocus2);
+
+        @media (forced-colors: active) {
+          border-color: ButtonText;
+        }
+      }
+
+      &[data-appearance='subtle'] {
+        background-color: var(--colorSubtleBackground);
+        border-color: transparent;
+        color: var(--colorNeutralForeground2);
+
+        &:hover {
+          background-color: var(--colorSubtleBackgroundHover);
+          border-color: transparent;
+          color: var(--colorNeutralForeground2Hover);
+
+          .Button__icon {
+            color: var(--colorNeutralForeground2BrandHover);
+          }
+        }
+
+        &:hover:active,
+        &:active:focus-visible {
+          background-color: var(--colorSubtleBackgroundPressed);
+          border-color: transparent;
+          color: var(--colorNeutralForeground2Pressed);
+
+          .Button__icon {
+            color: var(--colorNeutralForeground2BrandPressed);
+          }
+        }
+      }
+
+      &[data-appearance='transparent'] {
+        background-color: var(--colorTransparentBackground);
+        border-color: transparent;
+        color: var(--colorNeutralForeground2);
+
+        &:hover {
+          background-color: var(--colorTransparentBackgroundHover);
+          border-color: transparent;
+          color: var(--colorNeutralForeground2BrandHover);
+        }
+
+        &:hover:active,
+        &:active:focus-visible {
+          background-color: var(--colorTransparentBackgroundPressed);
+          border-color: transparent;
+          color: var(--colorNeutralForeground2BrandPressed);
+        }
+      }
+
+      @media (forced-colors: active) {
+        &[data-appearance='primary'] {
+          background-color: Highlight;
+          border-color: HighlightText;
+          color: HighlightText;
+          forced-color-adjust: none;
+
+          &:focus {
+            border-color: HighlightText;
+          }
+        }
+
+        &[data-appearance] {
+          &:hover,
+          &:hover:active,
+          &:active:focus-visible {
+            background-color: HighlightText;
+            border-color: Highlight;
+            color: Highlight;
+            forced-color-adjust: none;
+          }
+        }
+
+        &[data-appearance='subtle'] {
+          &:hover,
+          &:active:focus-visible {
+            .Button__icon {
+              color: Highlight;
+            }
+          }
+        }
+
+        &[data-appearance='transparent'] {
+          &:hover,
+          &:hover:active,
+          &:active:focus-visible {
+            background-color: var(--colorTransparentBackground);
+          }
+        }
+      }
+    }
+
+    &[data-size='small'] {
+      --coreai-button-focus-radius: var(--borderRadiusSmall);
+
+      min-width: 64px;
+      padding: 3px var(--spacingHorizontalS);
+      font-size: var(--fontSizeBase200);
+      font-weight: var(--fontWeightRegular);
+      line-height: var(--lineHeightBase200);
+
+      &[data-has-icon] {
+        padding-block: 1px;
+      }
+
+      .Button__icon {
+        --coreai-button-icon-spacing: var(--spacingHorizontalXS);
+      }
+    }
+
+    &[data-size='large'] {
+      --coreai-button-focus-radius: var(--borderRadiusLarge);
+
+      min-width: 96px;
+      padding: 8px var(--spacingHorizontalL);
+      font-size: var(--fontSizeBase400);
+      font-weight: var(--fontWeightSemibold);
+      line-height: var(--lineHeightBase400);
+
+      &[data-has-icon] {
+        padding-block: 7px;
+      }
+
+      .Button__icon {
+        font-size: 24px;
+        height: 24px;
+        width: 24px;
+      }
+    }
+
+    &[data-shape='circular'] {
+      --coreai-button-focus-radius: var(--borderRadiusCircular);
+
+      border-radius: var(--borderRadiusCircular);
+    }
+
+    &[data-shape='square'] {
+      --coreai-button-focus-radius: var(--borderRadiusNone);
+
+      border-radius: var(--borderRadiusNone);
+    }
+
+    &:is([data-disabled], [data-disabled-focusable]) {
+      background-color: var(--colorNeutralBackgroundDisabled);
+      border-color: var(--colorNeutralStrokeDisabled);
+      color: var(--colorNeutralForegroundDisabled);
+      cursor: not-allowed;
+
+      .Button__icon {
+        color: var(--colorNeutralForegroundDisabled);
+      }
+
+      &:is(
+        [data-appearance='outline'],
+        [data-appearance='subtle'],
+        [data-appearance='transparent']
+      ) {
+        background-color: var(--colorTransparentBackground);
+      }
+
+      &:is(
+        [data-appearance='primary'],
+        [data-appearance='subtle'],
+        [data-appearance='transparent']
+      ) {
+        border-color: transparent;
+      }
+
+      &:focus-visible:not(:active) {
+        border-color: var(--colorStrokeFocus2);
+      }
+
+      @media (forced-colors: active) {
+        &[data-appearance] {
+          background-color: ButtonFace;
+          border-color: GrayText;
+          color: GrayText;
+
+          &:focus {
+            border-color: GrayText;
+          }
+        }
+
+        .Button__icon {
+          color: GrayText;
+        }
+      }
+    }
+
+    &:focus-visible {
+      border-radius: var(--coreai-button-focus-radius);
+      border-width: 1px;
+      outline: var(--strokeWidthThick) solid var(--colorTransparentStroke);
+      box-shadow: 0 0 0 var(--coreai-button-focus-stroke) var(--colorStrokeFocus2) inset;
+      z-index: 1;
+    }
+
+    &:active:focus-visible {
+      outline-style: none;
+    }
+
+    &[data-appearance='primary']:focus-visible {
+      box-shadow:
+        var(--shadow2),
+        0 0 0 var(--coreai-button-focus-stroke) var(--colorStrokeFocus2) inset,
+        0 0 0 var(--strokeWidthThick) var(--colorNeutralForegroundOnBrand) inset;
+
+      &:hover {
+        box-shadow:
+          var(--shadow2),
+          0 0 0 var(--coreai-button-focus-stroke) var(--colorStrokeFocus2) inset;
+      }
+    }
+
+    &[data-icon-only] {
+      &[data-size='small'] {
+        padding: 1px;
+        min-width: 24px;
+        max-width: 24px;
+      }
+
+      &[data-size='medium'] {
+        padding: 5px;
+        min-width: 32px;
+        max-width: 32px;
+      }
+
+      &[data-size='large'] {
+        padding: 7px;
+        min-width: 40px;
+        max-width: 40px;
+      }
+    }
+
+    &[data-has-content][data-icon-position='before'] .Button__icon {
+      margin-inline-end: var(--coreai-button-icon-spacing);
+    }
+
+    &[data-has-content][data-icon-position='after'] .Button__icon {
+      margin-inline-start: var(--coreai-button-icon-spacing);
+    }
+
+    @media screen and (prefers-reduced-motion: reduce) {
+      transition-duration: 0.01ms;
+    }
+
+    @supports (-moz-appearance: button) {
+      --coreai-button-focus-stroke: calc(var(--strokeWidthThin) + 0.25px);
+    }
   }
 
-  .root:where(:hover) {
-    background-color: var(--colorNeutralBackground1Hover);
-    border-color: var(--colorNeutralStroke1Hover);
-    color: var(--colorNeutralForeground1Hover);
-    cursor: pointer;
-  }
-
-  .root:where(:hover:active, :active:focus-visible) {
-    background-color: var(--colorNeutralBackground1Pressed);
-    border-color: var(--colorNeutralStroke1Pressed);
-    color: var(--colorNeutralForeground1Pressed);
-    outline-style: none;
-  }
-
-  .root:where([data-appearance='outline']) {
-    background-color: var(--colorTransparentBackground);
-  }
-
-  .root:where([data-appearance='outline']:hover) {
-    background-color: var(--colorTransparentBackgroundHover);
-  }
-
-  .root:where(
-    [data-appearance='outline']:hover:active,
-    [data-appearance='outline']:active:focus-visible
-  ) {
-    background-color: var(--colorTransparentBackgroundPressed);
-  }
-
-  .root:where([data-appearance='primary']) {
-    background-color: var(--colorBrandBackground);
-    border-color: transparent;
-    color: var(--colorNeutralForegroundOnBrand);
-  }
-
-  .root:where([data-appearance='primary']:hover) {
-    background-color: var(--colorBrandBackgroundHover);
-    border-color: transparent;
-    color: var(--colorNeutralForegroundOnBrand);
-  }
-
-  .root:where(
-    [data-appearance='primary']:hover:active,
-    [data-appearance='primary']:active:focus-visible
-  ) {
-    background-color: var(--colorBrandBackgroundPressed);
-    border-color: transparent;
-    color: var(--colorNeutralForegroundOnBrand);
-  }
-
-  .root:where([data-appearance='subtle']) {
-    background-color: var(--colorSubtleBackground);
-    border-color: transparent;
-    color: var(--colorNeutralForeground2);
-  }
-
-  .root:where([data-appearance='subtle']:hover) {
-    background-color: var(--colorSubtleBackgroundHover);
-    border-color: transparent;
-    color: var(--colorNeutralForeground2Hover);
-  }
-
-  .root:where([data-appearance='subtle']:hover) .icon {
-    color: var(--colorNeutralForeground2BrandHover);
-  }
-
-  .root:where(
-    [data-appearance='subtle']:hover:active,
-    [data-appearance='subtle']:active:focus-visible
-  ) {
-    background-color: var(--colorSubtleBackgroundPressed);
-    border-color: transparent;
-    color: var(--colorNeutralForeground2Pressed);
-  }
-
-  .root:where(
-      [data-appearance='subtle']:hover:active,
-      [data-appearance='subtle']:active:focus-visible
-    )
-    .icon {
-    color: var(--colorNeutralForeground2BrandPressed);
-  }
-
-  .root:where([data-appearance='transparent']) {
-    background-color: var(--colorTransparentBackground);
-    border-color: transparent;
-    color: var(--colorNeutralForeground2);
-  }
-
-  .root:where([data-appearance='transparent']:hover) {
-    background-color: var(--colorTransparentBackgroundHover);
-    border-color: transparent;
-    color: var(--colorNeutralForeground2BrandHover);
-  }
-
-  .root:where(
-    [data-appearance='transparent']:hover:active,
-    [data-appearance='transparent']:active:focus-visible
-  ) {
-    background-color: var(--colorTransparentBackgroundPressed);
-    border-color: transparent;
-    color: var(--colorNeutralForeground2BrandPressed);
-  }
-
-  .root:where([data-size='small']) {
-    --coreai-button-focus-radius: var(--borderRadiusSmall);
-
-    min-width: 64px;
-    padding: 3px var(--spacingHorizontalS);
-    font-size: var(--fontSizeBase200);
-    font-weight: var(--fontWeightRegular);
-    line-height: var(--lineHeightBase200);
-  }
-
-  .root:where([data-size='small'][data-has-icon]) {
-    padding-block: 1px;
-  }
-
-  .root:where([data-size='large']) {
-    --coreai-button-focus-radius: var(--borderRadiusLarge);
-
-    min-width: 96px;
-    padding: 8px var(--spacingHorizontalL);
-    font-size: var(--fontSizeBase400);
-    font-weight: var(--fontWeightSemibold);
-    line-height: var(--lineHeightBase400);
-  }
-
-  .root:where([data-size='large'][data-has-icon]) {
-    padding-block: 7px;
-  }
-
-  .root:where([data-shape='circular']) {
-    --coreai-button-focus-radius: var(--borderRadiusCircular);
-
-    border-radius: var(--borderRadiusCircular);
-  }
-
-  .root:where([data-shape='square']) {
-    --coreai-button-focus-radius: var(--borderRadiusNone);
-
-    border-radius: var(--borderRadiusNone);
-  }
-
-  .root:where([data-disabled], [data-disabled-focusable]) {
-    background-color: var(--colorNeutralBackgroundDisabled);
-    border-color: var(--colorNeutralStrokeDisabled);
-    color: var(--colorNeutralForegroundDisabled);
-    cursor: not-allowed;
-  }
-
-  .root:where([data-disabled], [data-disabled-focusable]) .icon {
-    color: var(--colorNeutralForegroundDisabled);
-  }
-
-  .root:where(
-    :is([data-disabled], [data-disabled-focusable]):is(
-      [data-appearance='outline'],
-      [data-appearance='subtle'],
-      [data-appearance='transparent']
-    )
-  ) {
-    background-color: var(--colorTransparentBackground);
-  }
-
-  .root:where(
-    :is([data-disabled], [data-disabled-focusable]):is(
-      [data-appearance='primary'],
-      [data-appearance='subtle'],
-      [data-appearance='transparent']
-    )
-  ) {
-    border-color: transparent;
-  }
-
-  .root:where(:focus-visible) {
-    border-radius: var(--coreai-button-focus-radius);
-    border-width: 1px;
-    outline: var(--strokeWidthThick) solid var(--colorTransparentStroke);
-    box-shadow: 0 0 0 var(--coreai-button-focus-stroke) var(--colorStrokeFocus2) inset;
-    z-index: 1;
-  }
-
-  .root:where(:focus-visible:not(:active)) {
-    border-color: var(--colorStrokeFocus2);
-  }
-
-  .root:where(:active:focus-visible) {
-    outline-style: none;
-  }
-
-  .root:where([data-appearance='primary']:focus-visible) {
-    box-shadow:
-      var(--shadow2),
-      0 0 0 var(--coreai-button-focus-stroke) var(--colorStrokeFocus2) inset,
-      0 0 0 var(--strokeWidthThick) var(--colorNeutralForegroundOnBrand) inset;
-  }
-
-  .root:where([data-appearance='primary']:focus-visible:hover) {
-    box-shadow:
-      var(--shadow2),
-      0 0 0 var(--coreai-button-focus-stroke) var(--colorStrokeFocus2) inset;
-  }
-
-  .root:where([data-icon-only][data-size='small']) {
-    padding: 1px;
-    min-width: 24px;
-    max-width: 24px;
-  }
-
-  .root:where([data-icon-only][data-size='medium']) {
-    padding: 5px;
-    min-width: 32px;
-    max-width: 32px;
-  }
-
-  .root:where([data-icon-only][data-size='large']) {
-    padding: 7px;
-    min-width: 40px;
-    max-width: 40px;
-  }
-
-  .icon {
+  .Button__icon {
     --coreai-button-icon-spacing: var(--spacingHorizontalSNudge);
 
     align-items: center;
@@ -267,123 +348,32 @@
     height: 20px;
     width: 20px;
   }
-
-  :where(.root[data-size='small']) .icon {
-    --coreai-button-icon-spacing: var(--spacingHorizontalXS);
-  }
-
-  :where(.root[data-size='large']) .icon {
-    font-size: 24px;
-    height: 24px;
-    width: 24px;
-  }
-
-  :where(.root[data-has-content][data-icon-position='before']) .icon {
-    margin-inline-end: var(--coreai-button-icon-spacing);
-  }
-
-  :where(.root[data-has-content][data-icon-position='after']) .icon {
-    margin-inline-start: var(--coreai-button-icon-spacing);
-  }
-
-  @media screen and (prefers-reduced-motion: reduce) {
-    .root {
-      transition-duration: 0.01ms;
-    }
-  }
-
-  @supports (-moz-appearance: button) {
-    .root {
-      --coreai-button-focus-stroke: calc(var(--strokeWidthThin) + 0.25px);
-    }
-  }
-
-  @media (forced-colors: active) {
-    .root:where(:focus) {
-      border-color: ButtonText;
-    }
-
-    .root:where(:hover, :hover:active, :active:focus-visible) {
-      background-color: HighlightText;
-      border-color: Highlight;
-      color: Highlight;
-      forced-color-adjust: none;
-    }
-
-    .root:where([data-appearance='primary']) {
-      background-color: Highlight;
-      border-color: HighlightText;
-      color: HighlightText;
-      forced-color-adjust: none;
-    }
-
-    .root:where(
-      [data-appearance='primary']:hover,
-      [data-appearance='primary']:active:focus-visible
-    ) {
-      background-color: HighlightText;
-      border-color: Highlight;
-      color: Highlight;
-    }
-
-    .root:where([data-appearance='subtle']:hover, [data-appearance='subtle']:active:focus-visible)
-      .icon {
-      color: Highlight;
-    }
-
-    .root:where(
-      [data-appearance='transparent']:hover,
-      [data-appearance='transparent']:active:focus-visible
-    ) {
-      background-color: var(--colorTransparentBackground);
-      color: Highlight;
-    }
-
-    .root:where([data-disabled], [data-disabled-focusable]) {
-      background-color: ButtonFace;
-      border-color: GrayText;
-      color: GrayText;
-    }
-
-    .root:where([data-disabled], [data-disabled-focusable]) .icon {
-      color: GrayText;
-    }
-  }
 }
 
 /* Existing Fluent icon bundles have unlayered display rules. Keep this narrow adapter
  * unlayered too; the Button's own visual styles remain in the layers above.
  */
-:where(
-    .root:is([data-appearance='subtle'], [data-appearance='transparent']):not(
-        [data-disabled],
-        [data-disabled-focusable]
-      ):is(:hover, :active:focus-visible)
-  )
-  .icon
-  :global(.fui-Icon-filled) {
-  display: inline;
-}
+.Button {
+  &:is([data-appearance='subtle'], [data-appearance='transparent']):not(
+      [data-disabled],
+      [data-disabled-focusable]
+    ):is(:hover, :active:focus-visible) {
+    .Button__icon :global(.fui-Icon-filled) {
+      display: inline;
+    }
 
-:where(
-    .root:is([data-appearance='subtle'], [data-appearance='transparent']):not(
-        [data-disabled],
-        [data-disabled-focusable]
-      ):is(:hover, :active:focus-visible)
-  )
-  .icon
-  :global(.fui-Icon-regular) {
-  display: none;
-}
+    .Button__icon :global(.fui-Icon-regular) {
+      display: none;
+    }
+  }
 
-:where(.root:is([data-disabled], [data-disabled-focusable]):is(:hover, :active:focus-visible))
-  .icon
-  :global(.fui-Icon-filled) {
-  display: none;
-}
+  &:is([data-disabled], [data-disabled-focusable]):is(:hover, :active:focus-visible) {
+    .Button__icon :global(.fui-Icon-filled) {
+      display: none;
+    }
 
-:where(.root:is([data-disabled], [data-disabled-focusable]):is(:hover, :active:focus-visible))
-  .icon
-  :global(.fui-Icon-regular) {
-  display: inline;
+    .Button__icon :global(.fui-Icon-regular) {
+      display: inline;
+    }
+  }
 }

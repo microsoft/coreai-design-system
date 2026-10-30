@@ -62,6 +62,15 @@ not a claim that the whole application bundle is Griffel-free.
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
 - Normal cascade order: `coreai-fluent` layer, then `coreai-overrides`, then unlayered consumer CSS.
   Class-name concatenation does not establish priority.
+- CSS Modules use `.Button` and `.Button__icon`, with native nesting and ordinary state selectors.
+  Enabled interaction styles exclude disabled and disabled-focusable buttons rather than relying
+  on `:where()` to flatten specificity.
+- Every component-owned slot also receives a stable, unstyled global marker: `fui-Button` on
+  the root and `fui-Button__icon` on the icon slot. Exported `buttonClassNames` exposes these names
+  for consumers; internal styling uses the scoped module classes instead.
+- Visual props extend the headless data-attribute pattern with `data-appearance`, `data-size`,
+  and `data-shape`. Resolved content/icon presence uses `data-has-content` and `data-has-icon`;
+  headless still supplies its disabled, icon-only, and icon-position attributes.
 - Existing Fluent bundled icons ship unlayered visibility rules. A narrow, unlayered descendant
   adapter preserves their regular/filled hover behavior without adding a Griffel runtime import.
   Other Button styles stay layered.
@@ -91,7 +100,9 @@ The focused Vitest Browser Mode suite uses Playwright Chromium and the same fixt
 It compares a bounded list of computed properties, dimensions, and icon visibility across light
 and dark modes, appearances, sizes, shapes, icons, disabled states, anchors, hover, keyboard focus,
 and keyboard press. It also checks defaults opt-out, RTL spacing, consumer CSS priority, context
-sizing, refs, slot preservation, and disabled activation.
+sizing, refs, slot preservation, stable global slot markers, data-state attributes, and disabled
+activation. Disabled hover and combined keyboard-focus/hover cases protect interaction priority
+without zero-specificity selectors.
 
 The Consumer Overrides fixture deliberately differs: ordinary CSS sets the headless minimum width
 to `120px`, radius to `3px`, and icon size to `16px`. Legacy Griffel rules can retain `40px`,

@@ -73,6 +73,20 @@ for (const [mode, theme] of themes) {
     expect(compareButtonStyles(expected, captureButtonStyles(headless))).toEqual([]);
   });
 
+  test.each(buttonExamples.filter(({ props }) => props.disabled || props.disabledFocusable))(
+    `preserves $name styles on hover in ${mode} mode`,
+    async (example) => {
+      const { legacy, headless } = await renderPair(example, theme);
+      await userEvent.hover(legacy);
+      await settleButtonStyles(legacy);
+      const expected = captureButtonStyles(legacy);
+      await userEvent.hover(headless);
+      await settleButtonStyles(headless);
+      expect(compareButtonStyles(expected, captureButtonStyles(headless))).toEqual([]);
+      expect(getComputedStyle(headless).cursor).toBe('not-allowed');
+    },
+  );
+
   test.each(buttonAppearances)(
     `matches %s on keyboard focus and press in ${mode} mode`,
     async (appearance) => {
@@ -99,6 +113,28 @@ for (const [mode, theme] of themes) {
       await settleButtonStyles(headless);
       expect(compareButtonStyles(pressed, captureButtonStyles(headless))).toEqual([]);
       await userEvent.keyboard('[/Space]');
+    },
+  );
+
+  test.each(buttonAppearances)(
+    `matches %s with keyboard focus and hover together in ${mode} mode`,
+    async (appearance) => {
+      const { legacy, headless } = await renderPair(
+        { name: appearance, props: { appearance, children: 'Example' } },
+        theme,
+      );
+      await userEvent.keyboard('{Escape}');
+      await userEvent.tab();
+      await userEvent.hover(legacy);
+      await expect.element(legacy).toHaveFocus();
+      await expect.poll(() => getComputedStyle(legacy).boxShadow).not.toBe('none');
+      await settleButtonStyles(legacy);
+      const expected = captureButtonStyles(legacy);
+      await userEvent.tab();
+      await userEvent.hover(headless);
+      await expect.element(headless).toHaveFocus();
+      await settleButtonStyles(headless);
+      expect(compareButtonStyles(expected, captureButtonStyles(headless))).toEqual([]);
     },
   );
 }
@@ -138,6 +174,27 @@ test('allows ordinary consumer CSS Modules to override root and icon styles', as
   expect(styles['root.border-radius']).toBe('3px');
   expect(styles['icon.font-size']).toBe('16px');
   expect(styles['icon.width']).toBe('16px');
+});
+
+test('exposes stable root and icon markers for consumer global selectors', async () => {
+  const screen = await render(
+    <CoreAIFluentProvider>
+      <style>{`
+        .consumer-globals .fui-Button { min-width: 112px; }
+        .consumer-globals .fui-Button__icon { width: 18px; height: 18px; }
+      `}</style>
+      <div className="consumer-globals">
+        <Button icon={<span aria-hidden="true">+</span>}>Targeted</Button>
+      </div>
+    </CoreAIFluentProvider>,
+  );
+  const button = screen.getByRole('button', { name: 'Targeted' }).element();
+  const icon = button.querySelector('.fui-Button__icon');
+  expect(button).toHaveClass('fui-Button');
+  expect(getComputedStyle(button).minWidth).toBe('112px');
+  expect(icon).not.toBeNull();
+  expect(getComputedStyle(icon!).width).toBe('18px');
+  expect(getComputedStyle(icon!).height).toBe('18px');
 });
 
 test('inherits headless Button context size and allows an explicit override', async () => {
@@ -182,15 +239,46 @@ test('preserves resolved slots, custom classes, handlers, and refs without leaki
   );
   const button = screen.getByRole('button', { name: '+ Save' }).element();
   expect(rootRef.current).toBe(button);
-  expect(button).toHaveClass('consumer-button');
-  expect(iconRef.current).toHaveClass('consumer-icon');
+  expect(button).toHaveClass('fui-Button', 'consumer-button');
+  expect(iconRef.current).toHaveClass('fui-Button__icon', 'consumer-icon');
   expect(iconRef.current?.firstElementChild).toHaveClass('consumer-icon-content');
+  expect(iconRef.current?.firstElementChild).not.toHaveClass('fui-Button__icon');
+  expect(button.getAttribute('data-appearance')).toBe('primary');
+  expect(button.getAttribute('data-size')).toBe('small');
+  expect(button.getAttribute('data-shape')).toBe('square');
+  expect(button.getAttribute('data-has-icon')).toBe('');
+  expect(button.getAttribute('data-has-content')).toBe('');
+  expect(button.getAttribute('data-icon-position')).toBe('before');
+  expect(button.hasAttribute('data-icon-only')).toBe(false);
   for (const prop of ['appearance', 'size', 'shape']) {
     expect(button.hasAttribute(prop)).toBe(false);
   }
   await userEvent.click(button);
   await userEvent.keyboard('{Enter}');
   expect(onClick).toHaveBeenCalledTimes(2);
+});
+
+test('combines visual data attributes with resolved headless icon-only and disabled state', async () => {
+  const screen = await render(
+    <CoreAIFluentProvider>
+      <Button
+        aria-label="Add"
+        appearance="subtle"
+        size="small"
+        icon={<span aria-hidden="true">+</span>}
+        disabledFocusable
+      />
+    </CoreAIFluentProvider>,
+  );
+  const button = screen.getByRole('button', { name: 'Add' }).element();
+  expect(button.getAttribute('data-appearance')).toBe('subtle');
+  expect(button.getAttribute('data-size')).toBe('small');
+  expect(button.getAttribute('data-shape')).toBe('circular');
+  expect(button.getAttribute('data-icon-only')).toBe('');
+  expect(button.getAttribute('data-disabled-focusable')).toBe('');
+  expect(button.getAttribute('data-has-icon')).toBe('');
+  expect(button.hasAttribute('data-has-content')).toBe(false);
+  expect(getComputedStyle(button).minWidth).toBe('24px');
 });
 
 test('keeps disabled-focusable buttons in tab order without activating them', async () => {
@@ -232,6 +320,7 @@ test('forwards anchor refs and preserves disabled anchor behavior', async () => 
   );
   expect(anchorRef.current?.tagName).toBe('A');
   expect(anchorRef.current?.getAttribute('href')).toBe('#target');
+  expect(anchorRef.current).toHaveClass('fui-Button');
   const disabled = screen.getByRole('link', { name: 'Disabled link' });
   await expect.element(disabled).toHaveAttribute('aria-disabled', 'true');
   await expect.element(disabled).not.toHaveAttribute('href');

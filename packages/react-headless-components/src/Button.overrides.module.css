@@ -6,7 +6,9 @@
 @layer coreai-fluent, coreai-overrides;
 
 @layer coreai-overrides {
-  .root:where(:not([data-icon-only])) {
-    min-width: 40px;
+  .Button {
+    &:not([data-icon-only]) {
+      min-width: 40px;
+    }
   }
 }
