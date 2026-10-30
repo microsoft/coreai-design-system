@@ -117,6 +117,54 @@ shared fixtures' `parity-icon` slot rather than trying to inspect arbitrary chil
 The tests do not load the hosted Aptos fonts. The local static-preview check also encountered font
 CORS errors and used fallback fonts in both columns, so Aptos-specific geometry is not verified.
 
+## Source-to-CSS draft experiment
+
+The root [conversion script](../../scripts/convert-fluent-styles.mjs) reads the installed raw Fluent
+style modules. It uses the TypeScript parser, resolves literal objects and local constants, and
+supports imported tokens, typography, icon marker constants, and Griffel shorthand helpers.
+It never executes the input source. These helpers are build-time dev dependencies, not additions
+to the headless component runtime.
+
+Run from the repository root, choosing a separate directory for the drafts:
+
+```powershell
+npm run styles:draft -- --package @fluentui/react-button --component Button --out-dir .\style-drafts
+npm run styles:draft -- --package @fluentui/react-input --component Input --out-dir .\style-drafts
+npm run test:styles-draft
+```
+
+Each run writes `<Component>.draft.module.css` and `<Component>.draft.json`. Existing outputs are
+not overwritten unless `--overwrite` is passed. The report includes the source package/version,
+SHA-256, source lines, generated block names, declaration counts, and unsupported expressions.
+Exit `2` means partial output was written and requires review; exit `1` means a fatal error;
+exit `0` still means a draft, not a component ready for use.
+
+The trial independently compared parsed objects with the objects captured from the actual
+installed upstream factories:
+
+| Source        | Blocks | Expanded declarations retained | Explicit unsupported expressions |
+| ------------- | -----: | -----------------------------: | -------------------------------: |
+| Button 9.11.1 |     37 |                      276 / 299 |      8 legacy focus-helper calls |
+| Input 9.8.8   |     38 |                      142 / 142 |                                0 |
+
+Both generated files compiled through Vite's CSS Modules pipeline. These counts measure
+declaration transcription after object spreads and shorthand expansion, not visual parity.
+All 23 omitted Button declarations are inside the reported focus-helper calls. Other retained
+declarations matched the upstream objects exactly, including nested selectors and media rules.
+
+Draft classes preserve source hook/variant names, such as `.Input__useRootStyles__outlineInteractive`,
+so their origin is easy to find. They are intentionally not mapped automatically to `.Input`,
+slot classes, or data-state selectors. Empty variants remain visible in the output.
+
+Manual work still includes slot/state wiring, merging source blocks with the correct precedence,
+modern focus behavior, RTL and noflip handling, CoreAI overrides, and icon/cascade integration.
+Unknown expressions are omitted with diagnostics and `INCOMPLETE` block comments; an unknown
+spread may also change the meaning of retained declarations. Nonliteral style tables and
+unrecognized at-rules fail explicitly. Source explanatory comments are not copied.
+
+This is useful as a transcription starting point, not a replacement for component review.
+The working Button is unchanged, and no headless Input implementation is added by this experiment.
+
 ## License
 
 The Fluent-derived styling and this package are available under the MIT license:
