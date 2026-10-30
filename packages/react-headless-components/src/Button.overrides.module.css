@@ -1,0 +1,12 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Ported from packages/react-components/src/components/Button.styles.ts.
+ */
+
+@layer coreai-fluent, coreai-overrides;
+
+@layer coreai-overrides {
+  .root:where(:not([data-icon-only])) {
+    min-width: 40px;
+  }
+}

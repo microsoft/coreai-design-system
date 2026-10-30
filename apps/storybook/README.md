@@ -19,6 +19,20 @@ npm -w apps/storybook run dev
 
 Toolbar dropdowns toggle theme (CoreAI / Web / Teams / Teams v2.1) and Light / Dark mode.
 
+## Headless Button experiment
+
+**Experiments / Headless Button** compares the unchanged CoreAI Button with a hook-based
+headless Button styled through CSS Modules. Both columns use shared fixtures and the existing
+theme provider. The Comparison and Consumer Overrides stories include a button that reports
+selected computed-style differences at rest; Playground exposes the new Button's visual props.
+See the [experimental package README](../../packages/react-headless-components/README.md)
+for build commands, cascade layers, source versions, and test coverage gaps.
+
+Experimental stories are indexed directly from `src/stories/experiments/` in local development,
+separately from the generated production component inventory. Normal static builds exclude them.
+For an explicitly experimental static preview, set `COREAI_HEADLESS_BUTTON=1` before building;
+that preview is not a normal publishable build and intentionally does not pass `verify:build`.
+
 ## Scripts
 
 | Script                   | What it does                                                                                |

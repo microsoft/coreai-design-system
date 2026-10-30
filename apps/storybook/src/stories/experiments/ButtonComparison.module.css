@@ -1,0 +1,40 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+.examples {
+  display: grid;
+  gap: 12px;
+  max-width: 1000px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) repeat(2, minmax(180px, 1fr));
+  align-items: center;
+  gap: 16px;
+  min-height: 44px;
+}
+
+.row > div {
+  display: flex;
+  align-items: center;
+}
+
+.consumerRoot {
+  min-width: 120px;
+  border-radius: 3px;
+}
+
+.consumerIcon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.report {
+  display: block;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+  margin-block: 16px;
+}
