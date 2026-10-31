@@ -305,6 +305,12 @@ const config: StorybookConfig = {
       optimizeDeps: {
         include: [
           '@coreai-ds/react-components',
+          '@fluentui/react-headless-components-preview/button',
+          '@fluentui/react-headless-components-preview/field',
+          '@fluentui/react-headless-components-preview/input',
+          '@fluentui/react-headless-components-preview/label',
+          '@fluentui/react-headless-components-preview/link',
+          '@fluentui/react-headless-components-preview/textarea',
           'scheduler',
           'use-sync-external-store',
           'use-sync-external-store/shim',

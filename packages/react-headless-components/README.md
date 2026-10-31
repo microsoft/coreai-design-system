@@ -1,9 +1,10 @@
-# Experimental headless Button
+# Experimental headless components
 
-Private Button-only pilot. The production `@coreai-ds/react-components` package is unchanged.
+Private component migration pilot. Converted components are listed in the
+[public exports](./src/index.ts). The production `@coreai-ds/react-components` package is unchanged.
 
-The implementation calls Fluent's public `useButton` hook, styles the resolved root and icon
-slots, and calls `renderButton`. It does not call Fluent's Griffel styling hook.
+Each implementation calls Fluent's public component hook, styles the resolved slots, and calls
+the public render function. It does not call Fluent's Griffel styling hook.
 
 ## Run
 
@@ -16,10 +17,10 @@ npm --workspace packages/react-headless-components run build
 npm run storybook
 ```
 
-Open **Experiments / Headless Button / Comparison**. The toolbar's theme and light/dark settings
-apply to both columns. Both implementations receive the same fixtures. **Compare resting styles**
-reports selected root/icon computed properties and dimensions, including bundled-icon visibility.
-The Consumer Overrides story also shows the intentional change to ordinary CSS override priority.
+Open **Experiments / Headless &lt;Component&gt; / Comparison** for a converted component. The
+toolbar's theme and light/dark settings apply to both columns. Both implementations receive the
+same fixtures. Comparison stories report selected slot computed properties and dimensions at rest.
+Consumer Overrides stories also show the intentional change to ordinary CSS override priority.
 
 The experiments appear in local development only. Normal Storybook builds exclude them to
 preserve the production catalog. To build an experimental static preview in PowerShell:
@@ -31,18 +32,21 @@ Remove-Item Env:\COREAI_HEADLESS_BUTTON
 ```
 
 Do not publish that experimental build or run the normal `verify:build` against it; the production
-verifier deliberately rejects experiment entries.
+verifier deliberately rejects experiment entries. The original `COREAI_HEADLESS_BUTTON` flag
+enables the whole experiments directory, not just Button.
 
 Storybook and tests resolve the experimental package to source. Built-package consumers must
 load the emitted CSS once:
 
 ```tsx
 import { CoreAIFluentProvider } from '@coreai-ds/react-components';
-import { Button } from '@coreai-ds/react-headless-components';
+import { Button, Input, Textarea } from '@coreai-ds/react-headless-components';
 import '@coreai-ds/react-headless-components/styles.css';
 
 <CoreAIFluentProvider>
   <Button appearance="primary">Save</Button>
+  <Input aria-label="Name" placeholder="Name" />
+  <Textarea aria-label="Description" placeholder="Description" />
 </CoreAIFluentProvider>;
 ```
 
@@ -57,14 +61,26 @@ not a claim that the whole application bundle is Griffel-free.
 - Fluent source: [`useButtonStyles.styles.ts` in react-button 9.11.1](https://unpkg.com/@fluentui/react-button@9.11.1/lib/components/Button/useButtonStyles.styles.raw.js).
   The port is in `src/Button.module.css`; Microsoft copyright and MIT license notices are retained.
   The repository's [MIT code license](../../LICENSE-CODE) applies.
+- The first parallel batch uses the installed dependency snapshot at commit `51997c2`:
+  [Input styles in react-input 9.8.8](https://unpkg.com/@fluentui/react-input@9.8.8/lib/components/Input/useInputStyles.styles.raw.js)
+  and [Textarea styles in react-textarea 9.7.8](https://unpkg.com/@fluentui/react-textarea@9.7.8/lib/components/Textarea/useTextareaStyles.styles.raw.js).
+  Their base styles live in the corresponding component CSS Modules, separately from CoreAI
+  overrides and prop defaults. Headless remains pinned to `0.3.2`.
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
-- Normal cascade order: `coreai-fluent` layer, then `coreai-overrides`, then unlayered consumer CSS.
+- Normal cascade order: `fluent-components` layer, then `coreai-overrides`, then unlayered consumer CSS.
   Class-name concatenation does not establish priority.
+- Fluent-derived CSS uses `--fui-*` component custom properties. CoreAI-specific overrides keep
+  CoreAI naming; shared theme tokens and the stable `fui-*` slot markers are unchanged.
+- Every ported component CSS Module links from its header to the exact local `node_modules`
+  `.styles.raw.js` file used as its Fluent source. Use repository-relative links, not a
+  machine-specific absolute path. Override modules identify the Fluent baseline separately from
+  the CoreAI source; handwritten comparison-layout CSS is not an upstream port.
 - CSS Modules use `.Button` and `.Button__icon`, with native nesting and ordinary state selectors.
   Enabled interaction styles exclude disabled and disabled-focusable buttons rather than relying
-  on `:where()` to flatten specificity.
+  on `:where()` to flatten specificity. New components follow the same component/slot naming
+  convention rather than using `.root`.
 - Every component-owned slot also receives a stable, unstyled global marker: `fui-Button` on
   the root and `fui-Button__icon` on the icon slot. Exported `buttonClassNames` exposes these names
   for consumers; internal styling uses the scoped module classes instead.
@@ -75,20 +91,93 @@ not a claim that the whole application bundle is Griffel-free.
   adapter preserves their regular/filled hover behavior without adding a Griffel runtime import.
   Other Button styles stay layered.
 
-The recreated visual props are `appearance` (including `transparent`), `size`, and `shape`.
+For Button, the recreated visual props are `appearance` (including `transparent`), `size`, and `shape`.
 Defaults are secondary/medium/circular with CoreAI defaults enabled. Disabling component defaults
 restores rounded shape and Fluent's size-dependent minimum widths. Icon-only widths are unchanged.
 Size inherits the headless Button context; mixed old/new component-family contexts are not bridged.
 Arbitrary `customStyleHooks_unstable` overrides from the legacy provider are not invoked by this
 new styling pipeline; use CSS classes, slots, or inline styles for the experimental Button.
+Input and Textarea likewise do not invoke legacy custom style hooks or the internal provider
+`inputDefaultAppearance` override. Input's automatic copy action still composes the existing
+legacy `CopyButton`; converting that component is a separate job.
+Input also preserves the legacy `filled-darker` fallback even when component defaults are disabled.
+Its automatic copy action uses the supplied `value` or `defaultValue`, not subsequent uncontrolled
+edits. These inherited limitations are not corrected as part of the styling migration.
+Input and Textarea expose only current appearances. Deprecated shadow appearances, their CSS,
+compatibility diagnostics, and comparison fixtures are intentionally excluded from this package.
+
+## Conversion workflow
+
+Start with two independent workers in one worktree. Assign one component or tightly coupled
+family per worker, with explicit prerequisites and file ownership. Unsupported headless components
+remain deferred; do not recreate their behavior as part of a styling conversion.
+
+- The coordinating thread records the reference commit and installed Fluent/headless versions.
+  Workers read the legacy CoreAI wrapper, defaults, overrides, and Fluent style-selection logic,
+  not just the style objects. The legacy package stays read-only.
+- Follow calls to other component style hooks and styled subcomponents. For example, SearchBox
+  uses Input's styling foundation. Reuse an existing port where compatible rather than silently
+  dropping inherited styles or copying a second divergent foundation. Assign unfinished shared
+  dependencies before their consumers.
+- Each worker owns its component wrapper, base/override CSS Modules, comparison stories/fixtures,
+  and focused browser tests. The coordinator owns public exports, dependencies, lockfiles,
+  providers, shared utilities/configuration, shared documentation, and Git operations.
+- Workers read the [headless documentation index](https://storybooks.fluentui.dev/headless/llms.txt)
+  and relevant component, browser-support, and polyfill pages. The
+  [Fluent React documentation index](https://storybooks.fluentui.dev/react/llms.txt) describes the
+  component being converted. Online documentation may be newer than the pinned package; installed
+  public hooks, render functions, and types determine which APIs are available.
+- Different DOM **and modern browser APIs** are expected. Check native focus, form, sizing,
+  overlay, and navigation behavior relevant to the assignment before copying legacy selectors or
+  supporting code. Do not retain obsolete focus attributes, Tabster assumptions, or overlay
+  machinery merely to match the old implementation.
+- Convert directly into the final CSS Modules using the Button conventions. Keep source/version
+  attribution, license notices, and source comments alongside the translated rules. Adapt comments
+  only when their syntax or behavior changes; omit comments belonging to removed deprecated branches.
+  Use the `fluent-components` layer and `--fui-*` custom properties for Fluent-derived styles;
+  keep CoreAI-specific overrides in `coreai-overrides` with CoreAI naming.
+  Preserve refs, slots, consumer classes, defaults opt-out,
+  controlled/uncontrolled state, and callbacks.
+- Preserve the reference's actual behavior, not an inferred improvement. Check omitted versus
+  explicitly undefined props and existing composition rules. Do not port deprecated APIs or styles.
+  Report pre-existing problems separately; do not substitute a different parity oracle to hide
+  a behavioral change.
+- Share representative fixtures between comparison stories and focused tests. Compare bounded
+  computed-style properties, relevant slot dimensions, and meaningful interactions, not every CSS
+  declaration or the full upstream behavior matrix. Investigate surfaced differences; report
+  intentional differences and gaps rather than hiding them with broad exclusions.
+- Settle relevant pseudo-element animations as well as element transitions. Neutralize the pointer
+  before pure keyboard-focus checks and assert actual hover state; test combined hover/focus
+  separately. Check callbacks and form results, not just a changed native value. Smoke-check the
+  actual Storybook reports and interaction plays in addition to the browser-test fixtures.
+- Workers may format/lint their own files. The coordinator integrates exports, then runs the
+  combined focused tests, existing Button regressions, type checks, and builds. Serialize shared
+  validation to avoid unfinished-file, cache, and build-output interference. Return failures to
+  the owning worker.
+- Register newly imported headless entry points in both
+  [browser-test optimization](./vitest.config.ts) and
+  [Storybook optimization](../../apps/storybook/.storybook/main.ts). Dependency discovery must
+  not reload React modules in the middle of Browser Mode tests. Check a representative cold-cache
+  case after changing these entries, then run the focused suites.
+
+A worker's handoff includes changed files, source versions, modern browser API/polyfill findings,
+checks actually run, integration requirements, remaining differences, and coverage gaps.
+`Implementation-ready` is not verified completion. Complete a job only after integration checks
+pass. Use separate worktrees if shared-file contention or independent full builds justify the
+extra dependency and merge management.
 
 ## Modern browser behavior
 
-Focus styles use native `:focus-visible`, not the legacy focus-visible attribute/polyfill.
+Button focus styles use native `:focus-visible`, not the legacy focus-visible attribute/polyfill.
 Icon spacing uses logical properties for RTL. Forced-colors, reduced-motion, and the original
 Firefox focus-stroke adjustment are included in the CSS port.
 
-Button needs no overlay or focusgroup polyfill. Future components must follow the headless
+Input and Textarea use native `:focus-within` for their wrapper focus treatment and retain native
+form/editing behavior. Neither needs a component-specific overlay or focusgroup polyfill.
+Input's `field-sizing: content` is progressive enhancement; unsupported browsers keep ordinary
+input sizing. Textarea retains native rows and resize behavior rather than introducing autosizing.
+
+Button needs no overlay or focusgroup polyfill. Every conversion must follow the headless
 [browser-support](https://storybooks.fluentui.dev/headless/llms/overview-browser-support.txt) and
 [polyfill](https://storybooks.fluentui.dev/headless/llms/overview-polyfills-fallbacks.txt) contracts.
 In particular, native dialog/popover/anchor positioning replace parts of the old overlay pipeline,
@@ -96,8 +185,8 @@ but arrow-key `focusgroup` navigation still requires a consumer-supplied polyfil
 
 ## Practical parity coverage
 
-The focused Vitest Browser Mode suite uses Playwright Chromium and the same fixtures as Storybook.
-It compares a bounded list of computed properties, dimensions, and icon visibility across light
+The focused Vitest Browser Mode suites use Playwright Chromium and the same fixtures as Storybook.
+The Button suite compares a bounded list of computed properties, dimensions, and icon visibility across light
 and dark modes, appearances, sizes, shapes, icons, disabled states, anchors, hover, keyboard focus,
 and keyboard press. It also checks defaults opt-out, RTL spacing, consumer CSS priority, context
 sizing, refs, slot preservation, stable global slot markers, data-state attributes, and disabled
@@ -108,6 +197,21 @@ The Consumer Overrides fixture deliberately differs: ordinary CSS sets the headl
 to `120px`, radius to `3px`, and icon size to `16px`. Legacy Griffel rules can retain `40px`,
 circular radius, and `20px` icons. The test asserts the new consumer-override contract rather than
 requiring those differences to disappear.
+
+Input and Textarea add component-specific slot and pseudo-element comparisons, native text entry,
+controlled/uncontrolled values, callbacks, form semantics, read-only/disabled/invalid states,
+Field context, and consumer overrides. Input covers its inline labels, sizing/truncation, and
+copy composition; Textarea covers native row sizing and resize modes. Relevant interactions and
+combined focus/hover states are checked rather than comparing only resting fixtures.
+RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
+the selected RTL style assertions pass.
+
+Standalone Playwright Chromium replays also complete the Input Playground and Textarea Typing Flow
+stories with their callback and form assertions unchanged. The VS Code integrated preview showed
+a separate synthetic-input limitation: typed native values appeared without triggering callbacks,
+and inspection found React's value setter instead of Testing Library's value interceptor.
+Native typing in that preview works. No component workaround or weakened assertion was added for
+this preview-tool difference.
 
 This is not exhaustive. Gaps include automated screenshot/pixel comparison, Firefox/Safari,
 forced-colors and reduced-motion emulation, transition frames, pointer-down combinations,

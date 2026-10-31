@@ -1,0 +1,206 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Ported directly from @fluentui/react-textarea 9.7.8:
+ * Local source: [useTextareaStyles.styles.raw.js](../../../node_modules/@fluentui/react-textarea/lib/components/Textarea/useTextareaStyles.styles.raw.js).
+ * https://unpkg.com/@fluentui/react-textarea@9.7.8/lib/components/Textarea/useTextareaStyles.styles.raw.js
+ * The repository's LICENSE-CODE contains the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root (wrapper) slot. */
+  .Textarea {
+    display: inline-flex;
+    box-sizing: border-box;
+    position: relative;
+    /* Padding needed so the focus indicator does not overlap the resize handle.
+     * This should match the focus indicator size.
+     */
+    padding: 0 0 var(--strokeWidthThick);
+    margin: 0;
+    border-radius: var(--borderRadiusMedium);
+    vertical-align: top;
+
+    &:not([data-disabled]) {
+      /* This is all for the bottom focus border.
+       * It's supposed to be 2px flat all the way across and match the radius of the field's corners.
+       */
+      &::after {
+        box-sizing: border-box;
+        content: '';
+        position: absolute;
+        inset-inline: -1px;
+        bottom: -1px;
+        /* Maintaining the correct corner radius:
+         * Use the whole border-radius as the height and only put radii on the bottom corners.
+         * (Otherwise the radius would be automatically reduced to fit available space.)
+         * max() ensures the focus border still shows up even if borderRadiusMedium is set to 0.
+         */
+        height: max(var(--strokeWidthThick), var(--borderRadiusMedium));
+        border-bottom-left-radius: var(--borderRadiusMedium);
+        border-bottom-right-radius: var(--borderRadiusMedium);
+        /* Flat 2px border:
+         * By default border-bottom will cause little "horns" on the ends. The clip-path trims them off.
+         * This could use background: linear-gradient(...), but border-bottom makes the color easier to override.
+         */
+        border-bottom: var(--strokeWidthThick) solid var(--colorCompoundBrandStroke);
+        clip-path: inset(calc(100% - var(--strokeWidthThick)) 0 0);
+        /* Animation for focus OUT */
+        transform: scaleX(0);
+        transition-property: transform;
+        transition-duration: var(--durationUltraFast);
+        transition-delay: var(--curveAccelerateMid);
+
+        @media screen and (prefers-reduced-motion: reduce) {
+          transition-duration: 0.01ms;
+          transition-delay: 0.01ms;
+        }
+      }
+
+      &:focus-within {
+        outline: var(--strokeWidthThick) solid transparent;
+
+        &::after {
+          /* Animation for focus IN */
+          transform: scaleX(1);
+          transition-property: transform;
+          transition-duration: var(--durationNormal);
+          transition-delay: var(--curveDecelerateMid);
+
+          @media screen and (prefers-reduced-motion: reduce) {
+            transition-duration: 0.01ms;
+            transition-delay: 0.01ms;
+          }
+        }
+      }
+
+      &:focus-within:active::after {
+        /* This is if the user clicks the field again while it's already focused. */
+        border-bottom-color: var(--colorCompoundBrandStrokePressed);
+      }
+
+      &[data-appearance='filled-darker'],
+      &[data-appearance='filled-lighter'] {
+        border: var(--strokeWidthThin) solid var(--colorTransparentStroke);
+
+        &:hover,
+        &:focus-within {
+          border-color: var(--colorTransparentStrokeInteractive);
+        }
+      }
+
+      &[data-appearance='filled-darker'] {
+        background-color: var(--colorNeutralBackground3);
+      }
+
+      &[data-appearance='filled-lighter'] {
+        background-color: var(--colorNeutralBackground1);
+      }
+
+      &[data-appearance='outline'] {
+        background-color: var(--colorNeutralBackground1);
+        border: var(--strokeWidthThin) solid var(--colorNeutralStroke1);
+        border-bottom-color: var(--colorNeutralStrokeAccessible);
+
+        /* Griffel orders the focus-within bucket before hover and active. */
+        &:focus-within {
+          border: var(--strokeWidthThin) solid var(--colorNeutralStroke1Pressed);
+          border-bottom-color: var(--colorCompoundBrandStroke);
+        }
+
+        &:hover {
+          border: var(--strokeWidthThin) solid var(--colorNeutralStroke1Hover);
+          border-bottom-color: var(--colorNeutralStrokeAccessibleHover);
+        }
+
+        &:active {
+          border: var(--strokeWidthThin) solid var(--colorNeutralStroke1Pressed);
+          border-bottom-color: var(--colorNeutralStrokeAccessiblePressed);
+        }
+      }
+
+      &[data-invalid='']:not(:focus-within),
+      &[data-invalid='']:hover:not(:focus-within) {
+        border-color: var(--colorPaletteRedBorder2);
+      }
+    }
+
+    &[data-disabled] {
+      background-color: var(--colorTransparentBackground);
+      border: var(--strokeWidthThin) solid var(--colorNeutralStrokeDisabled);
+
+      @media (forced-colors: active) {
+        border-color: GrayText;
+      }
+
+      .Textarea__textarea {
+        color: var(--colorNeutralForegroundDisabled);
+        cursor: not-allowed;
+
+        &::placeholder {
+          color: var(--colorNeutralForegroundDisabled);
+        }
+      }
+    }
+
+    /* The padding adds both content and regular padding from the design spec.
+     * The native resize handle is not affected by changing the padding of the root.
+     */
+    &[data-size='small'] .Textarea__textarea {
+      min-height: 40px;
+      max-height: 200px;
+      padding: var(--spacingVerticalXS)
+        calc(var(--spacingHorizontalSNudge) + var(--spacingHorizontalXXS));
+      font-size: var(--fontSizeBase200);
+      line-height: var(--lineHeightBase200);
+    }
+
+    &[data-size='large'] .Textarea__textarea {
+      min-height: 64px;
+      max-height: 320px;
+      padding: var(--spacingVerticalS) calc(var(--spacingHorizontalM) + var(--spacingHorizontalXXS));
+      font-size: var(--fontSizeBase400);
+      line-height: var(--lineHeightBase400);
+    }
+
+    /* Styles for the textarea's resize property. */
+    &[data-resize='horizontal'] .Textarea__textarea {
+      resize: horizontal;
+    }
+
+    &[data-resize='vertical'] .Textarea__textarea {
+      resize: vertical;
+    }
+
+    &[data-resize='both'] .Textarea__textarea {
+      resize: both;
+    }
+  }
+
+  /* Styles for the textarea slot. */
+  .Textarea__textarea {
+    border-style: none;
+    margin: 0;
+    background-color: transparent;
+    box-sizing: border-box;
+    color: var(--colorNeutralForeground1);
+    flex-grow: 1;
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+    height: 100%;
+    min-height: 52px;
+    max-height: 260px;
+    padding: var(--spacingVerticalSNudge)
+      calc(var(--spacingHorizontalMNudge) + var(--spacingHorizontalXXS));
+    outline-style: none;
+    resize: none;
+
+    &::placeholder {
+      color: var(--colorNeutralForeground4);
+      opacity: 1;
+    }
+  }
+}

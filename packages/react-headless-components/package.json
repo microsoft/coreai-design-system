@@ -2,7 +2,7 @@
   "name": "@coreai-ds/react-headless-components",
   "version": "0.0.0",
   "private": true,
-  "description": "Experimental CoreAI Button built with Fluent headless behavior and CSS Modules.",
+  "description": "Experimental CoreAI components built with Fluent headless behavior and CSS Modules.",
   "license": "MIT",
   "type": "module",
   "sideEffects": [

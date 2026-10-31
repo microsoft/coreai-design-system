@@ -18,7 +18,15 @@ export default defineConfig({
     dedupe: ['react', 'react-dom'],
   },
   optimizeDeps: {
-    include: ['react/jsx-dev-runtime'],
+    include: [
+      'react/jsx-dev-runtime',
+      '@fluentui/react-headless-components-preview/button',
+      '@fluentui/react-headless-components-preview/field',
+      '@fluentui/react-headless-components-preview/input',
+      '@fluentui/react-headless-components-preview/label',
+      '@fluentui/react-headless-components-preview/link',
+      '@fluentui/react-headless-components-preview/textarea',
+    ],
   },
   test: {
     include: ['src/**/*.test.tsx'],

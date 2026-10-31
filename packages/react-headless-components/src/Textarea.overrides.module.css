@@ -1,0 +1,9 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * CoreAI's Textarea wrapper changes only the appearance default in Textarea.tsx.
+ * CoreAI source: [Textarea.ts](../../react-components/src/components/Textarea.ts).
+ * Fluent baseline: [useTextareaStyles.styles.raw.js](../../../node_modules/@fluentui/react-textarea/lib/components/Textarea/useTextareaStyles.styles.raw.js).
+ * There are no additional CoreAI Textarea style-hook overrides to port.
+ */
+
+@layer fluent-components, coreai-overrides;

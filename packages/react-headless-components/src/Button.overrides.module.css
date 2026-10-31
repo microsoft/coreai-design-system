@@ -1,9 +1,10 @@
 /* Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
- * Ported from packages/react-components/src/components/Button.styles.ts.
+ * CoreAI source: [Button.styles.ts](../../react-components/src/components/Button.styles.ts).
+ * Fluent baseline: [useButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-button/lib/components/Button/useButtonStyles.styles.raw.js).
  */
 
-@layer coreai-fluent, coreai-overrides;
+@layer fluent-components, coreai-overrides;
 
 @layer coreai-overrides {
   .Button {

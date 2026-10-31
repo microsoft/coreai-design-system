@@ -1,15 +1,16 @@
 /* Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
  * Ported from @fluentui/react-button 9.11.1, useButtonStyles.styles.ts.
+ * Local source: [useButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-button/lib/components/Button/useButtonStyles.styles.raw.js).
  * See README.md for source, license, and intentional focus-selector changes.
  */
 
-@layer coreai-fluent, coreai-overrides;
+@layer fluent-components, coreai-overrides;
 
-@layer coreai-fluent {
+@layer fluent-components {
   .Button {
-    --coreai-button-focus-radius: var(--borderRadiusMedium);
-    --coreai-button-focus-stroke: var(--strokeWidthThin);
+    --fui-button-focus-radius: var(--borderRadiusMedium);
+    --fui-button-focus-stroke: var(--strokeWidthThin);
 
     align-items: center;
     box-sizing: border-box;
@@ -30,6 +31,7 @@
     font-size: var(--fontSizeBase300);
     font-weight: var(--fontWeightSemibold);
     line-height: var(--lineHeightBase300);
+    /* Transition styles */
     transition-duration: var(--durationFaster);
     transition-property: background, border, color;
     transition-timing-function: var(--curveEasyEase);
@@ -50,6 +52,7 @@
         outline-style: none;
       }
 
+      /* Appearance variations */
       &[data-appearance='outline'] {
         background-color: var(--colorTransparentBackground);
 
@@ -86,6 +89,7 @@
       &:focus-visible:not(:active) {
         border-color: var(--colorStrokeFocus2);
 
+        /* High contrast styles */
         @media (forced-colors: active) {
           border-color: ButtonText;
         }
@@ -179,8 +183,9 @@
       }
     }
 
+    /* Size variations */
     &[data-size='small'] {
-      --coreai-button-focus-radius: var(--borderRadiusSmall);
+      --fui-button-focus-radius: var(--borderRadiusSmall);
 
       min-width: 64px;
       padding: 3px var(--spacingHorizontalS);
@@ -193,12 +198,12 @@
       }
 
       .Button__icon {
-        --coreai-button-icon-spacing: var(--spacingHorizontalXS);
+        --fui-button-icon-spacing: var(--spacingHorizontalXS);
       }
     }
 
     &[data-size='large'] {
-      --coreai-button-focus-radius: var(--borderRadiusLarge);
+      --fui-button-focus-radius: var(--borderRadiusLarge);
 
       min-width: 96px;
       padding: 8px var(--spacingHorizontalL);
@@ -217,18 +222,20 @@
       }
     }
 
+    /* Shape variations */
     &[data-shape='circular'] {
-      --coreai-button-focus-radius: var(--borderRadiusCircular);
+      --fui-button-focus-radius: var(--borderRadiusCircular);
 
       border-radius: var(--borderRadiusCircular);
     }
 
     &[data-shape='square'] {
-      --coreai-button-focus-radius: var(--borderRadiusNone);
+      --fui-button-focus-radius: var(--borderRadiusNone);
 
       border-radius: var(--borderRadiusNone);
     }
 
+    /* Disabled base styles */
     &:is([data-disabled], [data-disabled-focusable]) {
       background-color: var(--colorNeutralBackgroundDisabled);
       border-color: var(--colorNeutralStrokeDisabled);
@@ -259,6 +266,7 @@
         border-color: var(--colorStrokeFocus2);
       }
 
+      /* High contrast styles */
       @media (forced-colors: active) {
         &[data-appearance] {
           background-color: ButtonFace;
@@ -276,11 +284,12 @@
       }
     }
 
+    /* Focus styles */
     &:focus-visible {
-      border-radius: var(--coreai-button-focus-radius);
+      border-radius: var(--fui-button-focus-radius);
       border-width: 1px;
       outline: var(--strokeWidthThick) solid var(--colorTransparentStroke);
-      box-shadow: 0 0 0 var(--coreai-button-focus-stroke) var(--colorStrokeFocus2) inset;
+      box-shadow: 0 0 0 var(--fui-button-focus-stroke) var(--colorStrokeFocus2) inset;
       z-index: 1;
     }
 
@@ -288,19 +297,21 @@
       outline-style: none;
     }
 
+    /* Primary focus styles */
     &[data-appearance='primary']:focus-visible {
       box-shadow:
         var(--shadow2),
-        0 0 0 var(--coreai-button-focus-stroke) var(--colorStrokeFocus2) inset,
+        0 0 0 var(--fui-button-focus-stroke) var(--colorStrokeFocus2) inset,
         0 0 0 var(--strokeWidthThick) var(--colorNeutralForegroundOnBrand) inset;
 
       &:hover {
         box-shadow:
           var(--shadow2),
-          0 0 0 var(--coreai-button-focus-stroke) var(--colorStrokeFocus2) inset;
+          0 0 0 var(--fui-button-focus-stroke) var(--colorStrokeFocus2) inset;
       }
     }
 
+    /* Icon-only size variations */
     &[data-icon-only] {
       &[data-size='small'] {
         padding: 1px;
@@ -321,25 +332,30 @@
       }
     }
 
+    /* Icon position variations */
     &[data-has-content][data-icon-position='before'] .Button__icon {
-      margin-inline-end: var(--coreai-button-icon-spacing);
+      margin-inline-end: var(--fui-button-icon-spacing);
     }
 
     &[data-has-content][data-icon-position='after'] .Button__icon {
-      margin-inline-start: var(--coreai-button-icon-spacing);
+      margin-inline-start: var(--fui-button-icon-spacing);
     }
 
     @media screen and (prefers-reduced-motion: reduce) {
       transition-duration: 0.01ms;
     }
 
+    /* BUGFIX: Mozilla specific styles (Mozilla BugID: 1857642).
+     * Firefox has a box-shadow sizing issue at some zoom levels.
+     * This ensures the inset box-shadow is uniform without affecting other browsers.
+     */
     @supports (-moz-appearance: button) {
-      --coreai-button-focus-stroke: calc(var(--strokeWidthThin) + 0.25px);
+      --fui-button-focus-stroke: calc(var(--strokeWidthThin) + 0.25px);
     }
   }
 
   .Button__icon {
-    --coreai-button-icon-spacing: var(--spacingHorizontalSNudge);
+    --fui-button-icon-spacing: var(--spacingHorizontalSNudge);
 
     align-items: center;
     display: inline-flex;
