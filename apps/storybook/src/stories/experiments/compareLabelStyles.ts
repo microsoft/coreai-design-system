@@ -53,10 +53,7 @@ export function getComparisonLabel(
   };
 }
 
-export function captureLabelStyles({
-  root,
-  required,
-}: ComparisonLabel): Record<string, string> {
+export function captureLabelStyles({ root, required }: ComparisonLabel): Record<string, string> {
   const values: Record<string, string> = {};
   for (const [slot, element, properties] of [
     ['root', root, rootProperties],

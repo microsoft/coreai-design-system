@@ -8,7 +8,7 @@
 @layer fluent-components, coreai-overrides;
 
 @layer fluent-components {
-  /* Styles for the label. */
+  /* Styles for the label */
   .Label {
     font-family: var(--fontFamilyBase);
     color: var(--colorNeutralForeground1);

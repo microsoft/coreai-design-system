@@ -1,0 +1,79 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Handwritten experiment layout and unlayered consumer overrides; not an upstream style port.
+ */
+
+.examples {
+  display: grid;
+  gap: 16px;
+  max-width: 1080px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) repeat(2, minmax(220px, 1fr));
+  align-items: center;
+  gap: 16px;
+  min-height: 48px;
+}
+
+.cell {
+  min-width: 0;
+}
+
+.customThumb {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-color: currentColor;
+  border-radius: 50%;
+}
+
+.consumerRoot {
+  align-items: center;
+}
+
+.consumerInput {
+  width: 68px;
+  cursor: crosshair;
+}
+
+.consumerIndicator {
+  background-color: rgb(20, 80, 120);
+  color: rgb(250, 240, 200);
+  border-radius: 3px;
+  border-width: 2px;
+  font-size: 16px;
+  width: 52px;
+  height: 24px;
+}
+
+.consumerLabel {
+  color: rgb(20, 80, 120);
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.consumerRequired {
+  color: rgb(40, 110, 60);
+  padding-inline-start: 10px;
+}
+
+.report {
+  display: block;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+  margin-block: 16px;
+}
+
+.playground {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  max-width: 480px;
+}
+
+.pointerParking {
+  width: 24px;
+  height: 24px;
+}

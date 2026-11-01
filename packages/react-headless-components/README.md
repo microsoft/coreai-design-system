@@ -66,6 +66,16 @@ not a claim that the whole application bundle is Griffel-free.
   and [Textarea styles in react-textarea 9.7.8](https://unpkg.com/@fluentui/react-textarea@9.7.8/lib/components/Textarea/useTextareaStyles.styles.raw.js).
   Their base styles live in the corresponding component CSS Modules, separately from CoreAI
   overrides and prop defaults. Headless remains pinned to `0.3.2`.
+- The next batch uses
+  [Label styles in react-label 9.4.6](https://unpkg.com/@fluentui/react-label@9.4.6/lib/components/Label/useLabelStyles.styles.raw.js)
+  and [Image styles in react-image 9.4.6](https://unpkg.com/@fluentui/react-image@9.4.6/lib/components/Image/useImageStyles.styles.raw.js).
+  Neither has additional CoreAI style overrides. Label's required and disabled props are visual;
+  the associated control owns validation and disabled behavior. Image retains its supported shadow
+  prop and native image semantics.
+- The form-control batch uses
+  [Checkbox styles in react-checkbox 9.6.6](https://unpkg.com/@fluentui/react-checkbox@9.6.6/lib/components/Checkbox/useCheckboxStyles.styles.raw.js)
+  and [Switch styles in react-switch 9.7.7](https://unpkg.com/@fluentui/react-switch@9.7.7/lib/components/Switch/useSwitchStyles.styles.raw.js).
+  Both reuse the completed Label component rather than duplicating its styling foundation.
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -90,6 +100,12 @@ not a claim that the whole application bundle is Griffel-free.
 - Existing Fluent bundled icons ship unlayered visibility rules. A narrow, unlayered descendant
   adapter preserves their regular/filled hover behavior without adding a Griffel runtime import.
   Other Button styles stay layered.
+- Switch's default thumb uses the public `@fluentui/react-icons/headless/svg/circle` entry.
+  The pinned icon dependency supplies the original CircleFilled glyph without Griffel styling;
+  a standalone import check verifies that this entry loads no Griffel modules.
+- Checkbox's default indicators use the same package's headless SVG checkmark, square, and circle
+  entries. Its label binding uses public `slot.optional` from `@fluentui/react-utilities`.
+  Standalone checks verify these glyph and utility imports also load no Griffel modules.
 
 For Button, the recreated visual props are `appearance` (including `transparent`), `size`, and `shape`.
 Defaults are secondary/medium/circular with CoreAI defaults enabled. Disabling component defaults
@@ -106,7 +122,38 @@ edits. These inherited limitations are not corrected as part of the styling migr
 Input and Textarea expose only current appearances. Deprecated shadow appearances, their CSS,
 compatibility diagnostics, and comparison fixtures are intentionally excluded from this package.
 
+Image inherits Fluent's native-property filter: `decoding`, `sizes`, and `referrerPolicy` are accepted
+by its TypeScript props but are not forwarded to the native image in either implementation.
+`loading`, `srcSet`, `crossOrigin`, and width/height are preserved. Tests explicitly compare this
+omission with the legacy reference; adding native support is a separate dependency/behavior change,
+not part of this styling migration.
+
 ## Conversion workflow
+
+### API policy
+
+Use current, supported public APIs from the installed headless package. Fluent v9 style sources
+are a visual reference, not a template for component behavior or compatibility plumbing.
+Do not author new code against deprecated or legacy APIs, including `state.components`,
+deprecated `getSlots` helpers, or internal base hooks. Use the public hook/render pipeline and
+current slot APIs such as `slot.always`, `slot.optional`, and `assertSlots`.
+Components used as custom slots expose the public `ForwardRefComponent` type, matching headless's
+current ref contract. Slot element selection belongs in the slot resolver, not `state.components`.
+Checkbox and Switch keep the primitive's native label slot contract. The shared `resolveLabelSlot`
+helper uses a typed public slot render function to render the styled Label, preserving resolved
+props, refs, caller render functions, and required content without changing compatibility registries.
+
+Preserve the current headless slot, ref, and accessibility contracts. Reuse local styling
+foundations only through type-safe current APIs; do not use casts to force an incompatible slot
+replacement. Public, non-deprecated, style-free utility and glyph helpers are allowed when needed.
+Current headless and native-browser behavior takes precedence over reproducing old implementation
+quirks. Document intentional visual or behavioral differences instead of recreating obsolete
+markup, focus machinery, or compatibility branches to make comparisons pass.
+
+The existing theme/defaults provider bridge is an explicit temporary pilot boundary, not permission
+to introduce deprecated APIs or new dependencies on old styled component implementations.
+
+### Worker process
 
 Start with two independent workers in one worktree. Assign one component or tightly coupled
 family per worker, with explicit prerequisites and file ownership. Unsupported headless components
@@ -138,10 +185,11 @@ remain deferred; do not recreate their behavior as part of a styling conversion.
   keep CoreAI-specific overrides in `coreai-overrides` with CoreAI naming.
   Preserve refs, slots, consumer classes, defaults opt-out,
   controlled/uncontrolled state, and callbacks.
-- Preserve the reference's actual behavior, not an inferred improvement. Check omitted versus
-  explicitly undefined props and existing composition rules. Do not port deprecated APIs or styles.
-  Report pre-existing problems separately; do not substitute a different parity oracle to hide
-  a behavioral change.
+- Preserve current headless behavior and the intended CoreAI visual contract. Check omitted versus
+  explicitly undefined visual props and supported composition rules. Do not port deprecated APIs
+  or styles, or recreate old behavior in conflict with the API policy above. Report dependency
+  limitations and intentional differences explicitly; do not change parity expectations merely
+  to hide an unintended regression.
 - Share representative fixtures between comparison stories and focused tests. Compare bounded
   computed-style properties, relevant slot dimensions, and meaningful interactions, not every CSS
   declaration or the full upstream behavior matrix. Investigate surfaced differences; report
@@ -154,6 +202,9 @@ remain deferred; do not recreate their behavior as part of a styling conversion.
   combined focused tests, existing Button regressions, type checks, and builds. Serialize shared
   validation to avoid unfinished-file, cache, and build-output interference. Return failures to
   the owning worker.
+- Wait until every batch fixture import and public export is wired before starting a browser run.
+  Vite's dependency scanner scans all configured test entries, even when the command selects a
+  single file. An unfinished sibling fixture can prevent the selected tests from loading.
 - Register newly imported headless entry points in both
   [browser-test optimization](./vitest.config.ts) and
   [Storybook optimization](../../apps/storybook/.storybook/main.ts). Dependency discovery must
@@ -203,6 +254,9 @@ controlled/uncontrolled values, callbacks, form semantics, read-only/disabled/in
 Field context, and consumer overrides. Input covers its inline labels, sizing/truncation, and
 copy composition; Textarea covers native row sizing and resize modes. Relevant interactions and
 combined focus/hover states are checked rather than comparing only resting fixtures.
+Label covers typography, required-slot styling, native association, and consumer overrides.
+Image uses deterministic inline fixtures to compare fitting, shape, border, shadow, and dimensions
+while preserving alt text, intrinsic sizing, and native image events.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 

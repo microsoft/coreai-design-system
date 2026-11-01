@@ -28,7 +28,9 @@
   },
   "dependencies": {
     "@coreai-ds/react-components": "*",
-    "@fluentui/react-headless-components-preview": "0.3.2"
+    "@fluentui/react-headless-components-preview": "0.3.2",
+    "@fluentui/react-icons": "2.0.343",
+    "@fluentui/react-utilities": "9.27.0"
   },
   "peerDependencies": {
     "react": ">=16.14.0 <20.0.0"
