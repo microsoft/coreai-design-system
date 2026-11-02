@@ -101,6 +101,11 @@ not a claim that the whole application bundle is Griffel-free.
   and [SearchBox styles in react-search 9.4.8](https://unpkg.com/@fluentui/react-search@9.4.8/lib/components/SearchBox/useSearchBoxStyles.styles.raw.js).
   SearchBox composes the completed Input CSS slot foundation instead of copying a second Input
   style port. Avatar reuses the completed PresenceBadge through a public slot render function.
+- The derived-button/navigation batch uses the installed snapshot at commit `66f1b04`:
+  the [Button family in react-button 9.11.1](https://unpkg.com/@fluentui/react-button@9.11.1/lib/components/Button/useButtonStyles.styles.raw.js)
+  and [Breadcrumb family in react-breadcrumb 9.4.8](https://unpkg.com/@fluentui/react-breadcrumb@9.4.8/lib/components/Breadcrumb/useBreadcrumbStyles.styles.raw.js).
+  CompoundButton, ToggleButton, MenuButton, and BreadcrumbButton compose the completed Button
+  CSS foundation. SplitButton reuses styled buttons through current public slot render functions.
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -191,6 +196,11 @@ as the current headless badge does. These differences remain explicit in compari
 SearchBox keeps its medium default rather than inheriting Field size. Its hook-controlled native
 input retains the installed form-reset behavior; no second value model or reset shim is added.
 
+Derived buttons retain the actual wrapper defaults, including explicit `undefined` shape falling
+back to rounded. SplitButton defaults to medium without inheriting the surrounding Button size.
+Breadcrumb retains native Tab navigation; the pinned arrow mode adds no focusgroup machinery.
+Its native button defaults to submit, as upstream does; use `type="button"` for non-submit actions.
+
 ## Conversion workflow
 
 ### API policy
@@ -231,6 +241,9 @@ remain deferred; do not recreate their behavior as part of a styling conversion.
   uses Input's styling foundation. Reuse an existing port where compatible rather than silently
   dropping inherited styles or copying a second divergent foundation. Assign unfinished shared
   dependencies before their consumers.
+- CSS Modules `composes` can emit the same foundation selectors in several component sheets.
+  Family-specific overrides must retain the required resolved-state specificity so later
+  foundation copies do not undo them. Verify the families together, not just in isolated imports.
 - Each worker owns its component wrapper, base/override CSS Modules, comparison stories/fixtures,
   and focused browser tests. The coordinator owns public exports, dependencies, lockfiles,
   providers, shared utilities/configuration, shared documentation, and Git operations.
@@ -364,6 +377,10 @@ animation timing/keyframes, refs, and loading/completion/reload state.
 Avatar adds identity/image fallback, named-color categories, active rings, presence composition,
 current accessible labels, and logical masks/offsets. SearchBox adds composed Input styling,
 query/dismiss callbacks, native submission/reset boundaries, and focus/spacing transitions.
+CompoundButton, ToggleButton, MenuButton, and SplitButton cover inherited Button styling,
+secondary content, checked interaction priority, native menu composition, separate split actions,
+slot/ref adapters, and native forms/links. Breadcrumb covers navigation/current-page semantics,
+native Tab and hash navigation, custom content/dividers, refs, and actual submitter/FormData events.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 

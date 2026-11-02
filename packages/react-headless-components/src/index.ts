@@ -42,6 +42,30 @@ export {
   type AvatarSlots,
 } from './Avatar.js';
 export { Badge, badgeClassNames, type BadgeProps, type BadgeSlots } from './Badge.js';
+export {
+  Breadcrumb,
+  breadcrumbClassNames,
+  type BreadcrumbProps,
+  type BreadcrumbSlots,
+} from './Breadcrumb.js';
+export {
+  BreadcrumbButton,
+  breadcrumbButtonClassNames,
+  type BreadcrumbButtonProps,
+  type BreadcrumbButtonSlots,
+} from './BreadcrumbButton.js';
+export {
+  BreadcrumbDivider,
+  breadcrumbDividerClassNames,
+  type BreadcrumbDividerProps,
+  type BreadcrumbDividerSlots,
+} from './BreadcrumbDivider.js';
+export {
+  BreadcrumbItem,
+  breadcrumbItemClassNames,
+  type BreadcrumbItemProps,
+  type BreadcrumbItemSlots,
+} from './BreadcrumbItem.js';
 export { Button, buttonClassNames, type ButtonProps } from './Button.js';
 export {
   Checkbox,
@@ -50,6 +74,12 @@ export {
   type CheckboxProps,
   type CheckboxSlots,
 } from './Checkbox.js';
+export {
+  CompoundButton,
+  compoundButtonClassNames,
+  type CompoundButtonProps,
+  type CompoundButtonSlots,
+} from './CompoundButton.js';
 export { CounterBadge, counterBadgeClassNames, type CounterBadgeProps } from './CounterBadge.js';
 export {
   Divider,
@@ -65,6 +95,12 @@ export { Image, imageClassNames, type ImageProps } from './Image.js';
 export { Input, inputClassNames, type InputOnChangeData, type InputProps } from './Input.js';
 export { Label, labelClassNames, type LabelProps, type LabelSlots } from './Label.js';
 export { Link, linkClassNames, type LinkProps, type LinkSlots } from './Link.js';
+export {
+  MenuButton,
+  menuButtonClassNames,
+  type MenuButtonProps,
+  type MenuButtonSlots,
+} from './MenuButton.js';
 export {
   PresenceBadge,
   presenceBadgeClassNames,
@@ -120,6 +156,12 @@ export {
   type SkeletonItemSlots,
 } from './SkeletonItem.js';
 export { Slider, sliderClassNames, type SliderProps, type SliderSlots } from './Slider.js';
+export {
+  SplitButton,
+  splitButtonClassNames,
+  type SplitButtonProps,
+  type SplitButtonSlots,
+} from './SplitButton.js';
 export { Spinner, spinnerClassNames, type SpinnerProps, type SpinnerSlots } from './Spinner.js';
 export {
   Switch,
@@ -135,3 +177,9 @@ export {
   type TextareaProps,
   type TextareaSlots,
 } from './Textarea.js';
+export {
+  ToggleButton,
+  toggleButtonClassNames,
+  type ToggleButtonProps,
+  type ToggleButtonSlots,
+} from './ToggleButton.js';

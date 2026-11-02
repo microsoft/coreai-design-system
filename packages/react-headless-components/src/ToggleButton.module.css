@@ -1,0 +1,261 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Ported from @fluentui/react-button 9.11.1.
+ * Local source: [useToggleButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-button/lib/components/ToggleButton/useToggleButtonStyles.styles.raw.js).
+ * Inherited Button baseline: [useButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-button/lib/components/Button/useButtonStyles.styles.raw.js).
+ * [Button.module.css](./Button.module.css) supplies the delegated root/icon baseline.
+ * CoreAI defaults/override: [ToggleButton.ts](../../react-components/src/components/ToggleButton.ts)
+ * and [Button.styles.ts](../../react-components/src/components/Button.styles.ts), reference 66f1b04.
+ * Focus selectors use native :focus-visible instead of legacy focus attributes.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .ToggleButton {
+    composes: Button from './Button.module.css';
+
+    &[data-checked] {
+      /* Appearance variations */
+      &[data-appearance='outline']:not([data-accessible], :focus-visible) {
+        border-width: var(--strokeWidthThicker);
+      }
+
+      &:not([data-disabled], [data-disabled-focusable])[data-appearance] {
+        background-color: var(--colorNeutralBackground1Selected);
+        border-color: var(--colorNeutralStroke1);
+        color: var(--colorNeutralForeground1Selected);
+
+        &:hover {
+          background-color: var(--colorNeutralBackground1Hover);
+          border-color: var(--colorNeutralStroke1Hover);
+          color: var(--colorNeutralForeground1Hover);
+        }
+
+        &:is(:hover:active, :active:focus-visible) {
+          background-color: var(--colorNeutralBackground1Pressed);
+          border-color: var(--colorNeutralStroke1Pressed);
+          color: var(--colorNeutralForeground1Pressed);
+        }
+
+        &[data-appearance='outline'] {
+          background-color: var(--colorTransparentBackgroundSelected);
+          border-color: var(--colorNeutralStroke1);
+
+          &:hover {
+            background-color: var(--colorTransparentBackgroundHover);
+            border-color: var(--colorNeutralStroke1Hover);
+          }
+
+          &:is(:hover:active, :active:focus-visible) {
+            background-color: var(--colorTransparentBackgroundPressed);
+            border-color: var(--colorNeutralStroke1Pressed);
+          }
+
+          &:focus-visible:not(:active, :hover) {
+            border-color: var(--colorNeutralStroke1);
+          }
+        }
+
+        &[data-appearance='primary'] {
+          background-color: var(--colorBrandBackgroundSelected);
+          border-color: transparent;
+          color: var(--colorNeutralForegroundOnBrand);
+
+          &:hover {
+            background-color: var(--colorBrandBackgroundHover);
+          }
+
+          &:is(:hover:active, :active:focus-visible) {
+            background-color: var(--colorBrandBackgroundPressed);
+          }
+
+          &:is(:hover, :active:focus-visible) {
+            border-color: transparent;
+            color: var(--colorNeutralForegroundOnBrand);
+          }
+        }
+
+        &[data-appearance='subtle'] {
+          background-color: var(--colorSubtleBackgroundSelected);
+          border-color: transparent;
+          color: var(--colorNeutralForeground2Selected);
+
+          &:hover {
+            background-color: var(--colorSubtleBackgroundHover);
+            color: var(--colorNeutralForeground2Hover);
+          }
+
+          &:is(:hover:active, :active:focus-visible) {
+            background-color: var(--colorSubtleBackgroundPressed);
+            color: var(--colorNeutralForeground2Pressed);
+          }
+
+          &:is(:hover, :active:focus-visible) {
+            border-color: transparent;
+          }
+        }
+
+        &[data-appearance='transparent'] {
+          background-color: var(--colorTransparentBackgroundSelected);
+          border-color: transparent;
+          color: var(--colorNeutralForeground2BrandSelected);
+
+          &:hover {
+            background-color: var(--colorTransparentBackgroundHover);
+            color: var(--colorNeutralForeground2BrandHover);
+          }
+
+          &:is(:hover:active, :active:focus-visible) {
+            background-color: var(--colorTransparentBackgroundPressed);
+            color: var(--colorNeutralForeground2BrandPressed);
+          }
+
+          &:is(:hover, :active:focus-visible) {
+            border-color: transparent;
+          }
+        }
+
+        &:not([data-appearance='outline'], :hover):focus-visible:not(:active),
+        &[data-appearance='primary']:focus-visible:not(:active) {
+          border-color: var(--colorStrokeFocus2);
+        }
+
+        &[data-appearance='transparent']:not([data-accessible]) .ToggleButton__icon,
+        &[data-appearance='subtle']:not([data-accessible]):not(:hover, :active:focus-visible)
+          .ToggleButton__icon {
+          color: var(--colorNeutralForeground2BrandSelected);
+        }
+
+        /* Opt-in accessible checked styles */
+        &[data-accessible] {
+          background-color: var(--colorBrandBackground);
+          border-color: transparent;
+          color: var(--colorNeutralForegroundOnBrand);
+
+          &:hover {
+            background-color: var(--colorBrandBackgroundHover);
+          }
+
+          &:is(:hover:active, :active:focus-visible) {
+            background-color: var(--colorBrandBackgroundPressed);
+          }
+
+          &:is(:hover, :active:focus-visible) {
+            border-color: transparent;
+            color: var(--colorNeutralForegroundOnBrand);
+          }
+
+          &:focus-visible:not(:active) {
+            border-color: var(--colorStrokeFocus2);
+          }
+
+          /* Override subtle-appearance-specific icon color on hover. */
+          &[data-appearance='subtle']:hover .ToggleButton__icon {
+            color: var(--colorNeutralForegroundOnBrand);
+          }
+        }
+      }
+
+      &[data-accessible][data-appearance='primary'] {
+        /* Primary has an inner stroke for the checked style. */
+        outline: var(--strokeWidthThin) solid var(--colorNeutralForegroundOnBrand);
+        outline-offset: calc(var(--strokeWidthThicker) * -1);
+
+        /* Keep the checked outline when the focus indicator is visible. */
+        &:focus-visible {
+          outline: var(--strokeWidthThin) solid var(--colorNeutralForegroundOnBrand);
+          outline-offset: calc(var(--strokeWidthThickest) * -1);
+        }
+      }
+    }
+
+    /* Disabled styles. Toggle's subtle/transparent hover backgrounds are intentional upstream rules. */
+    &:is([data-disabled], [data-disabled-focusable]):is(
+        [data-appearance='subtle'],
+        [data-appearance='transparent']
+      ) {
+      &:hover {
+        background-color: var(--colorTransparentBackgroundHover);
+      }
+
+      &:is(:hover:active, :active:focus-visible) {
+        background-color: var(--colorTransparentBackgroundPressed);
+      }
+    }
+
+    /* High contrast styles */
+    @media (forced-colors: active) {
+      /* Do not use primary variant high contrast styles for toggle buttons;
+       * otherwise there isn't enough difference between on/off states.
+       */
+      &[data-appearance='primary'] {
+        background-color: ButtonFace;
+        border-color: ButtonBorder;
+        color: ButtonText;
+        forced-color-adjust: auto;
+      }
+
+      &[data-checked]:not([data-disabled], [data-disabled-focusable])[data-appearance] {
+        background-color: Highlight;
+        border-color: Highlight;
+        color: HighlightText;
+        forced-color-adjust: none;
+
+        &:is(:hover, :active:focus-visible) {
+          background-color: HighlightText;
+          border-color: Highlight;
+          color: Highlight;
+        }
+
+        &:focus-visible:not(:active) {
+          border: 1px solid HighlightText;
+          outline-color: Highlight;
+        }
+
+        &[data-accessible] {
+          background-color: var(--colorBrandBackground);
+          border-color: transparent;
+          color: var(--colorNeutralForegroundOnBrand);
+
+          &:hover {
+            background-color: var(--colorBrandBackgroundHover);
+          }
+
+          &:is(:hover:active, :active:focus-visible) {
+            background-color: var(--colorBrandBackgroundPressed);
+          }
+        }
+      }
+
+      &[data-appearance='primary']:is([data-disabled], [data-disabled-focusable]) {
+        border-color: GrayText;
+        color: GrayText;
+
+        &:focus {
+          border-color: GrayText;
+        }
+      }
+    }
+  }
+
+  .ToggleButton__icon {
+    composes: Button__icon from './Button.module.css';
+
+    @media (forced-colors: active) {
+      forced-color-adjust: auto;
+    }
+  }
+}
+
+/* Preserve the completed Button's narrow exception for existing unlayered bundled icons. */
+.ToggleButton[data-checked] .ToggleButton__icon {
+  :global(.fui-Icon-filled) {
+    display: inline;
+  }
+
+  :global(.fui-Icon-regular) {
+    display: none;
+  }
+}
