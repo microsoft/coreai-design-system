@@ -327,6 +327,31 @@ try {
   const context = await browser.newContext();
   await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin });
   const page = await context.newPage();
+  await page.addInitScript(() => {
+    globalThis.referencePaintProblems = [];
+    function inspectFrame() {
+      const document = globalThis.document;
+      const theme = document.documentElement.dataset.theme;
+      if (theme === 'light' || theme === 'dark') {
+        const background = globalThis.getComputedStyle(document.documentElement).backgroundColor;
+        if (background !== (theme === 'dark' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)'))
+          globalThis.referencePaintProblems.push('Wrong initial theme background');
+      }
+      if (!document.querySelector('[data-preview-error]')) {
+        const pending = document.querySelectorAll(
+          '#reference-content, [data-reference-ready="false"] [data-page-header]',
+        );
+        if (
+          [...pending].some(
+            (element) => globalThis.getComputedStyle(element).visibility === 'visible',
+          )
+        )
+          globalThis.referencePaintProblems.push('Visible Markdown fallback before hydration');
+      }
+      globalThis.requestAnimationFrame(inspectFrame);
+    }
+    globalThis.requestAnimationFrame(inspectFrame);
+  });
   async function setTheme(mode) {
     await page.getByRole('button', { name: 'Settings', exact: true }).click();
     const settings = page.locator('.docsite-settings');
@@ -1082,6 +1107,11 @@ try {
   await page.locator('[data-reference-ready="true"]').waitFor();
   assert.equal(await page.locator('.page-header h1').textContent(), 'Using components');
   assert.equal(await page.evaluate(() => globalThis.performance.timeOrigin), homeOrigin);
+  assert.deepEqual(
+    await page.evaluate(() => globalThis.referencePaintProblems),
+    [],
+    'No wrong-theme or Markdown-fallback frames during initial load and client navigation',
+  );
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto(root);

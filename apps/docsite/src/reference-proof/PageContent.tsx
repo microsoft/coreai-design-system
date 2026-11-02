@@ -78,6 +78,10 @@ export function PageContent({
   const [views, setViews] = React.useState<Record<string, React.ComponentType<PageWidgetProps>>>(
     {},
   );
+  const loading = page.status === 'ready' && targets === null && !loadError;
+  React.useLayoutEffect(() => {
+    if (!loading) document.documentElement.classList.remove('reference-loading');
+  }, [loading]);
   React.useEffect(() => {
     if (page.status !== 'ready') return;
     let active = true;
@@ -151,7 +155,7 @@ export function PageContent({
   }, [page, onReady]);
   return (
     <div
-      aria-busy={page.status === 'loading'}
+      aria-busy={page.status === 'loading' || loading}
       data-reference-ready={page.status === 'ready' && targets !== null}
     >
       {page.status === 'loading' ? (
@@ -164,7 +168,11 @@ export function PageContent({
           </p>
         </>
       ) : (
-        <div ref={contentRef} dangerouslySetInnerHTML={markup} />
+        <div
+          ref={contentRef}
+          className={loading ? 'reference-page-markup--loading' : undefined}
+          dangerouslySetInnerHTML={markup}
+        />
       )}
       {loadError ? (
         <p role="alert" data-preview-error>

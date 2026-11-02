@@ -9,6 +9,14 @@
   background: #fafafa;
 }
 
+html.reference-loading #reference-root {
+  visibility: hidden;
+}
+
+.reference-page-markup--loading {
+  visibility: hidden;
+}
+
 .reference-shell {
   --mf-font-ui: var(--fontFamilyBase, system-ui, sans-serif);
   --mf-font-code: var(--fontFamilyMonospace, ui-monospace, monospace);
