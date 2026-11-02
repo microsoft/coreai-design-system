@@ -1,0 +1,62 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Handwritten experiment layout and intentional consumer overrides, not a Fluent style port.
+ */
+
+.examples {
+  display: grid;
+  gap: 24px;
+  max-width: 1180px;
+  overflow-x: auto;
+  padding: 12px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) repeat(2, minmax(240px, 1fr));
+  align-items: center;
+  gap: 24px;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 12px;
+}
+
+.report {
+  display: block;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+  margin-block: 16px;
+}
+
+.playground {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.consumerAvatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 3px;
+}
+
+.consumerInitials {
+  background-color: rgb(245, 230, 215);
+  color: rgb(35, 95, 155);
+  border-width: 2px;
+}
+
+.consumerBadge {
+  bottom: -3px;
+  inset-inline-end: -4px;
+}

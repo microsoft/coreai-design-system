@@ -96,6 +96,11 @@ not a claim that the whole application bundle is Griffel-free.
 - The disclosure/loading batch uses the installed snapshot at commit `a98711e`:
   the [Accordion family in react-accordion 9.12.5](https://unpkg.com/@fluentui/react-accordion@9.12.5/lib/components/AccordionHeader/useAccordionHeaderStyles.styles.raw.js)
   and [Skeleton family in react-skeleton 9.7.7](https://unpkg.com/@fluentui/react-skeleton@9.7.7/lib/components/SkeletonItem/useSkeletonItemStyles.styles.raw.js).
+- The identity/search batch uses the installed snapshot at commit `86a8705`:
+  [Avatar styles in react-avatar 9.11.9](https://unpkg.com/@fluentui/react-avatar@9.11.9/lib/components/Avatar/useAvatarStyles.styles.raw.js)
+  and [SearchBox styles in react-search 9.4.8](https://unpkg.com/@fluentui/react-search@9.4.8/lib/components/SearchBox/useSearchBoxStyles.styles.raw.js).
+  SearchBox composes the completed Input CSS slot foundation instead of copying a second Input
+  style port. Avatar reuses the completed PresenceBadge through a public slot render function.
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -134,6 +139,8 @@ not a claim that the whole application bundle is Griffel-free.
   import likewise loads no Griffel or Tabster modules; the browser owns the native select popup.
 - PresenceBadge uses the public headless SVG presence entries for its default status glyphs.
   Each entry is independently verified to load no Griffel or Tabster modules.
+- Avatar's default person glyph and SearchBox's search/dismiss glyphs use the same style-free
+  public headless SVG entries, with independent import-isolation checks.
 
 For Button, the recreated visual props are `appearance` (including `transparent`), `size`, and `shape`.
 Defaults are secondary/medium/circular with CoreAI defaults enabled. Disabling component defaults
@@ -177,6 +184,12 @@ and no normalization workaround or dependency patch is added.
 Closed headless panels remain mounted and CSS-hidden, preserving local state. Legacy panels
 unmount after their exit animation finishes. React 18 omits the hook's boolean `inert` attribute;
 CSS hiding excludes closed content from focus and accessibility without a compatibility shim.
+
+Avatar keeps current headless size-16 initials rather than truncating them to the legacy single
+character. Its reused PresenceBadge includes out-of-office information in the accessible label,
+as the current headless badge does. These differences remain explicit in comparisons.
+SearchBox keeps its medium default rather than inheriting Field size. Its hook-controlled native
+input retains the installed form-reset behavior; no second value model or reset shim is added.
 
 ## Conversion workflow
 
@@ -348,6 +361,9 @@ and controlled states, slot/ref contracts, and persistent hidden-panel state. It
 distinguishes intentional mounted-panel differences from unexpected selected-style differences.
 Skeleton covers visual inheritance and item overrides, shape/size variants, owned pseudo-element
 animation timing/keyframes, refs, and loading/completion/reload state.
+Avatar adds identity/image fallback, named-color categories, active rings, presence composition,
+current accessible labels, and logical masks/offsets. SearchBox adds composed Input styling,
+query/dismiss callbacks, native submission/reset boundaries, and focus/spacing transitions.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 

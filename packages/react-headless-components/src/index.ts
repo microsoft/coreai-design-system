@@ -31,6 +31,16 @@ export {
   type AccordionPanelProps,
   type AccordionPanelSlots,
 } from './AccordionPanel.js';
+export {
+  Avatar,
+  avatarClassNames,
+  type AvatarColor,
+  type AvatarNamedColor,
+  type AvatarProps,
+  type AvatarShape,
+  type AvatarSize,
+  type AvatarSlots,
+} from './Avatar.js';
 export { Badge, badgeClassNames, type BadgeProps, type BadgeSlots } from './Badge.js';
 export { Button, buttonClassNames, type ButtonProps } from './Button.js';
 export {
@@ -81,6 +91,14 @@ export {
   type RadioGroupProps,
   type RadioGroupSlots,
 } from './RadioGroup.js';
+export {
+  SearchBox,
+  searchBoxClassNames,
+  type SearchBoxChangeEvent,
+  type SearchBoxOnChangeData,
+  type SearchBoxProps,
+  type SearchBoxSlots,
+} from './SearchBox.js';
 export {
   Select,
   selectClassNames,

@@ -1,0 +1,13 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * CoreAI source: [SearchBox.ts](../../react-components/src/components/SearchBox.ts) at 86a8705.
+ * Fluent baseline: @fluentui/react-search 9.4.8,
+ * [useSearchBoxStyles.styles.raw.js](../../../node_modules/@fluentui/react-search/lib/components/SearchBox/useSearchBoxStyles.styles.raw.js).
+ * Inherited Input baseline: @fluentui/react-input 9.8.8,
+ * [useInputStyles.styles.raw.js](../../../node_modules/@fluentui/react-input/lib/components/Input/useInputStyles.styles.raw.js).
+ * CoreAI changes only the appearance default, which is resolved in SearchBox.tsx.
+ * It adds no SearchBox style override or Input inline-label/read-only/copy composition.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
