@@ -524,6 +524,7 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
       label: scope.label ?? data.title,
       standalone: !scope.component,
       renderer: scope.renderer,
+      layout: scope.layout,
       resources: data.resources ?? [],
       aliases: scope.aliases ?? [],
       legacyIds: [
