@@ -14,12 +14,6 @@ reference:
     - apps/docsite/src/data/resources.ts
 ---
 
-## Why CoreAI has a shared design system
-
-CoreAI gives teams one Fluent UI v9 design system for shared components, themes,
-guidance, and tools. This helps apps stay consistent without each team
-maintaining its own version of the same patterns.
-
 ## What CoreAI includes
 
 ### Components

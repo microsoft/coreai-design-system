@@ -421,6 +421,13 @@ try {
       assert.equal(await resourceSections.locator('.resource-card__destination').count(), 0);
       assert.equal(await resourceSections.locator('.resource-card__title svg').count(), 9);
       assert.ok(
+        await resourceSections
+          .locator('.resource-card-link')
+          .evaluateAll((cards) =>
+            cards.every((card) => card.tagName === 'A' && card.classList.contains('fui-Card')),
+          ),
+      );
+      assert.ok(
         (
           await resourceSections
             .locator('.resource-card')

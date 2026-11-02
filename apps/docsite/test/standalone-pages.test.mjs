@@ -435,6 +435,7 @@ test('overview pages opt into their Markdown-backed rich views', async () => {
   });
   assert.ok(introduction?.aliases.includes('/overview/resources/'));
   assert.ok(introduction?.aliases.includes('/resources/'));
+  assert.doesNotMatch(introductionGuidance, /Why CoreAI has a shared design system/);
   assert.match(introductionGuidance, /<!-- view:resources -->/);
   assert.match(
     standalonePageHtml(
