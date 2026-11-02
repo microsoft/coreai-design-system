@@ -481,7 +481,9 @@
 }
 
 .reference-shell .app-sidenav__search-row [data-shell-search] {
+  position: relative;
   flex: 1;
+  height: 32px;
   min-width: 0;
 }
 
@@ -496,14 +498,45 @@
 }
 
 [data-shell-theme] {
+  position: relative;
   display: flex;
   flex: 0 0 32px;
+  height: 32px;
 }
 
 [data-shell-theme] .fui-Button {
   width: 32px;
   min-width: 32px;
   height: 32px;
+}
+
+[data-shell-logo] {
+  position: relative;
+}
+
+.reference-live-shell-slot {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+
+.shell-slot-ready > .reference-live-shell-slot {
+  visibility: visible;
+}
+
+.reference-shell .app-sidenav__nav {
+  position: relative;
+}
+
+.reference-live-navigation {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+
+.reference-shell .app-sidenav__nav.shell-slot-ready > .reference-live-navigation {
+  position: static;
+  visibility: visible;
 }
 
 .reference-brand {
@@ -546,25 +579,24 @@
   display: none;
 }
 
-.reference-nav-group summary::after {
-  width: 6px;
-  height: 6px;
-  border-right: 1px solid currentcolor;
-  border-bottom: 1px solid currentcolor;
-  content: '';
-  transform: rotate(45deg);
+.reference-nav-chevron {
+  flex-shrink: 0;
+  transform: rotate(-90deg);
 }
 
-.reference-nav-group:not([open]) summary::after {
-  transform: rotate(-45deg);
+.reference-nav-group:not([open]) .reference-nav-chevron {
+  transform: rotate(90deg);
 }
 
 .reference-nav-link {
+  position: relative;
   display: flex;
   align-items: center;
   min-height: 32px;
-  padding: 6px 16px;
+  padding: 6px 10px 6px 18px;
   border-radius: var(--borderRadiusMedium, 4px);
+  color: ButtonText;
+  letter-spacing: 0.038em;
 }
 
 .reference-nav-link:hover {
@@ -576,8 +608,43 @@
   font-weight: var(--fontWeightSemibold);
 }
 
+.reference-nav-link[aria-current='page']::before {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 3px;
+  height: 16px;
+  border-radius: var(--borderRadiusCircular);
+  background: var(--colorCompoundBrandStroke);
+  content: '';
+}
+
 .reference-nav-link[hidden] {
   display: none;
+}
+
+.reference-search-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  height: 32px;
+  padding: 0 8px 0 10px;
+  border-radius: var(--borderRadiusMedium);
+  background: var(--colorNeutralBackground3);
+  color: var(--colorNeutralForeground4);
+  font-size: var(--fontSizeBase300);
+  line-height: var(--lineHeightBase300);
+}
+
+.reference-theme-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--colorNeutralForeground2);
 }
 
 .reference-color-view {

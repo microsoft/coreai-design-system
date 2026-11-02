@@ -52,6 +52,32 @@ const logoEffectFrames = [
   'single-logo-effect4-white.png',
 ];
 
+function ShellSlot({
+  target,
+  children,
+  className = 'reference-live-shell-slot',
+}: {
+  target: HTMLElement;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  React.useEffect(() => {
+    let secondFrame = 0;
+    const firstFrame = requestAnimationFrame(() => {
+      secondFrame = requestAnimationFrame(() => {
+        for (const fallback of target.querySelectorAll(':scope > [data-shell-fallback]'))
+          fallback.remove();
+        target.classList.add('shell-slot-ready');
+      });
+    });
+    return () => {
+      cancelAnimationFrame(firstFrame);
+      cancelAnimationFrame(secondFrame);
+    };
+  }, [target]);
+  return createPortal(<div className={className}>{children}</div>, target);
+}
+
 function DocumentationShell({
   page,
   renderedPage,
@@ -125,7 +151,6 @@ function DocumentationShell({
     const target = root?.querySelector<HTMLElement>('#main');
     const nav = root?.querySelector<HTMLElement>('nav[aria-label="Documentation"]');
     if (!root || !target || !nav) throw new Error('Missing documentation shell slots.');
-    nav.replaceChildren();
     const next: Record<string, HTMLElement> = { navigation: nav };
     for (const name of ['logo', 'theme', 'search', 'header']) {
       const element = root.querySelector<HTMLElement>(`[data-shell-${name}]`);
@@ -309,64 +334,60 @@ function DocumentationShell({
   return (
     <div className="reference-application">
       <div ref={contentRef} dangerouslySetInnerHTML={markup} />
-      {slots.logo
-        ? createPortal(
-            <>
-              <span className="app-sidenav__search-logo-static">
-                <CoreAILogo />
-              </span>
-              <span className="app-sidenav__search-logo-effects" aria-hidden="true">
-                {logoEffectFrames.map((frame) => (
-                  <img key={frame} src={`${basePath}logo-effects/${frame}`} alt="" />
-                ))}
-              </span>
-            </>,
-            slots.logo,
-          )
-        : null}
-      {slots.navigation
-        ? createPortal(
-            <NavigationTree ref={treeRef} entries={entries} query={query} />,
-            slots.navigation,
-          )
-        : null}
-      {slots.theme
-        ? createPortal(
-            <ThemeSwitcher
-              key={`${pathname}:${collapsed}:${navigationOpen}`}
-              isApplePlatform={isApplePlatform}
-            />,
-            slots.theme,
-          )
-        : null}
-      {slots.search
-        ? createPortal(
-            <SearchBox
-              ref={searchRef}
-              aria-label="Search navigation"
-              placeholder="Search"
-              title="Search documentation"
-              contentBefore={null}
-              contentAfter={
-                <span className="app-sidenav__search-shortcut" aria-hidden="true">
-                  <span
-                    className={
-                      isApplePlatform
-                        ? 'app-sidenav__search-shortcut-command'
-                        : 'app-sidenav__search-shortcut-control'
-                    }
-                  >
-                    {isApplePlatform ? '⌘' : 'Ctrl'}
-                  </span>
-                  <span className="app-sidenav__search-shortcut-key">K</span>
+      {slots.logo ? (
+        <ShellSlot target={slots.logo}>
+          <>
+            <span className="app-sidenav__search-logo-static">
+              <CoreAILogo />
+            </span>
+            <span className="app-sidenav__search-logo-effects" aria-hidden="true">
+              {logoEffectFrames.map((frame) => (
+                <img key={frame} src={`${basePath}logo-effects/${frame}`} alt="" />
+              ))}
+            </span>
+          </>
+        </ShellSlot>
+      ) : null}
+      {slots.navigation ? (
+        <ShellSlot target={slots.navigation} className="reference-live-navigation">
+          <NavigationTree ref={treeRef} entries={entries} query={query} />
+        </ShellSlot>
+      ) : null}
+      {slots.theme ? (
+        <ShellSlot target={slots.theme}>
+          <ThemeSwitcher
+            key={`${pathname}:${collapsed}:${navigationOpen}`}
+            isApplePlatform={isApplePlatform}
+          />
+        </ShellSlot>
+      ) : null}
+      {slots.search ? (
+        <ShellSlot target={slots.search}>
+          <SearchBox
+            ref={searchRef}
+            aria-label="Search navigation"
+            placeholder="Search"
+            title="Search documentation"
+            contentBefore={null}
+            contentAfter={
+              <span className="app-sidenav__search-shortcut" aria-hidden="true">
+                <span
+                  className={
+                    isApplePlatform
+                      ? 'app-sidenav__search-shortcut-command'
+                      : 'app-sidenav__search-shortcut-control'
+                  }
+                >
+                  {isApplePlatform ? '⌘' : 'Ctrl'}
                 </span>
-              }
-              value={query}
-              onChange={(_event, data) => setQuery(data.value)}
-            />,
-            slots.search,
-          )
-        : null}
+                <span className="app-sidenav__search-shortcut-key">K</span>
+              </span>
+            }
+            value={query}
+            onChange={(_event, data) => setQuery(data.value)}
+          />
+        </ShellSlot>
+      ) : null}
       {slots.header
         ? createPortal(
             <>

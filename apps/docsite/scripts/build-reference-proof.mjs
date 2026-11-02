@@ -468,6 +468,9 @@ export function initialThemeStyles(themes, stylesheets) {
 
 function shell(title, body, metadata, assets, navigation, currentPath = '') {
   const home = currentPath === '';
+  const logo = `<span class="app-sidenav__search-logo-static" data-shell-fallback><svg viewBox="-0.74 -0.59 44 44" aria-hidden="true" focusable="false"><path d="M27.43 2.896H39.77V15.236H27.43V2.896Z" fill="currentColor"></path><path d="M2.749 2.896H15.089V15.236H2.749V2.896Z" fill="currentColor"></path><path d="M15.09 15.236H27.431V27.576H15.09V15.236Z" fill="currentColor"></path><path d="M2.749 27.576H15.089V39.916H2.749V27.576Z" fill="currentColor"></path><path d="M27.43 27.576H39.77V39.916H27.43V27.576Z" fill="currentColor"></path></svg></span>`;
+  const settings = `<span class="reference-theme-fallback" data-shell-fallback aria-hidden="true"><svg fill="currentColor" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M1.91 7.38A8.5 8.5 0 0 1 3.7 4.3a.5.5 0 0 1 .54-.13l1.92.68a1 1 0 0 0 1.32-.76l.36-2a.5.5 0 0 1 .4-.4 9 9 0 0 1 3.55 0q.32.08.38.4l.37 2a1 1 0 0 0 1.32.76l1.92-.68a.5.5 0 0 1 .54.13 8.5 8.5 0 0 1 1.78 3.08q.08.31-.15.54l-1.56 1.32a1 1 0 0 0 0 1.52l1.56 1.32a.5.5 0 0 1 .15.54 8.5 8.5 0 0 1-1.78 3.08.5.5 0 0 1-.54.13l-1.92-.68a1 1 0 0 0-1.32.76l-.37 2a.5.5 0 0 1-.38.4 8.5 8.5 0 0 1-3.56 0 .5.5 0 0 1-.39-.4l-.36-2a1 1 0 0 0-1.32-.76l-1.92.68a.5.5 0 0 1-.54-.13 8.5 8.5 0 0 1-1.78-3.08.5.5 0 0 1 .15-.54l1.56-1.32a1 1 0 0 0 0-1.52L2.06 7.92a.5.5 0 0 1-.15-.54m1.06 0 1.3 1.1a2 2 0 0 1 0 3.04l-1.3 1.1q.45 1.19 1.25 2.16l1.6-.58a2 2 0 0 1 2.63 1.53l.3 1.67a8 8 0 0 0 2.5 0l.3-1.67a2 2 0 0 1 2.64-1.53l1.6.58a8 8 0 0 0 1.24-2.16l-1.3-1.1a2 2 0 0 1 0-3.04l1.3-1.1a8 8 0 0 0-1.25-2.16l-1.6.58a2 2 0 0 1-2.63-1.53l-.3-1.67a8 8 0 0 0-2.5 0l-.3 1.67A2 2 0 0 1 5.81 5.8l-1.6-.58a8 8 0 0 0-1.24 2.16M7.5 10a2.5 2.5 0 1 1 5 0 2.5 2.5 0 0 1-5 0m1 0a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0" fill="currentColor"></path></svg></span>`;
+  const search = `<div class="reference-search-fallback" data-shell-fallback aria-hidden="true"><span>Search</span><span class="app-sidenav__search-shortcut"><span class="app-sidenav__search-shortcut-command">⌘</span><span class="app-sidenav__search-shortcut-key">K</span></span></div>`;
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeHtml(title)} | CoreAI design system</title>
@@ -486,8 +489,8 @@ function shell(title, body, metadata, assets, navigation, currentPath = '') {
 ${assets.css.map((file) => `<link rel="stylesheet" href="${metadata.basePath}${file}">`).join('\n')}
 </head><body><div id="reference-root"><div id="reference-content"><div class="app-shell reference-shell"><a class="skip-link" href="#main">Skip to content</a>
 <div class="app-body"><aside class="app-sidenav" id="app-navigation" aria-label="Site navigation">
-<div class="app-sidenav__header"><div class="app-sidenav__search-row"><a class="app-sidenav__search-logo" data-shell-logo href="${metadata.basePath}" aria-label="CoreAI home"></a>
-<div data-shell-search></div><div data-shell-theme></div><button type="button" class="app-sidenav__dismiss" data-close-navigation aria-label="Close navigation"><span></span><span></span><span></span></button></div></div>
+<div class="app-sidenav__header"><div class="app-sidenav__search-row"><a class="app-sidenav__search-logo" data-shell-logo href="${metadata.basePath}" aria-label="CoreAI home">${logo}</a>
+<div data-shell-search>${search}</div><div data-shell-theme>${settings}</div><button type="button" class="app-sidenav__dismiss" data-close-navigation aria-label="Close navigation"><span></span><span></span><span></span></button></div></div>
 <nav class="app-sidenav__nav" id="app-navigation-links" aria-label="Documentation">${navigation}</nav>
 <div class="app-sidenav__footer"><a class="app-sidenav__link" href="https://github.com/microsoft/coreai-design-system/issues">Questions?</a><a class="app-sidenav__link" href="https://github.com/microsoft/coreai-design-system/issues/new">Feedback</a></div></aside>
 <div class="app-content${home ? ' app-content--home' : ''}"><div data-shell-header></div><div class="app-page${home ? ' app-page--home' : ''}"><main class="site-main" id="main" tabindex="-1">${body}
@@ -799,11 +802,11 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
         );
         const open = group.value === 'getting-started' || active;
         return (
-          `<details${open ? ' open' : ''} class="reference-nav-group"><summary>${group.label}</summary>` +
+          `<details${open ? ' open' : ''} class="reference-nav-group" data-shell-fallback><summary>${group.label}<svg class="reference-nav-chevron" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.47a.5.5 0 0 1-.7-.71L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7" fill="currentColor"></path></svg></summary>` +
           group.items
             .map(({ page, title }) => {
               const pagePath = `${page.route}${page.route ? '/' : ''}`;
-              return `<a class="reference-nav-link" data-navigation-entry data-navigation-summary="${escapeHtml(page.summary)}"${pagePath === currentPath ? ' aria-current="page"' : ''} href="${basePath}${pagePath}">${escapeHtml(title)}</a>`;
+              return `<a class="reference-nav-link" data-navigation-entry data-navigation-summary="${escapeHtml(page.summary)}"${pagePath === currentPath ? ' aria-current="page"' : ''} href="${basePath}${pagePath}"><span>${escapeHtml(title)}</span></a>`;
             })
             .join('') +
           '</details>'

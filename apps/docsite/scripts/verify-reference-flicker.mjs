@@ -57,6 +57,13 @@ try {
       const shell = root?.querySelector('.reference-shell');
       const main = root?.querySelector('#main');
       const heading = main?.querySelector('h1');
+      const navigationHeaders = [
+        ...(root?.querySelectorAll('.reference-nav-group summary, .fui-AccordionHeader__button') ??
+          []),
+      ].filter((element) => globalThis.getComputedStyle(element).visibility !== 'hidden');
+      const settings = root?.querySelector(
+        '.reference-theme-fallback, [data-shell-theme] button[aria-label="Settings"]',
+      );
       if (root) {
         const rootStyle = globalThis.getComputedStyle(root);
         const shellStyle = shell ? globalThis.getComputedStyle(shell) : null;
@@ -72,6 +79,10 @@ try {
             Number(shellStyle?.opacity) !== 0,
           mainText: main?.textContent?.trim() ?? '',
           heading: heading?.textContent?.trim() ?? '',
+          navigationComplete:
+            navigationHeaders.length === 5 &&
+            !!settings &&
+            globalThis.getComputedStyle(settings).visibility !== 'hidden',
         });
       }
       globalThis.requestAnimationFrame(sample);
@@ -88,6 +99,7 @@ try {
   const navigationBefore = await readNavigationGeometry(reloadPage);
   assert.ok(before, 'The static shell is laid out before the application bundle loads');
   await reloadPage.locator('[data-reference-ready="true"]').waitFor();
+  await reloadPage.locator('.app-sidenav__nav.shell-slot-ready').waitFor();
   const after = await reloadPage.locator('.app-content').boundingBox();
   const navigationAfter = await readNavigationGeometry(reloadPage);
   assert.ok(after, 'The hydrated shell remains laid out');
@@ -114,6 +126,10 @@ try {
   assert.ok(
     reloadFrames.every((frame) => frame.mainText),
     'The page never becomes blank',
+  );
+  assert.ok(
+    reloadFrames.every((frame) => frame.navigationComplete),
+    'The navigation content never becomes incomplete during hydration',
   );
   await reloadPage.close();
 
