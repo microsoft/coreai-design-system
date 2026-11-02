@@ -1070,7 +1070,7 @@ try {
   assert.equal(await page.locator('.home-resource-links').count(), 0);
   assert.equal(
     await page.locator('.home-heading .page-header__title-row .fui-CopyButton').count(),
-    1,
+    0,
   );
   assert.equal(await page.locator('.home-agent-entry h2, .home-agent-entry p').count(), 0);
   assert.equal(await page.locator('.home-agent-entry > .fui-Button').count(), 2);

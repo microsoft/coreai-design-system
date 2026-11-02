@@ -4,7 +4,6 @@
 import * as React from 'react';
 import { Button, LinkButton, Text } from '@coreai-ds/react-components';
 import { CoreAILogo } from '../components/Icons';
-import { MarkdownActions } from '../components/MarkdownActions';
 import type { PageWidgetProps } from './FoundationViews';
 
 const Logo = React.lazy(() =>
@@ -45,7 +44,6 @@ export default function HomeView({ model, sourceHtml }: PageWidgetProps) {
             <Text as="h1" id={model.headingId} size={900} weight="regular">
               {model.title}
             </Text>
-            <MarkdownActions markdownUrl={model.markdownUrl} iconOnly />
           </div>
           <Text as="p" size={400} foreground={2}>
             <span dangerouslySetInnerHTML={{ __html: model.summaryHtml }} />
