@@ -34,7 +34,7 @@ test('site sections use the requested order and keep introductory pages before t
     { path: '/overview/faq/', title: 'FAQ' },
     { path: '/overview/changelog/', title: 'Changelog' },
     { path: '/overview/introduction/', title: 'Introduction' },
-    { path: '/', title: 'Showcase' },
+    { path: '/', title: 'Home' },
     { path: '/foundations/layout/', title: 'Layout' },
     { path: '/foundations/spacing/', title: 'Spacing' },
     { path: '/foundations/surfaces/', title: 'Surfaces' },
@@ -51,7 +51,7 @@ test('site sections use the requested order and keep introductory pages before t
   assert.deepEqual(
     groups.map((group) => group.items.map((entry) => entry.title)),
     [
-      ['Showcase', 'Introduction', 'Changelog', 'FAQ'],
+      ['Home', 'Introduction', 'Changelog', 'FAQ'],
       ['Typography', 'Color', 'Surfaces', 'Spacing', 'Layout'],
       ['Using components', 'Button'],
       ['Using templates', 'Empty State'],

@@ -12,7 +12,7 @@ resources:
 reference:
   renderer: home
   route: index
-  label: Showcase
+  label: Home
   legacyIds: [introduction--docs]
   migratedFrom:
     - apps/docsite/src/pages/Introduction.tsx
