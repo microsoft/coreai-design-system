@@ -1078,8 +1078,8 @@ try {
   assert.equal(await page.locator('.home-resource-links').count(), 0);
   assert.equal(
     await page
-      .getByRole('navigation', { name: 'Documentation', exact: true })
-      .getByRole('tab', { name: 'Home', exact: true })
+      .locator('.app-sidenav__nav')
+      .getByRole('tab', { name: 'Home', exact: true, includeHidden: true })
       .getAttribute('aria-selected'),
     'true',
   );
