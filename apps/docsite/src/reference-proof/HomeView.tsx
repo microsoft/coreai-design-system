@@ -3,6 +3,7 @@
 
 import * as React from 'react';
 import { Button, LinkButton, Text } from '@coreai-ds/react-components';
+import { Copy20Regular } from '@fluentui/react-icons';
 import { CoreAILogo } from '../components/Icons';
 import type { PageWidgetProps } from './FoundationViews';
 
@@ -51,7 +52,12 @@ export default function HomeView({ model, sourceHtml }: PageWidgetProps) {
         </header>
         <div className="home-agent-content">
           <section className="home-agent-entry" aria-label="Agent resources">
-            <Button appearance="primary" data-copy={prompt} data-copy-label="starter prompt">
+            <Button
+              appearance="primary"
+              icon={<Copy20Regular aria-hidden="true" />}
+              data-copy={prompt}
+              data-copy-label="starter prompt"
+            >
               Copy starter prompt
             </Button>
             <LinkButton

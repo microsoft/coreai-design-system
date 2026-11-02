@@ -603,7 +603,7 @@ html.reference-loading #reference-root {
 }
 
 .reference-shell .home-foreground {
-  gap: 16px;
+  gap: 20px;
   max-width: 480px;
   transform: translateY(24px);
 }
