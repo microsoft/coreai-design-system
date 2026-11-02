@@ -58,26 +58,28 @@ export default function HomeView({ model, sourceHtml }: PageWidgetProps) {
             <span dangerouslySetInnerHTML={{ __html: model.summaryHtml }} />
           </Text>
         </header>
-        <section className="home-agent-entry" aria-label="Agent resources">
-          <Button appearance="primary" data-copy={prompt} data-copy-label="starter prompt">
-            Copy starter prompt
-          </Button>
-          <LinkButton
-            appearance="outline"
-            href={new URL('guides/use-with-agents/', base).href}
-            role="link"
-          >
-            Learn more
-          </LinkButton>
-        </section>
-        <Accordion className="home-agent-preview" collapsible>
-          <AccordionItem value="starter-prompt">
-            <AccordionHeader expandIconPosition="end">Preview the prompt</AccordionHeader>
-            <AccordionPanel>
-              <CodeBlock code={prompt} language="text" />
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
+        <div className="home-agent-content">
+          <section className="home-agent-entry" aria-label="Agent resources">
+            <Button appearance="primary" data-copy={prompt} data-copy-label="starter prompt">
+              Copy starter prompt
+            </Button>
+            <LinkButton
+              appearance="outline"
+              href={new URL('guides/use-with-agents/', base).href}
+              role="link"
+            >
+              Learn more
+            </LinkButton>
+          </section>
+          <Accordion className="home-agent-preview" collapsible>
+            <AccordionItem value="starter-prompt">
+              <AccordionHeader expandIconPosition="end">Preview the prompt</AccordionHeader>
+              <AccordionPanel>
+                <CodeBlock code={prompt} language="text" />
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
+        </div>
       </div>
       <div className="home-visual">
         <CoreAILogo className="home-logo-fallback" />

@@ -430,8 +430,23 @@ html.reference-loading #reference-root {
 }
 
 .reference-shell .home-foreground {
+  gap: 8px;
   max-width: 480px;
   transform: translateY(24px);
+}
+
+.reference-shell .home-heading {
+  gap: 6px;
+}
+
+.reference-shell .home-heading p {
+  padding-bottom: 0;
+}
+
+.home-agent-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .home-agent-entry {
@@ -448,8 +463,10 @@ html.reference-loading #reference-root {
   text-decoration: none;
 }
 
-.home-agent-preview summary {
+.home-agent-preview summary,
+.home-agent-preview .fui-AccordionHeader__button {
   cursor: pointer;
+  width: fit-content;
 }
 
 .home-agent-preview pre {
