@@ -444,11 +444,6 @@ html.reference-loading #reference-root {
   background: var(--colorNeutralBackground2);
 }
 
-.home-agent-entry h2,
-.home-agent-entry p {
-  margin: 0;
-}
-
 .home-agent-actions,
 .home-agent-links {
   display: flex;
@@ -457,11 +452,11 @@ html.reference-loading #reference-root {
   gap: 16px;
 }
 
-.home-agent-entry summary {
+.home-agent-preview summary {
   cursor: pointer;
 }
 
-.home-agent-entry pre {
+.home-agent-preview pre {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
@@ -483,16 +478,8 @@ html.reference-loading #reference-root {
   visibility: hidden;
 }
 
-.home-resource-links .app-sidenav__quick-link-brand svg {
-  width: 20px;
-  height: 20px;
-}
-
 .home-page-actions {
-  position: absolute;
-  top: 24px;
-  right: 32px;
-  z-index: 5;
+  display: none;
 }
 
 .home-documentation {
@@ -655,11 +642,6 @@ html.reference-loading #reference-root {
     width: 140%;
     transform: translate(-50%, -50%);
   }
-
-  .home-page-actions {
-    top: 16px;
-    right: 56px;
-  }
 }
 
 .reference-shell pre {
@@ -723,11 +705,6 @@ html.reference-loading #reference-root {
 
   .reference-shell .site-main {
     padding: 80px 24px 64px;
-  }
-
-  .home-page-actions {
-    right: 72px;
-    top: 16px;
   }
 
   .reference-close {

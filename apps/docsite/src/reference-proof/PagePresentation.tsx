@@ -42,21 +42,18 @@ export function readPagePresentation(root: HTMLElement): PagePresentation {
 }
 
 export function PageHeader({ model }: { model: PagePresentation }) {
+  if (model.home) return null;
   return (
     <>
       <div className="page-header__title-row">
-        {!model.home ? (
-          <Text as="h1" id={model.headingId} size={900} weight="regular">
-            {model.title}
-          </Text>
-        ) : null}
+        <Text as="h1" id={model.headingId} size={900} weight="regular">
+          {model.title}
+        </Text>
         <MarkdownActions markdownUrl={model.markdownUrl} iconOnly />
       </div>
-      {!model.home ? (
-        <Text as="p" className="page-summary" size={400} foreground={3}>
-          <span dangerouslySetInnerHTML={{ __html: model.summaryHtml }} />
-        </Text>
-      ) : null}
+      <Text as="p" className="page-summary" size={400} foreground={3}>
+        <span dangerouslySetInnerHTML={{ __html: model.summaryHtml }} />
+      </Text>
     </>
   );
 }

@@ -976,11 +976,12 @@ try {
   await staticPage.goto(`${root}foundations/surfaces/`);
   assert.equal(await staticPage.locator('[data-page-widget="materials"] img').count(), 2);
   await staticPage.goto(root);
-  assert.equal(await staticPage.locator('.home-resource-links a').count(), 3);
+  assert.equal(await staticPage.locator('.home-resource-links').count(), 0);
+  assert.equal(await staticPage.locator('.home-agent-entry + .home-agent-preview').count(), 1);
   assert.ok(await staticPage.locator('.home-logo-fallback').isVisible());
   assert.equal(
     await staticPage.getByRole('heading', { name: 'Build with your agent', exact: true }).count(),
-    1,
+    0,
   );
   assert.equal((await staticPage.locator('[data-agent-prompt]').textContent()).trim(), starter);
   await noJavaScript.close();
@@ -1066,7 +1067,13 @@ try {
   assert.equal(await page.locator('#reference-root > .coreai-docsite-provider').count(), 1);
   await page.goto(root);
   await page.locator('[data-reference-ready="true"]').waitFor();
-  assert.equal(await page.locator('.home-resource-links a').count(), 3);
+  assert.equal(await page.locator('.home-resource-links').count(), 0);
+  assert.equal(
+    await page.locator('.home-heading .page-header__title-row .fui-CopyButton').count(),
+    1,
+  );
+  assert.equal(await page.locator('.home-agent-entry h2, .home-agent-entry p').count(), 0);
+  assert.equal(await page.locator('.home-agent-entry + .home-agent-preview').count(), 1);
   assert.ok((await page.locator('.home-heading p').innerText()).includes('Shared components'));
   const promptButton = page.getByRole('button', { name: 'Copy starter prompt', exact: true });
   await promptButton.click();
@@ -1100,12 +1107,13 @@ try {
   );
   const homeOrigin = await page.evaluate(() => globalThis.performance.timeOrigin);
   await page
-    .locator('.home-resource-links')
-    .getByRole('link', { name: 'Components', exact: true })
+    .locator('.home-agent-entry')
+    .getByRole('link', { name: 'How it works', exact: true })
     .click();
-  await page.waitForURL(`${root}components/using-components/`);
+  await page
+    .getByRole('heading', { level: 1, name: 'Build with your agent', exact: true })
+    .waitFor();
   await page.locator('[data-reference-ready="true"]').waitFor();
-  assert.equal(await page.locator('.page-header h1').textContent(), 'Using components');
   assert.equal(await page.evaluate(() => globalThis.performance.timeOrigin), homeOrigin);
   assert.deepEqual(
     await page.evaluate(() => globalThis.referencePaintProblems),
