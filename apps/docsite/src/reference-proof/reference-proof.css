@@ -65,7 +65,7 @@
   align-items: center;
   justify-content: flex-start;
   flex-wrap: nowrap;
-  gap: 8px;
+  gap: 4px;
 }
 
 .reference-shell .page-header__title-row .component-copy-menu__trigger {
