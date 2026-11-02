@@ -7,6 +7,11 @@ summary: >-
 resources: []
 reference:
   layout: compact-guidance
+  aliases:
+    - /overview/resources/
+    - /resources/
+  migratedFrom:
+    - apps/docsite/src/data/resources.ts
 ---
 
 ## Why CoreAI has a shared design system

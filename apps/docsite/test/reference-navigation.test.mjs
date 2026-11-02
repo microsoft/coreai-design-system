@@ -30,7 +30,6 @@ test('site sections use the requested order with alphabetized component and temp
     { path: '/patterns/forms/', title: 'Forms' },
     { path: '/foundations/content/', title: 'Content' },
     { path: '/foundations/theming/', title: 'Theming' },
-    { path: '/overview/resources/', title: 'Resources' },
     { path: '/overview/faq/', title: 'FAQ' },
     { path: '/overview/changelog/', title: 'Changelog' },
     { path: '/overview/introduction/', title: 'Introduction' },
@@ -53,7 +52,7 @@ test('site sections use the requested order with alphabetized component and temp
       ['Typography', 'Color', 'Surfaces', 'Spacing', 'Layout'],
       ['Button'],
       ['Empty State'],
-      ['Build with your agent', 'Content', 'Forms', 'Resources', 'Theming'],
+      ['Build with your agent', 'Content', 'Forms', 'Theming'],
     ],
   );
   assert.equal(groups.flatMap((group) => group.items).length, entries.length);

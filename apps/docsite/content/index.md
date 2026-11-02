@@ -53,7 +53,7 @@ over ordinary HTTPS.
 
 ## Help and feedback
 
-- [Resources](./overview/resources.md)
+- [Resources](./overview/introduction.md#resources)
 - [FAQ](./overview/faqs.md)
 - [Release history](./overview/changelog.md)
 - [GitHub issues](https://github.com/microsoft/coreai-design-system/issues)
