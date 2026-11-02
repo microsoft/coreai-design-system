@@ -593,7 +593,7 @@ try {
   await page.goto(`${root}components/button/`);
   await page.locator('[data-reference-ready="true"]').waitFor();
   await page.getByRole('button', { name: 'Copy for LLM', exact: true }).click();
-  await page.getByRole('menuitem', { name: 'Copy page as Markdown', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Copy .md', exact: true }).click();
   await page.getByRole('button', { name: 'Copied', exact: true }).waitFor();
   assert.equal(
     normalizeSource(await page.evaluate(() => navigator.clipboard.readText())),
@@ -868,11 +868,11 @@ try {
     route.fulfill({ status: 503, contentType: 'text/plain', body: 'Simulated outage' }),
   );
   await copyMenu.click();
-  await rawPage.getByRole('menuitem', { name: 'Copy page as Markdown', exact: true }).click();
+  await rawPage.getByRole('menuitem', { name: 'Copy .md', exact: true }).click();
   await rawPage.getByRole('button', { name: 'Copy failed', exact: true }).waitFor();
   await rawPage
     .getByRole('status')
-    .filter({ hasText: 'Use View as Markdown' })
+    .filter({ hasText: 'Use View .md' })
     .waitFor({ state: 'attached' });
   assert.equal(copyErrors.length, 1);
   await rawPage.unroute(`${root}components/button.md`);
@@ -882,7 +882,7 @@ try {
     };
   });
   await copyMenu.click();
-  await rawPage.getByRole('menuitem', { name: 'Copy page as Markdown', exact: true }).click();
+  await rawPage.getByRole('menuitem', { name: 'Copy .md', exact: true }).click();
   await rawPage.getByRole('button', { name: 'Copy failed', exact: true }).waitFor();
   assert.equal(copyErrors.length, 2);
   await rawPage.evaluate(() => {
@@ -894,7 +894,7 @@ try {
       predicate: (request) =>
         request.isNavigationRequest() && request.url() === `${root}components/button.md`,
     }),
-    rawPage.getByRole('menuitem', { name: 'View as Markdown', exact: true }).click(),
+    rawPage.getByRole('menuitem', { name: 'View .md', exact: true }).click(),
   ]);
   await rawPage.close();
 

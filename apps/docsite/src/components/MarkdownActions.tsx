@@ -74,7 +74,7 @@ export function MarkdownActions({
         <MenuPopover>
           <MenuList>
             <MenuItem icon={<Copy20Regular />} onClick={() => void copyMarkdown()}>
-              Copy page as Markdown
+              Copy .md
             </MenuItem>
             <MenuItemLink
               href={markdownUrl}
@@ -82,7 +82,7 @@ export function MarkdownActions({
               rel="noopener noreferrer"
               icon={<DocumentText20Regular />}
             >
-              View as Markdown
+              View .md
             </MenuItemLink>
           </MenuList>
         </MenuPopover>
@@ -91,7 +91,7 @@ export function MarkdownActions({
         {status === 'copied'
           ? 'Page Markdown copied.'
           : status === 'error'
-            ? 'Page Markdown could not be copied. Use View as Markdown to read it directly.'
+            ? 'Page Markdown could not be copied. Use View .md to read it directly.'
             : ''}
       </span>
     </>

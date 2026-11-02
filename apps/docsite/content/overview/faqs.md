@@ -78,7 +78,7 @@ Use [Build with your agent](/guides/use-with-agents.md) for a starter prompt. Th
 
 ### How can I give my agent the guidance on a component page?
 
-Use View as Markdown on a page, or replace its trailing slash with .md. Preserve the deployment base path. Share that URL with the agent; it contains the same guidance and example source as the human page.
+Use View .md on a page, or replace its trailing slash with .md. Preserve the deployment base path. Share that URL with the agent; it contains the same guidance and example source as the human page.
 
 ### What if the agent cannot fetch documentation?
 

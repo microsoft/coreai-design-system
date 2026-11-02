@@ -82,7 +82,7 @@ function resourceLinks(resources, className) {
 export function pageTemplateHeader(page, metadata, parts) {
   const markdownPath = page.route ? `${page.route}.md` : 'index.md';
   return `<header class="page-header${page.renderer === 'home' ? ' home-page-actions' : ''}" data-page-header data-page-title="${escapeHtml(page.title)}" data-heading-id="${parts.headingId}" data-markdown-url="${metadata.basePath}${markdownPath}" data-home="${page.renderer === 'home'}">
-<div class="page-header__title-row">${page.renderer === 'home' ? '' : `<h1 id="${parts.headingId}">${escapeHtml(page.title)}</h1>`}<a href="${metadata.basePath}${markdownPath}">View as Markdown</a></div>
+<div class="page-header__title-row">${page.renderer === 'home' ? '' : `<h1 id="${parts.headingId}">${escapeHtml(page.title)}</h1>`}<a href="${metadata.basePath}${markdownPath}">View .md</a></div>
 <div data-page-summary class="${page.renderer === 'home' ? 'sr-only' : 'page-summary'}">${parts.summaryHtml}</div></header>`;
 }
 

@@ -167,7 +167,7 @@ export const faqGroups: FaqGroup[] = [
         id: 'copy-guidance-for-agent',
         question: 'How can I give my agent the guidance on a component page?',
         answer: [
-          'On the component page, select Copy for LLM, then Copy page as Markdown. Paste it into your agent conversation to point it at specific guidance. This supplements the installed skill and connected documentation servers.',
+          'On the component page, select Copy for LLM, then Copy .md. Paste it into your agent conversation to point it at specific guidance. This supplements the installed skill and connected documentation servers.',
         ],
         sources: [sources.skill],
       },
