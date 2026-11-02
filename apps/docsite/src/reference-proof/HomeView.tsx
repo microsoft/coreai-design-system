@@ -55,14 +55,12 @@ export default function HomeView({ model, sourceHtml }: PageWidgetProps) {
           <Button appearance="primary" data-copy={prompt} data-copy-label="starter prompt">
             Copy starter prompt
           </Button>
-          <LinkButton href={new URL('guides/use-with-agents/', base).href} role="link">
-            How it works
-          </LinkButton>
-          <LinkButton href={new URL('guides/package-skill/', base).href} role="link">
-            Reusable skill
-          </LinkButton>
-          <LinkButton href={new URL('llms.txt', base).href} role="link">
-            Agent index
+          <LinkButton
+            appearance="outline"
+            href={new URL('guides/use-with-agents/', base).href}
+            role="link"
+          >
+            Learn more
           </LinkButton>
         </section>
         <details className="home-agent-preview">

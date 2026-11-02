@@ -1073,6 +1073,7 @@ try {
     1,
   );
   assert.equal(await page.locator('.home-agent-entry h2, .home-agent-entry p').count(), 0);
+  assert.equal(await page.locator('.home-agent-entry > .fui-Button').count(), 2);
   assert.equal(await page.locator('.home-agent-entry + .home-agent-preview').count(), 1);
   assert.ok((await page.locator('.home-heading p').innerText()).includes('Shared components'));
   const promptButton = page.getByRole('button', { name: 'Copy starter prompt', exact: true });
@@ -1088,7 +1089,7 @@ try {
   const starterOrigin = await page.evaluate(() => globalThis.performance.timeOrigin);
   await page
     .locator('.home-agent-entry')
-    .getByRole('link', { name: 'How it works', exact: true })
+    .getByRole('link', { name: 'Learn more', exact: true })
     .click();
   await page
     .getByRole('heading', { level: 1, name: 'Build with your agent', exact: true })
@@ -1108,7 +1109,7 @@ try {
   const homeOrigin = await page.evaluate(() => globalThis.performance.timeOrigin);
   await page
     .locator('.home-agent-entry')
-    .getByRole('link', { name: 'How it works', exact: true })
+    .getByRole('link', { name: 'Learn more', exact: true })
     .click();
   await page
     .getByRole('heading', { level: 1, name: 'Build with your agent', exact: true })
