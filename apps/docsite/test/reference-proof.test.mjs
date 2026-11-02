@@ -107,16 +107,6 @@ test('the staged Markdown catalog covers every selected core and template group'
   }
 });
 
-test('component and template usage guides do not require example catalog entries', async () => {
-  const pages = await readReferencePages(path.resolve(storyRoot, '..', 'docsite', 'content'));
-  for (const kind of ['components', 'templates']) {
-    const page = pages.find((page) => page.route === `${kind}/using-${kind}`);
-    assert.ok(page);
-    assert.equal(page.component, undefined);
-    assert.equal(page.sources, undefined);
-  }
-});
-
 test('Markdown owns page routes, scope, and template downloads without a scripted page list', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'reference-pages-'));
   try {
@@ -322,7 +312,7 @@ test('Markdown includes authored guidance, exact example source, base-aware link
   });
   assert.match(markdown, /Do not confuse no results with missing permissions/);
   assert.match(markdown, /not an npm export/);
-  assert.match(markdown, /\(\/repo\/components\/using-components\.md\)/);
+  assert.match(markdown, /\(\/repo\/guides\/package\.md\)/);
   assert.match(markdown, /\(\/repo\/source\/examples\/default\.tsx\)/);
   assert.equal(markdown.split(codeFence(source)).length - 1, 2);
   assert.doesNotMatch(markdown, /<Example|<ApiTable/);

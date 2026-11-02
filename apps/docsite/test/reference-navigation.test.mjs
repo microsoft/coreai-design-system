@@ -12,7 +12,7 @@ import {
 const options = {
   basePath: '/coreai-design-system/',
   currentUrl: 'https://example.com/coreai-design-system/components/button/',
-  paths: new Set(['/', '/guides/setup/', '/components/button/', '/components/tree/']),
+  paths: new Set(['/', '/guides/package/', '/components/button/', '/components/tree/']),
   button: 0,
   ctrlKey: false,
   metaKey: false,
@@ -22,7 +22,7 @@ const options = {
   target: '',
 };
 
-test('site sections use the requested order and keep introductory pages before the catalogs', () => {
+test('site sections use the requested order with alphabetized component and template catalogs', () => {
   const entries = [
     { path: '/components/button/', title: 'Button' },
     { path: '/templates/empty-state/', title: 'Empty State' },
@@ -40,8 +40,6 @@ test('site sections use the requested order and keep introductory pages before t
     { path: '/foundations/surfaces/', title: 'Surfaces' },
     { path: '/foundations/color/', title: 'Color' },
     { path: '/foundations/typography/', title: 'Typography' },
-    { path: '/components/using-components/', title: 'Using components' },
-    { path: '/templates/using-templates/', title: 'Using templates' },
   ];
   const groups = groupNavigationEntries(entries);
   assert.deepEqual(
@@ -53,8 +51,8 @@ test('site sections use the requested order and keep introductory pages before t
     [
       ['Home', 'Introduction', 'Changelog', 'FAQ'],
       ['Typography', 'Color', 'Surfaces', 'Spacing', 'Layout'],
-      ['Using components', 'Button'],
-      ['Using templates', 'Empty State'],
+      ['Button'],
+      ['Empty State'],
       ['Build with your agent', 'Content', 'Forms', 'Resources', 'Theming'],
     ],
   );

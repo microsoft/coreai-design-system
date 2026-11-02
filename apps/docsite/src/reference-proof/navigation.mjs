@@ -18,8 +18,8 @@ const navigationGroups = [
       '/foundations/layout/',
     ],
   },
-  { value: 'components', label: 'Components', paths: ['/components/using-components/'] },
-  { value: 'templates', label: 'Templates', paths: ['/templates/using-templates/'] },
+  { value: 'components', label: 'Components', paths: [] },
+  { value: 'templates', label: 'Templates', paths: [] },
   { value: 'guides', label: 'Guides', paths: [] },
 ];
 

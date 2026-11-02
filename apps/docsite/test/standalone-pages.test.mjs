@@ -107,21 +107,21 @@ test('unfinished standalone pages retain agent content and native fallback witho
   const pages = await readReferencePages(path.join(appRoot, 'content'));
   assert.deepEqual(
     pages.filter(({ renderer }) => renderer === 'work-in-progress').map(({ route }) => route),
-    ['foundations/layout', 'foundations/spacing', 'guides/prototyping'],
+    ['foundations/layout', 'foundations/spacing'],
   );
   const page = {
-    id: 'prototyping',
-    route: 'guides/prototyping',
-    title: 'Prototyping',
+    id: 'spacing',
+    route: 'foundations/spacing',
+    title: 'Spacing',
     standalone: true,
     renderer: 'work-in-progress',
     resources: [],
-    guidance: '# Prototyping\n\nBuild prototypes.\n\n## Useful links\n\nKeep this for agents.',
+    guidance: '# Spacing\n\nCoreAI spacing guidance.\n\n## Useful links\n\nKeep this for agents.',
   };
   const metadata = { basePath: '/repo/', pages: [] };
   const html = standalonePageHtml(page, metadata);
-  assert.match(html, /class="page-header" hidden[^>]*data-page-title="Prototyping"/);
-  assert.match(html, /data-markdown-url="\/repo\/guides\/prototyping.md"/);
+  assert.match(html, /class="page-header" hidden[^>]*data-page-title="Spacing"/);
+  assert.match(html, /data-markdown-url="\/repo\/foundations\/spacing.md"/);
   assert.match(html, /data-under-construction="true"/);
   assert.match(html, /data-page-widget="work-in-progress"/);
   assert.match(html, /<h1[^>]*>Page under construction<\/h1>/);
@@ -161,14 +161,38 @@ test('unfinished component guidance restores the original inline state without l
   assert.doesNotMatch(finished, /data-page-widget="work-in-progress"/);
 });
 
-test('every legacy standalone route has a Markdown-owned page or alias', async () => {
+test('deleted pages are absent from canonical routes, aliases and legacy document IDs', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  const routes = new Set(pages.flatMap((page) => [`/${page.route}/`, ...(page.aliases ?? [])]));
+  for (const route of [
+    '/components/using-components/',
+    '/templates/using-templates/',
+    '/guides/prototyping/',
+    '/guides/react-grab/',
+    '/patterns/web-ui-guidelines/',
+    '/guides/setup/',
+    '/prototyping/',
+    '/react-grab/',
+    '/web-ui-guidelines/',
+  ]) {
+    assert.ok(!routes.has(route), `${route} was removed, not hidden`);
+  }
+  assert.ok(!pages.some((page) => page.legacyIds?.includes('docs-react-grab--docs')));
+});
+
+test('retained legacy standalone routes have a Markdown-owned page or alias', async () => {
   const pages = await readReferencePages(path.join(appRoot, 'content'));
   const registry = JSON.parse(await fs.readFile(path.join(appRoot, 'site-registry.json'), 'utf8'));
   const routes = new Set(
     pages.flatMap((page) => [`/${page.route}${page.route ? '/' : ''}`, ...(page.aliases ?? [])]),
   );
-  for (const page of registry.pages)
-    assert.ok(routes.has(page.slug), `Missing migrated route ${page.slug}`);
+  for (const page of registry.pages) {
+    if (page.id === 'prototyping') {
+      assert.ok(!routes.has(page.slug), 'Prototyping was explicitly removed');
+    } else {
+      assert.ok(routes.has(page.slug), `Missing migrated route ${page.slug}`);
+    }
+  }
   for (const redirect of registry.redirects.filter((redirect) =>
     registry.pages.some((page) => page.slug === redirect.to),
   )) {
@@ -182,10 +206,9 @@ test('every legacy standalone route has a Markdown-owned page or alias', async (
       ...(page.kind === 'templates' && page.component ? [`${page.component}--source-code`] : []),
     ]),
   );
-  assert.equal(ids.size, 19, 'Retain all 19 standalone Storybook document endpoints');
+  assert.equal(ids.size, 18, 'Retain standalone Storybook document endpoints except React Grab');
   for (const id of [
     'docs-theming--docs',
-    'docs-react-grab--docs',
     'docs-styling-with-css-modules--docs',
     'templates-react-router-router-link-slots--source-code',
   ])
@@ -481,15 +504,10 @@ test('custom foundation views and published Markdown share authored tokens, pres
 
 test('Storybook snapshots embed canonical Markdown for manifest-only readers without a second authored copy', async () => {
   const mirrors = await generateStandaloneDocs();
-  assert.equal(mirrors.length, 5);
+  assert.equal(mirrors.length, 4);
+  assert.ok(!mirrors.includes('ReactGrab.mdx'));
   const pages = await readReferencePages(path.join(appRoot, 'content'));
-  for (const filename of [
-    'Theming',
-    'VariationsFromFluent',
-    'StylingWithCssModules',
-    'ReactGrab',
-    'MCPSetup',
-  ]) {
+  for (const filename of ['Theming', 'VariationsFromFluent', 'StylingWithCssModules', 'MCPSetup']) {
     const snapshot = await fs.readFile(path.join(standaloneDocsRoot, `${filename}.mdx`), 'utf8');
     const page = pages.find((page) =>
       page.migratedFrom?.some((source) => source.endsWith(`/docs/${filename}.mdx`)),

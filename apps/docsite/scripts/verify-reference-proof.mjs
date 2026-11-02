@@ -198,8 +198,8 @@ try {
     return response.text();
   };
   await get('');
-  await get('guides/setup/');
-  assert.match(await get('guides/setup.md'), /CoreAIFluentProvider/);
+  await get('guides/package/');
+  assert.match(await get('guides/package.md'), /CoreAIFluentProvider/);
   assert.match(
     await get('llms.txt'),
     new RegExp(metadata.versions['@fluentui/react-components'].replaceAll('.', '\\.')),

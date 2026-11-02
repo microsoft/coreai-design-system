@@ -40,7 +40,7 @@ it is not necessary to read every record before starting.
 
 ## Prefer the right reference
 
-- [Setup](./setup.md): dependencies and the app-root provider.
+- [Package setup](./package.md): dependencies and the app-root provider.
 - [Theming](../foundations/theming.md), [Colors](../foundations/colors.md), and
   [Typography](../foundations/typography.md): shared visual decisions.
 - [Variations from Fluent](./variations-from-fluent.md): CoreAI-specific changes.

@@ -3,8 +3,6 @@ id: home
 title: CoreAI Design System
 summary: The guide for building CoreAI experiences on the web
 resources:
-  - label: Components
-    url: /components/using-components.md
   - label: Figma
     url: https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-DS?node-id=0-1
   - label: npm
@@ -27,8 +25,6 @@ copy-and-adapt templates, and UX guidance.
 ## Get started
 
 - [Set up the package](./guides/package.md).
-- [Using components](./guides/setup.md).
-- [Using templates](./templates/using-templates.md).
 - [Build with your agent](./guides/use-with-agents.md): copy a starter prompt or install the optional reusable skill.
 
 ## Give your agent CoreAI guidance
@@ -49,7 +45,6 @@ over ordinary HTTPS.
 - [Spacing](./foundations/spacing.md)
 - [Layout](./foundations/layout.md)
 - [Theming](./foundations/theming.md)
-- [Web UI guidelines](./patterns/web-ui-guidelines.md)
 - [Forms](./patterns/forms.md)
 
 ## Component and template catalog

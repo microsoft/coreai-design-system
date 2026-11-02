@@ -333,7 +333,7 @@ export function exampleHeadingHtml(example) {
 
 function implementationMarkdown(page, metadata, extension = '.md') {
   return [
-    `## Implementation\n\nCoreAI ${metadata.versions['@coreai-ds/react-components']}; Fluent ${metadata.versions['@fluentui/react-components']}.\n\n[Setup and dependencies](${metadata.basePath}components/using-components${extension}).`,
+    `## Implementation\n\nCoreAI ${metadata.versions['@coreai-ds/react-components']}; Fluent ${metadata.versions['@fluentui/react-components']}.\n\n[Setup and dependencies](${metadata.basePath}guides/package${extension}).`,
     page.kind === 'templates'
       ? 'Copy this template into your app. It is not an npm export. Adapt actions and navigation to your product.'
       : 'Import components from `@coreai-ds/react-components`. CoreAI guidance above takes precedence over API demonstration examples.',
@@ -887,7 +887,7 @@ ${sourceHtml(source.source, `template-${page.id}-${index}`, source.path, basePat
           .join('\n')}`,
     )
     .join('\n');
-  const introduction = `# CoreAI design system\n\nHelp designers code and help engineers design.\n\nExplore component guidance, working examples, and copy-and-adapt templates. This staged reference catalog contains ${pages.length} pages and ${imports.length} examples. Pages marked under construction still need CoreAI UX guidance review.\n\n[Get started](${basePath}components/using-components.md)\n\n${listing}\n`;
+  const introduction = `# CoreAI design system\n\nHelp designers code and help engineers design.\n\nExplore component guidance, working examples, and copy-and-adapt templates. This staged reference catalog contains ${pages.length} pages and ${imports.length} examples. Pages marked under construction still need CoreAI UX guidance review.\n\n[Get started](${basePath}guides/package.md)\n\n${listing}\n`;
   await write(
     'llms.txt',
     `# CoreAI documentation for agents\n\nUse ordinary HTTPS GET to read these static Markdown files. No installation or login is needed.\n\n## Start here\n\n- [Agent workflow](${basePath}guides/agent-workflow.md): targeted retrieval, version checks, imports, and fallbacks.\n- [Build with your agent](${basePath}guides/use-with-agents.md): starter prompt and optional setup.\n- [Reusable skill](${basePath}source/package/SKILL.md): review before saving in a consuming repository.\n- [Starter prompt](${basePath}agent-prompt.txt): add the user's task and paste into an agent.\n- [Exact routes and source metadata](${basePath}llms/index.json): use only when needed; do not fetch every page.\n\nFetch this index once per task. Choose the relevant pages below; reuse fetched documents. Human directory URLs map to .md files, preserving ${basePath}; the homepage maps to ${basePath}index.md. CoreAI UX guidance overrides upstream demonstrations. Check installed package versions before implementing. Templates are copy-and-adapt source, not package exports. Report retrieval failures; never invent APIs.\n\n${introduction}\n## Build versions\n\n${Object.entries(
