@@ -106,6 +106,11 @@ not a claim that the whole application bundle is Griffel-free.
   and [Breadcrumb family in react-breadcrumb 9.4.8](https://unpkg.com/@fluentui/react-breadcrumb@9.4.8/lib/components/Breadcrumb/useBreadcrumbStyles.styles.raw.js).
   CompoundButton, ToggleButton, MenuButton, and BreadcrumbButton compose the completed Button
   CSS foundation. SplitButton reuses styled buttons through current public slot render functions.
+- The content/identity batch uses the installed snapshot at commit `53ebde2`:
+  the [Card family in react-card 9.7.4](https://unpkg.com/@fluentui/react-card@9.7.4/lib/components/Card/useCardStyles.styles.raw.js)
+  and [Persona in react-persona 9.7.11](https://unpkg.com/@fluentui/react-persona@9.7.11/lib/components/Persona/usePersonaStyles.styles.raw.js).
+  Persona reuses the completed Avatar/PresenceBadge foundations; Card fixtures reuse completed
+  Button/Image components without importing styled legacy implementations for behavior.
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -200,6 +205,11 @@ Derived buttons retain the actual wrapper defaults, including explicit `undefine
 back to rounded. SplitButton defaults to medium without inheriting the surrounding Button size.
 Breadcrumb retains native Tab navigation; the pinned arrow mode adds no focusgroup machinery.
 Its native button defaults to submit, as upstream does; use `type="button"` for non-submit actions.
+
+Card uses native focus and explicit tab stops instead of `focusMode`/Tabster machinery. Its
+CoreAI floating-action `left`/`right` positions retain physical edges in RTL. Current hook
+selection predicates and consumer event handlers control nested-action selection; inherited
+checkbox notification and nested-Enter behavior remain explicit in the tests/examples.
 
 ## Conversion workflow
 
@@ -381,6 +391,10 @@ CompoundButton, ToggleButton, MenuButton, and SplitButton cover inherited Button
 secondary content, checked interaction priority, native menu composition, separate split actions,
 slot/ref adapters, and native forms/links. Breadcrumb covers navigation/current-page semantics,
 native Tab and hash navigation, custom content/dividers, refs, and actual submitter/FormData events.
+Card covers appearances, orientation, preview/header/footer edges, physical floating-action rails,
+selection predicates, native focus/actions/forms, and slot/ref contracts. Persona covers text-line
+layout and Avatar/PresenceBadge composition, including the current initials/out-of-office
+accessibility differences and native identity/image-fallback flows.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 

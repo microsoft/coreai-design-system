@@ -68,6 +68,36 @@ export {
 } from './BreadcrumbItem.js';
 export { Button, buttonClassNames, type ButtonProps } from './Button.js';
 export {
+  Card,
+  cardClassNames,
+  type CardAppearance,
+  type CardContextValue,
+  type CardFloatingActionPosition,
+  type CardOnSelectionChangeEvent,
+  type CardOrientation,
+  type CardProps,
+  type CardSize,
+  type CardSlots,
+} from './Card.js';
+export {
+  CardFooter,
+  cardFooterClassNames,
+  type CardFooterProps,
+  type CardFooterSlots,
+} from './CardFooter.js';
+export {
+  CardHeader,
+  cardHeaderClassNames,
+  type CardHeaderProps,
+  type CardHeaderSlots,
+} from './CardHeader.js';
+export {
+  CardPreview,
+  cardPreviewClassNames,
+  type CardPreviewProps,
+  type CardPreviewSlots,
+} from './CardPreview.js';
+export {
   Checkbox,
   checkboxClassNames,
   type CheckboxOnChangeData,
@@ -101,6 +131,14 @@ export {
   type MenuButtonProps,
   type MenuButtonSlots,
 } from './MenuButton.js';
+export {
+  Persona,
+  personaClassNames,
+  type PersonaAvatarProps,
+  type PersonaProps,
+  type PersonaSize,
+  type PersonaSlots,
+} from './Persona.js';
 export {
   PresenceBadge,
   presenceBadgeClassNames,
