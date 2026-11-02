@@ -16,7 +16,7 @@ export async function assertReferenceTextTokens(page, label) {
     const groups = [
       [
         1,
-        '.page-header h1, .home-heading h1, .component-markdown :is(h1,h2,h3,h4,h5,h6,th), .standalone-guidance :is(h1,h2,h3,h4,h5,h6,th), .reference-color-view h3, .reference-resources-view :is(h2,h3), .reference-faqs-view h2, .reference-changelog-view :is(h2,h3,h4), .package-step__content > h3, .content-page :is(h2,h3), .agent-workflow-view :is(h2,h3), .type-table__example',
+        '.page-header h1, .home-heading h1, .component-markdown :is(h1,h2,h3,h4,h5,h6,th), .standalone-guidance :is(h1,h2,h3,h4,h5,h6,th), .reference-color-view h3, .reference-resources-view :is(h2,h3), .reference-faqs-view h2, .reference-changelog-view :is(h2,h3,h4), .package-step__content > h3, .content-page :is(h2,h3), .agent-workflow-view :is(h2,h3), .type-table__example, .example > h2, .reference-template-source > h2',
       ],
       [
         2,
@@ -93,6 +93,94 @@ export async function assertReferenceTextTokens(page, label) {
   return result.checks;
 }
 
+export async function assertReferenceTypography(page, label) {
+  await page.evaluate(() => globalThis.document.fonts.ready);
+  const result = await page.evaluate(() => {
+    const document = globalThis.document;
+    const host = document.querySelector('.coreai-docsite-provider') ?? document.documentElement;
+    const probe = document.createElement('span');
+    probe.hidden = true;
+    host.append(probe);
+    const groups = [
+      ['.page-header h1, .home-heading h1', 'Hero900', 'Regular'],
+      ['.page-summary, .home-heading p', 'Base400', 'Regular'],
+      [
+        '.component-markdown :is(p,li), .standalone-guidance :is(p,li), .faq-answer :is(p,li), .content-example__body p, .content-guidance-list li, .fui-CodeBlock__pre, .reference-api pre, .reference-basic-source pre',
+        'Base300',
+        'Regular',
+      ],
+      ['.example > h2, .reference-template-source > h2', 'Base500', 'Semibold'],
+      ['.reference-api__content > h3', 'Base400', 'Semibold'],
+    ];
+    const headingSizes = ['Hero700', 'Base600', 'Base500', 'Base400', 'Base300', 'Base200'];
+    headingSizes.forEach((size, index) =>
+      groups.push([
+        `.component-markdown h${index + 1}:not(.fui-Text), .standalone-guidance h${index + 1}:not(.fui-Text)`,
+        size,
+        'Semibold',
+      ]),
+    );
+    const failures = [];
+    let checks = 0;
+    try {
+      for (const [selector, defaultSize, weight] of groups) {
+        for (const element of document.querySelectorAll(selector)) {
+          if (element.closest('[data-example-id], .preview')) continue;
+          let size = defaultSize;
+          if (element.closest('.reference-page--compact-guidance')) {
+            if (element.tagName === 'H2') size = 'Base400';
+            if (element.tagName === 'H3') size = 'Base300';
+          }
+          if (element.matches('.do-dont-card > h3')) size = 'Base400';
+          const family = element.tagName === 'PRE' ? 'Monospace' : 'Base';
+          probe.style.fontSize = `var(--fontSize${size})`;
+          probe.style.lineHeight = `var(--lineHeight${size})`;
+          probe.style.fontWeight = `var(--fontWeight${weight})`;
+          probe.style.fontFamily = `var(--fontFamily${family})`;
+          const expected = globalThis.getComputedStyle(probe);
+          const actual = globalThis.getComputedStyle(element);
+          for (const property of ['fontSize', 'lineHeight', 'fontWeight', 'fontFamily']) {
+            checks++;
+            if (actual[property] !== expected[property])
+              failures.push({
+                text: element.textContent.trim().slice(0, 50),
+                property,
+                actual: actual[property],
+                expected: expected[property],
+              });
+          }
+          if (!document.querySelector('.coreai-docsite-provider')) continue;
+          const compactBody =
+            element.closest('.reference-page--compact-guidance .standalone-guidance') &&
+            element.matches('p, ul, ol, strong');
+          const pixels = Number.parseFloat(actual.fontSize);
+          const threshold = Number.parseFloat(actual.getPropertyValue('--fui-tracking-threshold'));
+          const ramp = Number.parseFloat(actual.getPropertyValue('--fui-tracking-ramp'));
+          const tracking = compactBody
+            ? 0
+            : Math.max(0.01, 0.01 + (threshold - pixels) * ramp) * pixels;
+          const actualTracking =
+            actual.letterSpacing === 'normal' ? 0 : Number.parseFloat(actual.letterSpacing);
+          checks++;
+          if (Math.abs(actualTracking - tracking) > 0.001)
+            failures.push({
+              text: element.textContent.trim().slice(0, 50),
+              property: 'letterSpacing',
+              actual: actualTracking,
+              expected: tracking,
+            });
+        }
+      }
+    } finally {
+      probe.remove();
+    }
+    return { checks, failures };
+  });
+  assert.deepEqual(result.failures, [], `${label}: CoreAI typography metrics`);
+  assert.ok(result.checks > 0, `${label}: typography was checked`);
+  return result.checks;
+}
+
 async function main() {
   const root = new URL(process.argv[2] ?? 'http://127.0.0.1:8080/');
   const response = await fetch(new URL('llms/index.json', root));
@@ -126,6 +214,7 @@ async function main() {
         `${mode}: canonical tokens exist before JavaScript`,
       );
       checks += await assertReferenceTextTokens(nativePage, `${mode}/static-home`);
+      checks += await assertReferenceTypography(nativePage, `${mode}/static-home`);
       await fallback.close();
 
       const context = await browser.newContext({
@@ -142,11 +231,13 @@ async function main() {
         await page.goto(new URL(record.htmlPath, root).href);
         await page.locator('[data-reference-ready="true"]').waitFor();
         checks += await assertReferenceTextTokens(page, `${mode}/${record.id}`);
+        checks += await assertReferenceTypography(page, `${mode}/${record.id}`);
       }
       await page.setViewportSize({ width: 390, height: 844 });
       await page.goto(root.href);
       await page.locator('.home-heading h1.fui-Text').waitFor();
       checks += await assertReferenceTextTokens(page, `${mode}/mobile-home`);
+      checks += await assertReferenceTypography(page, `${mode}/mobile-home`);
       assert.equal(await page.locator('html').getAttribute('data-theme'), mode);
       assert.deepEqual(errors, [], `${mode}: browser errors`);
       await context.close();
@@ -155,7 +246,7 @@ async function main() {
     await browser.close();
   }
   console.log(
-    `CoreAI token audit: ${samples.size} representative page types in both themes, static and mobile Home, ${checks} text-role and binding checks.`,
+    `CoreAI audit: ${samples.size} representative page types in both themes, static and mobile Home, ${checks} foreground, binding and typography checks.`,
   );
 }
 

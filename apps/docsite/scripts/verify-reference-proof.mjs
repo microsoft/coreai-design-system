@@ -1,7 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assertReferenceTextTokens } from './verify-reference-tokens.mjs';
+import {
+  assertReferenceTextTokens,
+  assertReferenceTypography,
+} from './verify-reference-tokens.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import os from 'node:os';
@@ -399,6 +402,7 @@ try {
       );
     }
     await assertReferenceTextTokens(page, record.id);
+    await assertReferenceTypography(page, record.id);
     assert.equal(await page.locator('[data-example-id]').count(), record.examples.length);
     if (!record.standalone) {
       assert.equal(
