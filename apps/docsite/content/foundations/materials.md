@@ -1,12 +1,13 @@
 ---
 id: materials
-title: Materials
+title: Surfaces
 summary: 'Surface tiers, depth, and visual hierarchy.'
 resources: []
 reference:
   renderer: materials
-  route: foundations/materials
+  route: foundations/surfaces
   aliases:
+    - /foundations/materials/
     - /materials/
   migratedFrom:
     - apps/docsite/src/pages/Materials.tsx

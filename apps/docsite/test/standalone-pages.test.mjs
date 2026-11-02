@@ -52,7 +52,7 @@ test('every legacy standalone route has a Markdown-owned page or alias', async (
   const ids = new Set(
     pages.flatMap((page) => [
       ...(page.legacyIds ?? []),
-      ...(page.kind === 'templates' ? [`${page.component}--source-code`] : []),
+      ...(page.kind === 'templates' && page.component ? [`${page.component}--source-code`] : []),
     ]),
   );
   assert.equal(ids.size, 19, 'Retain all 19 standalone Storybook document endpoints');
@@ -275,7 +275,7 @@ test('standalone renderers stay bounded and whole-page views are explicit', () =
 test('overview pages opt into their Markdown-backed rich views', async () => {
   const pages = await readReferencePages(path.join(appRoot, 'content'));
   assert.equal(pages.find((page) => page.route === 'overview/resources')?.renderer, 'resources');
-  assert.equal(pages.find((page) => page.route === 'overview/faqs')?.renderer, 'faqs');
+  assert.equal(pages.find((page) => page.route === 'overview/faq')?.renderer, 'faqs');
 });
 
 test('package guidance opts into its Markdown-backed setup view', async () => {
