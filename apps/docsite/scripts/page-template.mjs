@@ -94,7 +94,7 @@ export function pageTemplateResources(page, metadata) {
 }
 
 export function homeHeroFallback(page, metadata, parts) {
-  return `<div data-page-widget="home" class="home-widget"><div class="home-landing"><div class="home-foreground"><header class="home-heading"><div class="page-header__title-row"><h1 id="${parts.headingId}">${escapeHtml(page.title)}</h1></div>${parts.summaryHtml}</header><div class="home-agent-content"><section class="home-agent-entry" aria-label="Agent resources"><a href="${metadata.basePath}guides/use-with-agents/">Learn more</a></section><details class="home-agent-preview" hidden><summary>Preview the prompt</summary><pre data-agent-prompt>${escapeHtml(metadata.agentPrompt)}</pre></details></div></div><div class="home-visual"><img class="home-logo-fallback" src="${metadata.basePath}assets/favicon.svg" alt="" /></div></div></div>`;
+  return `<div data-page-widget="home" class="home-widget"><div class="home-landing"><div class="home-foreground"><header class="home-heading"><div class="page-header__title-row"><h1 id="${parts.headingId}">${escapeHtml(page.title)}</h1></div>${parts.summaryHtml}</header><div class="home-agent-content"><section class="home-agent-entry" aria-label="Agent resources"><a href="${metadata.basePath}guides/use-with-agents/">Learn more</a></section><details class="home-agent-preview" hidden><summary>Preview the prompt</summary><pre data-agent-prompt>${escapeHtml(metadata.agentPrompt)}</pre></details></div></div><div class="home-visual"></div></div></div>`;
 }
 
 export function workInProgressFallback(page, metadata, standalone = false) {

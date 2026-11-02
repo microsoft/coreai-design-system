@@ -4,7 +4,6 @@
 import * as React from 'react';
 import { Button, LinkButton, Text } from '@coreai-ds/react-components';
 import { Copy20Regular } from '@fluentui/react-icons';
-import { CoreAILogo } from '../components/Icons';
 import type { PageWidgetProps } from './FoundationViews';
 
 const Logo = React.lazy(() =>
@@ -21,7 +20,7 @@ class GraphicBoundary extends React.Component<{ children: React.ReactNode }, { f
   }
   render() {
     return this.state.failed ? (
-      <span className="sr-only">The 3D graphic is unavailable. A static CoreAI logo is shown.</span>
+      <span className="sr-only">The 3D graphic is unavailable.</span>
     ) : (
       this.props.children
     );
@@ -79,7 +78,6 @@ export default function HomeView({ model, sourceHtml }: PageWidgetProps) {
         </div>
       </div>
       <div className="home-visual">
-        <CoreAILogo className="home-logo-fallback" />
         <GraphicBoundary>
           <React.Suspense fallback={null}>
             <Logo />

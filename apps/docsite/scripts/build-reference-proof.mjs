@@ -467,10 +467,6 @@ export function initialThemeStyles(themes, stylesheets) {
 }
 
 function shell(title, body, metadata, assets, navigation, currentPath = '') {
-  navigation = navigation.replace(
-    `href="${metadata.basePath}${currentPath}"`,
-    `aria-current="page" href="${metadata.basePath}${currentPath}"`,
-  );
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeHtml(title)} | CoreAI design system</title>
@@ -794,19 +790,25 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
     })),
   );
   const orderedPages = navigationGroups.flatMap((group) => group.items.map((entry) => entry.page));
-  const navigation = navigationGroups
-    .map(
-      (group) =>
-        `<details open class="reference-nav-group"><summary>${group.label}</summary>` +
-        group.items
-          .map(
-            ({ page, title }) =>
-              `<a class="reference-nav-link" data-navigation-entry data-navigation-summary="${escapeHtml(page.summary)}" href="${basePath}${page.route}${page.route ? '/' : ''}">${escapeHtml(title)}</a>`,
-          )
-          .join('') +
-        '</details>',
-    )
-    .join('');
+  const navigation = (currentPath) =>
+    navigationGroups
+      .map((group) => {
+        const active = group.items.some(
+          ({ page }) => `${page.route}${page.route ? '/' : ''}` === currentPath,
+        );
+        const open = group.value === 'getting-started' || active;
+        return (
+          `<details${open ? ' open' : ''} class="reference-nav-group"><summary>${group.label}</summary>` +
+          group.items
+            .map(({ page, title }) => {
+              const pagePath = `${page.route}${page.route ? '/' : ''}`;
+              return `<a class="reference-nav-link" data-navigation-entry data-navigation-summary="${escapeHtml(page.summary)}"${pagePath === currentPath ? ' aria-current="page"' : ''} href="${basePath}${pagePath}">${escapeHtml(title)}</a>`;
+            })
+            .join('') +
+          '</details>'
+        );
+      })
+      .join('');
   const indexPages = [];
   for (const page of orderedPages) {
     const markdown = pageMarkdown(page, metadata);
@@ -828,7 +830,7 @@ ${sourceHtml(source.source, `template-${page.id}-${index}`, source.path, basePat
     await write(markdownPath, markdown);
     await write(
       `${htmlPath}index.html`,
-      shell(page.title, body, metadata, assets, navigation, htmlPath),
+      shell(page.title, body, metadata, assets, navigation(htmlPath), htmlPath),
     );
     for (const alias of page.aliases) {
       const destination = `${basePath}${htmlPath}`;

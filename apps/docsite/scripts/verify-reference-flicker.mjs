@@ -21,6 +21,33 @@ const readFrames = (page) =>
     return frames;
   });
 
+const readNavigationGeometry = (page) =>
+  page.evaluate(() => {
+    const rect = (element) => {
+      const bounds = element?.getBoundingClientRect();
+      return bounds
+        ? [bounds.x, bounds.y, bounds.width, bounds.height].map((value) => Math.round(value))
+        : null;
+    };
+    const navigation = globalThis.document.querySelector('.app-sidenav__nav');
+    const groups = [
+      ...globalThis.document.querySelectorAll('.reference-nav-group, .app-sidenav__section-shell'),
+    ];
+    return {
+      scrollHeight: navigation?.scrollHeight,
+      groups: groups.map((group) => ({
+        rect: rect(group),
+        expanded:
+          group instanceof globalThis.HTMLDetailsElement
+            ? group.open
+            : group.querySelector('button')?.getAttribute('aria-expanded') === 'true',
+      })),
+      active: rect(
+        globalThis.document.querySelector('[aria-current="page"], .fui-Tab[aria-selected="true"]'),
+      ),
+    };
+  });
+
 try {
   const context = await browser.newContext({ reducedMotion: 'reduce' });
   await context.addInitScript(() => {
@@ -58,14 +85,21 @@ try {
   await reloadPage.locator('.reference-shell').waitFor();
   await reloadPage.getByRole('heading', { name: 'Button', exact: true }).waitFor();
   const before = await reloadPage.locator('.app-content').boundingBox();
+  const navigationBefore = await readNavigationGeometry(reloadPage);
   assert.ok(before, 'The static shell is laid out before the application bundle loads');
   await reloadPage.locator('[data-reference-ready="true"]').waitFor();
   const after = await reloadPage.locator('.app-content').boundingBox();
+  const navigationAfter = await readNavigationGeometry(reloadPage);
   assert.ok(after, 'The hydrated shell remains laid out');
   assert.ok(Math.abs(before.x - after.x) <= 1, 'Hydration does not move the content shell');
   assert.ok(
     Math.abs(before.width - after.width) <= 1,
     'Hydration does not resize the content shell',
+  );
+  assert.deepEqual(
+    navigationAfter,
+    navigationBefore,
+    'Hydration keeps navigation groups and the active item in the same positions',
   );
   const reloadFrames = await readFrames(reloadPage);
   assert.ok(reloadFrames.length > 10, 'The reload check samples multiple animation frames');
@@ -158,8 +192,29 @@ try {
     navigationFrames.every((frame) => frame.mainText && frame.heading),
     'Client navigation always shows a complete page heading and content',
   );
+
+  const homePage = await context.newPage();
+  let graphicRequested;
+  const graphicRequest = new Promise((resolve) => {
+    graphicRequested = resolve;
+  });
+  await homePage.route(/\/assets\/CoreAILogoCube-[^/]+\.js$/, async (route) => {
+    graphicRequested();
+    await delayRoute(route, 800);
+  });
+  await homePage.goto(root.href);
+  await graphicRequest;
+  await homePage.locator('[data-reference-ready="true"]').waitFor();
+  assert.equal(
+    await homePage.locator('.home-visual').locator('img, svg, canvas, [role="img"]').count(),
+    0,
+    'Home shows no placeholder while the interactive illustration loads',
+  );
+  await homePage.locator('.coreai-logo-cube[data-ready="true"]').waitFor();
 } finally {
   await browser.close();
 }
 
-console.log('Reference flicker: delayed reload, hydration, and navigation passed');
+console.log(
+  'Reference flicker: stable nav, delayed reload, hydration, navigation, and Home graphic passed',
+);

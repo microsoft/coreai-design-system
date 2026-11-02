@@ -1067,7 +1067,7 @@ try {
   assert.equal(await staticPage.locator('.home-resource-links').count(), 0);
   assert.equal(await staticPage.locator('.home-agent-entry + .home-agent-preview').count(), 1);
   assert.notEqual(await staticPage.locator('.home-agent-preview').getAttribute('hidden'), null);
-  assert.ok(await staticPage.locator('.home-logo-fallback').isVisible());
+  assert.equal(await staticPage.locator('.home-visual').locator('img, svg, canvas').count(), 0);
   assert.equal(
     await staticPage.getByRole('heading', { name: 'Build with your agent', exact: true }).count(),
     0,
