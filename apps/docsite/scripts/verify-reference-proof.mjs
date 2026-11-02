@@ -515,7 +515,7 @@ try {
   }
 
   await page.goto(`${root}colors/`);
-  await page.waitForURL(`${root}foundations/colors/`);
+  await page.waitForURL(`${root}foundations/color/`);
   await page.locator('[data-reference-ready="true"]').waitFor();
   const themes = await import('@coreai-ds/react-components');
   assert.equal(await page.locator('#guidance-brand-ramps').count(), 1);
@@ -572,13 +572,17 @@ try {
   assert.equal(await page.evaluate(() => globalThis.performance.timeOrigin), foundationOrigin);
   await page
     .getByRole('navigation', { name: 'Documentation', exact: true })
+    .getByRole('button', { name: 'Guides', exact: true })
+    .click();
+  await page
+    .getByRole('navigation', { name: 'Documentation', exact: true })
     .getByRole('tab', { name: 'Theming', exact: true })
     .click();
   await page.getByRole('heading', { name: 'Theming', exact: true }).waitFor();
   await page.locator('[data-reference-ready="true"]').waitFor();
   assert.equal(await page.locator('[data-example-id]').count(), 3);
   assert.equal(await page.evaluate(() => globalThis.performance.timeOrigin), foundationOrigin);
-  await page.goto(`${root}foundations/materials/`);
+  await page.goto(`${root}foundations/surfaces/`);
   await page.locator('[data-reference-ready="true"]').waitFor();
   const materialsImage = page.locator('[data-page-widget="materials"] img');
   assert.ok((await materialsImage.getAttribute('src')).endsWith('-light.png'));
@@ -653,6 +657,13 @@ try {
   await setTheme('light');
   const navigation = page.getByRole('navigation', { name: 'Documentation', exact: true });
   await navigation.getByRole('tablist').first().waitFor();
+  assert.deepEqual(await navigation.locator('.fui-AccordionHeader__button').allTextContents(), [
+    'Getting started',
+    'Foundations',
+    'Components',
+    'Templates',
+    'Guides',
+  ]);
   const timeOrigin = await page.evaluate(() => {
     globalThis.document
       .querySelector('#reference-root > .coreai-docsite-provider')
@@ -666,7 +677,7 @@ try {
     .locator('#main')
     .getByRole('link', { name: 'Setup and dependencies', exact: true })
     .click();
-  await page.getByRole('heading', { name: 'Use these examples', exact: true }).waitFor();
+  await page.getByRole('heading', { name: 'Using components', exact: true }).waitFor();
   await page.locator('[data-reference-ready="true"]').waitFor();
   assert.equal(
     await page.evaluate(() => globalThis.performance.timeOrigin),
@@ -927,7 +938,7 @@ try {
       await staticPage.locator('[id="source-components-button-button--default"]').textContent()
     ).includes('export default Default'),
   );
-  await staticPage.goto(`${root}foundations/colors/`);
+  await staticPage.goto(`${root}foundations/color/`);
   assert.equal(await staticPage.locator('[data-page-widget="colors"] table').count(), 2);
   assert.ok(
     (await staticPage.locator('.standalone-guidance').innerText()).includes(
@@ -937,7 +948,7 @@ try {
   await staticPage.goto(`${root}foundations/typography/`);
   assert.equal(await staticPage.locator('[data-page-widget="font-families"] table').count(), 1);
   assert.equal(await staticPage.locator('[data-page-widget="typography"] table').count(), 1);
-  await staticPage.goto(`${root}foundations/materials/`);
+  await staticPage.goto(`${root}foundations/surfaces/`);
   assert.equal(await staticPage.locator('[data-page-widget="materials"] img').count(), 2);
   await staticPage.goto(root);
   assert.equal(await staticPage.locator('.home-resource-links a').count(), 3);
@@ -953,7 +964,7 @@ try {
   assert.match(
     await page
       .locator('.app-sidenav__footer')
-      .evaluate((element) => getComputedStyle(element).boxShadow),
+      .evaluate((element) => globalThis.getComputedStyle(element).boxShadow),
     /0px -16px 24px 4px/,
   );
   await page.getByRole('link', { name: 'CoreAI home', exact: true }).click();
@@ -985,7 +996,7 @@ try {
   await page.keyboard.press(
     process.platform === 'darwin' ? 'Meta+Shift+ArrowDown' : 'Control+Shift+ArrowDown',
   );
-  assert.ok((await navigation.locator('[aria-expanded="true"]').count()) >= 6);
+  assert.equal(await navigation.locator('[aria-expanded="true"]').count(), 5);
   await page.keyboard.press('Alt+m');
   await page.waitForFunction(() => globalThis.document.documentElement.dataset.theme === 'dark');
   await page.keyboard.press('Alt+m');
@@ -1014,10 +1025,8 @@ try {
     await page.getByRole('dialog', { name: 'Site navigation dialog', exact: true }).count(),
     0,
   );
-  assert.ok(
-    await page
-      .getByRole('button', { name: 'Open navigation', exact: true })
-      .evaluate((button) => globalThis.document.activeElement === button),
+  await page.waitForFunction(
+    () => globalThis.document.activeElement?.getAttribute('aria-label') === 'Open navigation',
   );
   await page.getByRole('button', { name: 'Open navigation', exact: true }).click();
   await page
