@@ -38,7 +38,7 @@ type IlliconStoryProps = Omit<React.ComponentProps<typeof Illicon>, 'icon'> & {
 export const Default: StoryObj<IlliconStoryProps> = {
   args: {
     icon: 'Rocket',
-    size: 100,
+    size: 24 * 4,
     'aria-label': 'Dotted illustration',
   },
   argTypes: {
