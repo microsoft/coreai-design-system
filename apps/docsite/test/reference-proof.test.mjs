@@ -8,6 +8,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { readReferencePages } from '../scripts/read-reference-pages.mjs';
 import { readSourceCatalog, storyRoot } from '../scripts/sources/catalog.mjs';
+import { serveReferenceProof } from '../scripts/serve-reference-proof.mjs';
 import {
   normalizeBase,
   escapeHtml,
@@ -19,6 +20,39 @@ import {
   exampleHeadingHtml,
   scopeExampleIds,
 } from '../scripts/build-reference-proof.mjs';
+
+test('local preview retains lazy chunks for open tabs across rebuilds', async () => {
+  const outDir = await fs.mkdtemp(path.join(os.tmpdir(), 'reference-preview-'));
+  let server;
+  try {
+    await fs.mkdir(path.join(outDir, 'llms'));
+    await fs.mkdir(path.join(outDir, 'assets'));
+    await fs.writeFile(
+      path.join(outDir, 'llms/index.json'),
+      JSON.stringify({ basePath: '/repo/' }),
+    );
+    const before = path.join(outDir, 'assets/view-before.js');
+    await fs.writeFile(before, 'export const view = "before";');
+    server = await serveReferenceProof({ port: 0, outDir });
+    const origin = `http://127.0.0.1:${server.httpServer.address().port}/repo/assets/`;
+    await fs.rm(before);
+    await fs.writeFile(path.join(outDir, 'assets/main-after.js'), 'import "./view-after.js";');
+    const after = path.join(outDir, 'assets/view-after.js');
+    await fs.writeFile(after, 'export const view = "after";');
+    assert.equal((await globalThis.fetch(`${origin}main-after.js`)).status, 200);
+    await fs.rm(after);
+    for (const version of ['before', 'after']) {
+      const response = await globalThis.fetch(`${origin}view-${version}.js`);
+      assert.equal(response.status, 200);
+      assert.match(response.headers.get('content-type'), /javascript/);
+      assert.equal(await response.text(), `export const view = "${version}";`);
+    }
+    assert.equal((await globalThis.fetch(`${origin}missing.js`)).status, 404);
+  } finally {
+    if (server) await new Promise((resolve) => server.httpServer.close(resolve));
+    await fs.rm(outDir, { recursive: true, force: true });
+  }
+});
 
 test('the staged Markdown catalog covers every selected core and template group', async () => {
   const pages = await readReferencePages(path.resolve(storyRoot, '..', 'docsite', 'content'));
