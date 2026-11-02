@@ -94,6 +94,7 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
     panel.setAttribute('role', 'tabpanel');
     panel.setAttribute('aria-labelledby', `${prefix}-${name}-tab`);
     panel.tabIndex = 0;
+    panel.hidden = name === 'samples';
   }
 
   for (const child of [...introduction.children]) {

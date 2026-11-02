@@ -143,10 +143,10 @@ function DocumentationShell({
   }, [collapsed, slots]);
 
   React.useLayoutEffect(() => {
-    const home = pathname === '/' && page.status === 'ready';
+    const home = page.path === '/' && page.status === 'ready';
     contentRef.current?.querySelector('.app-content')?.classList.toggle('app-content--home', home);
     contentRef.current?.querySelector('.app-page')?.classList.toggle('app-page--home', home);
-  }, [pathname, page.status]);
+  }, [page.path, page.status]);
 
   React.useEffect(() => {
     setQuery('');
@@ -156,12 +156,6 @@ function DocumentationShell({
       return;
     }
     const controller = new AbortController();
-    onPageChange({
-      path: pathname,
-      title: 'Loading documentation | CoreAI design system',
-      html: '',
-      status: 'loading',
-    });
     async function loadPage() {
       try {
         const response = await fetch(`${basePath}${pathname.slice(1)}`, {

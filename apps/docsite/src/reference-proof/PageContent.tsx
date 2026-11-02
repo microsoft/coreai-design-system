@@ -83,9 +83,6 @@ export function PageContent({
   );
   const loading = page.status === 'ready' && targets === null && !loadError;
   React.useLayoutEffect(() => {
-    if (!loading) document.documentElement.classList.remove('reference-loading');
-  }, [loading]);
-  React.useEffect(() => {
     if (page.status !== 'ready') return;
     let active = true;
     const containers = [
@@ -105,6 +102,15 @@ export function PageContent({
         return { name, element, sourceHtml: element.innerHTML };
       },
     );
+    header.replaceChildren();
+    resources?.replaceChildren();
+    setTargets(null);
+    setExamples({});
+    setLoadError(undefined);
+    setWidgets([]);
+    setViews({});
+    setPresentation({ model, header, resources });
+    setPageTabs(tabs);
     const components = [
       ...new Set(containers.map((container) => container.dataset.exampleId?.split('--')[0])),
     ];
@@ -128,11 +134,7 @@ export function PageContent({
       .then(([loaded, foundationViews, standaloneViews, homeView]) => {
         if (!active) return;
         for (const container of containers) container.replaceChildren();
-        header.replaceChildren();
-        resources?.replaceChildren();
         for (const widget of pageWidgets) widget.element.replaceChildren();
-        setPresentation({ model, header, resources });
-        setPageTabs(tabs);
         setViews({ ...foundationViews, ...standaloneViews, ...homeView });
         setWidgets(pageWidgets);
         setExamples(
@@ -173,11 +175,7 @@ export function PageContent({
           </p>
         </>
       ) : (
-        <div
-          ref={contentRef}
-          className={loading ? 'reference-page-markup--loading' : undefined}
-          dangerouslySetInnerHTML={markup}
-        />
+        <div ref={contentRef} dangerouslySetInnerHTML={markup} />
       )}
       {loadError ? (
         <p role="alert" data-preview-error>

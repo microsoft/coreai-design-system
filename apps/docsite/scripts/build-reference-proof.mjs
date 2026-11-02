@@ -479,7 +479,6 @@ function shell(title, body, metadata, assets, navigation, currentPath = '') {
 <script>
 (() => {
   const root = document.documentElement;
-  root.classList.add('reference-loading');
   let stored;
   try { stored = localStorage.getItem('coreai-docsite-theme'); } catch { stored = null; }
   root.dataset.theme = stored === 'light' || stored === 'dark'
@@ -497,7 +496,7 @@ ${assets.css.map((file) => `<link rel="stylesheet" href="${metadata.basePath}${f
 <div class="app-content"><div data-shell-header></div><div class="app-page"><main class="site-main" id="main" tabindex="-1">${body}
 <footer class="reference-footer${currentPath === '' ? ' sr-only' : ''}">CoreAI ${escapeHtml(metadata.versions['@coreai-ds/react-components'])}; Fluent ${escapeHtml(metadata.versions['@fluentui/react-components'])}.
 <a href="${metadata.basePath}llms.txt">Agent index</a> · <a href="${metadata.basePath}llms/index.json">Coverage and provenance</a> · <a href="${metadata.basePath}THIRD-PARTY-NOTICES.txt">License</a></footer>
-</main></div></div></div></div><div class="copy-toast" role="status"></div></div></div><script type="module" src="${metadata.basePath}${assets.entry}" onerror="document.documentElement.classList.remove('reference-loading')"></script></body></html>\n`;
+</main></div></div></div></div><div class="copy-toast" role="status"></div></div></div><script type="module" src="${metadata.basePath}${assets.entry}"></script></body></html>\n`;
 }
 
 function sourceHtml(source, id, downloadPath, base) {
