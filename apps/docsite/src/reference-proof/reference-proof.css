@@ -320,6 +320,38 @@ html.reference-loading #reference-root {
   margin-block-start: 20px;
 }
 
+.reference-page--compact-guidance
+  .standalone-guidance
+  .guidance-section:has(> #guidance-choose-your-starting-point) {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.reference-page--compact-guidance
+  .standalone-guidance
+  .guidance-section:has(> #guidance-choose-your-starting-point)
+  > :is(h2, .guidance-section) {
+  margin-block: 0;
+}
+
+.reference-page--compact-guidance
+  .standalone-guidance
+  .guidance-section:has(> #guidance-choose-your-starting-point)
+  > .guidance-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reference-page--compact-guidance
+  .standalone-guidance
+  .guidance-section:has(> #guidance-choose-your-starting-point)
+  > .guidance-section
+  > :is(h3, p) {
+  margin-block: 0;
+}
+
 .reference-page--compact-guidance .standalone-guidance :is(p, ul, ol, strong) {
   margin-block-end: 12px;
   letter-spacing: 0;
