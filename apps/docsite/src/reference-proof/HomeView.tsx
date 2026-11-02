@@ -41,7 +41,7 @@ export default function HomeView({ model, sourceHtml }: PageWidgetProps) {
       <div className="home-foreground">
         <header className="home-heading">
           <div className="page-header__title-row">
-            <Text as="h1" id={model.headingId} size={900} weight="regular">
+            <Text as="h1" id={model.headingId} size={900} weight="regular" foreground={1}>
               {model.title}
             </Text>
           </div>

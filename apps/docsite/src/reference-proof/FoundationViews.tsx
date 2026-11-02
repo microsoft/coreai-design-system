@@ -77,14 +77,16 @@ function ColorsView({ sourceHtml }: PageWidgetProps) {
               aria-hidden="true"
             />
             <span className="stack-row__main">
-              <Text weight="semibold">{row.name}</Text>
+              <Text weight="semibold" foreground={1}>
+                {row.name}
+              </Text>
               <Text foreground={2}>{row.description}</Text>
             </span>
             <span className="stack-row__meta">
-              <Text font="monospace" size={200}>
+              <Text font="monospace" size={200} foreground={3}>
                 {row.token}
               </Text>
-              <Text font="monospace" size={200} data-token-value={row.token}>
+              <Text font="monospace" size={200} foreground={3} data-token-value={row.token}>
                 {theme[row.token]}
               </Text>
             </span>
@@ -109,7 +111,7 @@ function ColorsView({ sourceHtml }: PageWidgetProps) {
           </Tab>
         ))}
       </TabList>
-      <Text as="h3" preset="heading3" id={brandHeading.id}>
+      <Text as="h3" preset="heading3" id={brandHeading.id} foreground={1}>
         {brandHeading.textContent}
       </Text>
       <div className="primary-grid">
@@ -188,13 +190,13 @@ function ColorsView({ sourceHtml }: PageWidgetProps) {
         </div>
       </div>
       <section id={semanticHeading.id} aria-label={semanticHeading.textContent ?? undefined}>
-        <Text as="h3" preset="heading3">
+        <Text as="h3" preset="heading3" foreground={1}>
           Surface colors
         </Text>
         {rows(surfaces, true)}
       </section>
       <section>
-        <Text as="h3" preset="heading3">
+        <Text as="h3" preset="heading3" foreground={1}>
           Text colors
         </Text>
         {rows(foregrounds, false)}
@@ -218,10 +220,12 @@ function DataVisualizationView() {
             {row.slot}
           </span>
           <span className="stack-row__main">
-            <Text weight="semibold">{row.label}</Text>
+            <Text weight="semibold" foreground={1}>
+              {row.label}
+            </Text>
             <Text foreground={2}>{row.description}</Text>
           </span>
-          <Text font="monospace" className="stack-row__hex">
+          <Text font="monospace" className="stack-row__hex" foreground={3}>
             {row.value}
           </Text>
         </button>
@@ -244,7 +248,7 @@ function FontFamiliesView() {
           <Card className="font-card" appearance="outline">
             <ExternalIcon className="font-card__external" />
             <span className="font-card__sample">
-              <Text font={font.variant} size={800}>
+              <Text font={font.variant} size={800} foreground={1}>
                 {font.sample}
               </Text>
               <Text
@@ -306,7 +310,7 @@ function TypographyView() {
             {row.strongLabel}
           </Text>
           {row.regularPreset ? (
-            <Text className="type-table__example" preset={row.regularPreset}>
+            <Text className="type-table__example" preset={row.regularPreset} foreground={1}>
               {row.regularLabel}
             </Text>
           ) : (

@@ -19,7 +19,41 @@ import {
   pageMarkdown,
   exampleHeadingHtml,
   scopeExampleIds,
+  initialThemeStyles,
 } from '../scripts/build-reference-proof.mjs';
+
+test('initial paint uses the active CoreAI tokens, including referenced token aliases', () => {
+  const light = {
+    colorNeutralForeground1: '#102030',
+    colorNeutralForeground2: '#304050',
+    colorNeutralBackground1: '#f0f1f2',
+    colorNeutralBackground4: '#e0e1e2',
+    colorNeutralBackground6: '#c0c1c2',
+    colorNeutralStrokeSubtle: 'var(--colorNeutralBackground4)',
+    colorBrandBackground: '#501090',
+  };
+  const dark = {
+    ...light,
+    colorNeutralForeground1: '#f0e0d0',
+    colorNeutralForeground2: '#d0c0b0',
+    colorNeutralBackground1: '#202122',
+    colorNeutralBackground4: '#101112',
+    colorNeutralBackground6: '#000102',
+  };
+  const styles = initialThemeStyles(
+    { light, dark },
+    'h1{color:var(--colorNeutralForeground1)}main{border-color:var(--colorNeutralStrokeSubtle);color:var(--mf-text-low)}',
+  );
+  assert.match(styles, /:root\{[^}]*--colorNeutralForeground1:#102030/);
+  assert.match(styles, /:root\{[^}]*--colorNeutralForeground2:#304050/);
+  assert.match(styles, /:root\{[^}]*--colorNeutralBackground4:#e0e1e2/);
+  assert.match(styles, /:root\[data-theme="dark"\]\{[^}]*--colorNeutralForeground2:#d0c0b0/);
+  assert.match(styles, /:root\[data-theme="dark"\]\{[^}]*--colorNeutralBackground4:#101112/);
+  assert.match(styles, /background:var\(--colorNeutralBackground1\)/);
+  assert.match(styles, /background:var\(--colorNeutralBackground6\)/);
+  assert.match(styles, /@media\(prefers-color-scheme:dark\)\{:root:not\(\[data-theme\]\)/);
+  assert.doesNotMatch(styles, /--mf-text-low:|--colorBrandBackground:/);
+});
 
 test('local preview retains lazy chunks for open tabs across rebuilds', async () => {
   const outDir = await fs.mkdtemp(path.join(os.tmpdir(), 'reference-preview-'));

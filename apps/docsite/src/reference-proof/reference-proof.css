@@ -18,9 +18,9 @@ html.reference-loading #reference-root {
 }
 
 .reference-shell {
-  --mf-font-ui: var(--fontFamilyBase, system-ui, sans-serif);
-  --mf-font-code: var(--fontFamilyMonospace, ui-monospace, monospace);
-  --mf-text-strong: var(--colorNeutralForeground1, #242424);
+  --mf-font-ui: var(--fontFamilyBase);
+  --mf-font-code: var(--fontFamilyMonospace);
+  --mf-text-strong: var(--colorNeutralForeground1);
   color: var(--colorNeutralForeground2);
   font-family: var(--mf-font-ui);
   font-size: var(--fontSizeBase300);
@@ -57,7 +57,7 @@ html.reference-loading #reference-root {
     .app-sidenav__search-logo,
     .font-card-link
   ) {
-  color: var(--colorBrandForegroundLink, #005a9e);
+  color: var(--colorBrandForegroundLink);
   text-decoration: underline;
 }
 
@@ -309,10 +309,7 @@ html.reference-loading #reference-root {
   line-height: var(--lineHeightBase300);
 }
 
-.reference-page--compact-guidance
-  .standalone-guidance
-  > .guidance-section
-  + .guidance-section {
+.reference-page--compact-guidance .standalone-guidance > .guidance-section + .guidance-section {
   margin-block-start: 24px;
 }
 
@@ -369,10 +366,7 @@ html.reference-loading #reference-root {
   margin-block-start: 4px;
 }
 
-.reference-page--compact-guidance
-  .standalone-guidance
-  .guidance-section
-  > h2 {
+.reference-page--compact-guidance .standalone-guidance .guidance-section > h2 {
   margin-block: 0 8px;
   color: var(--colorNeutralForeground1);
   font-size: var(--fontSizeBase400);
@@ -380,10 +374,7 @@ html.reference-loading #reference-root {
   font-weight: var(--fontWeightSemibold);
 }
 
-.reference-page--compact-guidance
-  .standalone-guidance
-  .guidance-section
-  > h3 {
+.reference-page--compact-guidance .standalone-guidance .guidance-section > h3 {
   margin-block: 0 8px;
   color: var(--colorNeutralForeground1);
   font-size: var(--fontSizeBase300);
@@ -451,7 +442,7 @@ html.reference-loading #reference-root {
 
 .reference-nav-group {
   padding: 8px 0;
-  border-block-end: 1px solid var(--colorNeutralStroke3, #ddd);
+  border-block-end: 1px solid var(--colorNeutralStroke3);
 }
 
 .reference-nav-group summary {
@@ -467,11 +458,11 @@ html.reference-loading #reference-root {
 }
 
 .reference-nav-link:hover {
-  background: var(--colorNeutralBackground1Hover, #eee);
+  background: var(--colorNeutralBackground1Hover);
 }
 
 .reference-nav-link[aria-current='page'] {
-  background: var(--colorNeutralBackground1Selected, #ddd);
+  background: var(--colorNeutralBackground1Selected);
   font-weight: 600;
 }
 
@@ -647,7 +638,7 @@ html.reference-loading #reference-root {
 .reference-footer {
   margin-block-start: 48px;
   padding-block: 24px;
-  border-block-start: 1px solid var(--colorNeutralStroke3, #ddd);
+  border-block-start: 1px solid var(--colorNeutralStroke3);
   color: var(--colorNeutralForeground3);
   font-size: var(--fontSizeBase200);
   line-height: var(--lineHeightBase200);
@@ -714,7 +705,7 @@ html.reference-loading #reference-root {
 
 .preview {
   padding: 24px;
-  border: 1px solid var(--colorNeutralStroke2, #ccc);
+  border: 1px solid var(--colorNeutralStroke2);
   border-radius: var(--borderRadiusLarge, 8px);
   background: var(--colorNeutralBackground2);
   overflow-x: auto;
@@ -741,8 +732,8 @@ html.reference-loading #reference-root {
 
 .source-actions button {
   color: var(--colorNeutralForeground1);
-  background: var(--colorNeutralBackground3, #eee);
-  border: 1px solid var(--colorNeutralStroke2, #ccc);
+  background: var(--colorNeutralBackground3);
+  border: 1px solid var(--colorNeutralStroke2);
   border-radius: 4px;
   padding: 4px 12px;
   cursor: pointer;
@@ -782,9 +773,9 @@ html.reference-loading #reference-root {
 .reference-shell pre:not(.fui-CodeBlock__pre) {
   padding: 16px;
   overflow-x: auto;
-  border: 1px solid var(--colorNeutralStroke2, #ddd);
+  border: 1px solid var(--colorNeutralStroke2);
   border-radius: 4px;
-  background: var(--colorNeutralBackground3, #eee);
+  background: var(--colorNeutralBackground3);
   font-family: var(--fontFamilyMonospace);
   font-size: var(--fontSizeBase200);
   line-height: var(--lineHeightBase200);
@@ -800,7 +791,7 @@ html.reference-loading #reference-root {
 
 .reference-shell th,
 .reference-shell td {
-  border: 1px solid var(--colorNeutralStroke2, #ddd);
+  border: 1px solid var(--colorNeutralStroke2);
   padding: 8px;
 }
 
@@ -809,7 +800,7 @@ html.reference-loading #reference-root {
   width: 20px;
   height: 20px;
   margin-inline-end: 8px;
-  border: 1px solid var(--colorNeutralStroke2, #ddd);
+  border: 1px solid var(--colorNeutralStroke2);
   border-radius: 4px;
   vertical-align: middle;
 }
@@ -836,7 +827,7 @@ html.reference-loading #reference-root {
     inset: 4px auto 4px 4px;
     height: calc(100vh - 8px);
     z-index: 20;
-    background: var(--colorNeutralBackground2, #fff);
+    background: var(--colorNeutralBackground2);
   }
 
   .reference-shell .site-main {

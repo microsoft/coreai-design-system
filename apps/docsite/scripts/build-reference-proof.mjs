@@ -429,6 +429,35 @@ export function componentPageGuidanceHtml(page, metadata) {
   return `<div class="reference-page-introduction${page.layout ? ` reference-page--${page.layout}` : ''}">${pageTemplateHeader(page, metadata, parts)}${basic ? exampleHtml(basic, metadata.basePath, true) : ''}${pageTemplateResources(page, metadata)}<div class="component-markdown">${renderGuidance(parts.body).html}</div>${api ? `<section class="reference-api"><details><summary><strong>API reference</strong><span>Generated CoreAI prop and type summaries</span></summary><div class="reference-api__content">${renderGuidance(api).html}</div></details></section>` : ''}</div>`;
 }
 
+export function initialThemeStyles(themes, stylesheets) {
+  const referencedTokens = [...stylesheets.matchAll(/var\(--([\w-]+)/g)].map((match) => match[1]);
+  function declarations(mode) {
+    const theme = themes[mode];
+    const pending = [
+      ...referencedTokens,
+      'colorNeutralBackground1',
+      'colorNeutralBackground6',
+      'colorNeutralForeground2',
+    ];
+    const resolved = new Map();
+    for (const token of pending) {
+      if (resolved.has(token) || !(token in theme)) continue;
+      const value = String(theme[token]);
+      resolved.set(token, value);
+      pending.push(...[...value.matchAll(/var\(--([\w-]+)/g)].map((match) => match[1]));
+    }
+    return [
+      ...[...resolved].map(([token, value]) => `--${token}:${value}`),
+      `background:var(--colorNeutralBackground${mode === 'dark' ? 6 : 1})`,
+      'color:var(--colorNeutralForeground2)',
+      `color-scheme:${mode}`,
+    ].join(';');
+  }
+  const light = declarations('light');
+  const dark = declarations('dark');
+  return `:root{${light}}:root[data-theme="dark"]{${dark}}@media(prefers-color-scheme:dark){:root:not([data-theme]){${dark}}}`;
+}
+
 function shell(title, body, metadata, assets, navigation, currentPath = '') {
   navigation = navigation.replace(
     `href="${metadata.basePath}${currentPath}"`,
@@ -438,7 +467,7 @@ function shell(title, body, metadata, assets, navigation, currentPath = '') {
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeHtml(title)} | CoreAI design system</title>
 <link rel="icon" href="data:,">
-<style>:root[data-theme="dark"]{background:#000;color-scheme:dark}:root[data-theme="light"]{background:#fff;color-scheme:light}</style>
+<style>${assets.initialThemeStyles}</style>
 <script>
 (() => {
   const root = document.documentElement;
@@ -736,6 +765,14 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
   const entry = Object.values(manifest).find((entry) => entry.isEntry);
   if (!entry) throw new Error('Reference proof bundle has no entry point.');
   const assets = { entry: entry.file, css: entry.css ?? [] };
+  const { coreaiLightTheme, coreaiDarkTheme } = await import('@coreai-ds/react-components');
+  const stylesheets = await Promise.all(
+    assets.css.map((filename) => fs.readFile(path.join(outDir, filename), 'utf8')),
+  );
+  assets.initialThemeStyles = initialThemeStyles(
+    { light: coreaiLightTheme, dark: coreaiDarkTheme },
+    stylesheets.join('\n'),
+  );
   const write = async (filename, content) => {
     const target = path.join(outDir, filename);
     await fs.mkdir(path.dirname(target), { recursive: true });

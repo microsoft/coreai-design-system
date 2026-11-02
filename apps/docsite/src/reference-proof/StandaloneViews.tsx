@@ -190,7 +190,7 @@ function ResourcesView({ sourceHtml }: PageWidgetProps) {
     <div className="reference-resources-view">
       {groups.map((group) => (
         <section className="page-section" id={group.id} key={group.id}>
-          <Text as="h2" preset="heading3">
+          <Text as="h2" preset="heading3" foreground={1}>
             {group.title}
           </Text>
           <div className="resources-grid">
@@ -210,14 +210,20 @@ function ResourcesView({ sourceHtml }: PageWidgetProps) {
                     <span className="resource-card__icon" aria-hidden="true">
                       <ResourceIcon href={resource.href} />
                     </span>
-                    <Text as="h3" id={`${titleId}-title`} size={500} weight="regular">
+                    <Text
+                      as="h3"
+                      id={`${titleId}-title`}
+                      size={500}
+                      weight="regular"
+                      foreground={1}
+                    >
                       {resource.title}
                     </Text>
                     <Text as="p" id={`${titleId}-description`} size={300} foreground={2}>
                       {resource.description}
                     </Text>
                     <span className="resource-card__destination">
-                      <Text id={`${titleId}-destination`} size={200}>
+                      <Text id={`${titleId}-destination`} size={200} foreground={3}>
                         {resource.destination}
                         <span className="sr-only"> (opens in a new tab)</span>
                       </Text>
@@ -240,14 +246,14 @@ function FaqsView({ sourceHtml }: PageWidgetProps) {
     <div className="reference-faqs-view">
       {groups.map((group) => (
         <section className="page-section" id={group.id} key={group.id}>
-          <Text as="h2" preset="heading3">
+          <Text as="h2" preset="heading3" foreground={1}>
             {group.title}
           </Text>
           <Accordion className="faq-list" multiple collapsible>
             {group.items.map((item) => (
               <AccordionItem key={item.id} value={item.id}>
                 <AccordionHeader expandIconPosition="end" size="large">
-                  <Text size={400} weight="regular">
+                  <Text size={400} weight="regular" foreground={1}>
                     {item.question}
                   </Text>
                 </AccordionHeader>
@@ -279,7 +285,7 @@ function PackageStep({
     <div className="package-step">
       <span className="package-step__number">{number}</span>
       <div className="package-step__content">
-        <Text as="h3" weight="semibold">
+        <Text as="h3" weight="semibold" foreground={1}>
           {title}
         </Text>
         <div
@@ -350,7 +356,9 @@ Follow the README's instructions for npm installation, optional Aptos setup and 
       </section>
       <details className="package-reference">
         <summary>
-          <Text weight="semibold">Full package reference</Text>
+          <Text weight="semibold" foreground={1}>
+            Full package reference
+          </Text>
         </summary>
         <div
           className="standalone-guidance package-reference__content"
@@ -468,7 +476,7 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
         {model.groups.map(([month, releases]) => (
           <details className="changelog-month" key={month} open>
             <summary className="changelog-month__header">
-              <Text as="h2" size={500} weight="semibold">
+              <Text as="h2" size={500} weight="semibold" foreground={1}>
                 {month === 'unreleased'
                   ? 'Unreleased'
                   : monthFormatter.format(new Date(`${month}-01T00:00:00Z`))}
@@ -492,7 +500,7 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
                   </div>
                   <div className="changelog-entry__content">
                     <div className="changelog-entry__summary">
-                      <Text as="h3" weight="semibold">
+                      <Text as="h3" weight="semibold" foreground={1}>
                         {release.title}
                       </Text>
                       <Text as="p" foreground={2}>
@@ -502,7 +510,7 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
                     <div className="changelog-entry__sections">
                       {release.sections.map((section) => (
                         <section className="changelog-entry__section" key={section.title}>
-                          <Text as="h4" weight="semibold">
+                          <Text as="h4" weight="semibold" foreground={1}>
                             {section.title}
                           </Text>
                           <ul>
@@ -641,7 +649,7 @@ function ContentStepList({ steps }: { steps: ContentStep[] }) {
         <div className="content-step" key={step.title}>
           <span className="content-step__number">{index + 1}</span>
           <div className="content-step__content">
-            <Text as="h3" weight="semibold">
+            <Text as="h3" weight="semibold" foreground={1}>
               {step.title}
             </Text>
             <div dangerouslySetInnerHTML={{ __html: step.descriptionHtml }} />
@@ -670,7 +678,7 @@ function ContentStepList({ steps }: { steps: ContentStep[] }) {
 function ContentSectionHeader({ title, description }: { title: string; description?: string }) {
   return (
     <div className="content-section__header">
-      <Text as="h2" size={500} weight="semibold">
+      <Text as="h2" size={500} weight="semibold" foreground={1}>
         {title}
       </Text>
       {description ? (
@@ -757,7 +765,7 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
                     <span className="content-principle__trigger">
                       <span className="content-principle__number">{index + 1}</span>
                       <span className="content-principle__heading">
-                        <Text size={400} weight="semibold">
+                        <Text size={400} weight="semibold" foreground={1}>
                           {principle.title}
                         </Text>
                         <Text size={300} foreground={2}>
@@ -784,7 +792,7 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
                             Better
                           </Badge>
                           <div className="content-example__body">
-                            <Text as="p" size={300}>
+                            <Text as="p" size={300} foreground={2}>
                               {principle.better}
                             </Text>
                           </div>
@@ -885,7 +893,7 @@ function AgentWorkflowView({ sourceHtml }: PageWidgetProps) {
           <div className="package-step" key={step.title}>
             <span className="package-step__number">{index + 1}</span>
             <div className="package-step__content">
-              <Text as="h3" weight="semibold">
+              <Text as="h3" weight="semibold" foreground={1}>
                 {step.title}
               </Text>
               <div dangerouslySetInnerHTML={{ __html: step.html }} />
@@ -894,7 +902,7 @@ function AgentWorkflowView({ sourceHtml }: PageWidgetProps) {
         ))}
       </div>
       <section className="agent-workflow-mapping">
-        <Text as="h2" preset="heading3">
+        <Text as="h2" preset="heading3" foreground={1}>
           Direct URL mapping
         </Text>
         <CodeBlock code={model.mapping} language="text" />
@@ -906,7 +914,7 @@ function AgentWorkflowView({ sourceHtml }: PageWidgetProps) {
       <div className="agent-workflow-sections">
         {model.remaining.map((section) => (
           <section className="agent-workflow-section" id={section.id} key={section.id}>
-            <Text as="h2" preset="heading3">
+            <Text as="h2" preset="heading3" foreground={1}>
               {section.title}
             </Text>
             <div

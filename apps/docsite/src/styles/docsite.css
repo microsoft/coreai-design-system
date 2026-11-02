@@ -16,8 +16,6 @@
 
 :root,
 .coreai-docsite-provider {
-  color-scheme: dark;
-
   /* Semantic aliases resolve from CoreAIFluentProvider theme variables. */
   --mf-brand-70: var(--colorBrandBackground);
   --mf-brand-80: var(--colorBrandBackground);
@@ -82,14 +80,10 @@
   color-scheme: light;
 }
 
-/* Dark mode borders were too high-contrast (Stroke1 = #666 on near-black).
-   Drop them to soft alpha strokes that scale with the surface. Light mode
-   keeps the default Fluent neutral strokes untouched.
-   Dial options (softest → strongest): colorNeutralStrokeSubtle,
-   colorNeutralStrokeAlpha, colorNeutralStrokeAlpha2, colorNeutralStroke3. */
-:root[data-theme='dark'] {
-  --mf-border-subtle: rgba(255, 255, 255, 0.08);
-  --mf-border-quiet: rgba(255, 255, 255, 0.05);
+:root[data-theme='dark'],
+:root[data-theme='dark'] .coreai-docsite-provider {
+  --mf-border-subtle: var(--colorNeutralStrokeAlpha);
+  --mf-border-quiet: var(--colorNeutralStrokeSubtle);
 }
 
 *,
@@ -105,11 +99,7 @@ html {
 }
 
 html.is-scrolling {
-  scrollbar-color: rgba(128, 128, 128, 0.3) transparent;
-}
-
-:root[data-theme='light'].is-scrolling {
-  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+  scrollbar-color: var(--colorScrollbarOverlay) transparent;
 }
 
 html::-webkit-scrollbar {
@@ -121,7 +111,7 @@ html::-webkit-scrollbar-track {
 }
 
 html::-webkit-scrollbar-thumb {
-  background: rgba(128, 128, 128, 0);
+  background: transparent;
   border: 3px solid transparent;
   border-radius: 99px;
   background-clip: padding-box;
@@ -129,32 +119,13 @@ html::-webkit-scrollbar-thumb {
 }
 
 html.is-scrolling::-webkit-scrollbar-thumb {
-  background: rgba(128, 128, 128, 0.3);
+  background: var(--colorScrollbarOverlay);
   border: 3px solid transparent;
   background-clip: padding-box;
 }
 
 html::-webkit-scrollbar-thumb:hover {
-  background: rgba(128, 128, 128, 0.5) !important;
-  border: 3px solid transparent;
-  background-clip: padding-box;
-}
-
-:root[data-theme='light']::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0);
-  border: 3px solid transparent;
-  background-clip: padding-box;
-  transition: background 0.4s ease;
-}
-
-:root[data-theme='light'].is-scrolling::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
-  border: 3px solid transparent;
-  background-clip: padding-box;
-}
-
-:root[data-theme='light']::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3) !important;
+  background: var(--colorScrollbarOverlay) !important;
   border: 3px solid transparent;
   background-clip: padding-box;
 }
@@ -164,7 +135,7 @@ body {
   margin: 0;
   min-height: 100%;
   background: transparent;
-  color: var(--mf-text-strong);
+  color: var(--mf-text-secondary);
   font-family: var(--mf-font-ui);
 }
 
@@ -266,12 +237,12 @@ code:not(pre code) {
 }
 
 :root[data-theme='dark'] .app-shell {
-  --home-backdrop-color: #000;
+  --home-backdrop-color: var(--colorNeutralBackground6);
   background: var(--home-backdrop-color);
 }
 
 :root[data-theme='light'] .app-shell {
-  --home-backdrop-color: #fff;
+  --home-backdrop-color: var(--colorNeutralBackground1);
   background: var(--home-backdrop-color);
 }
 
@@ -711,11 +682,7 @@ code:not(pre code) {
 }
 
 .app-sidenav__nav.is-scrolling {
-  scrollbar-color: rgba(128, 128, 128, 0.3) transparent;
-}
-
-:root[data-theme='light'] .app-sidenav__nav.is-scrolling {
-  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+  scrollbar-color: var(--colorScrollbarOverlay) transparent;
 }
 
 .app-sidenav__nav::-webkit-scrollbar {
@@ -734,12 +701,7 @@ code:not(pre code) {
 }
 
 .app-sidenav__nav.is-scrolling::-webkit-scrollbar-thumb {
-  background: rgba(128, 128, 128, 0.3);
-  background-clip: padding-box;
-}
-
-:root[data-theme='light'] .app-sidenav__nav.is-scrolling::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
+  background: var(--colorScrollbarOverlay);
   background-clip: padding-box;
 }
 
@@ -815,7 +777,7 @@ code:not(pre code) {
 
 .app-search-result mark {
   padding: 0;
-  background: var(--colorPaletteYellowBackground2, #fff4ce);
+  background: var(--colorPaletteYellowBackground2);
   color: inherit;
 }
 
@@ -1038,9 +1000,7 @@ code:not(pre code) {
   scrollbar-color: transparent transparent;
   background: var(--colorNeutralBackground1);
   border-radius: var(--borderRadiusXLarge, 8px);
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.14),
-    0 0 2px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow2);
 }
 
 .app-page--home .site-main {
@@ -1242,11 +1202,7 @@ code:not(pre code) {
 }
 
 .app-page.is-scrolling {
-  scrollbar-color: rgba(128, 128, 128, 0.3) transparent;
-}
-
-:root[data-theme='light'] .app-page.is-scrolling {
-  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+  scrollbar-color: var(--colorScrollbarOverlay) transparent;
 }
 
 .app-page::-webkit-scrollbar {
@@ -1265,12 +1221,7 @@ code:not(pre code) {
 }
 
 .app-page.is-scrolling::-webkit-scrollbar-thumb {
-  background: rgba(128, 128, 128, 0.3);
-  background-clip: padding-box;
-}
-
-:root[data-theme='light'] .app-page.is-scrolling::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
+  background: var(--colorScrollbarOverlay);
   background-clip: padding-box;
 }
 
@@ -1959,7 +1910,7 @@ code:not(pre code) {
 }
 
 :root[data-theme='light'] .ratio-card--brand {
-  background: rgb(130 81 238 / 10%);
+  background: var(--colorBrandBackground2);
 }
 
 :root[data-theme='light'] .ratio-card--supporting {
@@ -2038,21 +1989,21 @@ code:not(pre code) {
 }
 
 .preview-type span:last-child {
-  color: rgb(237 237 237 / 50%);
+  color: var(--colorNeutralForeground3);
   font-family: var(--mf-font-code);
 }
 
 .preview-materials {
   height: 100%;
   padding: 16px;
-  background: #0f0f0f;
+  background: var(--colorNeutralBackground4);
 }
 
 .preview-materials__nav {
   height: 12px;
   width: 40%;
   border-radius: 6px;
-  background: #1a1a1a;
+  background: var(--colorNeutralBackground2);
 }
 
 .preview-materials__panel {
@@ -2066,7 +2017,7 @@ code:not(pre code) {
   height: 8px;
   width: 56%;
   border-radius: 99px;
-  background: #242424;
+  background: var(--colorNeutralBackground1);
 }
 
 .preview-materials__line--short {
@@ -2079,14 +2030,18 @@ code:not(pre code) {
   padding: 12px;
   border: 1px solid var(--mf-border-quiet);
   border-radius: 10px;
-  background: #1a1a1a;
+  background: var(--colorNeutralBackground2);
 }
 
 .preview-materials__thumb {
   width: 42px;
   height: 42px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #643fb2, #8251ee);
+  background: linear-gradient(
+    135deg,
+    var(--colorBrandBackgroundPressed),
+    var(--colorBrandBackground)
+  );
 }
 
 .preview-materials__copy {
@@ -2099,7 +2054,7 @@ code:not(pre code) {
 .preview-materials__copy span {
   height: 6px;
   border-radius: 99px;
-  background: #242424;
+  background: var(--colorNeutralBackground1);
 }
 
 .preview-materials__copy span.short {
@@ -2120,7 +2075,7 @@ code:not(pre code) {
 }
 
 .preview-grid span.accent {
-  border-color: #8251ee;
+  border-color: var(--colorBrandStroke1);
 }
 
 .changelog-preview {
@@ -2387,7 +2342,7 @@ code:not(pre code) {
 }
 
 .ratio-card--brand {
-  background: rgb(130 81 238 / 18%);
+  background: var(--colorBrandBackground2);
 }
 
 .ratio-card--supporting {
@@ -2409,12 +2364,12 @@ code:not(pre code) {
   height: 48px;
 }
 
-.color-scale__bar span {
+.color-scale__bar :is(span, button) {
   cursor: pointer;
   position: relative;
 }
 
-.color-scale__bar span::after {
+.color-scale__bar :is(span, button)::after {
   content: '';
   position: absolute;
   inset: 2px;
@@ -2424,8 +2379,9 @@ code:not(pre code) {
   transition: outline-color var(--mf-duration-fast) var(--mf-ease);
 }
 
-.color-scale__bar span:hover::after {
-  outline-color: var(--mf-border-focus);
+.color-scale__bar :is(span, button):hover::after,
+.color-scale__bar button:focus-visible::after {
+  outline-color: var(--mf-focus-ring);
 }
 
 .color-scale__labels {
@@ -2445,7 +2401,7 @@ code:not(pre code) {
   gap: 16px;
   padding: 20px;
   border-radius: var(--borderRadiusXLarge, 8px);
-  color: var(--mf-text-primary);
+  color: var(--colorNeutralForegroundOnBrand);
   cursor: pointer;
   position: relative;
 }
@@ -2462,11 +2418,7 @@ code:not(pre code) {
 }
 
 .primary-card:hover::after {
-  outline-color: rgba(255, 255, 255, 0.4);
-}
-
-:root[data-theme='light'] .primary-card:hover::after {
-  outline-color: rgba(0, 0, 0, 0.25);
+  outline-color: var(--colorNeutralStroke1Hover);
 }
 
 .primary-card div {
@@ -2494,8 +2446,8 @@ code:not(pre code) {
   color: var(--mf-text-muted);
 }
 
-:root[data-theme='light'] .primary-card:not(.primary-card--foreground) {
-  color: #fff;
+.primary-card--foreground .primary-card__meta {
+  color: var(--colorNeutralForeground3);
 }
 
 .stack-table,
@@ -2556,11 +2508,7 @@ code:not(pre code) {
 }
 
 .stack-table--filled .stack-row[data-copy]:hover::after {
-  outline-color: rgba(255, 255, 255, 0.4);
-}
-
-:root[data-theme='light'] .stack-table--filled .stack-row[data-copy]:hover::after {
-  outline-color: rgba(0, 0, 0, 0.25);
+  outline-color: var(--colorNeutralStroke1Hover);
 }
 
 .stack-table--filled .stack-row {
@@ -3206,7 +3154,7 @@ a.theme-crossfade:hover {
   padding-inline-start: 20px;
   border-inline-start: 3px solid var(--mf-border-subtle);
 }
-.component-markdown pre {
+.component-markdown pre:not(.fui-CodeBlock__pre) {
   overflow: auto;
   padding: 16px;
   background: var(--mf-surface-panel);
@@ -3628,49 +3576,6 @@ a.theme-crossfade:hover {
   color: var(--mf-text-strong);
   font-size: var(--fontSizeBase400);
   line-height: var(--lineHeightBase400);
-}
-
-:is(.package-step .fui-CodeBlock, .coreai-skill-code) {
-  --package-code-blue: #79c0ff;
-  --package-code-cyan: #a5d6ff;
-  --package-code-green: #7ee787;
-  --package-code-orange: #ffa657;
-  --package-code-purple: #d2a8ff;
-  --package-code-red: #ff7b72;
-  --package-code-muted: #8b949e;
-}
-
-:is(.package-step .fui-CodeBlock, .coreai-skill-code)
-  :is(.hljs-keyword, .hljs-literal, .hljs-symbol, .hljs-name) {
-  color: var(--package-code-red);
-}
-
-:is(.package-step .fui-CodeBlock, .coreai-skill-code)
-  :is(.hljs-built_in, .hljs-type, .hljs-number, .hljs-class) {
-  color: var(--package-code-orange);
-}
-
-:is(.package-step .fui-CodeBlock, .coreai-skill-code) :is(.hljs-string, .hljs-meta .hljs-string) {
-  color: var(--package-code-cyan);
-}
-
-:is(.package-step .fui-CodeBlock, .coreai-skill-code)
-  :is(.hljs-regexp, .hljs-template-tag, .hljs-section) {
-  color: var(--package-code-green);
-}
-
-:is(.package-step .fui-CodeBlock, .coreai-skill-code)
-  :is(.hljs-function, .hljs-title, .hljs-params, .hljs-variable, .hljs-template-variable) {
-  color: var(--package-code-purple);
-}
-
-:is(.package-step .fui-CodeBlock, .coreai-skill-code) :is(.hljs-attr, .hljs-attribute, .hljs-link) {
-  color: var(--package-code-blue);
-}
-
-:is(.package-step .fui-CodeBlock, .coreai-skill-code)
-  :is(.hljs-comment, .hljs-quote, .hljs-doctag, .hljs-meta, .hljs-tag) {
-  color: var(--package-code-muted);
 }
 
 .package-section {

@@ -46,12 +46,12 @@ export function PageHeader({ model }: { model: PagePresentation }) {
   return (
     <>
       <div className="page-header__title-row">
-        <Text as="h1" id={model.headingId} size={900} weight="regular">
+        <Text as="h1" id={model.headingId} size={900} weight="regular" foreground={1}>
           {model.title}
         </Text>
         <MarkdownActions markdownUrl={model.markdownUrl} iconOnly />
       </div>
-      <Text as="p" className="page-summary" size={400} foreground={3}>
+      <Text as="p" className="page-summary" size={400} foreground={2}>
         <span dangerouslySetInnerHTML={{ __html: model.summaryHtml }} />
       </Text>
     </>
@@ -70,7 +70,7 @@ export function ResourceIcon({ href }: { href: string }) {
 export function ResourceCards({ model }: { model: PagePresentation }) {
   return (
     <>
-      <Text as="h2" preset="heading3">
+      <Text as="h2" preset="heading3" foreground={1}>
         Resources
       </Text>
       <nav className="component-resources" aria-label={`${model.title} resources`}>
