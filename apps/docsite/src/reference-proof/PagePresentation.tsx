@@ -50,7 +50,7 @@ export function PageHeader({ model }: { model: PagePresentation }) {
             {model.title}
           </Text>
         ) : null}
-        <MarkdownActions markdownUrl={model.markdownUrl} />
+        <MarkdownActions markdownUrl={model.markdownUrl} iconOnly />
       </div>
       {!model.home ? (
         <Text as="p" className="page-summary" size={400} foreground={3}>

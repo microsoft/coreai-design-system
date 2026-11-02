@@ -411,6 +411,7 @@ export function standalonePageHtml(page, metadata) {
     ? `<!-- view:${page.renderer} -->\n\n${parts.body}\n\n<!-- /view:${page.renderer} -->`
     : parts.body;
   const body = renderGuidance(bodyMarkdown, {
+    sections: true,
     examples: Object.fromEntries(page.examples.map((example) => [example.id, example])),
     views: Object.fromEntries([
       ...standaloneRendererNames.map((name) => [name, true]),

@@ -13,10 +13,18 @@ import {
 } from '@coreai-ds/react-components';
 import { Copy20Regular, DocumentText20Regular } from '@fluentui/react-icons';
 
-export function MarkdownActions({ markdownUrl }: { markdownUrl: string }) {
+export function MarkdownActions({
+  markdownUrl,
+  iconOnly = false,
+}: {
+  markdownUrl: string;
+  iconOnly?: boolean;
+}) {
   const [status, setStatus] = React.useState<'idle' | 'copied' | 'error'>('idle');
   const timer = React.useRef<number>();
   const request = React.useRef<AbortController>();
+  const label =
+    status === 'copied' ? 'Copied' : status === 'error' ? 'Copy failed' : 'Copy for LLM';
   React.useEffect(() => {
     setStatus('idle');
     return () => {
@@ -55,9 +63,12 @@ export function MarkdownActions({ markdownUrl }: { markdownUrl: string }) {
           <MenuButton
             appearance="subtle"
             icon={<Copy20Regular />}
+            menuIcon={iconOnly ? null : undefined}
+            aria-label={iconOnly ? label : undefined}
+            title={iconOnly ? label : undefined}
             className="component-copy-menu__trigger"
           >
-            {status === 'copied' ? 'Copied' : status === 'error' ? 'Copy failed' : 'Copy for LLM'}
+            {iconOnly ? null : label}
           </MenuButton>
         </MenuTrigger>
         <MenuPopover>
