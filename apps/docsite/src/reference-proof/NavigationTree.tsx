@@ -11,7 +11,7 @@ import {
   TabList,
 } from '@coreai-ds/react-components';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { normalizeReferencePath } from './navigation.mjs';
+import { groupNavigationEntries, normalizeReferencePath } from './navigation.mjs';
 
 export interface NavigationEntry {
   path: string;
@@ -31,17 +31,12 @@ export const NavigationTree = React.forwardRef<
   const location = useLocation();
   const navigate = useNavigate();
   const activePath = normalizeReferencePath(location.pathname);
-  const groups = [
-    { value: 'overview', label: 'Overview' },
-    { value: 'guides', label: 'Guides' },
-    { value: 'foundations', label: 'Foundations' },
-    { value: 'patterns', label: 'Patterns' },
-    { value: 'components', label: 'Components' },
-    { value: 'templates', label: 'Templates' },
-  ];
+  const groups = groupNavigationEntries(entries);
+  const activeGroup =
+    groups.find((group) => group.items.some((entry) => entry.path === activePath))?.value ??
+    'getting-started';
   const [openItems, setOpenItems] = React.useState<string[]>(() => [
-    'overview',
-    activePath.split('/')[1] || 'overview',
+    ...new Set(['getting-started', activeGroup]),
   ]);
   React.useImperativeHandle(ref, () => ({
     collapseAll: () => setOpenItems([]),
@@ -57,9 +52,8 @@ export const NavigationTree = React.forwardRef<
   );
 
   React.useEffect(() => {
-    const parent = activePath.split('/')[1] || 'overview';
-    setOpenItems((current) => [...new Set([...current, parent])]);
-  }, [activePath]);
+    setOpenItems((current) => [...new Set([...current, activeGroup])]);
+  }, [activeGroup, activePath]);
 
   function HighlightedText({ text }: { text: string }) {
     const start = text.toLowerCase().indexOf(needle);
@@ -109,9 +103,7 @@ export const NavigationTree = React.forwardRef<
   return (
     <>
       {groups.map((group) => {
-        const items = entries.filter(
-          (entry) => (entry.path.split('/')[1] || 'overview') === group.value,
-        );
+        const items = group.items;
         return items.length ? (
           <div className="app-sidenav__section-shell" key={group.value}>
             <Accordion

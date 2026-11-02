@@ -12,7 +12,7 @@ resources:
 reference:
   renderer: home
   route: index
-  label: Home
+  label: Showcase
   legacyIds: [introduction--docs]
   migratedFrom:
     - apps/docsite/src/pages/Introduction.tsx
@@ -27,7 +27,8 @@ copy-and-adapt templates, and UX guidance.
 ## Get started
 
 - [Set up the package](./guides/package.md).
-- [Use the examples](./guides/setup.md).
+- [Using components](./guides/setup.md).
+- [Using templates](./templates/using-templates.md).
 - [Build with your agent](./guides/use-with-agents.md): copy a starter prompt or install the optional reusable skill.
 
 ## Give your agent CoreAI guidance
@@ -41,10 +42,12 @@ over ordinary HTTPS.
 
 ## Foundations and patterns
 
-- [Colors](./foundations/colors.md)
+- [Color](./foundations/colors.md)
 - [Typography](./foundations/typography.md)
 - [Content](./foundations/content.md)
-- [Materials](./foundations/materials.md)
+- [Surfaces](./foundations/materials.md)
+- [Spacing](./foundations/spacing.md)
+- [Layout](./foundations/layout.md)
 - [Theming](./foundations/theming.md)
 - [Web UI guidelines](./patterns/web-ui-guidelines.md)
 - [Forms](./patterns/forms.md)
@@ -56,6 +59,6 @@ over ordinary HTTPS.
 ## Help and feedback
 
 - [Resources](./overview/resources.md)
-- [FAQs](./overview/faqs.md)
+- [FAQ](./overview/faqs.md)
 - [Release history](./overview/changelog.md)
 - [GitHub issues](https://github.com/microsoft/coreai-design-system/issues)

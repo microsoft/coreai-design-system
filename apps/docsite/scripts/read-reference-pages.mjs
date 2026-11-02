@@ -131,7 +131,8 @@ export async function readReferencePages(contentDirectory) {
         ) {
           fail('reference.api must name public exports on component pages.');
         }
-        if (['components', 'templates'].includes(kind) && !reference.component)
+        const usageGuide = ['components', 'templates'].includes(kind) && id === `using-${kind}`;
+        if (['components', 'templates'].includes(kind) && !reference.component && !usageGuide)
           fail('component and template pages require reference.component.');
         if (
           !reference.component &&
@@ -177,7 +178,7 @@ export async function readReferencePages(contentDirectory) {
         ) {
           fail('reference.sources must have unique filenames.');
         }
-        if (kind === 'templates' && !reference.sources?.length) {
+        if (kind === 'templates' && !reference.sources?.length && !usageGuide) {
           fail('template pages must provide reference.sources for copying.');
         }
         pages.push({ ...reference, id, kind, guidance, route: route === 'index' ? '' : route });
@@ -200,7 +201,7 @@ export async function readReferencePages(contentDirectory) {
     throw new Error('Duplicate reference component ownership.');
   const legacyIds = pages.flatMap((page) => [
     ...(page.legacyIds ?? []),
-    ...(page.kind === 'templates' ? [`${page.component}--source-code`] : []),
+    ...(page.kind === 'templates' && page.component ? [`${page.component}--source-code`] : []),
   ]);
   if (new Set(legacyIds).size !== legacyIds.length)
     throw new Error('Duplicate legacy Markdown document ID.');

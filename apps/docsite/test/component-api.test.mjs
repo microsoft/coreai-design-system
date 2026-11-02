@@ -59,7 +59,7 @@ test('docgen reads CoreAI defaults, inherited props, required slots and componen
   assert.equal(reader.read('toMountNodeProps').kind, 'function');
   assert.ok(reader.read('toMountNodeProps').signatures.length > 0);
   const pages = await readReferencePages(path.join(appRoot, 'content'));
-  for (const page of pages.filter((page) => page.kind === 'components')) {
+  for (const page of pages.filter((page) => page.kind === 'components' && page.component)) {
     for (const member of reader.readComponent(
       catalog.components.find((component) => component.id === page.component),
       page.api,

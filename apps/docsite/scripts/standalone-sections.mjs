@@ -144,6 +144,7 @@ export async function standaloneSections({
         (kind) =>
           `### ${kind === 'components' ? 'Components' : 'Templates'}\n\n${pages
             .filter((page) => page.kind === kind)
+            .sort((first, second) => first.route.localeCompare(second.route))
             .map((page) => `- [${page.title}](/${page.route}.md): ${page.summary}`)
             .join('\n')}`,
       )

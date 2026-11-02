@@ -38,6 +38,7 @@ import {
   homeHeroFallback,
 } from './page-template.mjs';
 import { stripPresentationMarkers } from './standalone-markdown.mjs';
+import { groupNavigationEntries } from '../src/reference-proof/navigation.mjs';
 export { escapeHtml, codeFence } from './page-template.mjs';
 
 export const appRoot = fileURLToPath(new URL('../', import.meta.url));
@@ -331,7 +332,7 @@ export function exampleHeadingHtml(example) {
 
 function implementationMarkdown(page, metadata, extension = '.md') {
   return [
-    `## Implementation\n\nCoreAI ${metadata.versions['@coreai-ds/react-components']}; Fluent ${metadata.versions['@fluentui/react-components']}.\n\n[Setup and dependencies](${metadata.basePath}guides/setup${extension}).`,
+    `## Implementation\n\nCoreAI ${metadata.versions['@coreai-ds/react-components']}; Fluent ${metadata.versions['@fluentui/react-components']}.\n\n[Setup and dependencies](${metadata.basePath}components/using-components${extension}).`,
     page.kind === 'templates'
       ? 'Copy this template into your app. It is not an npm export. Adapt actions and navigation to your product.'
       : 'Import components from `@coreai-ds/react-components`. CoreAI guidance above takes precedence over API demonstration examples.',
@@ -514,7 +515,9 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
       aliases: scope.aliases ?? [],
       legacyIds: [
         ...(scope.legacyIds ?? []),
-        ...(scope.kind === 'templates' ? [`${scope.component}--source-code`] : []),
+        ...(scope.kind === 'templates' && scope.component
+          ? [`${scope.component}--source-code`]
+          : []),
       ],
       migratedFrom: scope.migratedFrom ?? [],
       guidanceSource: `content/${scope.guidance}`,
@@ -529,7 +532,10 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
         ),
       ].filter(Boolean),
       singlePreview: Boolean(scope.singlePreview),
-      api: scope.kind === 'components' ? apiReader.readComponent(component, scope.api) : [],
+      api:
+        component && scope.kind === 'components'
+          ? apiReader.readComponent(component, scope.api)
+          : [],
     };
     const pageImports = [];
     const pageBindings = [];
@@ -720,30 +726,29 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
     await fs.mkdir(path.dirname(target), { recursive: true });
     await fs.writeFile(target, content);
   };
-  const labels = {
-    overview: 'Overview',
-    guides: 'Guides',
-    foundations: 'Foundations',
-    patterns: 'Patterns',
-    components: 'Components',
-    templates: 'Templates',
-  };
-  const navigation = ['overview', 'guides', 'foundations', 'patterns', 'components', 'templates']
+  const navigationGroups = groupNavigationEntries(
+    pages.map((page) => ({
+      path: `/${page.route}${page.route ? '/' : ''}`,
+      title: page.id.startsWith('react-router-') ? `React Router / ${page.label}` : page.label,
+      page,
+    })),
+  );
+  const orderedPages = navigationGroups.flatMap((group) => group.items.map((entry) => entry.page));
+  const navigation = navigationGroups
     .map(
-      (kind) =>
-        `<details open class="reference-nav-group"><summary>${labels[kind]}</summary>` +
-        pages
-          .filter((page) => page.kind === kind)
+      (group) =>
+        `<details open class="reference-nav-group"><summary>${group.label}</summary>` +
+        group.items
           .map(
-            (page) =>
-              `<a class="reference-nav-link" data-navigation-entry data-navigation-summary="${escapeHtml(page.summary)}" href="${basePath}${page.route}${page.route ? '/' : ''}">${escapeHtml(page.id.startsWith('react-router-') ? `React Router / ${page.label}` : page.label)}</a>`,
+            ({ page, title }) =>
+              `<a class="reference-nav-link" data-navigation-entry data-navigation-summary="${escapeHtml(page.summary)}" href="${basePath}${page.route}${page.route ? '/' : ''}">${escapeHtml(title)}</a>`,
           )
           .join('') +
         '</details>',
     )
     .join('');
   const indexPages = [];
-  for (const page of pages) {
+  for (const page of orderedPages) {
     const markdown = pageMarkdown(page, metadata);
     const markdownPath = page.route ? `${page.route}.md` : 'index.md';
     const htmlPath = page.route ? `${page.route}/` : '';
@@ -810,13 +815,18 @@ ${sourceHtml(source.source, `template-${page.id}-${index}`, source.path, basePat
       await fs.readFile(path.join(appRoot, 'public/logo-effects', frame)),
     );
   }
-  const listing = pages
+  const listing = navigationGroups
     .map(
-      (page) =>
-        `- [${page.title}](${basePath}${page.route ? `${page.route}.md` : 'index.md'}): ${page.summary}`,
+      (group) =>
+        `### ${group.label}\n\n${group.items
+          .map(
+            ({ page, title }) =>
+              `- [${title}](${basePath}${page.route ? `${page.route}.md` : 'index.md'}): ${page.summary}`,
+          )
+          .join('\n')}`,
     )
     .join('\n');
-  const introduction = `# CoreAI design system\n\nHelp designers code and help engineers design.\n\nExplore component guidance, working examples, and copy-and-adapt templates. This staged reference catalog contains ${pages.length} pages and ${imports.length} examples. Pages marked under construction still need CoreAI UX guidance review.\n\n[Get started](${basePath}guides/setup.md)\n\n${listing}\n`;
+  const introduction = `# CoreAI design system\n\nHelp designers code and help engineers design.\n\nExplore component guidance, working examples, and copy-and-adapt templates. This staged reference catalog contains ${pages.length} pages and ${imports.length} examples. Pages marked under construction still need CoreAI UX guidance review.\n\n[Get started](${basePath}components/using-components.md)\n\n${listing}\n`;
   await write(
     'llms.txt',
     `# CoreAI documentation for agents\n\nUse ordinary HTTPS GET to read these static Markdown files. No installation or login is needed.\n\n## Start here\n\n- [Agent workflow](${basePath}guides/agent-workflow.md): targeted retrieval, version checks, imports, and fallbacks.\n- [Build with your agent](${basePath}guides/use-with-agents.md): starter prompt and optional setup.\n- [Reusable skill](${basePath}source/package/SKILL.md): review before saving in a consuming repository.\n- [Starter prompt](${basePath}agent-prompt.txt): add the user's task and paste into an agent.\n- [Exact routes and source metadata](${basePath}llms/index.json): use only when needed; do not fetch every page.\n\nFetch this index once per task. Choose the relevant pages below; reuse fetched documents. Human directory URLs map to .md files, preserving ${basePath}; the homepage maps to ${basePath}index.md. CoreAI UX guidance overrides upstream demonstrations. Check installed package versions before implementing. Templates are copy-and-adapt source, not package exports. Report retrieval failures; never invent APIs.\n\n${introduction}\n## Build versions\n\n${Object.entries(

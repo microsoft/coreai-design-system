@@ -1,9 +1,11 @@
 ---
 id: setup
-title: Use these examples
-summary: Provider setup, dependencies, source downloads, and template usage.
+title: Using components
+summary: Provider setup, dependencies, and component example source downloads.
 resources: []
-reference: {}
+reference:
+  route: components/using-components
+  aliases: [/guides/setup/]
 ---
 
 This staged static documentation site combines existing CoreAI guidance with
@@ -25,12 +27,7 @@ The provider supplies CoreAI defaults, styles, and theme tokens. The package
 font stylesheet supplies font stacks, not licensed font binaries. Applications
 that use custom fonts must supply those fonts separately.
 
-## Templates
-
-Template components are not npm exports. Download their source into your app
-and adapt it. The template page supplies both a complete example and the original
-component source. Product-specific actions and navigation remain your app's
-responsibility.
+For copy-and-adapt compositions, read [Using templates](../templates/using-templates.md).
 
 ## Read without a browser
 

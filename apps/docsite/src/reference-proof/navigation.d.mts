@@ -1,6 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+export function groupNavigationEntries<T extends { path: string; title: string }>(
+  entries: T[],
+): { value: string; label: string; items: T[] }[];
 export function normalizeReferencePath(pathname: string): string;
 export function clientNavigationTarget(
   href: string,

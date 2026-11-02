@@ -4,6 +4,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  groupNavigationEntries,
   clientNavigationTarget,
   normalizeReferencePath,
 } from '../src/reference-proof/navigation.mjs';
@@ -20,6 +21,49 @@ const options = {
   download: false,
   target: '',
 };
+
+test('site sections use the requested order and keep introductory pages before the catalogs', () => {
+  const entries = [
+    { path: '/components/button/', title: 'Button' },
+    { path: '/templates/empty-state/', title: 'Empty State' },
+    { path: '/guides/use-with-agents/', title: 'Build with your agent' },
+    { path: '/patterns/forms/', title: 'Forms' },
+    { path: '/foundations/content/', title: 'Content' },
+    { path: '/foundations/theming/', title: 'Theming' },
+    { path: '/overview/resources/', title: 'Resources' },
+    { path: '/overview/faq/', title: 'FAQ' },
+    { path: '/overview/changelog/', title: 'Changelog' },
+    { path: '/overview/introduction/', title: 'Introduction' },
+    { path: '/', title: 'Showcase' },
+    { path: '/foundations/layout/', title: 'Layout' },
+    { path: '/foundations/spacing/', title: 'Spacing' },
+    { path: '/foundations/surfaces/', title: 'Surfaces' },
+    { path: '/foundations/color/', title: 'Color' },
+    { path: '/foundations/typography/', title: 'Typography' },
+    { path: '/components/using-components/', title: 'Using components' },
+    { path: '/templates/using-templates/', title: 'Using templates' },
+  ];
+  const groups = groupNavigationEntries(entries);
+  assert.deepEqual(
+    groups.map((group) => group.label),
+    ['Getting started', 'Foundations', 'Components', 'Templates', 'Guides'],
+  );
+  assert.deepEqual(
+    groups.map((group) => group.items.map((entry) => entry.title)),
+    [
+      ['Showcase', 'Introduction', 'Changelog', 'FAQ'],
+      ['Typography', 'Color', 'Surfaces', 'Spacing', 'Layout'],
+      ['Using components', 'Button'],
+      ['Using templates', 'Empty State'],
+      ['Build with your agent', 'Content', 'Forms', 'Resources', 'Theming'],
+    ],
+  );
+  assert.equal(groups.flatMap((group) => group.items).length, entries.length);
+  assert.deepEqual(
+    groupNavigationEntries([{ path: '/components/button', title: 'Button' }])[0].value,
+    'components',
+  );
+});
 
 test('client navigation preserves the Pages base path, query and fragment', () => {
   assert.equal(

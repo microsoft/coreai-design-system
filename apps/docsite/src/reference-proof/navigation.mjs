@@ -1,6 +1,53 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+const navigationGroups = [
+  {
+    value: 'getting-started',
+    label: 'Getting started',
+    paths: ['/', '/overview/introduction/', '/overview/changelog/', '/overview/faq/'],
+  },
+  {
+    value: 'foundations',
+    label: 'Foundations',
+    paths: [
+      '/foundations/typography/',
+      '/foundations/color/',
+      '/foundations/surfaces/',
+      '/foundations/spacing/',
+      '/foundations/layout/',
+    ],
+  },
+  { value: 'components', label: 'Components', paths: ['/components/using-components/'] },
+  { value: 'templates', label: 'Templates', paths: ['/templates/using-templates/'] },
+  { value: 'guides', label: 'Guides', paths: [] },
+];
+
+export function groupNavigationEntries(entries) {
+  const groups = navigationGroups.map((group) => ({ ...group, items: [] }));
+  for (const entry of entries) {
+    const path = normalizeReferencePath(entry.path);
+    const group =
+      groups.find((group) => group.paths.includes(path)) ??
+      groups.find(
+        (group) =>
+          ['components', 'templates'].includes(group.value) && path.startsWith(`/${group.value}/`),
+      ) ??
+      groups.find((group) => group.value === 'guides');
+    group.items.push(entry);
+  }
+  for (const group of groups) {
+    const rank = (entry) => {
+      const index = group.paths.indexOf(normalizeReferencePath(entry.path));
+      return index < 0 ? group.paths.length : index;
+    };
+    group.items.sort(
+      (first, second) => rank(first) - rank(second) || first.title.localeCompare(second.title),
+    );
+  }
+  return groups.filter((group) => group.items.length);
+}
+
 export function normalizeReferencePath(pathname) {
   const path = pathname.replace(/\/index\.html$/, '/');
   return path.endsWith('/') ? path : `${path}/`;
