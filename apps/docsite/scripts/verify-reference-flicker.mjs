@@ -194,6 +194,7 @@ try {
   );
 
   const homePage = await context.newPage();
+  await homePage.route(/\/assets\/main-[^/]+\.js$/, (route) => delayRoute(route, 800));
   let graphicRequested;
   const graphicRequest = new Promise((resolve) => {
     graphicRequested = resolve;
@@ -202,9 +203,33 @@ try {
     graphicRequested();
     await delayRoute(route, 800);
   });
-  await homePage.goto(root.href);
+  await homePage.goto(root.href, { waitUntil: 'commit' });
+  await homePage.locator('.home-widget').waitFor();
+  const homeBackgroundBefore = await homePage.evaluate(() => {
+    const content = globalThis.document.querySelector('.app-content');
+    const page = globalThis.document.querySelector('.app-page');
+    return {
+      contentHome: content?.classList.contains('app-content--home'),
+      pageHome: page?.classList.contains('app-page--home'),
+      pageBackground: page ? globalThis.getComputedStyle(page).backgroundColor : null,
+    };
+  });
   await graphicRequest;
   await homePage.locator('[data-reference-ready="true"]').waitFor();
+  const homeBackgroundAfter = await homePage.evaluate(() => {
+    const content = globalThis.document.querySelector('.app-content');
+    const page = globalThis.document.querySelector('.app-page');
+    return {
+      contentHome: content?.classList.contains('app-content--home'),
+      pageHome: page?.classList.contains('app-page--home'),
+      pageBackground: page ? globalThis.getComputedStyle(page).backgroundColor : null,
+    };
+  });
+  assert.deepEqual(
+    homeBackgroundAfter,
+    homeBackgroundBefore,
+    'Home keeps the same shell classes and background through hydration',
+  );
   assert.equal(
     await homePage.locator('.home-visual').locator('img, svg, canvas, [role="img"]').count(),
     0,
