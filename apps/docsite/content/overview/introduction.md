@@ -8,56 +8,43 @@ reference:
   hideSummary: true
 ---
 
-CoreAI is a shared design system for building consistent, accessible CoreAI
-experiences. It connects design guidance, reusable assets, code, and agent-ready
-documentation so work can move from idea to implementation without losing intent.
+CoreAI builds on Fluent UI v9. It adds a shared visual language, themes, and
+component defaults. Components without CoreAI changes pass through from Fluent.
 
-## What CoreAI is
+## Why CoreAI has a shared design system
 
-CoreAI builds on Fluent UI v9. It adds shared themes, visual defaults, CoreAI
-components, templates, and UX guidance. Fluent components without CoreAI
-changes remain available through the same package.
+CoreAI gives teams one Fluent UI v9 design system for shared components, themes,
+guidance, and tools. This helps apps stay consistent without each team
+maintaining its own version of the same patterns.
 
-CoreAI supports designers and engineers from early design decisions through
-implementation. It gives teams one place to find the shared guidance and tools
-used to build CoreAI products.
+## What CoreAI includes
 
-## Why it matters
+### Components
 
-Design decisions can drift as work moves between guidance, Figma, code,
-documentation, and teams. This can create different versions of the same
-pattern and make products harder to keep consistent.
+Components are reusable controls maintained in the npm package.
 
-CoreAI keeps those decisions connected. Teams can adapt to product needs while
-reusing the same foundations, components, behavior, and accessibility guidance.
+### Templates
 
-### Shared intent
+Templates are larger starting points that you copy into your project and
+maintain yourself. They are not package imports.
 
-Keep the reason behind a design decision visible from design through
-implementation.
+### Samples
 
-### Consistent experiences
+Samples show how components work together in a form, layout, or workflow.
 
-Use the same foundations, themes, and component defaults across products.
+### Design and code resources
 
-### Less repeated work
+The [Figma library](https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-DS?node-id=0-1)
+contains CoreAI components and templates for designs.
+[Storybook](https://coreai-ds-storybook.azurewebsites.net/) contains component
+states and working examples. The
+[npm package](https://www.npmjs.com/package/@coreai-ds/react-components)
+contains the React components.
 
-Reuse established components, templates, patterns, and guidance instead of
-rebuilding them for each project.
+### Documentation for agents
 
-### Reliable implementation
-
-Carry shared behavior, accessibility, and visual decisions into working code.
-
-## One system, multiple working surfaces
-
-- **Figma:** Design with CoreAI components and templates.
-- **Components:** Import reusable controls from
-  `@coreai-ds/react-components`.
-- **Templates:** Copy larger starting points into your project and adapt them.
-- **Guidance:** Use foundations and patterns to make shared design decisions.
-- **Agent documentation:** Give coding agents the same guidance, APIs, and
-  examples through Markdown pages.
+Agents can read the same UX guidance and complete examples as people through
+this site's Markdown endpoints with ordinary HTTPS.
 
 ## Choose your starting point
 
@@ -90,7 +77,7 @@ or add the optional [reusable skill](../guides/package-skill.md).
 ### Find answers and resources
 
 Use the [FAQ](./faqs.md) for common questions about CoreAI, Fluent UI, setup,
-components, and agents. Use [Resources](./resources.md) for Figma, Storybook,
-npm, fonts, source code, and support. Check the [Changelog](./changelog.md) for
-new features and fixes, or [open a GitHub issue](https://github.com/microsoft/coreai-design-system/issues/new)
-to ask a question or request a feature.
+components, and agents. Use [Resources](./resources.md) for design libraries,
+package resources, fonts, and support. Use
+[GitHub Issues](https://github.com/microsoft/coreai-design-system/issues) to ask
+usage questions or review bugs and feature requests.
