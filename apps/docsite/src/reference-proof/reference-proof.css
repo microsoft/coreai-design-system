@@ -507,10 +507,10 @@ html.reference-loading #reference-root {
   padding: 48px;
 }
 
-.app-page--home .reference-footer {
-  max-width: 920px;
-  margin-inline: auto;
-  padding-inline: 48px;
+.reference-footer.sr-only {
+  margin: -1px;
+  padding: 0;
+  border: 0;
 }
 
 .reference-shell .app-sidenav__nav .fui-Tab {

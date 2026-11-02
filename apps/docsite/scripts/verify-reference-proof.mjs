@@ -976,6 +976,14 @@ try {
   await staticPage.goto(`${root}foundations/surfaces/`);
   assert.equal(await staticPage.locator('[data-page-widget="materials"] img').count(), 2);
   await staticPage.goto(root);
+  assert.equal(await staticPage.locator('.reference-footer.sr-only').count(), 1);
+  assert.equal(
+    await staticPage
+      .locator('.reference-footer')
+      .getByRole('link', { name: 'Agent index' })
+      .count(),
+    1,
+  );
   assert.equal(await staticPage.locator('.home-resource-links').count(), 0);
   assert.equal(await staticPage.locator('.home-agent-entry + .home-agent-preview').count(), 1);
   assert.ok(await staticPage.locator('.home-logo-fallback').isVisible());
@@ -1068,6 +1076,22 @@ try {
   await page.goto(root);
   await page.locator('[data-reference-ready="true"]').waitFor();
   assert.equal(await page.locator('.home-resource-links').count(), 0);
+  assert.equal(
+    await page
+      .getByRole('navigation', { name: 'Documentation', exact: true })
+      .getByRole('tab', { name: 'Home', exact: true })
+      .getAttribute('aria-selected'),
+    'true',
+  );
+  assert.deepEqual(
+    await page.locator('.reference-footer').evaluate((footer) => ({
+      width: footer.getBoundingClientRect().width,
+      height: footer.getBoundingClientRect().height,
+      clip: globalThis.getComputedStyle(footer).clip,
+    })),
+    { width: 1, height: 1, clip: 'rect(0px, 0px, 0px, 0px)' },
+    'Home footer is visually hidden, not removed',
+  );
   assert.equal(
     await page.locator('.home-heading .page-header__title-row .fui-CopyButton').count(),
     0,
