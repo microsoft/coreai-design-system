@@ -29,6 +29,14 @@ export {
   type ProgressBarProps,
   type ProgressBarSlots,
 } from './ProgressBar.js';
+export {
+  Select,
+  selectClassNames,
+  type SelectOnChangeData,
+  type SelectProps,
+  type SelectSlots,
+} from './Select.js';
+export { Slider, sliderClassNames, type SliderProps, type SliderSlots } from './Slider.js';
 export { Spinner, spinnerClassNames, type SpinnerProps, type SpinnerSlots } from './Spinner.js';
 export {
   Switch,

@@ -85,6 +85,9 @@ not a claim that the whole application bundle is Griffel-free.
   and [Divider styles in react-divider 9.7.6](https://unpkg.com/@fluentui/react-divider@9.7.6/lib/components/Divider/useDividerStyles.styles.raw.js).
   `Divider` retains CoreAI's contentless separator contract; `DividerLabeled` supplies Fluent's
   content-bearing variant through the same public headless hook/render pipeline.
+- The native-control batch uses the installed snapshot at commit `8f22e99`:
+  [Select styles in react-select 9.5.7](https://unpkg.com/@fluentui/react-select@9.5.7/lib/components/Select/useSelectStyles.styles.raw.js)
+  and [Slider styles in react-slider 9.6.8](https://unpkg.com/@fluentui/react-slider@9.6.8/lib/components/Slider/useSliderStyles.styles.raw.js).
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -119,6 +122,8 @@ not a claim that the whole application bundle is Griffel-free.
   styling reads the current public `useBackgroundAppearance` hook from
   `@fluentui/react-shared-contexts`. The pinned helper and glyph imports load no Griffel or Tabster
   modules; the existing provider still supplies the background context.
+- Select's default expand glyph uses the public headless SVG chevron-down entry. Its isolated
+  import likewise loads no Griffel or Tabster modules; the browser owns the native select popup.
 
 For Button, the recreated visual props are `appearance` (including `transparent`), `size`, and `shape`.
 Defaults are secondary/medium/circular with CoreAI defaults enabled. Disabling component defaults
@@ -140,6 +145,11 @@ by its TypeScript props but are not forwarded to the native image in either impl
 `loading`, `srcSet`, `crossOrigin`, and width/height are preserved. Tests explicitly compare this
 omission with the legacy reference; adding native support is a separate dependency/behavior change,
 not part of this styling migration.
+
+Slider leaves range resolution to the current headless hook. Native step snapping can differ from
+the hook's visual progress, and a native form reset does not reset hook state. Explicit input-slot
+callbacks and refs retain their current precedence. Tests cover these inherited boundaries rather
+than adding a second range state model or changing native events.
 
 ## Conversion workflow
 
@@ -252,6 +262,11 @@ for RTL. Neither needs an overlay or focusgroup polyfill.
 ProgressBar supplies CSS slide/pulse animations for indeterminate progress rather than restoring
 the old motion slot. Divider uses logical alignment and native separator semantics. Neither needs
 an overlay or focusgroup polyfill.
+Select retains the browser-owned popup and native selection/form/reset behavior. Slider uses
+native range inputs, focus-visible styling, and vertical writing mode. In vertical RTL mode, the
+legacy Griffel input flips to `direction: ltr`, reversing pointer and keyboard value progression.
+The port keeps the current native/headless direction and its thumb aligned with that progression;
+RTL tests and reports explicitly distinguish this intentional correction.
 
 Button needs no overlay or focusgroup polyfill. Every conversion must follow the headless
 [browser-support](https://storybooks.fluentui.dev/headless/llms/overview-browser-support.txt) and
@@ -290,6 +305,9 @@ infinite animations; animation configuration remains part of the checks.
 ProgressBar covers determinate ranges, indeterminate styling/animation, status semantics, custom
 slots, and progress updates. Divider compares both CoreAI's contentless separator and Fluent's
 content-bearing variant, including orientation, alignment, insets, content slots, and consumer CSS.
+Select adds native options/optgroups, controlled and uncontrolled values, Field sizing, callbacks,
+FormData, and reset. Slider checks keyboard/pointer callbacks, range edges, rail/thumb geometry,
+native form boundaries, valid slot rendering, and the intentional vertical-RTL direction difference.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 

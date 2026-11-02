@@ -1,0 +1,10 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * CoreAI source: [Select.ts](../../react-components/src/components/Select.ts) defaults appearance to filled-darker.
+ * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts) registers no Select style override.
+ * Fluent baseline: @fluentui/react-select 9.5.7,
+ * [useSelectStyles.styles.raw.js](../../../node_modules/@fluentui/react-select/lib/components/Select/useSelectStyles.styles.raw.js).
+ * The appearance default is applied in Select.tsx; CoreAI adds no Select CSS. This layer is intentionally empty.
+ */
+
+@layer fluent-components, coreai-overrides;
