@@ -5,13 +5,12 @@ summary: Start using CoreAI for design, code, and agent-assisted work.
 resources: []
 reference:
   layout: compact-guidance
+  hideSummary: true
 ---
 
 CoreAI helps designers and engineers build consistent, accessible AI
-experiences with one shared system.
-
-It extends Fluent UI v9 with shared themes, component defaults, CoreAI
-components, copy-and-adapt templates, and UX guidance.
+experiences with one shared system. It extends Fluent UI v9 with shared themes,
+component defaults, CoreAI components, copy-and-adapt templates, and UX guidance.
 
 ## Choose your starting point
 
