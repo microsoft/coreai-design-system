@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import * as React from 'react';
-import { Button, Link, Text } from '@coreai-ds/react-components';
+import { Button, LinkButton, Text } from '@coreai-ds/react-components';
 import { CoreAILogo } from '../components/Icons';
 import { MarkdownActions } from '../components/MarkdownActions';
 import type { PageWidgetProps } from './FoundationViews';
@@ -52,16 +52,18 @@ export default function HomeView({ model, sourceHtml }: PageWidgetProps) {
           </Text>
         </header>
         <section className="home-agent-entry" aria-label="Agent resources">
-          <div className="home-agent-actions">
-            <Button appearance="primary" data-copy={prompt} data-copy-label="starter prompt">
-              Copy starter prompt
-            </Button>
-            <Link href={new URL('guides/use-with-agents/', base).href}>How it works</Link>
-          </div>
-          <div className="home-agent-links">
-            <Link href={new URL('guides/package-skill/', base).href}>Reusable skill</Link>
-            <Link href={new URL('llms.txt', base).href}>Agent index</Link>
-          </div>
+          <Button appearance="primary" data-copy={prompt} data-copy-label="starter prompt">
+            Copy starter prompt
+          </Button>
+          <LinkButton href={new URL('guides/use-with-agents/', base).href} role="link">
+            How it works
+          </LinkButton>
+          <LinkButton href={new URL('guides/package-skill/', base).href} role="link">
+            Reusable skill
+          </LinkButton>
+          <LinkButton href={new URL('llms.txt', base).href} role="link">
+            Agent index
+          </LinkButton>
         </section>
         <details className="home-agent-preview">
           <summary>Preview the prompt</summary>

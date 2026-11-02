@@ -436,20 +436,16 @@ html.reference-loading #reference-root {
 
 .home-agent-entry {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 20px;
-  border: 1px solid var(--colorNeutralStroke2);
-  border-radius: var(--borderRadiusXLarge);
-  background: var(--colorNeutralBackground2);
-}
-
-.home-agent-actions,
-.home-agent-links {
-  display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 16px;
+  gap: 4px;
+  width: max-content;
+  max-width: calc(100vw - 64px);
+}
+
+.reference-shell .home-agent-entry a.fui-LinkButton {
+  color: var(--colorNeutralForeground1);
+  text-decoration: none;
 }
 
 .home-agent-preview summary {
