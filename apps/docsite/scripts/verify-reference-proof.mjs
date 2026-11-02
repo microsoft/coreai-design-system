@@ -457,7 +457,8 @@ try {
         `${record.id}: complete interface/function API code`,
       );
     }
-    if (record.renderer !== 'home') {
+    const hiddenHeader = ['home', 'work-in-progress'].includes(record.renderer);
+    if (!hiddenHeader) {
       assert.equal(
         await page.locator('.page-header h1.fui-Text').count(),
         1,
@@ -468,7 +469,10 @@ try {
         `${record.id}: visible summary`,
       );
     }
-    assert.equal(await page.getByRole('button', { name: 'Copy for LLM', exact: true }).count(), 1);
+    assert.equal(
+      await page.getByRole('button', { name: 'Copy for LLM', exact: true }).count(),
+      hiddenHeader ? 0 : 1,
+    );
     assert.equal(
       await page
         .locator('nav[aria-label="Documentation"] [role="tab"][aria-selected="true"]')

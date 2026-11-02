@@ -4,6 +4,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import os from 'node:os';
 import test from 'node:test';
 import matter from 'gray-matter';
 import ts from 'typescript';
@@ -19,7 +20,13 @@ import {
   stripPresentationMarkers,
   currentReleaseNotes,
 } from '../scripts/standalone-markdown.mjs';
-import { appRoot, codeFence, standalonePageHtml } from '../scripts/build-reference-proof.mjs';
+import {
+  appRoot,
+  codeFence,
+  standalonePageHtml,
+  componentPageGuidanceHtml,
+  pageMarkdown,
+} from '../scripts/build-reference-proof.mjs';
 import {
   pageGuidanceParts,
   pageTemplateHeader,
@@ -27,7 +34,7 @@ import {
   presentationResources,
 } from '../scripts/page-template.mjs';
 import { readFoundationData, standaloneSections } from '../scripts/standalone-sections.mjs';
-import { renderGuidance } from '../../../shared/guidance.mjs';
+import { guidanceMarkdown, renderGuidance } from '../../../shared/guidance.mjs';
 import { publicMarkdown } from '../scripts/sources/public-markdown.mjs';
 import {
   generateStandaloneDocs,
@@ -59,6 +66,99 @@ test('Showcase keeps its interactive hero without displaying the agent catalog a
     { basePath: '/', pages: [] },
   );
   assert.match(guidanceHtml, /Catalog appendix/);
+});
+
+test('unfinished status restores standalone states without replacing explicit views or examples', async (t) => {
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'coreai-unfinished-pages-'));
+  t.after(() => fs.rm(directory, { recursive: true, force: true }));
+  const records = [
+    { id: 'unfinished', status: 'under-construction' },
+    { id: 'finished', status: 'complete' },
+    { id: 'rich', status: 'under-construction', renderer: 'resources' },
+    { id: 'component', status: 'under-construction', component: 'button' },
+  ];
+  for (const { id, status, ...reference } of records) {
+    await fs.writeFile(
+      path.join(directory, `${id}.md`),
+      matter.stringify('Guidance.', {
+        id,
+        title: id,
+        summary: 'A page summary.',
+        status,
+        reference: { route: `guides/${id}`, ...reference },
+      }),
+    );
+  }
+  const pages = await readReferencePages(directory);
+  assert.equal(pages.find(({ id }) => id === 'unfinished').renderer, 'work-in-progress');
+  assert.equal(pages.find(({ id }) => id === 'finished').renderer, undefined);
+  assert.equal(pages.find(({ id }) => id === 'rich').renderer, 'resources');
+  assert.equal(pages.find(({ id }) => id === 'component').renderer, undefined);
+  assert.equal(pages.find(({ id }) => id === 'component').status, 'under-construction');
+  const file = path.join(directory, 'unfinished.md');
+  await fs.writeFile(file, (await fs.readFile(file, 'utf8')).replace('under-construction', 'typo'));
+  await assert.rejects(
+    readReferencePages(directory),
+    /status must be complete or under-construction/,
+  );
+});
+
+test('unfinished standalone pages retain agent content and native fallback without a duplicate visible title', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  assert.deepEqual(
+    pages.filter(({ renderer }) => renderer === 'work-in-progress').map(({ route }) => route),
+    ['foundations/layout', 'foundations/spacing', 'guides/prototyping'],
+  );
+  const page = {
+    id: 'prototyping',
+    route: 'guides/prototyping',
+    title: 'Prototyping',
+    standalone: true,
+    renderer: 'work-in-progress',
+    resources: [],
+    guidance: '# Prototyping\n\nBuild prototypes.\n\n## Useful links\n\nKeep this for agents.',
+  };
+  const metadata = { basePath: '/repo/', pages: [] };
+  const html = standalonePageHtml(page, metadata);
+  assert.match(html, /class="page-header" hidden[^>]*data-page-title="Prototyping"/);
+  assert.match(html, /data-markdown-url="\/repo\/guides\/prototyping.md"/);
+  assert.match(html, /data-under-construction="true"/);
+  assert.match(html, /data-page-widget="work-in-progress"/);
+  assert.match(html, /<h1[^>]*>Page under construction<\/h1>/);
+  assert.match(html, /src="\/repo\/assets\/favicon.svg"/);
+  assert.match(html, /Share a suggestion/);
+  assert.doesNotMatch(html, /Keep this for agents/);
+  assert.match(pageMarkdown(page, metadata), /Keep this for agents/);
+});
+
+test('unfinished component guidance restores the original inline state without losing examples or authored guidance', () => {
+  const page = {
+    id: 'button',
+    route: 'components/button',
+    title: 'Button',
+    status: 'under-construction',
+    summary: 'A button.',
+    body: '## Usage\n\nKeep authored guidance.',
+    resources: [],
+    defaultExampleId: 'button--default',
+    examples: [
+      {
+        id: 'button--default',
+        name: 'Default',
+        source: '<Button />',
+        sourcePath: 'source/button--default.tsx',
+      },
+    ],
+  };
+  page.guidance = guidanceMarkdown(page);
+  const html = componentPageGuidanceHtml(page, { basePath: '/' });
+  assert.match(html, /data-example-id="button--default"/);
+  assert.match(html, /data-page-widget="work-in-progress"/);
+  assert.match(html, /<h2[^>]*>Page under construction<\/h2>/);
+  assert.doesNotMatch(html, /work-in-progress--page|>Status<\/h2>/);
+  assert.match(html, /Keep authored guidance/);
+  const finished = componentPageGuidanceHtml({ ...page, status: 'complete' }, { basePath: '/' });
+  assert.doesNotMatch(finished, /data-page-widget="work-in-progress"/);
 });
 
 test('every legacy standalone route has a Markdown-owned page or alias', async () => {
@@ -293,6 +393,7 @@ test('standalone renderers stay bounded and whole-page views are explicit', () =
     'package-skill',
     'agent-workflow',
     'content',
+    'work-in-progress',
   ]);
   assert.ok(wholePageRendererNames.every((name) => standaloneRendererNames.includes(name)));
   assert.ok(!wholePageRendererNames.includes('home'));

@@ -36,6 +36,7 @@ import {
   pageTemplateHeader,
   pageTemplateResources,
   homeHeroFallback,
+  workInProgressFallback,
 } from './page-template.mjs';
 import { stripPresentationMarkers } from './standalone-markdown.mjs';
 import { groupNavigationEntries } from '../src/reference-proof/navigation.mjs';
@@ -407,6 +408,9 @@ export function standalonePageHtml(page, metadata) {
     html: true,
   });
   const parts = pageGuidanceParts(markdown, page.resources);
+  if (page.renderer === 'work-in-progress') {
+    return `<div class="reference-page-introduction reference-work-in-progress">${pageTemplateHeader(page, metadata, parts)}${workInProgressFallback(page, metadata, true)}</div>`;
+  }
   const bodyMarkdown = wholePageRendererNames.includes(page.renderer)
     ? `<!-- view:${page.renderer} -->\n\n${parts.body}\n\n<!-- /view:${page.renderer} -->`
     : parts.body;
@@ -426,7 +430,11 @@ export function componentPageGuidanceHtml(page, metadata) {
   const parts = pageGuidanceParts(page.guidance, page.resources);
   const basic = page.examples?.find((example) => example.id === page.defaultExampleId);
   const api = componentApiMarkdown(page.api);
-  return `<div class="reference-page-introduction${page.layout ? ` reference-page--${page.layout}` : ''}">${pageTemplateHeader(page, metadata, parts)}${basic ? exampleHtml(basic, metadata.basePath, true) : ''}${pageTemplateResources(page, metadata)}<div class="component-markdown">${renderGuidance(parts.body).html}</div>${api ? `<section class="reference-api"><details><summary><strong>API reference</strong><span>Generated CoreAI prop and type summaries</span></summary><div class="reference-api__content">${renderGuidance(api).html}</div></details></section>` : ''}</div>`;
+  const unfinished = page.status === 'under-construction';
+  const body = unfinished
+    ? parts.body.replace(/^## Status\n\nPage under construction\.\n*/, '')
+    : parts.body;
+  return `<div class="reference-page-introduction${page.layout ? ` reference-page--${page.layout}` : ''}">${pageTemplateHeader(page, metadata, parts)}${basic ? exampleHtml(basic, metadata.basePath, true) : ''}${pageTemplateResources(page, metadata)}${unfinished ? workInProgressFallback(page, metadata) : ''}<div class="component-markdown">${renderGuidance(body).html}</div>${api ? `<section class="reference-api"><details><summary><strong>API reference</strong><span>Generated CoreAI prop and type summaries</span></summary><div class="reference-api__content">${renderGuidance(api).html}</div></details></section>` : ''}</div>`;
 }
 
 export function initialThemeStyles(themes, stylesheets) {
@@ -553,6 +561,7 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
       label: scope.label ?? data.title,
       standalone: !scope.component,
       renderer: scope.renderer,
+      status: scope.status,
       layout: scope.layout,
       hideSummary: scope.hideSummary,
       resources: data.resources ?? [],

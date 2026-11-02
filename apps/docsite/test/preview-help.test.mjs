@@ -36,7 +36,7 @@ test('work-in-progress pages share a monochrome logo and existing suggestion int
   assert.match(state, /icon=\{<Open16Filled aria-hidden="true" \/>\}/);
   assert.match(state, /<CoreAILogoCube monochrome \/>/);
   assert.match(state, /aria-hidden="true"/);
-  assert.match(state, /<Text as=\{standalone \? 'h1' : 'h2'\} id=\{headingId\}/);
+  assert.match(state, /<Text\s+as=\{standalone \? 'h1' : 'h2'\}\s+id=\{headingId\}/);
   assert.match(
     app,
     /blankPageIds\.has\(page\.id\)[\s\S]*?<PageLayout id=\{page\.id\} hideTitle summary="">\s*<WorkInProgress key=\{page\.id\} standalone \/>/,

@@ -4,12 +4,22 @@
 import * as React from 'react';
 import { LinkButton, Text } from '@coreai-ds/react-components';
 import { Open16Filled } from '@fluentui/react-icons';
-import { siteLinks } from '../data/content';
+import { siteLinks } from '../../../../shared/site-links';
 import { CoreAILogo } from './Icons';
 
 const CoreAILogoCube = React.lazy(() =>
   import('./CoreAILogoCube').then((module) => ({ default: module.CoreAILogoCube })),
 );
+
+class GraphicBoundary extends React.Component<{ children: React.ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
 
 export function WorkInProgress({ standalone = false }: { standalone?: boolean }) {
   const headingId = React.useId();
@@ -21,11 +31,19 @@ export function WorkInProgress({ standalone = false }: { standalone?: boolean })
     >
       <div className="work-in-progress__logo">
         <CoreAILogo className="work-in-progress__fallback" aria-hidden="true" />
-        <React.Suspense fallback={null}>
-          <CoreAILogoCube monochrome />
-        </React.Suspense>
+        <GraphicBoundary>
+          <React.Suspense fallback={null}>
+            <CoreAILogoCube monochrome />
+          </React.Suspense>
+        </GraphicBoundary>
       </div>
-      <Text as={standalone ? 'h1' : 'h2'} id={headingId} size={600} weight="semibold">
+      <Text
+        as={standalone ? 'h1' : 'h2'}
+        id={headingId}
+        size={600}
+        weight="semibold"
+        foreground={1}
+      >
         Page under construction
       </Text>
       <Text as="p" size={300} foreground={2}>
@@ -33,7 +51,8 @@ export function WorkInProgress({ standalone = false }: { standalone?: boolean })
       </Text>
       <LinkButton
         href={siteLinks.feedback}
-        appearance="secondary"
+        appearance="outline"
+        shape="circular"
         external
         icon={<Open16Filled aria-hidden="true" />}
       >

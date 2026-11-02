@@ -17,6 +17,7 @@ export const standaloneRendererNames = [
   'package-skill',
   'agent-workflow',
   'content',
+  'work-in-progress',
 ];
 
 export const wholePageRendererNames = [
@@ -99,6 +100,8 @@ export async function readReferencePages(contentDirectory) {
         for (const key of ['id', 'title', 'summary']) {
           if (typeof data[key] !== 'string' || !data[key].trim()) fail(`${key} is required.`);
         }
+        if (data.status !== undefined && !['complete', 'under-construction'].includes(data.status))
+          fail('status must be complete or under-construction.');
         if (
           reference.component !== undefined &&
           (typeof reference.component !== 'string' || !/^[a-z0-9-]+$/.test(reference.component))
@@ -164,15 +167,9 @@ export async function readReferencePages(contentDirectory) {
           !standaloneRendererNames.includes(reference.renderer)
         )
           fail('Unknown page renderer.');
-        if (
-          reference.layout !== undefined &&
-          !['compact-guidance'].includes(reference.layout)
-        )
+        if (reference.layout !== undefined && !['compact-guidance'].includes(reference.layout))
           fail('Unknown page layout.');
-        if (
-          reference.hideSummary !== undefined &&
-          typeof reference.hideSummary !== 'boolean'
-        )
+        if (reference.hideSummary !== undefined && typeof reference.hideSummary !== 'boolean')
           fail('reference.hideSummary must be a boolean.');
         if (reference.renderer && reference.component)
           fail('Custom renderers are for standalone pages.');
@@ -193,7 +190,19 @@ export async function readReferencePages(contentDirectory) {
         if (kind === 'templates' && !reference.sources?.length && !usageGuide) {
           fail('template pages must provide reference.sources for copying.');
         }
-        pages.push({ ...reference, id, kind, guidance, route: route === 'index' ? '' : route });
+        pages.push({
+          ...reference,
+          status: data.status,
+          renderer:
+            reference.renderer ??
+            (!reference.component && data.status === 'under-construction'
+              ? 'work-in-progress'
+              : undefined),
+          id,
+          kind,
+          guidance,
+          route: route === 'index' ? '' : route,
+        });
       }
     }
   }

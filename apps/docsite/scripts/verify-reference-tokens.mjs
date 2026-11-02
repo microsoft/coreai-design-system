@@ -16,11 +16,11 @@ export async function assertReferenceTextTokens(page, label) {
     const groups = [
       [
         1,
-        '.page-header h1, .home-heading h1, .component-markdown :is(h1,h2,h3,h4,h5,h6,th), .standalone-guidance :is(h1,h2,h3,h4,h5,h6,th), .reference-color-view h3, .reference-resources-view :is(h2,h3), .reference-faqs-view h2, .reference-changelog-view :is(h2,h3,h4), .package-step__content > h3, .content-page :is(h2,h3), .agent-workflow-view :is(h2,h3), .type-table__example, .example > h2, .reference-template-source > h2',
+        '.page-header h1, .home-heading h1, .work-in-progress :is(h1,h2), .component-markdown :is(h1,h2,h3,h4,h5,h6,th), .standalone-guidance :is(h1,h2,h3,h4,h5,h6,th), .reference-color-view h3, .reference-resources-view :is(h2,h3), .reference-faqs-view h2, .reference-changelog-view :is(h2,h3,h4), .package-step__content > h3, .content-page :is(h2,h3), .agent-workflow-view :is(h2,h3), .type-table__example, .example > h2, .reference-template-source > h2',
       ],
       [
         2,
-        '.page-summary, .home-heading p, .component-markdown :is(p,li,td), .standalone-guidance :is(p,li,td), .faq-answer :is(p,li), .content-example__body p, .content-guidance-list li, .content-publish-checklist li, .changelog-entry__section li, .resource-card p, .content-step__content > div, .package-step__content > div:not(.fui-CodeBlock), .fui-CodeBlock__pre',
+        '.page-summary, .home-heading p, .work-in-progress p, .component-markdown :is(p,li,td), .standalone-guidance :is(p,li,td), .faq-answer :is(p,li), .content-example__body p, .content-guidance-list li, .content-publish-checklist li, .changelog-entry__section li, .resource-card p, .content-step__content > div, .package-step__content > div:not(.fui-CodeBlock), .fui-CodeBlock__pre',
       ],
       [
         3,
@@ -104,6 +104,8 @@ export async function assertReferenceTypography(page, label) {
     const groups = [
       ['.page-header h1, .home-heading h1', 'Hero900', 'Regular'],
       ['.page-summary, .home-heading p', 'Base400', 'Regular'],
+      ['.work-in-progress :is(h1,h2)', 'Base600', 'Semibold'],
+      ['.work-in-progress p', 'Base300', 'Regular'],
       [
         '.component-markdown :is(p,li), .standalone-guidance :is(p,li), .faq-answer :is(p,li), .content-example__body p, .content-guidance-list li, .fui-CodeBlock__pre, .reference-api pre, .reference-basic-source pre',
         'Base300',

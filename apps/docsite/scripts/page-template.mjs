@@ -81,7 +81,8 @@ function resourceLinks(resources, className) {
 
 export function pageTemplateHeader(page, metadata, parts) {
   const markdownPath = page.route ? `${page.route}.md` : 'index.md';
-  return `<header class="page-header${page.renderer === 'home' ? ' home-page-actions' : ''}"${page.renderer === 'home' ? ' hidden' : ''} data-page-header data-page-title="${escapeHtml(page.title)}" data-heading-id="${parts.headingId}" data-markdown-url="${metadata.basePath}${markdownPath}" data-home="${page.renderer === 'home'}" data-hide-summary="${Boolean(page.hideSummary)}">
+  const underConstruction = page.renderer === 'work-in-progress';
+  return `<header class="page-header${page.renderer === 'home' ? ' home-page-actions' : ''}"${page.renderer === 'home' || underConstruction ? ' hidden' : ''} data-page-header data-page-title="${escapeHtml(page.title)}" data-heading-id="${parts.headingId}" data-markdown-url="${metadata.basePath}${markdownPath}" data-home="${page.renderer === 'home'}" data-under-construction="${underConstruction}" data-hide-summary="${Boolean(page.hideSummary)}">
 <div class="page-header__title-row">${page.renderer === 'home' ? '' : `<h1 id="${parts.headingId}">${escapeHtml(page.title)}</h1>`}<a href="${metadata.basePath}${markdownPath}">View .md</a></div>
 <div data-page-summary class="${page.renderer === 'home' || page.hideSummary ? 'sr-only' : 'page-summary'}">${parts.summaryHtml}</div></header>`;
 }
@@ -94,4 +95,10 @@ export function pageTemplateResources(page, metadata) {
 
 export function homeHeroFallback(page, metadata, parts) {
   return `<div data-page-widget="home" class="home-widget"><div class="home-landing"><div class="home-foreground"><header class="home-heading"><div class="page-header__title-row"><h1 id="${parts.headingId}">${escapeHtml(page.title)}</h1></div>${parts.summaryHtml}</header><div class="home-agent-content"><section class="home-agent-entry" aria-label="Agent resources"><a href="${metadata.basePath}guides/use-with-agents/">Learn more</a></section><details class="home-agent-preview" hidden><summary>Preview the prompt</summary><pre data-agent-prompt>${escapeHtml(metadata.agentPrompt)}</pre></details></div></div><div class="home-visual"><img class="home-logo-fallback" src="${metadata.basePath}assets/favicon.svg" alt="" /></div></div></div>`;
+}
+
+export function workInProgressFallback(page, metadata, standalone = false) {
+  const heading = standalone ? 'h1' : 'h2';
+  const headingId = `${escapeHtml(page.id)}-under-construction`;
+  return `<div data-page-widget="work-in-progress"><section class="work-in-progress${standalone ? ' work-in-progress--page' : ''}" aria-labelledby="${headingId}"><div class="work-in-progress__logo"><img class="work-in-progress__fallback" src="${metadata.basePath}assets/favicon.svg" alt="" /></div><${heading} id="${headingId}">Page under construction</${heading}><p>We're still working on this page.</p><a class="work-in-progress__link" href="https://github.com/microsoft/coreai-design-system/issues/new" target="_blank" rel="noopener noreferrer">Share a suggestion<span class="sr-only"> (opens in a new tab)</span></a></section></div>`;
 }

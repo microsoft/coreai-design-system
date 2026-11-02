@@ -83,6 +83,10 @@ html.reference-loading #reference-root {
   margin-top: 4px;
 }
 
+.reference-shell .page-summary {
+  color: var(--colorNeutralForeground2);
+}
+
 .reference-shell .page-summary p {
   margin: 0;
 }
@@ -103,6 +107,53 @@ html.reference-loading #reference-root {
   display: flex;
   flex-direction: column;
   gap: 32px;
+}
+
+.reference-shell .page-header[hidden] {
+  display: none;
+}
+
+.reference-shell .site-main:has(.reference-work-in-progress) {
+  min-height: 100%;
+  padding-block: 32px;
+}
+
+.site-main:has(.reference-work-in-progress) > [data-reference-ready],
+.site-main:has(.reference-work-in-progress) > [data-reference-ready] > div {
+  display: contents;
+}
+
+.reference-work-in-progress {
+  flex: 1;
+  justify-content: center;
+}
+
+.reference-shell .work-in-progress :is(h1, h2) {
+  margin: 0;
+  color: var(--colorNeutralForeground1);
+  font-size: var(--fontSizeBase600);
+  line-height: var(--lineHeightBase600);
+  font-weight: var(--fontWeightSemibold);
+}
+
+.work-in-progress p {
+  color: var(--colorNeutralForeground2);
+}
+
+.work-in-progress img.work-in-progress__fallback {
+  filter: grayscale(1);
+}
+
+.reference-shell .work-in-progress :is(.fui-LinkButton, .work-in-progress__link) {
+  text-decoration: none;
+}
+
+.work-in-progress__link {
+  margin-top: var(--spacingVerticalM);
+  border: 1px solid var(--colorNeutralStroke1);
+  border-radius: var(--borderRadiusCircular);
+  padding: var(--spacingVerticalS) var(--spacingHorizontalL);
+  font-weight: var(--fontWeightSemibold);
 }
 
 .reference-resources-view,
