@@ -419,7 +419,7 @@ export function standalonePageHtml(page, metadata) {
       ['font-families', true],
     ]),
   }).html;
-  return `<div class="reference-page-introduction${page.renderer === 'home' ? ' reference-home-introduction' : ''}">${pageTemplateHeader(page, metadata, parts)}${pageTemplateResources(page, metadata)}${page.renderer === 'home' ? homeHeroFallback(page, metadata, parts) : ''}<article class="standalone-guidance${page.renderer === 'home' ? ' home-documentation' : ''}">${tokenSwatches(body)}</article></div>`;
+  return `<div class="reference-page-introduction${page.renderer === 'home' ? ' reference-home-introduction' : ''}">${pageTemplateHeader(page, metadata, parts)}${pageTemplateResources(page, metadata)}${page.renderer === 'home' ? homeHeroFallback(page, metadata, parts) : `<article class="standalone-guidance">${tokenSwatches(body)}</article>`}</div>`;
 }
 
 export function componentPageGuidanceHtml(page, metadata) {

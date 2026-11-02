@@ -1078,11 +1078,9 @@ try {
     .locator('.home-resource-links')
     .getByRole('link', { name: 'Components', exact: true })
     .click();
-  await page.waitForFunction(
-    () =>
-      globalThis.location.hash === '#guidance-components' &&
-      globalThis.document.querySelector('.app-page').scrollTop > 0,
-  );
+  await page.waitForURL(`${root}components/using-components/`);
+  await page.locator('[data-reference-ready="true"]').waitFor();
+  assert.equal(await page.locator('.page-header h1').textContent(), 'Using components');
   assert.equal(await page.evaluate(() => globalThis.performance.timeOrigin), homeOrigin);
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.emulateMedia({ reducedMotion: 'reduce' });

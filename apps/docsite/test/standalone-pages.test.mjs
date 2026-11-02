@@ -19,7 +19,7 @@ import {
   stripPresentationMarkers,
   currentReleaseNotes,
 } from '../scripts/standalone-markdown.mjs';
-import { appRoot, codeFence } from '../scripts/build-reference-proof.mjs';
+import { appRoot, codeFence, standalonePageHtml } from '../scripts/build-reference-proof.mjs';
 import {
   pageGuidanceParts,
   pageTemplateHeader,
@@ -33,6 +33,27 @@ import {
   generateStandaloneDocs,
   standaloneDocsRoot,
 } from '../../storybook/scripts/generate-standalone-docs.mjs';
+
+test('Showcase keeps its interactive hero without displaying the agent catalog appendix', () => {
+  const page = {
+    route: '',
+    title: 'CoreAI Design System',
+    renderer: 'home',
+    guidance: '# CoreAI Design System\n\nShared components.\n\n## Components\n\nCatalog appendix.',
+    resources: [],
+    examples: [],
+  };
+  const html = standalonePageHtml(page, { basePath: '/', pages: [], agentPrompt: 'Use CoreAI.' });
+  assert.match(html, /data-page-widget="home"/);
+  assert.match(html, /home-visual/);
+  assert.doesNotMatch(html, /Catalog appendix|home-documentation/);
+  assert.match(page.guidance, /Catalog appendix/);
+  const guidanceHtml = standalonePageHtml(
+    { ...page, renderer: undefined },
+    { basePath: '/', pages: [] },
+  );
+  assert.match(guidanceHtml, /Catalog appendix/);
+});
 
 test('every legacy standalone route has a Markdown-owned page or alias', async () => {
   const pages = await readReferencePages(path.join(appRoot, 'content'));
