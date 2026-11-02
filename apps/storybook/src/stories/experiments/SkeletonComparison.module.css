@@ -1,0 +1,101 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Handwritten experiment layout and unlayered consumer overrides; not an upstream style port.
+ */
+
+.examples {
+  display: grid;
+  gap: 16px;
+  max-width: 1080px;
+  overflow-x: auto;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) repeat(2, 280px);
+  align-items: center;
+  gap: 16px;
+  min-height: 48px;
+}
+
+.cell {
+  min-width: 0;
+  padding: 12px;
+}
+
+.consumerRoot {
+  display: grid;
+  gap: 6px;
+  padding: 5px;
+}
+
+.consumerItem {
+  width: 68px;
+  height: 26px;
+  border-radius: 3px;
+  overflow: visible;
+  background-color: rgb(20, 80, 120);
+
+  &::after {
+    background-image: linear-gradient(90deg, transparent, rgb(40, 110, 60), transparent);
+    animation-duration: 2.4s;
+    animation-timing-function: linear;
+  }
+}
+
+.animatedChild {
+  animation: consumerPulse 800ms linear infinite;
+}
+
+@keyframes consumerPulse {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.report {
+  display: block;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+  margin-block: 16px;
+}
+
+.playground {
+  display: grid;
+  gap: 12px;
+  max-width: 480px;
+}
+
+.loadingRegion {
+  min-height: 100px;
+  padding: 16px;
+  background-color: var(--colorNeutralBackground1);
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profileLines {
+  display: grid;
+  gap: 8px;
+  flex: 1;
+}
+
+.profileName {
+  width: 70%;
+}
+
+.profileDetail {
+  width: 90%;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}

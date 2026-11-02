@@ -1,0 +1,92 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Handwritten experiment layout and unlayered consumer overrides; not an upstream style port.
+ */
+
+.examples {
+  display: grid;
+  gap: 20px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 180px repeat(2, 360px);
+  align-items: start;
+  gap: 20px;
+}
+
+.cell {
+  min-width: 0;
+}
+
+.tallContent {
+  display: flex;
+  align-items: center;
+  height: 80px;
+}
+
+.consumerAccordion {
+  padding: 6px;
+}
+
+.consumerItem {
+  padding-inline: 5px;
+}
+
+.consumerHeader {
+  background-color: rgb(235, 242, 248);
+  border-radius: 9px;
+}
+
+.consumerButton {
+  display: flex;
+  gap: 12px;
+  min-height: 52px;
+  padding: 6px 10px;
+  color: rgb(20, 90, 160);
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.consumerExpandIcon {
+  padding: 3px;
+  border-radius: 2px;
+  color: rgb(40, 110, 60);
+  font-size: 16px;
+}
+
+.consumerIcon {
+  padding-inline-end: 10px;
+  font-size: 18px;
+}
+
+.consumerPanel {
+  margin: 4px 8px;
+  padding: 6px;
+}
+
+.report {
+  display: block;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+  margin-block: 16px;
+}
+
+.playground {
+  display: grid;
+  gap: 12px;
+  max-width: 560px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.pointerParking {
+  display: block;
+  width: 24px;
+  height: 24px;
+}

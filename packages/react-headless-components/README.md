@@ -93,6 +93,9 @@ not a claim that the whole application bundle is Griffel-free.
   [RadioGroup styles](https://unpkg.com/@fluentui/react-radio@9.6.7/lib/components/RadioGroup/useRadioGroupStyles.styles.raw.js),
   and the [Badge family baseline in react-badge 9.5.7](https://unpkg.com/@fluentui/react-badge@9.5.7/lib/components/Badge/useBadgeStyles.styles.raw.js).
   CounterBadge shares the Badge foundation; PresenceBadge has its own status-specific styling.
+- The disclosure/loading batch uses the installed snapshot at commit `a98711e`:
+  the [Accordion family in react-accordion 9.12.5](https://unpkg.com/@fluentui/react-accordion@9.12.5/lib/components/AccordionHeader/useAccordionHeaderStyles.styles.raw.js)
+  and [Skeleton family in react-skeleton 9.7.7](https://unpkg.com/@fluentui/react-skeleton@9.7.7/lib/components/SkeletonItem/useSkeletonItemStyles.styles.raw.js).
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -162,6 +165,18 @@ RadioGroup preserves the installed Field contract: Field supplies group `aria-re
 `aria-invalid`, but native required radio inputs need an explicit group `required` prop.
 CounterBadge preserves current headless content resolution: explicit numeric `children={0}`
 remains visible instead of copying the legacy falsy-content hide check.
+
+Skeleton and SkeletonItem keep behavior in the public headless context. A private, typed
+visual-only context supplies appearance/animation inheritance because the public facade has no
+visual context reader. Deprecated width props are excluded; use CSS for custom sizing.
+
+Accordion examples use array-form open items, including `defaultOpenItems={[0]}` for numeric
+identifiers. The pinned upstream implementation mishandles falsy scalar defaults such as `0`;
+this inherited bug is outside the styling migration. The public prop contract remains unchanged,
+and no normalization workaround or dependency patch is added.
+Closed headless panels remain mounted and CSS-hidden, preserving local state. Legacy panels
+unmount after their exit animation finishes. React 18 omits the hook's boolean `inert` attribute;
+CSS hiding excludes closed content from focus and accessibility without a compatibility shim.
 
 ## Conversion workflow
 
@@ -328,6 +343,11 @@ composition, callbacks, and form/reset checks. Badge, CounterBadge, and Presence
 categories, count/overflow/dot/hidden states, current status glyphs and accessible names, and supplied
 content. Radio's report permits at most `0.5px` of captured rectangle width/height allocation noise;
 threshold regressions keep larger geometry differences and all CSS property values observable.
+Accordion covers current context wiring, visual header variants, native toggle callbacks, disabled
+and controlled states, slot/ref contracts, and persistent hidden-panel state. Its live report
+distinguishes intentional mounted-panel differences from unexpected selected-style differences.
+Skeleton covers visual inheritance and item overrides, shape/size variants, owned pseudo-element
+animation timing/keyframes, refs, and loading/completion/reload state.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 

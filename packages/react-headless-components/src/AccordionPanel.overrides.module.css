@@ -1,0 +1,15 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * CoreAI source: [Accordion.styles.ts](../../react-components/src/components/Accordion.styles.ts).
+ * Fluent baseline: @fluentui/react-accordion 9.12.5,
+ * [useAccordionPanelStyles.styles.raw.js](../../../node_modules/@fluentui/react-accordion/lib/components/AccordionPanel/useAccordionPanelStyles.styles.raw.js).
+ * CoreAI removes panel margins when component defaults are enabled.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .AccordionPanel {
+    margin: 0;
+  }
+}

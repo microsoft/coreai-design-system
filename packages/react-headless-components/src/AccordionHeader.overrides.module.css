@@ -1,0 +1,62 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * CoreAI source: [Accordion.styles.ts](../../react-components/src/components/Accordion.styles.ts).
+ * Fluent baseline: @fluentui/react-accordion 9.12.5,
+ * [useAccordionHeaderStyles.styles.raw.js](../../../node_modules/@fluentui/react-accordion/lib/components/AccordionHeader/useAccordionHeaderStyles.styles.raw.js).
+ * CoreAI grid, spacing, and enabled interaction overrides; gated by useCoreAIDefaults.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .AccordionHeader {
+    /* AccordionHeader button — the interactive trigger. */
+    .AccordionHeader__button {
+      display: grid;
+      align-content: center;
+      grid-template-columns: auto 1fr;
+      gap: var(--spacingHorizontalS);
+      padding: 0;
+
+      .AccordionHeader__expandIcon,
+      .AccordionHeader__icon {
+        padding: unset;
+        border-radius: var(--borderRadiusMedium);
+      }
+
+      .AccordionHeader__expandIcon {
+        height: auto;
+        align-self: center;
+      }
+    }
+
+    /* Pick exactly one layout for the icon/expand-icon arrangement. */
+    &[data-has-icon] .AccordionHeader__button {
+      grid-template-columns: auto auto 1fr;
+    }
+
+    &[data-expand-icon-position='end'] .AccordionHeader__button {
+      grid-template-columns: 1fr auto;
+    }
+
+    &[data-has-icon][data-expand-icon-position='end'] .AccordionHeader__button {
+      grid-template-columns: auto 1fr auto;
+    }
+
+    &:not([data-disabled]) .AccordionHeader__button {
+      color: var(--colorNeutralForeground2);
+
+      &:hover {
+        color: var(--colorNeutralForeground1);
+
+        .AccordionHeader__expandIcon {
+          background-color: var(--colorInteractiveBackgroundHover);
+        }
+      }
+
+      &:active .AccordionHeader__expandIcon {
+        background-color: var(--colorInteractiveBackgroundPressed);
+      }
+    }
+  }
+}
