@@ -87,6 +87,10 @@ html.reference-loading #reference-root {
   margin: 0;
 }
 
+.reference-shell .page-header[data-hide-summary='true'] .page-summary {
+  display: none;
+}
+
 .reference-shell .component-resources {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
 }

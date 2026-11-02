@@ -63,6 +63,7 @@ export async function readReferencePages(contentDirectory) {
               'legacyIds',
               'renderer',
               'layout',
+              'hideSummary',
               'api',
             ].includes(key)
           ) {
@@ -168,6 +169,11 @@ export async function readReferencePages(contentDirectory) {
           !['compact-guidance'].includes(reference.layout)
         )
           fail('Unknown page layout.');
+        if (
+          reference.hideSummary !== undefined &&
+          typeof reference.hideSummary !== 'boolean'
+        )
+          fail('reference.hideSummary must be a boolean.');
         if (reference.renderer && reference.component)
           fail('Custom renderers are for standalone pages.');
         for (const source of reference.sources ?? []) {
