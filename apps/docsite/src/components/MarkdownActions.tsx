@@ -4,7 +4,7 @@
 import * as React from 'react';
 import {
   Menu,
-  MenuButton,
+  CopyButton,
   MenuItem,
   MenuItemLink,
   MenuList,
@@ -60,16 +60,15 @@ export function MarkdownActions({
     <>
       <Menu positioning={{ autoSize: true }}>
         <MenuTrigger disableButtonEnhancement>
-          <MenuButton
+          <CopyButton
             appearance="subtle"
-            icon={<Copy20Regular />}
-            menuIcon={iconOnly ? null : undefined}
-            aria-label={iconOnly ? label : undefined}
+            contentToCopy={undefined}
+            aria-label={label}
             title={iconOnly ? label : undefined}
             className="component-copy-menu__trigger"
           >
             {iconOnly ? null : label}
-          </MenuButton>
+          </CopyButton>
         </MenuTrigger>
         <MenuPopover>
           <MenuList>
