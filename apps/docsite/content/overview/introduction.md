@@ -3,7 +3,8 @@ id: introduction
 title: Introduction
 summary: Start using CoreAI for design, code, and agent-assisted work.
 resources: []
-reference: {}
+reference:
+  layout: compact-guidance
 ---
 
 CoreAI helps designers and engineers build consistent, accessible AI
