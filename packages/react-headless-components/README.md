@@ -88,6 +88,11 @@ not a claim that the whole application bundle is Griffel-free.
 - The native-control batch uses the installed snapshot at commit `8f22e99`:
   [Select styles in react-select 9.5.7](https://unpkg.com/@fluentui/react-select@9.5.7/lib/components/Select/useSelectStyles.styles.raw.js)
   and [Slider styles in react-slider 9.6.8](https://unpkg.com/@fluentui/react-slider@9.6.8/lib/components/Slider/useSliderStyles.styles.raw.js).
+- The selection/status batch uses the installed snapshot at commit `5e4e918`:
+  [Radio styles in react-radio 9.6.7](https://unpkg.com/@fluentui/react-radio@9.6.7/lib/components/Radio/useRadioStyles.styles.raw.js),
+  [RadioGroup styles](https://unpkg.com/@fluentui/react-radio@9.6.7/lib/components/RadioGroup/useRadioGroupStyles.styles.raw.js),
+  and the [Badge family baseline in react-badge 9.5.7](https://unpkg.com/@fluentui/react-badge@9.5.7/lib/components/Badge/useBadgeStyles.styles.raw.js).
+  CounterBadge shares the Badge foundation; PresenceBadge has its own status-specific styling.
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -124,6 +129,8 @@ not a claim that the whole application bundle is Griffel-free.
   modules; the existing provider still supplies the background context.
 - Select's default expand glyph uses the public headless SVG chevron-down entry. Its isolated
   import likewise loads no Griffel or Tabster modules; the browser owns the native select popup.
+- PresenceBadge uses the public headless SVG presence entries for its default status glyphs.
+  Each entry is independently verified to load no Griffel or Tabster modules.
 
 For Button, the recreated visual props are `appearance` (including `transparent`), `size`, and `shape`.
 Defaults are secondary/medium/circular with CoreAI defaults enabled. Disabling component defaults
@@ -150,6 +157,11 @@ Slider leaves range resolution to the current headless hook. Native step snappin
 the hook's visual progress, and a native form reset does not reset hook state. Explicit input-slot
 callbacks and refs retain their current precedence. Tests cover these inherited boundaries rather
 than adding a second range state model or changing native events.
+
+RadioGroup preserves the installed Field contract: Field supplies group `aria-required` and
+`aria-invalid`, but native required radio inputs need an explicit group `required` prop.
+CounterBadge preserves current headless content resolution: explicit numeric `children={0}`
+remains visible instead of copying the legacy falsy-content hide check.
 
 ## Conversion workflow
 
@@ -267,6 +279,9 @@ native range inputs, focus-visible styling, and vertical writing mode. In vertic
 legacy Griffel input flips to `direction: ltr`, reversing pointer and keyboard value progression.
 The port keeps the current native/headless direction and its thumb aligned with that progression;
 RTL tests and reports explicitly distinguish this intentional correction.
+RadioGroup uses its public headless context helper and native radio-input navigation; it needs no
+focusgroup polyfill. Badge counts and presence accessibility likewise remain owned by their
+headless hooks, without introducing live-region behavior.
 
 Button needs no overlay or focusgroup polyfill. Every conversion must follow the headless
 [browser-support](https://storybooks.fluentui.dev/headless/llms/overview-browser-support.txt) and
@@ -308,6 +323,11 @@ content-bearing variant, including orientation, alignment, insets, content slots
 Select adds native options/optgroups, controlled and uncontrolled values, Field sizing, callbacks,
 FormData, and reset. Slider checks keyboard/pointer callbacks, range edges, rail/thumb geometry,
 native form boundaries, valid slot rendering, and the intentional vertical-RTL direction difference.
+Radio and RadioGroup add native selection/navigation, grouping, Field/required boundaries, label
+composition, callbacks, and form/reset checks. Badge, CounterBadge, and PresenceBadge cover visual
+categories, count/overflow/dot/hidden states, current status glyphs and accessible names, and supplied
+content. Radio's report permits at most `0.5px` of captured rectangle width/height allocation noise;
+threshold regressions keep larger geometry differences and all CSS property values observable.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 
