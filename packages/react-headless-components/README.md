@@ -80,6 +80,11 @@ not a claim that the whole application bundle is Griffel-free.
   [Link styles in react-link 9.8.6](https://unpkg.com/@fluentui/react-link@9.8.6/lib/components/Link/useLinkStyles.styles.raw.js)
   and [Spinner styles in react-spinner 9.8.7](https://unpkg.com/@fluentui/react-spinner@9.8.7/lib/components/Spinner/useSpinnerStyles.styles.raw.js).
   Spinner reuses the completed Label styling through the current public slot-render contract.
+- The progress/separator batch uses the installed snapshot at commit `d1f4f10`:
+  [ProgressBar styles in react-progress 9.5.7](https://unpkg.com/@fluentui/react-progress@9.5.7/lib/components/ProgressBar/useProgressBarStyles.styles.raw.js)
+  and [Divider styles in react-divider 9.7.6](https://unpkg.com/@fluentui/react-divider@9.7.6/lib/components/Divider/useDividerStyles.styles.raw.js).
+  `Divider` retains CoreAI's contentless separator contract; `DividerLabeled` supplies Fluent's
+  content-bearing variant through the same public headless hook/render pipeline.
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -150,6 +155,8 @@ current ref contract. Slot element selection belongs in the slot resolver, not `
 Checkbox and Switch keep the primitive's native label slot contract. The shared `resolveLabelSlot`
 helper uses a typed public slot render function to render the styled Label, preserving resolved
 props, refs, caller render functions, and required content without changing compatibility registries.
+The contentless Divider likewise retains native slot metadata and uses a public render function
+for its `hr` root, preserving native refs without triggering the pinned renderer's slot rewrite.
 
 Preserve the current headless slot, ref, and accessibility contracts. Reuse local styling
 foundations only through type-safe current APIs; do not use casts to force an incompatible slot
@@ -242,6 +249,9 @@ during hover/press while `:focus-visible` remains true; the legacy disabled-hove
 Unfocused disabled links remain undecorated, with disabled colors and activation blocking unchanged.
 Spinner ports its masks, conic gradients, and CSS animations and uses native direction selectors
 for RTL. Neither needs an overlay or focusgroup polyfill.
+ProgressBar supplies CSS slide/pulse animations for indeterminate progress rather than restoring
+the old motion slot. Divider uses logical alignment and native separator semantics. Neither needs
+an overlay or focusgroup polyfill.
 
 Button needs no overlay or focusgroup polyfill. Every conversion must follow the headless
 [browser-support](https://storybooks.fluentui.dev/headless/llms/overview-browser-support.txt) and
@@ -277,6 +287,9 @@ caller rendering, context/defaults, and consumer priority. Spinner compares size
 appearance, slot/pseudo-element styling, live-region semantics, caller slots/refs, and loading-state
 changes. Its comparison fixture freezes time-varying animation frames rather than waiting for
 infinite animations; animation configuration remains part of the checks.
+ProgressBar covers determinate ranges, indeterminate styling/animation, status semantics, custom
+slots, and progress updates. Divider compares both CoreAI's contentless separator and Fluent's
+content-bearing variant, including orientation, alignment, insets, content slots, and consumer CSS.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 
@@ -286,6 +299,9 @@ a separate synthetic-input limitation: typed native values appeared without trig
 and inspection found React's value setter instead of Testing Library's value interceptor.
 Native typing in that preview works. No component workaround or weakened assertion was added for
 this preview-tool difference.
+ProgressBar's frame-zero comparison also stalled in the integrated preview, while the unchanged
+report passed in standalone Chromium. Standalone checks additionally cover its upload flow and
+DividerLabeled's orientation/content controls.
 
 This is not exhaustive. Gaps include automated screenshot/pixel comparison, Firefox/Safari,
 forced-colors and reduced-motion emulation, transition frames, pointer-down combinations,

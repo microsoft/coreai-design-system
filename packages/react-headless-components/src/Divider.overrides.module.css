@@ -1,0 +1,64 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Fluent visual reference: @fluentui/react-divider 9.7.6.
+ * Local baseline source: [useDividerStyles.styles.raw.js](../../../node_modules/@fluentui/react-divider/lib/components/Divider/useDividerStyles.styles.raw.js).
+ * Actual CoreAI source at d1f4f10: [Divider.tsx](../../react-components/src/components/Divider.tsx).
+ * CoreAI replaces Fluent's content/alignment layout with a contentless native hr (or div).
+ * DividerLabeled retains the Fluent baseline and receives none of these overrides.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .Divider {
+    /* Reset the native <hr> and lay down the shared geometry. Borders default to
+     * zero width; the horizontal/vertical variants turn on the side they need.
+     */
+    box-sizing: border-box;
+    margin: 0;
+    border: 0 solid var(--colorNeutralStroke2);
+
+    &[data-orientation='horizontal'] {
+      width: 100%;
+      height: 0;
+      border-top-width: var(--strokeWidthThin);
+      margin-block: var(--spacingVerticalXS);
+
+      &[data-inset] {
+        margin-inline: var(--spacingHorizontalM);
+      }
+    }
+
+    &[data-orientation='vertical'] {
+      min-height: 1em;
+      width: 0;
+      border-inline-end-width: var(--strokeWidthThin);
+      margin-inline: var(--spacingHorizontalXS);
+
+      &[data-inset] {
+        margin-block: var(--spacingVerticalM);
+      }
+    }
+
+    /* Appearance variations (color the stroke). */
+    &[data-appearance='strong'] {
+      border-top-color: var(--colorNeutralStroke1);
+      border-inline-end-color: var(--colorNeutralStroke1);
+    }
+
+    &[data-appearance='default'] {
+      border-top-color: var(--colorNeutralStroke2);
+      border-inline-end-color: var(--colorNeutralStroke2);
+    }
+
+    &[data-appearance='subtle'] {
+      border-top-color: var(--colorNeutralStroke3);
+      border-inline-end-color: var(--colorNeutralStroke3);
+    }
+
+    &[data-appearance='brand'] {
+      border-top-color: var(--colorBrandStroke1);
+      border-inline-end-color: var(--colorBrandStroke1);
+    }
+  }
+}
