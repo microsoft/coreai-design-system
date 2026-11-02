@@ -166,7 +166,48 @@ function bestPracticesCards() {
   };
 }
 
-export function renderGuidance(markdown, { examples = {}, views = {} } = {}) {
+function headingSections() {
+  return (tree) => {
+    const children = tree.children;
+    tree.children = [];
+    const stack = [{ depth: 0, node: tree }];
+    for (const child of children) {
+      if (child.type === 'text' && !child.value.trim()) continue;
+      const depth =
+        child.type === 'element' && /^h[2-6]$/.test(child.tagName)
+          ? Number(child.tagName.slice(1))
+          : undefined;
+      if (depth !== undefined) {
+        while (stack.at(-1).depth >= depth) stack.pop();
+        const section = {
+          type: 'element',
+          tagName: 'section',
+          properties: {
+            className: ['guidance-section'],
+            ariaLabelledBy: child.properties.id,
+          },
+          children: [child],
+        };
+        stack.at(-1).node.children.push(section);
+        stack.push({ depth, node: section });
+      } else {
+        if (stack.length === 1) {
+          const section = {
+            type: 'element',
+            tagName: 'section',
+            properties: { className: ['guidance-section'] },
+            children: [],
+          };
+          tree.children.push(section);
+          stack.push({ depth: Infinity, node: section });
+        }
+        stack.at(-1).node.children.push(child);
+      }
+    }
+  };
+}
+
+export function renderGuidance(markdown, { examples = {}, views = {}, sections = false } = {}) {
   const processor = unified().use(remarkParse).use(remarkGfm);
   const tree = processor.parse(markdown);
   for (let index = 0; index < tree.children.length; index++) {
@@ -254,7 +295,8 @@ export function renderGuidance(markdown, { examples = {}, views = {} } = {}) {
       },
       clobberPrefix: 'guidance-',
     })
-    .use(bestPracticesCards)
-    .use(rehypeStringify);
+    .use(bestPracticesCards);
+  if (sections) renderer.use(headingSections);
+  renderer.use(rehypeStringify);
   return { html: renderer.stringify(renderer.runSync(tree)), anchors };
 }

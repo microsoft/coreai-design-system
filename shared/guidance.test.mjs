@@ -27,6 +27,28 @@ test('standard Markdown supports rich guidance and stable unique anchors', () =>
   assert.match(html, /id="guidance-examples"/);
 });
 
+test('optional sections group introductions and nested headings without changing anchors', () => {
+  const source =
+    'Intro paragraph.\n\n## Setup\n\nSetup body.\n\n### Details\n\n[Back](#setup).\n\n## Setup\n\nAnother section.\n\n```html\n<h2>Not a heading</h2>\n```';
+  const plain = renderGuidance(source);
+  const grouped = renderGuidance(source, { sections: true });
+  assert.deepEqual(grouped.anchors, plain.anchors);
+  assert.doesNotMatch(plain.html, /<section/);
+  assert.match(
+    grouped.html,
+    /^<section class="guidance-section"><p>Intro paragraph\.<\/p><\/section>/,
+  );
+  assert.match(
+    grouped.html,
+    /<section class="guidance-section" aria-labelledby="guidance-setup"><h2 id="guidance-setup">Setup<\/h2>/,
+  );
+  assert.match(
+    grouped.html,
+    /aria-labelledby="guidance-details"><h3 id="guidance-details">Details<\/h3>[\s\S]*href="#guidance-setup"[\s\S]*<\/section><\/section><section class="guidance-section" aria-labelledby="guidance-setup-1">/,
+  );
+  assert.equal((grouped.html.match(/<h2\b/g) ?? []).length, 2);
+});
+
 test('best practices render paired cards without losing rich content or surrounding sections', () => {
   const body =
     '## Best practices\n\nIntro paragraph.\n\n### Do\n\nUse **clear** labels and [links](https://example.com).\n\n- Parent\n  - Child\n\n### Don\u2019t\n\n> Avoid ambiguity.\n\n```js\nconst example = true;\n```\n\n## Behavior and states\n\nKeep this outside the cards.';
