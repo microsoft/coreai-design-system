@@ -441,7 +441,7 @@ try {
         record.defaultExampleId,
       );
       const order = await page
-        .locator('.reference-page-introduction')
+        .locator('[data-page-panel="usage"]')
         .evaluate((element) =>
           [...element.children].map((child) =>
             child.hasAttribute('data-page-header')
@@ -455,17 +455,33 @@ try {
                     : 'resources',
           ),
         );
-      assert.deepEqual(order.slice(0, 2), ['header', 'default']);
+      assert.equal(order[0], 'default');
       assert.ok(order.indexOf('guidance') > order.indexOf('default'));
       if (order.includes('resources')) {
         assert.ok(order.indexOf('resources') > order.indexOf('default'));
         assert.ok(order.indexOf('resources') < order.indexOf('guidance'));
       }
-      if (order.includes('api')) {
-        assert.ok(order.indexOf('api') > order.indexOf('guidance'));
+      if (record.api.length) {
+        assert.equal(await page.locator('[data-page-panel="samples"] .reference-api').count(), 1);
         assert.equal(await page.locator('.reference-api details[open]').count(), 0);
       }
-      assert.equal(await page.locator('.reference-basic-source[open]').count(), 0);
+      assert.ok(
+        await page
+          .locator('[data-page-panel="usage"] pre')
+          .evaluateAll((blocks) => blocks.every((block) => block.closest('[data-example-id]'))),
+        `${record.id}: only live preview content can contain code in Usage`,
+      );
+      assert.equal(
+        await page.locator('[data-page-panel="samples"] .reference-basic-source[open]').count(),
+        1,
+      );
+      assert.equal(
+        await page
+          .locator('.reference-page-tabs')
+          .getByRole('tab', { name: 'Usage', selected: true })
+          .count(),
+        1,
+      );
       for (const member of record.api) {
         assert.equal(
           await page
@@ -519,6 +535,14 @@ try {
     if (record.singlePreview) {
       for (const example of record.examples) {
         const container = page.locator(`[data-example-id="${example.id}"]`);
+        const panel = await container.evaluate((element) =>
+          element.closest('[data-page-panel]')?.getAttribute('data-page-panel'),
+        );
+        if (panel)
+          await page
+            .locator('.reference-page-tabs')
+            .getByRole('tab', { name: panel === 'usage' ? 'Usage' : 'Samples', exact: true })
+            .click();
         const run = container.getByRole('button', { name: 'Run this example', exact: true });
         if (await run.count()) await run.click();
         assert.equal(await run.count(), 0, `${example.id}: activated preview`);
@@ -671,7 +695,10 @@ try {
   assert.match(buttonApi, /interface ButtonProps \{/);
   assert.match(buttonApi, /@default 'circular'/);
   assert.match(buttonApi, /shape\?:/);
-  await page.locator('.reference-basic-source > summary').click();
+  await page
+    .locator('.reference-page-tabs')
+    .getByRole('tab', { name: 'Samples', exact: true })
+    .click();
   await page.locator('[data-copy-source="source-components-button-button--default"]').click();
   assert.equal(
     normalizeSource(await page.evaluate(() => navigator.clipboard.readText())),
@@ -685,6 +712,10 @@ try {
   );
 
   await page.goto(`${root}components/dropdown/`);
+  await page
+    .locator('.reference-page-tabs')
+    .getByRole('tab', { name: 'Samples', exact: true })
+    .click();
   const inlineLabel = page.locator('[data-example-id="components-dropdown--inline-label"]');
   const dropdown = inlineLabel.getByRole('combobox').first();
   await dropdown.click();
@@ -974,11 +1005,19 @@ try {
   await page.getByRole('dialog').waitFor({ state: 'hidden' });
 
   await page.goto(`${root}components/tree/`);
+  await page
+    .locator('.reference-page-tabs')
+    .getByRole('tab', { name: 'Samples', exact: true })
+    .click();
   const lazyTree = page.locator('[data-example-id="components-tree--lazy-loading"]');
   await lazyTree.getByRole('treeitem', { name: 'People', exact: true }).click();
   await lazyTree.getByText('People 1', { exact: true }).waitFor();
 
   await page.goto(`${root}components/codeblock/`);
+  await page
+    .locator('.reference-page-tabs')
+    .getByRole('tab', { name: 'Samples', exact: true })
+    .click();
   await page
     .locator('[data-example-id="components-codeblock--header"]')
     .getByRole('combobox')

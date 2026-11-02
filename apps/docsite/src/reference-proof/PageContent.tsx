@@ -12,6 +12,7 @@ import {
   type PagePresentation,
 } from './PagePresentation';
 import type { PageWidgetProps } from './FoundationViews';
+import { PageTabs, preparePageTabs, type PageTabTargets } from './page-tabs';
 
 const standaloneViewNames = new Set([
   'resources',
@@ -67,6 +68,7 @@ export function PageContent({
   const [targets, setTargets] = React.useState<HTMLElement[] | null>(null);
   const [examples, setExamples] = React.useState<Record<string, React.ComponentType>>({});
   const [loadError, setLoadError] = React.useState<string>();
+  const [pageTabs, setPageTabs] = React.useState<PageTabTargets | null>(null);
   const [activeExample, setActiveExample] = React.useState<string>();
   const [presentation, setPresentation] = React.useState<{
     model: PagePresentation;
@@ -91,6 +93,7 @@ export function PageContent({
     ];
     const root = contentRef.current;
     if (!root) throw new Error('Missing page content.');
+    const tabs = preparePageTabs(root);
     const model = readPagePresentation(root);
     const header = root.querySelector<HTMLElement>('[data-page-header]');
     if (!header) throw new Error('Missing page header.');
@@ -129,6 +132,7 @@ export function PageContent({
         resources?.replaceChildren();
         for (const widget of pageWidgets) widget.element.replaceChildren();
         setPresentation({ model, header, resources });
+        setPageTabs(tabs);
         setViews({ ...foundationViews, ...standaloneViews, ...homeView });
         setWidgets(pageWidgets);
         setExamples(
@@ -182,6 +186,12 @@ export function PageContent({
       ) : null}
       {presentation
         ? createPortal(<PageHeader model={presentation.model} />, presentation.header)
+        : null}
+      {presentation && pageTabs
+        ? createPortal(
+            <PageTabs targets={pageTabs} title={presentation.model.title} />,
+            pageTabs.host,
+          )
         : null}
       {presentation?.resources
         ? createPortal(<ResourceCards model={presentation.model} />, presentation.resources)
