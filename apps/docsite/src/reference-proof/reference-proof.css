@@ -323,33 +323,18 @@ html.reference-loading #reference-root {
 
 .reference-page--compact-guidance
   .standalone-guidance
-  .guidance-section:has(> #guidance-choose-your-starting-point) {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.reference-page--compact-guidance
-  .standalone-guidance
-  .guidance-section:has(> #guidance-choose-your-starting-point)
-  > :is(h2, .guidance-section) {
-  margin-block: 0;
-}
-
-.reference-page--compact-guidance
-  .standalone-guidance
-  .guidance-section:has(> #guidance-choose-your-starting-point)
+  .guidance-section
   > .guidance-section {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .reference-page--compact-guidance
   .standalone-guidance
-  .guidance-section:has(> #guidance-choose-your-starting-point)
+  .guidance-section
   > .guidance-section
-  > :is(h3, p) {
+  > :is(h3, p, ul, ol) {
   margin-block: 0;
 }
 
