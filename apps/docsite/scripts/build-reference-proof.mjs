@@ -419,14 +419,14 @@ export function standalonePageHtml(page, metadata) {
       ['font-families', true],
     ]),
   }).html;
-  return `<div class="reference-page-introduction${page.renderer === 'home' ? ' reference-home-introduction' : ''}">${pageTemplateHeader(page, metadata, parts)}${pageTemplateResources(page, metadata)}${page.renderer === 'home' ? homeHeroFallback(page, metadata, parts) : `<article class="standalone-guidance">${tokenSwatches(body)}</article>`}</div>`;
+  return `<div class="reference-page-introduction${page.renderer === 'home' ? ' reference-home-introduction' : ''}${page.layout ? ` reference-page--${page.layout}` : ''}">${pageTemplateHeader(page, metadata, parts)}${pageTemplateResources(page, metadata)}${page.renderer === 'home' ? homeHeroFallback(page, metadata, parts) : `<article class="standalone-guidance">${tokenSwatches(body)}</article>`}</div>`;
 }
 
 export function componentPageGuidanceHtml(page, metadata) {
   const parts = pageGuidanceParts(page.guidance, page.resources);
   const basic = page.examples?.find((example) => example.id === page.defaultExampleId);
   const api = componentApiMarkdown(page.api);
-  return `<div class="reference-page-introduction">${pageTemplateHeader(page, metadata, parts)}${basic ? exampleHtml(basic, metadata.basePath, true) : ''}${pageTemplateResources(page, metadata)}<div class="component-markdown">${renderGuidance(parts.body).html}</div>${api ? `<section class="reference-api"><details><summary><strong>API reference</strong><span>Generated CoreAI prop and type summaries</span></summary><div class="reference-api__content">${renderGuidance(api).html}</div></details></section>` : ''}</div>`;
+  return `<div class="reference-page-introduction${page.layout ? ` reference-page--${page.layout}` : ''}">${pageTemplateHeader(page, metadata, parts)}${basic ? exampleHtml(basic, metadata.basePath, true) : ''}${pageTemplateResources(page, metadata)}<div class="component-markdown">${renderGuidance(parts.body).html}</div>${api ? `<section class="reference-api"><details><summary><strong>API reference</strong><span>Generated CoreAI prop and type summaries</span></summary><div class="reference-api__content">${renderGuidance(api).html}</div></details></section>` : ''}</div>`;
 }
 
 function shell(title, body, metadata, assets, navigation, currentPath = '') {

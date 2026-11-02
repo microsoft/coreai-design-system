@@ -62,6 +62,7 @@ export async function readReferencePages(contentDirectory) {
               'migratedFrom',
               'legacyIds',
               'renderer',
+              'layout',
               'api',
             ].includes(key)
           ) {
@@ -162,6 +163,11 @@ export async function readReferencePages(contentDirectory) {
           !standaloneRendererNames.includes(reference.renderer)
         )
           fail('Unknown page renderer.');
+        if (
+          reference.layout !== undefined &&
+          !['compact-guidance'].includes(reference.layout)
+        )
+          fail('Unknown page layout.');
         if (reference.renderer && reference.component)
           fail('Custom renderers are for standalone pages.');
         for (const source of reference.sources ?? []) {
