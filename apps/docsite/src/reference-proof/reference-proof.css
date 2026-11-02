@@ -513,6 +513,10 @@ html.reference-loading #reference-root {
   text-align: left;
 }
 
+.reference-shell .app-sidenav__nav .fui-Tab::after {
+  transition: none;
+}
+
 .reference-shell .app-sidenav__footer {
   box-shadow: 0 -16px 24px 4px var(--home-backdrop-color);
 }
