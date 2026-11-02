@@ -52,6 +52,7 @@ html.reference-loading #reference-root {
     .reference-nav-link,
     .reference-tree-link,
     .component-resource-card,
+    .resource-card-link,
     .app-sidenav__quick-link,
     .app-sidenav__link,
     .app-sidenav__search-logo,
@@ -163,12 +164,26 @@ html.reference-loading #reference-root {
   gap: 48px;
 }
 
-.reference-resources-view .resource-card__icon {
-  position: static;
+.reference-page--compact-guidance .reference-resources-view {
+  gap: 24px;
 }
 
-.reference-resources-view .resource-card__icon svg {
-  position: static;
+.reference-resources-view .resource-card {
+  gap: 4px;
+}
+
+.reference-resources-view .resource-card__title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacingHorizontalS);
+}
+
+.reference-resources-view .resource-card__title > span:last-child,
+.reference-resources-view .resource-card__title svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
 }
 
 .reference-faqs-view .faq-answer > :first-child {

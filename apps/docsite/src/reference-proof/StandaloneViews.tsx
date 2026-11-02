@@ -24,7 +24,6 @@ import {
 } from '@coreai-ds/react-components';
 import { ArrowDownload20Regular } from '@fluentui/react-icons';
 import { ChevronRight, ExternalIcon } from '../components/Icons';
-import { ResourceIcon } from './PagePresentation';
 import { WorkInProgress } from '../components/work-in-progress';
 import type { PageWidgetProps } from './FoundationViews';
 
@@ -32,12 +31,12 @@ interface ResourceItem {
   title: string;
   description: string;
   href: string;
-  destination: string;
 }
 
 interface ResourceGroup {
   id: string;
   title: string;
+  headingLevel: 'h2' | 'h3';
   items: ResourceItem[];
 }
 
@@ -103,39 +102,33 @@ function followingUntil(element: Element, stop: (candidate: Element) => boolean)
   return elements;
 }
 
-function resourceDestination(href: string) {
-  const { hostname } = new URL(href, window.location.href);
-  if (hostname.endsWith('figma.com')) return 'Figma';
-  if (hostname.includes('storybook')) return 'Storybook';
-  if (hostname.endsWith('npmjs.com')) return 'npm';
-  if (hostname.endsWith('github.com')) return 'GitHub';
-  if (hostname.endsWith('microsoft.com')) return 'Microsoft Download Center';
-  return hostname.replace(/^www\./, '');
-}
-
 function resourceGroups(sourceHtml: string): ResourceGroup[] {
   const document = documentFrom(sourceHtml);
-  return [...document.querySelectorAll('h2')].map((heading) => ({
-    id: heading.id,
-    title: heading.textContent?.trim() ?? '',
-    items: followingUntil(heading, (candidate) => candidate.tagName === 'H2')
-      .flatMap((element) => [...element.querySelectorAll<HTMLLIElement>('li')])
-      .map((item) => {
-        const link = item.querySelector<HTMLAnchorElement>('a[href]');
-        if (!link) throw new Error(`Missing resource link in ${heading.textContent}.`);
-        const title = link.textContent?.trim() ?? '';
-        const description = (item.textContent ?? '')
-          .slice((item.textContent ?? '').indexOf(title) + title.length)
-          .replace(/^:\s*/, '')
-          .trim();
-        return {
-          title,
-          description,
-          href: link.href,
-          destination: resourceDestination(link.href),
-        };
-      }),
-  }));
+  const headings = [...document.querySelectorAll('h2, h3')];
+  const headingLevel = headings.some((heading) => heading.tagName === 'H2') ? 'H2' : 'H3';
+  return headings
+    .filter((heading) => heading.tagName === headingLevel)
+    .map((heading) => ({
+      id: heading.id,
+      title: heading.textContent?.trim() ?? '',
+      headingLevel: headingLevel.toLowerCase() as ResourceGroup['headingLevel'],
+      items: followingUntil(heading, (candidate) => candidate.tagName === headingLevel)
+        .flatMap((element) => [...element.querySelectorAll<HTMLLIElement>('li')])
+        .map((item) => {
+          const link = item.querySelector<HTMLAnchorElement>('a[href]');
+          if (!link) throw new Error(`Missing resource link in ${heading.textContent}.`);
+          const title = link.textContent?.trim() ?? '';
+          const description = (item.textContent ?? '')
+            .slice((item.textContent ?? '').indexOf(title) + title.length)
+            .replace(/^:\s*/, '')
+            .trim();
+          return {
+            title,
+            description,
+            href: link.href,
+          };
+        }),
+    }));
 }
 
 function faqGroups(sourceHtml: string): FaqGroup[] {
@@ -191,7 +184,7 @@ function ResourcesView({ sourceHtml }: PageWidgetProps) {
     <div className="reference-resources-view">
       {groups.map((group) => (
         <section className="page-section" id={group.id} key={group.id}>
-          <Text as="h2" preset="heading3" foreground={1}>
+          <Text as={group.headingLevel} preset="heading3" foreground={1}>
             {group.title}
           </Text>
           <div className="resources-grid">
@@ -205,31 +198,27 @@ function ResourcesView({ sourceHtml }: PageWidgetProps) {
                   rel="noopener noreferrer"
                   className="resource-card-link"
                   aria-labelledby={`${titleId}-title`}
-                  aria-describedby={`${titleId}-description ${titleId}-destination`}
+                  aria-describedby={`${titleId}-description`}
                 >
                   <Card appearance="filled-alternative" focusMode="off" className="resource-card">
-                    <span className="resource-card__icon" aria-hidden="true">
-                      <ResourceIcon href={resource.href} />
-                    </span>
-                    <Text
-                      as="h3"
-                      id={`${titleId}-title`}
-                      size={500}
-                      weight="regular"
-                      foreground={1}
-                    >
-                      {resource.title}
-                    </Text>
+                    <div className="resource-card__title">
+                      <Text
+                        as="h3"
+                        id={`${titleId}-title`}
+                        size={500}
+                        weight="regular"
+                        foreground={1}
+                      >
+                        {resource.title}
+                        <span className="sr-only"> (opens in a new tab)</span>
+                      </Text>
+                      <span aria-hidden="true">
+                        <ExternalIcon />
+                      </span>
+                    </div>
                     <Text as="p" id={`${titleId}-description`} size={300} foreground={2}>
                       {resource.description}
                     </Text>
-                    <span className="resource-card__destination">
-                      <Text id={`${titleId}-destination`} size={200} foreground={3}>
-                        {resource.destination}
-                        <span className="sr-only"> (opens in a new tab)</span>
-                      </Text>
-                      <ExternalIcon />
-                    </span>
                   </Card>
                 </a>
               );

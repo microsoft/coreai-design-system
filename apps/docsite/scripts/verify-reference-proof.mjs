@@ -404,6 +404,30 @@ try {
     await assertReferenceTextTokens(page, record.id);
     await assertReferenceTypography(page, record.id);
     assert.equal(await page.locator('[data-example-id]').count(), record.examples.length);
+    if (record.id === 'introduction') {
+      const resourceSections = page.locator('.reference-resources-view .page-section');
+      assert.deepEqual(await resourceSections.locator('> h3').allTextContents(), [
+        'Assets',
+        'Code',
+        'Connect',
+      ]);
+      assert.deepEqual(
+        await resourceSections.evaluateAll((sections) =>
+          sections.map((section) => section.querySelectorAll('.resource-card-link').length),
+        ),
+        [3, 3, 3],
+      );
+      assert.equal(await resourceSections.locator('.resource-card__icon').count(), 0);
+      assert.equal(await resourceSections.locator('.resource-card__destination').count(), 0);
+      assert.equal(await resourceSections.locator('.resource-card__title svg').count(), 9);
+      assert.ok(
+        (
+          await resourceSections
+            .locator('.resource-card')
+            .evaluateAll((cards) => cards.map((card) => globalThis.getComputedStyle(card).gap))
+        ).every((gap) => gap === '4px'),
+      );
+    }
     if (!record.standalone) {
       assert.equal(
         await page.locator('[data-example-id]').first().getAttribute('data-example-id'),

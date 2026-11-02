@@ -42,6 +42,8 @@ this site's Markdown endpoints with ordinary HTTPS.
 
 ## Resources
 
+<!-- view:resources -->
+
 ### Assets
 
 - [Figma library](https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-DS?node-id=0-1):
@@ -68,3 +70,5 @@ this site's Markdown endpoints with ordinary HTTPS.
   Ask usage questions and review bugs or feature requests.
 - [Open an issue](https://github.com/microsoft/coreai-design-system/issues/new):
   Report a bug or request a feature.
+
+<!-- /view:resources -->

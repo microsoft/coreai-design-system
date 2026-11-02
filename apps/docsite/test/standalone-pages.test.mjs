@@ -426,9 +426,32 @@ test('standalone renderers stay bounded and whole-page views are explicit', () =
 test('overview pages opt into their Markdown-backed rich views', async () => {
   const pages = await readReferencePages(path.join(appRoot, 'content'));
   const introduction = pages.find((page) => page.route === 'overview/introduction');
+  const introductionSource = matter(
+    await fs.readFile(path.join(appRoot, 'content', introduction.guidance), 'utf8'),
+  );
+  const introductionGuidance = guidanceMarkdown({
+    ...introductionSource.data,
+    body: introductionSource.content.trim(),
+  });
   assert.ok(introduction?.aliases.includes('/overview/resources/'));
   assert.ok(introduction?.aliases.includes('/resources/'));
-  assert.equal(pages.find((page) => page.route === 'overview/resources'), undefined);
+  assert.match(introductionGuidance, /<!-- view:resources -->/);
+  assert.match(
+    standalonePageHtml(
+      {
+        ...introduction,
+        ...introductionSource.data,
+        guidance: introductionGuidance,
+        examples: [],
+      },
+      { basePath: '/', pages },
+    ),
+    /data-page-widget="resources".*id="guidance-assets"/s,
+  );
+  assert.equal(
+    pages.find((page) => page.route === 'overview/resources'),
+    undefined,
+  );
   assert.equal(pages.find((page) => page.route === 'overview/faq')?.renderer, 'faqs');
 });
 
