@@ -4,9 +4,9 @@
  */
 
 :root {
-  font-family: system-ui, sans-serif;
-  color: #242424;
-  background: #fafafa;
+  font-family: var(--fontFamilyBase);
+  font-size: var(--fontSizeBase300);
+  line-height: var(--lineHeightBase300);
 }
 
 html.reference-loading #reference-root {
@@ -21,9 +21,10 @@ html.reference-loading #reference-root {
   --mf-font-ui: var(--fontFamilyBase, system-ui, sans-serif);
   --mf-font-code: var(--fontFamilyMonospace, ui-monospace, monospace);
   --mf-text-strong: var(--colorNeutralForeground1, #242424);
-  color: var(--mf-text-strong);
+  color: var(--colorNeutralForeground2);
   font-family: var(--mf-font-ui);
-  line-height: 1.6;
+  font-size: var(--fontSizeBase300);
+  line-height: var(--lineHeightBase300);
 }
 
 .reference-shell .app-sidenav {
@@ -41,7 +42,8 @@ html.reference-loading #reference-root {
 .reference-shell .standalone-guidance > h2,
 .reference-shell .standalone-guidance .guidance-section > h2 {
   margin-block-start: 32px;
-  font-size: 24px;
+  font-size: var(--fontSizeBase600);
+  line-height: var(--lineHeightBase600);
 }
 
 .reference-shell
@@ -60,6 +62,7 @@ html.reference-loading #reference-root {
 }
 
 .reference-shell .page-header h1 {
+  color: var(--colorNeutralForeground1);
   font-size: var(--fontSizeHero900);
   line-height: var(--lineHeightHero900);
   font-weight: var(--fontWeightRegular);
@@ -228,6 +231,20 @@ html.reference-loading #reference-root {
 .component-markdown,
 .standalone-guidance {
   min-width: 0;
+  color: var(--colorNeutralForeground2);
+}
+
+.component-markdown :is(h1, h2, h3, h4, h5, h6):not(.fui-Text),
+.standalone-guidance :is(h1, h2, h3, h4, h5, h6):not(.fui-Text),
+.reference-api__content :is(h2, h3, h4),
+.reference-basic-example > h2,
+.reference-basic-source > summary {
+  color: var(--colorNeutralForeground1);
+}
+
+.component-markdown th,
+.standalone-guidance th,
+.reference-api th {
   color: var(--colorNeutralForeground1);
 }
 
@@ -303,8 +320,9 @@ html.reference-loading #reference-root {
   margin-block-start: 20px;
 }
 
-.reference-page--compact-guidance .standalone-guidance :is(p, ul, ol) {
+.reference-page--compact-guidance .standalone-guidance :is(p, ul, ol, strong) {
   margin-block-end: 12px;
+  letter-spacing: 0;
 }
 
 .reference-page--compact-guidance .standalone-guidance .guidance-section > :last-child {
@@ -494,6 +512,10 @@ html.reference-loading #reference-root {
   gap: 6px;
 }
 
+.reference-shell .home-heading h1 {
+  color: var(--colorNeutralForeground1);
+}
+
 .reference-shell .home-heading p {
   padding-bottom: 0;
 }
@@ -590,7 +612,9 @@ html.reference-loading #reference-root {
   margin-block-start: 48px;
   padding-block: 24px;
   border-block-start: 1px solid var(--colorNeutralStroke3, #ddd);
-  font-size: 12px;
+  color: var(--colorNeutralForeground3);
+  font-size: var(--fontSizeBase200);
+  line-height: var(--lineHeightBase200);
 }
 
 .example {
@@ -627,6 +651,7 @@ html.reference-loading #reference-root {
   width: fit-content;
   cursor: pointer;
   list-style-position: outside;
+  color: var(--colorNeutralForeground1);
 }
 
 .reference-api > details > summary span {
@@ -679,7 +704,7 @@ html.reference-loading #reference-root {
 }
 
 .source-actions button {
-  color: inherit;
+  color: var(--colorNeutralForeground1);
   background: var(--colorNeutralBackground3, #eee);
   border: 1px solid var(--colorNeutralStroke2, #ccc);
   border-radius: 4px;
@@ -718,18 +743,19 @@ html.reference-loading #reference-root {
   }
 }
 
-.reference-shell pre {
+.reference-shell pre:not(.fui-CodeBlock__pre) {
   padding: 16px;
   overflow-x: auto;
   border: 1px solid var(--colorNeutralStroke2, #ddd);
   border-radius: 4px;
   background: var(--colorNeutralBackground3, #eee);
-  font-size: 12px;
-  line-height: 1.5;
+  font-family: var(--fontFamilyMonospace);
+  font-size: var(--fontSizeBase200);
+  line-height: var(--lineHeightBase200);
 }
 
 .reference-shell strong {
-  font-weight: 600;
+  font-weight: var(--fontWeightSemibold);
 }
 
 .reference-shell table {
