@@ -18,7 +18,15 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/tablist/usage'
 storybookTitles:
   - Components/TabList
+reference:
+  standalone: true
+  route: components/tab-elevated
+  aliases: [/tab-elevated/]
 ---
+
+## Preview
+
+<!-- example: components-tablist--elevated-appearance -->
 
 ## Best practices
 

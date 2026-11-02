@@ -343,7 +343,7 @@ html.reference-loading #reference-root {
 
 .component-markdown h4:not(.fui-Text),
 .standalone-guidance h4:not(.fui-Text),
-.reference-shell .component-markdown .do-dont-card > h3,
+.reference-shell :is(.component-markdown, .standalone-guidance) .do-dont-card > h3,
 .reference-api__content > h3 {
   font-size: var(--fontSizeBase400);
   line-height: var(--lineHeightBase400);

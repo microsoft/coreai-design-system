@@ -52,6 +52,7 @@ export async function readReferencePages(contentDirectory) {
           if (
             ![
               'component',
+              'standalone',
               'examples',
               'sources',
               'route',
@@ -108,6 +109,10 @@ export async function readReferencePages(contentDirectory) {
         ) {
           fail('reference.component must be an inventory component ID.');
         }
+        if (reference.standalone !== undefined && reference.standalone !== true)
+          fail('reference.standalone must be true when provided.');
+        if (reference.standalone && reference.component)
+          fail('Standalone pages cannot own a reference.component.');
         for (const key of ['examples', 'sources', 'aliases', 'migratedFrom', 'legacyIds', 'api']) {
           if (
             reference[key] !== undefined &&
@@ -136,7 +141,9 @@ export async function readReferencePages(contentDirectory) {
         ) {
           fail('reference.api must name public exports on component pages.');
         }
-        const usageGuide = ['components', 'templates'].includes(kind) && id === `using-${kind}`;
+        const usageGuide =
+          reference.standalone ||
+          (['components', 'templates'].includes(kind) && id === `using-${kind}`);
         if (['components', 'templates'].includes(kind) && !reference.component && !usageGuide)
           fail('component and template pages require reference.component.');
         if (
