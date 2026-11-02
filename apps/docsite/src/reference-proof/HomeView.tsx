@@ -2,7 +2,16 @@
 // Licensed under the MIT license.
 
 import * as React from 'react';
-import { Button, LinkButton, Text } from '@coreai-ds/react-components';
+import {
+  Accordion,
+  AccordionHeader,
+  AccordionItem,
+  AccordionPanel,
+  Button,
+  CodeBlock,
+  LinkButton,
+  Text,
+} from '@coreai-ds/react-components';
 import { CoreAILogo } from '../components/Icons';
 import type { PageWidgetProps } from './FoundationViews';
 
@@ -61,10 +70,14 @@ export default function HomeView({ model, sourceHtml }: PageWidgetProps) {
             Learn more
           </LinkButton>
         </section>
-        <details className="home-agent-preview">
-          <summary>Preview the prompt</summary>
-          <pre data-agent-prompt>{prompt}</pre>
-        </details>
+        <Accordion className="home-agent-preview" collapsible>
+          <AccordionItem value="starter-prompt">
+            <AccordionHeader expandIconPosition="end">Preview the prompt</AccordionHeader>
+            <AccordionPanel>
+              <CodeBlock code={prompt} language="text" />
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
       </div>
       <div className="home-visual">
         <CoreAILogo className="home-logo-fallback" />

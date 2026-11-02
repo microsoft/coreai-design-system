@@ -1,7 +1,7 @@
 ---
 id: home
 title: CoreAI Design System
-summary: Shared components, patterns, and tools for building consistent, accessible CoreAI experiences.
+summary: The guide for building CoreAI experiences on the web
 resources:
   - label: Components
     url: /components/using-components.md

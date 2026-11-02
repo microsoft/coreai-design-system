@@ -457,6 +457,12 @@ html.reference-loading #reference-root {
   overflow-wrap: anywhere;
 }
 
+.home-agent-preview .fui-CodeBlock__pre {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
 .reference-shell .home-visual {
   position: absolute;
   inset: 0 0 0 50%;

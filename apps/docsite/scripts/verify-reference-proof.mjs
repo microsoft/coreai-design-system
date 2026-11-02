@@ -1075,7 +1075,10 @@ try {
   assert.equal(await page.locator('.home-agent-entry h2, .home-agent-entry p').count(), 0);
   assert.equal(await page.locator('.home-agent-entry > .fui-Button').count(), 2);
   assert.equal(await page.locator('.home-agent-entry + .home-agent-preview').count(), 1);
-  assert.ok((await page.locator('.home-heading p').innerText()).includes('Shared components'));
+  assert.equal(
+    await page.locator('.home-heading p').innerText(),
+    'The guide for building CoreAI experiences on the web',
+  );
   const promptButton = page.getByRole('button', { name: 'Copy starter prompt', exact: true });
   await promptButton.click();
   await page
@@ -1086,6 +1089,25 @@ try {
     normalizeSource(await page.evaluate(() => navigator.clipboard.readText())),
     normalizeSource(starter),
   );
+  const promptPreview = page.locator('.home-agent-preview');
+  const previewToggle = promptPreview.getByRole('button', {
+    name: 'Preview the prompt',
+    exact: true,
+  });
+  assert.equal(await previewToggle.getAttribute('aria-expanded'), 'false');
+  await previewToggle.click();
+  await promptPreview.locator('.fui-CodeBlock').waitFor();
+  assert.equal(
+    normalizeSource(await promptPreview.locator('.fui-CodeBlock code').textContent()),
+    normalizeSource(starter),
+  );
+  await promptPreview.getByRole('button', { name: 'Copy code', exact: true }).click();
+  assert.equal(
+    normalizeSource(await page.evaluate(() => navigator.clipboard.readText())),
+    normalizeSource(starter),
+  );
+  await previewToggle.click();
+  assert.equal(await previewToggle.getAttribute('aria-expanded'), 'false');
   const starterOrigin = await page.evaluate(() => globalThis.performance.timeOrigin);
   await page
     .locator('.home-agent-entry')
