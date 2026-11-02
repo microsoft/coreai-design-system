@@ -1,0 +1,108 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Handwritten experiment layout and unlayered consumer overrides; not an upstream style port.
+ */
+
+.examples {
+  display: grid;
+  gap: 16px;
+  max-width: 1080px;
+  overflow-x: auto;
+}
+
+.row {
+  display: grid;
+  /* Equal whole-pixel columns avoid rounding differences between the paired block roots. */
+  grid-template-columns: minmax(180px, 1fr) repeat(2, 280px);
+  align-items: center;
+  gap: 16px;
+  min-height: 56px;
+}
+
+.cell {
+  min-width: 0;
+  padding: 12px;
+}
+
+.inverted {
+  background-color: var(--colorBrandBackgroundStatic);
+}
+
+.customContent {
+  position: absolute;
+  inset: 0;
+}
+
+.animatedChild {
+  animation: consumerPulse 800ms linear infinite;
+}
+
+@keyframes consumerPulse {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.consumerRoot {
+  gap: 14px;
+  justify-content: flex-start;
+}
+
+.consumerSpinner {
+  width: 52px;
+  height: 52px;
+  color: rgb(20, 80, 120);
+  background-color: rgb(220, 230, 240);
+  --fui-Spinner--strokeWidth: 5px;
+  animation-duration: 2.4s;
+}
+
+.consumerTail {
+  animation-timing-function: linear;
+
+  &::before {
+    background-image: conic-gradient(currentcolor 90deg, transparent 90deg);
+  }
+}
+
+.consumerLabel {
+  color: rgb(20, 80, 120);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.consumerRequired {
+  color: rgb(40, 110, 60);
+  padding-inline-start: 10px;
+}
+
+.report {
+  display: block;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+  margin-block: 16px;
+}
+
+.playground {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  max-width: 480px;
+}
+
+.loadingRegion {
+  min-height: 64px;
+  min-width: 240px;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.pointerParking {
+  width: 24px;
+  height: 24px;
+}

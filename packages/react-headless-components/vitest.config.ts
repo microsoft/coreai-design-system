@@ -21,8 +21,10 @@ export default defineConfig({
     include: [
       'react/jsx-dev-runtime',
       '@fluentui/react-utilities',
+      '@fluentui/react-shared-contexts',
       '@fluentui/react-icons/headless/svg/checkmark',
       '@fluentui/react-icons/headless/svg/circle',
+      '@fluentui/react-icons/headless/svg/open',
       '@fluentui/react-icons/headless/svg/square',
       '@fluentui/react-headless-components-preview/button',
       '@fluentui/react-headless-components-preview/checkbox',
@@ -31,6 +33,7 @@ export default defineConfig({
       '@fluentui/react-headless-components-preview/input',
       '@fluentui/react-headless-components-preview/label',
       '@fluentui/react-headless-components-preview/link',
+      '@fluentui/react-headless-components-preview/spinner',
       '@fluentui/react-headless-components-preview/switch',
       '@fluentui/react-headless-components-preview/textarea',
     ],

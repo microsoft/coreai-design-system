@@ -76,6 +76,10 @@ not a claim that the whole application bundle is Griffel-free.
   [Checkbox styles in react-checkbox 9.6.6](https://unpkg.com/@fluentui/react-checkbox@9.6.6/lib/components/Checkbox/useCheckboxStyles.styles.raw.js)
   and [Switch styles in react-switch 9.7.7](https://unpkg.com/@fluentui/react-switch@9.7.7/lib/components/Switch/useSwitchStyles.styles.raw.js).
   Both reuse the completed Label component rather than duplicating its styling foundation.
+- The navigation/loading batch uses the installed snapshot at commit `a89186d`:
+  [Link styles in react-link 9.8.6](https://unpkg.com/@fluentui/react-link@9.8.6/lib/components/Link/useLinkStyles.styles.raw.js)
+  and [Spinner styles in react-spinner 9.8.7](https://unpkg.com/@fluentui/react-spinner@9.8.7/lib/components/Spinner/useSpinnerStyles.styles.raw.js).
+  Spinner reuses the completed Label styling through the current public slot-render contract.
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -106,6 +110,10 @@ not a claim that the whole application bundle is Griffel-free.
 - Checkbox's default indicators use the same package's headless SVG checkmark, square, and circle
   entries. Its label binding uses public `slot.optional` from `@fluentui/react-utilities`.
   Standalone checks verify these glyph and utility imports also load no Griffel modules.
+- Link's external-navigation glyph uses the public headless SVG open entry. Its inverted-background
+  styling reads the current public `useBackgroundAppearance` hook from
+  `@fluentui/react-shared-contexts`. The pinned helper and glyph imports load no Griffel or Tabster
+  modules; the existing provider still supplies the background context.
 
 For Button, the recreated visual props are `appearance` (including `transparent`), `size`, and `shape`.
 Defaults are secondary/medium/circular with CoreAI defaults enabled. Disabling component defaults
@@ -228,6 +236,13 @@ form/editing behavior. Neither needs a component-specific overlay or focusgroup 
 Input's `field-sizing: content` is progressive enhancement; unsupported browsers keep ordinary
 input sizing. Textarea retains native rows and resize behavior rather than introducing autosizing.
 
+Link keeps the public headless hook's native anchor/button semantics and uses `:focus-visible`
+for its focus indicator. A keyboard-focused disabled-focusable Link keeps its double underline
+during hover/press while `:focus-visible` remains true; the legacy disabled-hover rules remove it.
+Unfocused disabled links remain undecorated, with disabled colors and activation blocking unchanged.
+Spinner ports its masks, conic gradients, and CSS animations and uses native direction selectors
+for RTL. Neither needs an overlay or focusgroup polyfill.
+
 Button needs no overlay or focusgroup polyfill. Every conversion must follow the headless
 [browser-support](https://storybooks.fluentui.dev/headless/llms/overview-browser-support.txt) and
 [polyfill](https://storybooks.fluentui.dev/headless/llms/overview-polyfills-fallbacks.txt) contracts.
@@ -257,6 +272,11 @@ combined focus/hover states are checked rather than comparing only resting fixtu
 Label covers typography, required-slot styling, native association, and consumer overrides.
 Image uses deterministic inline fixtures to compare fitting, shape, border, shadow, and dimensions
 while preserving alt text, intrinsic sizing, and native image events.
+Link adds native navigation/activation, disabled and disabled-focusable behavior, external glyphs,
+caller rendering, context/defaults, and consumer priority. Spinner compares sizes, label positions,
+appearance, slot/pseudo-element styling, live-region semantics, caller slots/refs, and loading-state
+changes. Its comparison fixture freezes time-varying animation frames rather than waiting for
+infinite animations; animation configuration remains part of the checks.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 

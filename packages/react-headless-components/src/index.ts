@@ -12,6 +12,8 @@ export {
 export { Image, imageClassNames, type ImageProps } from './Image.js';
 export { Input, inputClassNames, type InputOnChangeData, type InputProps } from './Input.js';
 export { Label, labelClassNames, type LabelProps, type LabelSlots } from './Label.js';
+export { Link, linkClassNames, type LinkProps, type LinkSlots } from './Link.js';
+export { Spinner, spinnerClassNames, type SpinnerProps, type SpinnerSlots } from './Spinner.js';
 export {
   Switch,
   switchClassNames,

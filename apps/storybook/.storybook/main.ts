@@ -306,8 +306,10 @@ const config: StorybookConfig = {
         include: [
           '@coreai-ds/react-components',
           '@fluentui/react-utilities',
+          '@fluentui/react-shared-contexts',
           '@fluentui/react-icons/headless/svg/checkmark',
           '@fluentui/react-icons/headless/svg/circle',
+          '@fluentui/react-icons/headless/svg/open',
           '@fluentui/react-icons/headless/svg/square',
           '@fluentui/react-headless-components-preview/button',
           '@fluentui/react-headless-components-preview/checkbox',
@@ -316,6 +318,7 @@ const config: StorybookConfig = {
           '@fluentui/react-headless-components-preview/input',
           '@fluentui/react-headless-components-preview/label',
           '@fluentui/react-headless-components-preview/link',
+          '@fluentui/react-headless-components-preview/spinner',
           '@fluentui/react-headless-components-preview/switch',
           '@fluentui/react-headless-components-preview/textarea',
           'scheduler',

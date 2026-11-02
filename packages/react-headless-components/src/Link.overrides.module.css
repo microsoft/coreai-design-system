@@ -1,0 +1,25 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * CoreAI source: [Link.tsx](../../react-components/src/components/Link.tsx).
+ * The wrapper owns external-link layout, glyph sizing, and navigation defaults.
+ * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts) registers no Link override;
+ * external behavior is explicit and does not depend on the component-defaults provider.
+ * Fluent baseline: @fluentui/react-link 9.8.6
+ * [useLinkStyles.styles.raw.js](../../../node_modules/@fluentui/react-link/lib/components/Link/useLinkStyles.styles.raw.js).
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  /* Lay out text and the trailing icon on a single inline baseline row. */
+  .Link {
+    display: inline-flex;
+    align-items: center;
+    column-gap: var(--spacingHorizontalXXS);
+  }
+
+  /* Scale the icon with the link's font size. */
+  .Link__externalIcon {
+    font-size: 1.1em;
+  }
+}

@@ -1,0 +1,10 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * CoreAI sources: [index.ts](../../react-components/src/index.ts) re-exports Fluent Spinner;
+ * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts) registers no Spinner override.
+ * Fluent baseline: @fluentui/react-spinner 9.8.7, [useSpinnerStyles.styles.raw.js](../../../node_modules/@fluentui/react-spinner/lib/components/Spinner/useSpinnerStyles.styles.raw.js).
+ * Inherited Label foundation: @fluentui/react-label 9.4.6, [useLabelStyles.styles.raw.js](../../../node_modules/@fluentui/react-label/lib/components/Label/useLabelStyles.styles.raw.js).
+ * CoreAI adds no Spinner defaults or style overrides. This layer is intentionally empty.
+ */
+
+@layer fluent-components, coreai-overrides;

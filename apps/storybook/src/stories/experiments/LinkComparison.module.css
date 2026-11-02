@@ -1,0 +1,74 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Handwritten experiment layout and unlayered consumer overrides; not an upstream style port.
+ */
+
+.examples {
+  display: grid;
+  gap: 16px;
+  max-width: 1040px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) repeat(2, minmax(200px, 1fr));
+  align-items: center;
+  gap: 16px;
+  min-height: 48px;
+}
+
+.cell {
+  min-width: 0;
+}
+
+.paragraph {
+  max-width: 240px;
+  margin: 0;
+}
+
+.contentIcon {
+  vertical-align: middle;
+}
+
+.consumerLink {
+  display: inline-flex;
+  align-items: center;
+  column-gap: 12px;
+  color: rgb(20, 90, 160);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+  padding-inline: 4px;
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 2px;
+  cursor: crosshair;
+
+  & > svg[data-fui-icon] {
+    font-size: 12px;
+    /* Preserve the requested 1em width even when the fixture's columns constrain the flex row. */
+    flex-shrink: 0;
+  }
+}
+
+.report {
+  display: block;
+  margin-block: 16px;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+}
+
+.playground {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  max-width: 560px;
+}
+
+.pointerParking {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  width: 8px;
+  height: 8px;
+}
