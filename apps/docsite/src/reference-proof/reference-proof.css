@@ -252,6 +252,50 @@ html.reference-loading #reference-root {
   color: var(--colorNeutralForeground1);
 }
 
+.component-markdown :is(h1, h2, h3, h4, h5, h6):not(.fui-Text),
+.standalone-guidance :is(h1, h2, h3, h4, h5, h6):not(.fui-Text) {
+  font-weight: var(--fontWeightSemibold);
+}
+
+.component-markdown h1:not(.fui-Text),
+.standalone-guidance h1:not(.fui-Text) {
+  font-size: var(--fontSizeHero700);
+  line-height: var(--lineHeightHero700);
+}
+
+.component-markdown h2:not(.fui-Text),
+.standalone-guidance h2:not(.fui-Text) {
+  font-size: var(--fontSizeBase600);
+  line-height: var(--lineHeightBase600);
+}
+
+.component-markdown h3:not(.fui-Text),
+.standalone-guidance h3:not(.fui-Text) {
+  font-size: var(--fontSizeBase500);
+  line-height: var(--lineHeightBase500);
+}
+
+.component-markdown h4:not(.fui-Text),
+.standalone-guidance h4:not(.fui-Text),
+.reference-shell .component-markdown .do-dont-card > h3,
+.reference-api__content > h3 {
+  font-size: var(--fontSizeBase400);
+  line-height: var(--lineHeightBase400);
+  font-weight: var(--fontWeightSemibold);
+}
+
+.component-markdown h5:not(.fui-Text),
+.standalone-guidance h5:not(.fui-Text) {
+  font-size: var(--fontSizeBase300);
+  line-height: var(--lineHeightBase300);
+}
+
+.component-markdown h6:not(.fui-Text),
+.standalone-guidance h6:not(.fui-Text) {
+  font-size: var(--fontSizeBase200);
+  line-height: var(--lineHeightBase200);
+}
+
 .component-markdown > :is(p, ul, ol, blockquote),
 .standalone-guidance > :is(p, ul, ol, blockquote),
 .guidance-section > :is(p, ul, ol, blockquote) {
@@ -283,16 +327,12 @@ html.reference-loading #reference-root {
 .standalone-guidance > h3,
 .guidance-section > h3 {
   margin-block: 32px 12px;
-  font-size: var(--fontSizeBase400);
-  line-height: var(--lineHeightBase400);
 }
 
 .component-markdown > h4,
 .standalone-guidance > h4,
 .guidance-section > h4 {
   margin-block: 24px 8px;
-  font-size: var(--fontSizeBase300);
-  line-height: var(--lineHeightBase300);
 }
 
 .standalone-guidance > .guidance-section:first-child > :first-child {
@@ -321,10 +361,7 @@ html.reference-loading #reference-root {
   margin-block-start: 20px;
 }
 
-.reference-page--compact-guidance
-  .standalone-guidance
-  .guidance-section
-  > .guidance-section {
+.reference-page--compact-guidance .standalone-guidance .guidance-section > .guidance-section {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -416,7 +453,7 @@ html.reference-loading #reference-root {
   align-items: center;
   gap: 12px;
   padding: 8px;
-  font-weight: 600;
+  font-weight: var(--fontWeightSemibold);
 }
 
 [data-shell-logo] {
@@ -433,7 +470,7 @@ html.reference-loading #reference-root {
 .reference-nav-group summary {
   cursor: pointer;
   padding: 8px 12px;
-  font-weight: 600;
+  font-weight: var(--fontWeightSemibold);
 }
 
 .reference-nav-link {
@@ -448,7 +485,7 @@ html.reference-loading #reference-root {
 
 .reference-nav-link[aria-current='page'] {
   background: var(--colorNeutralBackground1Selected);
-  font-weight: 600;
+  font-weight: var(--fontWeightSemibold);
 }
 
 .reference-nav-link[hidden] {
@@ -641,6 +678,14 @@ html.reference-loading #reference-root {
   margin-block: 0 12px;
 }
 
+.example > h2,
+.reference-template-source > h2 {
+  color: var(--colorNeutralForeground1);
+  font-size: var(--fontSizeBase500);
+  line-height: var(--lineHeightBase500);
+  font-weight: var(--fontWeightSemibold);
+}
+
 .reference-basic-source {
   margin-block-start: 16px;
 }
@@ -762,8 +807,8 @@ html.reference-loading #reference-root {
   border-radius: 4px;
   background: var(--colorNeutralBackground3);
   font-family: var(--fontFamilyMonospace);
-  font-size: var(--fontSizeBase200);
-  line-height: var(--lineHeightBase200);
+  font-size: var(--fontSizeBase300);
+  line-height: var(--lineHeightBase300);
 }
 
 .reference-shell strong {

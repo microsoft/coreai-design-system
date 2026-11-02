@@ -177,7 +177,7 @@ code:not(pre code) {
   border-radius: 4px;
   background: var(--mf-surface-panel);
   /* border: 1px solid var(--mf-border-subtle); */
-  font-size: 0.85em;
+  font-size: 0.9em;
   white-space: nowrap;
 }
 
@@ -284,11 +284,10 @@ code:not(pre code) {
 .fui-Text.app-topnav__title {
   color: var(--colorNeutralForeground1);
   font-family: var(--fontFamilyBase);
-  font-size: 16px;
+  font-size: var(--fontSizeBase400);
   font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  letter-spacing: -0.24px;
+  font-weight: var(--fontWeightRegular);
+  line-height: var(--lineHeightBase400);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: geometricPrecision;
@@ -948,8 +947,8 @@ code:not(pre code) {
   padding: 4px 6px;
   border-radius: var(--borderRadiusMedium);
   color: var(--colorNeutralForeground3);
-  font-size: 14px;
-  line-height: 20px;
+  font-size: var(--fontSizeBase300);
+  line-height: var(--lineHeightBase300);
   transition:
     background var(--mf-duration-fast) var(--mf-ease),
     color var(--mf-duration-fast) var(--mf-ease);
@@ -1093,14 +1092,17 @@ code:not(pre code) {
 
 .home-heading h1 {
   margin: 0;
-  font-size: clamp(28px, calc(4vw - 10.08px), 48px);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  font-size: var(--fontSizeHero900);
+  line-height: var(--lineHeightHero900);
+  font-weight: var(--fontWeightRegular);
 }
 
 .home-heading p {
   margin: 0;
   padding-bottom: 16px;
+  font-size: var(--fontSizeBase400);
+  line-height: var(--lineHeightBase400);
+  font-weight: var(--fontWeightRegular);
 }
 
 .home-card h2 {
@@ -1464,7 +1466,6 @@ code:not(pre code) {
   color: var(--mf-text-primary);
   font-size: var(--fontSizeHero900);
   line-height: var(--lineHeightHero900);
-  letter-spacing: -0.8px;
   font-weight: var(--fontWeightRegular);
 }
 
@@ -2389,8 +2390,8 @@ code:not(pre code) {
   grid-template-columns: repeat(16, minmax(0, 1fr));
   color: var(--mf-text-faint);
   font-family: var(--mf-font-code);
-  font-size: 10px;
-  line-height: 14px;
+  font-size: var(--fontSizeBase100);
+  line-height: var(--lineHeightBase100);
   text-align: center;
 }
 
@@ -2707,16 +2708,16 @@ a.theme-crossfade:hover {
 
 .stack-row__desc {
   color: var(--mf-text-low);
-  font-size: 12px;
-  line-height: 16px;
+  font-size: var(--fontSizeBase200);
+  line-height: var(--lineHeightBase200);
 }
 
 .stack-row__meta,
 .stack-row__hex {
   color: var(--mf-text-faint);
   font-family: var(--mf-font-code);
-  font-size: 10px;
-  line-height: 14px;
+  font-size: var(--fontSizeBase100);
+  line-height: var(--lineHeightBase100);
 }
 
 .stack-row__meta {
@@ -2971,8 +2972,8 @@ a.theme-crossfade:hover {
   padding: 8px 2px;
   border-bottom: 1px solid var(--mf-border-subtle);
   color: var(--mf-text-dim);
-  font-size: 12px;
-  line-height: 16px;
+  font-size: var(--fontSizeBase200);
+  line-height: var(--lineHeightBase200);
 }
 
 .type-table__row {
@@ -3004,8 +3005,8 @@ a.theme-crossfade:hover {
 
 .type-table__usage {
   color: var(--mf-text-dim);
-  font-size: 14px;
-  line-height: 20px;
+  font-size: var(--fontSizeBase300);
+  line-height: var(--lineHeightBase300);
 }
 
 .bullet-list {
@@ -3118,8 +3119,8 @@ a.theme-crossfade:hover {
 .component-markdown {
   min-width: 0;
   color: var(--mf-text-low);
-  font-size: var(--fontSizeBase400);
-  line-height: var(--lineHeightBase500);
+  font-size: var(--fontSizeBase300);
+  line-height: var(--lineHeightBase300);
   overflow-wrap: anywhere;
 }
 
@@ -3128,12 +3129,15 @@ a.theme-crossfade:hover {
   color: var(--mf-text-strong);
   font-size: var(--fontSizeBase600);
   line-height: var(--lineHeightBase600);
+  font-weight: var(--fontWeightSemibold);
 }
 
 .component-markdown h3 {
   margin: var(--spacingVerticalXL) 0 var(--spacingVerticalM);
   color: var(--mf-text-strong);
-  font-size: var(--fontSizeBase400);
+  font-size: var(--fontSizeBase500);
+  line-height: var(--lineHeightBase500);
+  font-weight: var(--fontWeightSemibold);
 }
 
 .component-markdown > :first-child {
@@ -3392,8 +3396,7 @@ a.theme-crossfade:hover {
   margin: 0;
   font-size: var(--fontSizeBase400);
   line-height: var(--lineHeightBase400);
-  font-weight: var(--fontWeightBold);
-  letter-spacing: 0.2em;
+  font-weight: var(--fontWeightSemibold);
   text-transform: uppercase;
 }
 
@@ -3402,7 +3405,7 @@ a.theme-crossfade:hover {
   padding-left: 24px;
   color: var(--mf-text-low);
   font-size: var(--fontSizeBase300);
-  line-height: var(--lineHeightBase400);
+  line-height: var(--lineHeightBase300);
 }
 
 .do-dont-card li + li {
@@ -3432,10 +3435,6 @@ a.theme-crossfade:hover {
 
 .component-markdown .do-dont-card > * {
   margin-block: 0;
-}
-
-.component-markdown .do-dont-card > h3 {
-  letter-spacing: 0;
 }
 
 .component-markdown .do-dont-card pre {

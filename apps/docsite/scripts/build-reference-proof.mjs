@@ -813,7 +813,7 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
       await write(example.sourcePath, example.source);
     }
     for (const [index, source] of page.templateSources.entries()) {
-      body += `<section><h2>Template source: ${escapeHtml(source.name)}</h2><p>Copy this file into your app. Do not import this template from the package.</p>
+      body += `<section class="reference-template-source"><h2>Template source: ${escapeHtml(source.name)}</h2><p>Copy this file into your app. Do not import this template from the package.</p>
 ${sourceHtml(source.source, `template-${page.id}-${index}`, source.path, basePath)}</section>`;
       await write(source.path, source.source);
     }
