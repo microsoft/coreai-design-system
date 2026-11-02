@@ -282,6 +282,57 @@ html.reference-loading #reference-root {
   margin-block-end: 0;
 }
 
+.reference-page--compact-guidance .standalone-guidance {
+  color: var(--colorNeutralForeground2);
+  font-size: var(--fontSizeBase300);
+  line-height: var(--lineHeightBase300);
+}
+
+.reference-page--compact-guidance
+  .standalone-guidance
+  > .guidance-section
+  + .guidance-section {
+  margin-block-start: 24px;
+}
+
+.reference-page--compact-guidance
+  .standalone-guidance
+  .guidance-section
+  > .guidance-section
+  + .guidance-section {
+  margin-block-start: 20px;
+}
+
+.reference-page--compact-guidance .standalone-guidance :is(p, ul, ol) {
+  margin-block-end: 12px;
+}
+
+.reference-page--compact-guidance .standalone-guidance li + li {
+  margin-block-start: 4px;
+}
+
+.reference-page--compact-guidance
+  .standalone-guidance
+  .guidance-section
+  > h2 {
+  margin-block: 0 8px;
+  color: var(--colorNeutralForeground1);
+  font-size: var(--fontSizeBase400);
+  line-height: var(--lineHeightBase400);
+  font-weight: var(--fontWeightSemibold);
+}
+
+.reference-page--compact-guidance
+  .standalone-guidance
+  .guidance-section
+  > h3 {
+  margin-block: 0 8px;
+  color: var(--colorNeutralForeground1);
+  font-size: var(--fontSizeBase300);
+  line-height: var(--lineHeightBase300);
+  font-weight: var(--fontWeightSemibold);
+}
+
 .component-markdown blockquote,
 .standalone-guidance blockquote {
   padding: 16px 20px;
@@ -430,7 +481,7 @@ html.reference-loading #reference-root {
 }
 
 .reference-shell .home-foreground {
-  gap: 8px;
+  gap: 16px;
   max-width: 480px;
   transform: translateY(24px);
 }

@@ -986,6 +986,7 @@ try {
   );
   assert.equal(await staticPage.locator('.home-resource-links').count(), 0);
   assert.equal(await staticPage.locator('.home-agent-entry + .home-agent-preview').count(), 1);
+  assert.notEqual(await staticPage.locator('.home-agent-preview').getAttribute('hidden'), null);
   assert.ok(await staticPage.locator('.home-logo-fallback').isVisible());
   assert.equal(
     await staticPage.getByRole('heading', { name: 'Build with your agent', exact: true }).count(),
@@ -1098,7 +1099,7 @@ try {
   );
   assert.equal(await page.locator('.home-agent-entry h2, .home-agent-entry p').count(), 0);
   assert.equal(await page.locator('.home-agent-entry > .fui-Button').count(), 2);
-  assert.equal(await page.locator('.home-agent-entry + .home-agent-preview').count(), 1);
+  assert.equal(await page.locator('.home-agent-preview').count(), 0);
   assert.equal(
     await page.locator('.home-heading p').innerText(),
     'The guide for building CoreAI experiences on the web',
@@ -1113,25 +1114,6 @@ try {
     normalizeSource(await page.evaluate(() => navigator.clipboard.readText())),
     normalizeSource(starter),
   );
-  const promptPreview = page.locator('.home-agent-preview');
-  const previewToggle = promptPreview.getByRole('button', {
-    name: 'Preview the prompt',
-    exact: true,
-  });
-  assert.equal(await previewToggle.getAttribute('aria-expanded'), 'false');
-  await previewToggle.click();
-  await promptPreview.locator('.fui-CodeBlock').waitFor();
-  assert.equal(
-    normalizeSource(await promptPreview.locator('.fui-CodeBlock code').textContent()),
-    normalizeSource(starter),
-  );
-  await promptPreview.getByRole('button', { name: 'Copy code', exact: true }).click();
-  assert.equal(
-    normalizeSource(await page.evaluate(() => navigator.clipboard.readText())),
-    normalizeSource(starter),
-  );
-  await previewToggle.click();
-  assert.equal(await previewToggle.getAttribute('aria-expanded'), 'false');
   const starterOrigin = await page.evaluate(() => globalThis.performance.timeOrigin);
   await page
     .locator('.home-agent-entry')

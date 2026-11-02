@@ -51,7 +51,7 @@ test('Showcase keeps its interactive hero without displaying the agent catalog a
     /Catalog appendix|home-documentation|home-resource-links|Build with your agent|Give your coding agent/,
   );
   assert.match(html, /<\/header><div class="home-agent-content"><section class="home-agent-entry"/);
-  assert.match(html, /<\/section><details class="home-agent-preview"/);
+  assert.match(html, /<\/section><details class="home-agent-preview" hidden>/);
   assert.match(html, /page-header__title-row"><h1[^>]*>CoreAI Design System<\/h1><\/div>/);
   assert.match(page.guidance, /Catalog appendix/);
   const guidanceHtml = standalonePageHtml(
