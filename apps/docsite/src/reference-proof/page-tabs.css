@@ -49,10 +49,13 @@
   display: none !important;
 }
 
-.reference-page-panel[data-page-panel='usage']
-  > .component-markdown
-  > :first-child {
+.reference-page-panel[data-page-panel='usage'] > .component-markdown > :first-child {
   margin-block-start: 0;
+}
+
+.reference-page-panel[data-page-panel='usage'] > .component-markdown > :is(h2, h3) {
+  font-size: var(--fontSizeBase400);
+  line-height: var(--lineHeightBase400);
 }
 
 .reference-page-panel[data-page-panel='samples'] > .standalone-guidance {

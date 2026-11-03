@@ -250,10 +250,7 @@ try {
     assert.deepEqual(page.resources, authored.data.resources ?? []);
     assert.equal(
       page.renderer,
-      authored.data.reference?.renderer ??
-        (!authored.data.reference?.component && authored.data.status === 'under-construction'
-          ? 'work-in-progress'
-          : undefined),
+      authored.data.reference?.renderer,
     );
     const guidance = guidanceMarkdown({ ...authored.data, body: authored.content.trim() });
     if (page.standalone) {
@@ -890,6 +887,15 @@ try {
   await page.getByRole('heading', { name: 'Register installed Aptos fonts', exact: true }).waitFor();
   await page.getByRole('heading', { name: 'Load the Inter fallback', exact: true }).waitFor();
   await typographyTabs.getByRole('tab', { name: 'Usage', exact: true }).click();
+  assert.equal(
+    await page
+      .locator('[data-page-panel="usage"]')
+      .getByRole('heading', {
+        name: /^(Register installed Aptos fonts|Load the Inter fallback|Page source)$/,
+      })
+      .count(),
+    0,
+  );
   await page.locator('.reference-type-table .type-table__row').first().click();
   await page
     .locator('.copy-toast')

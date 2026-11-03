@@ -30,6 +30,35 @@ try {
     const html = await (await fetch(url)).text();
     await page.goto(url.href);
     await page.locator('[data-reference-ready="true"]').waitFor();
+    assert.equal(
+      await page
+        .locator('main')
+        .getByText(/^(Page under construction|Guidance status|Component description)$/)
+        .count(),
+      0,
+      `${record.id}: generated placeholder copy is removed`,
+    );
+    if (!record.renderer || ['colors', 'typography', 'materials'].includes(record.renderer)) {
+      const guidanceHeadingSizes = await page
+        .locator(
+          '.component-markdown > :is(h2, h3), .standalone-guidance > :is(h2, h3), .standalone-guidance .guidance-section > :is(h2, h3)',
+        )
+        .evaluateAll((headings) => [
+          ...new Set(
+            headings
+              .filter((heading) => !heading.closest('.do-dont-card'))
+              .map((heading) => getComputedStyle(heading).fontSize),
+          ),
+        ]);
+      assert.ok(
+        guidanceHeadingSizes.length <= 1,
+        `${record.id}: guidance headings use one visual size (${guidanceHeadingSizes.join(', ')})`,
+      );
+      assert.ok(
+        guidanceHeadingSizes.every((size) => size === '16px'),
+        `${record.id}: guidance headings use the 16px section-title size`,
+      );
+    }
     const tabs = page.locator('.reference-page-tabs');
     if (!(await tabs.count())) {
       assert.ok(record.standalone, `${record.id}: component and template pages have tabs`);
@@ -38,6 +67,20 @@ try {
     tabbedPages++;
     const usage = page.locator('[data-page-panel="usage"]');
     const samples = page.locator('[data-page-panel="samples"]');
+    assert.equal(
+      await usage
+        .locator('.guidance-section')
+        .evaluateAll(
+          (sections) =>
+            sections.filter(
+              (section) =>
+                section.children.length === 1 &&
+                /^H[1-6]$/.test(section.firstElementChild?.tagName ?? ''),
+            ).length,
+        ),
+      0,
+      `${record.id}: Usage has no headings orphaned by Samples`,
+    );
     assert.equal(await tabs.getByRole('tab').count(), 2);
     for (const name of ['Usage', 'Samples'])
       assert.equal(await tabs.getByRole('tab', { name, exact: true }).count(), 1);

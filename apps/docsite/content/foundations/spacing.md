@@ -1,10 +1,8 @@
 ---
 id: spacing
 title: Spacing
-summary: CoreAI spacing guidance is under construction.
+summary: CoreAI spacing guidance.
 status: under-construction
 resources: []
 reference: {}
 ---
-
-This page is under construction. CoreAI spacing guidance has not been published yet.

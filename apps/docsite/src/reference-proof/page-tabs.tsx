@@ -85,6 +85,36 @@ function removeSourceChrome(pre: HTMLElement, source: HTMLAnchorElement | null) 
   pre.remove();
 }
 
+function removeEmptySourceHeading(heading: HTMLElement) {
+  const section = heading.closest<HTMLElement>('.guidance-section');
+  if (
+    section?.firstElementChild === heading &&
+    [...section.childNodes].every((node) => node === heading || !node.textContent?.trim())
+  ) {
+    section.remove();
+    return;
+  }
+  for (let sibling = heading.nextSibling; sibling; sibling = sibling.nextSibling) {
+    if (sibling instanceof HTMLHeadingElement) break;
+    if (sibling.textContent?.trim()) return;
+  }
+  heading.remove();
+}
+
+function removeEmptyGuidanceSections(root: HTMLElement) {
+  const sections = [...root.querySelectorAll<HTMLElement>('.guidance-section')].reverse();
+  for (const section of sections) {
+    const heading = section.firstElementChild;
+    if (
+      heading &&
+      /^H[1-6]$/.test(heading.tagName) &&
+      [...section.childNodes].every((node) => node === heading || !node.textContent?.trim())
+    ) {
+      section.remove();
+    }
+  }
+}
+
 function extractSamples(
   source: HTMLElement,
   samples: HTMLElement,
@@ -100,6 +130,7 @@ function extractSamples(
   } = {},
 ) {
   const groups = new Map<Element, HTMLElement>();
+  const sourceHeadings = new Set<HTMLElement>();
   const sourceBlocks = [...source.querySelectorAll<HTMLElement>('pre')].filter(
     (pre) => !pre.closest('[data-example-id]'),
   );
@@ -111,6 +142,7 @@ function extractSamples(
         ':scope > h1,:scope > h2,:scope > h3,:scope > h4,:scope > h5,:scope > h6',
       ) ?? headingBefore(source, pre);
     const context = heading ?? section;
+    if (heading) sourceHeadings.add(heading);
     let group = groups.get(context);
     if (!group) {
       group = document.createElement('section');
@@ -139,6 +171,11 @@ function extractSamples(
       language: codeLanguage(code, downloadSource),
     });
     if (removeSources) removeSourceChrome(pre, downloadSource);
+  }
+  if (removeSources) {
+    for (const heading of sourceHeadings) {
+      if (heading.parentElement) removeEmptySourceHeading(heading);
+    }
   }
   return sourceBlocks.length;
 }
@@ -224,6 +261,7 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
     });
     child.remove();
   }
+  removeEmptyGuidanceSections(usage);
   if (!samples.childElementCount) {
     introduction.append(...usage.children);
     return null;

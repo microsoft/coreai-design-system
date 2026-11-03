@@ -111,11 +111,9 @@ export async function readGuidance(directory = guidanceDirectory) {
 }
 
 export function guidanceMarkdown(record, resources = record.resources) {
-  const status =
-    record.status === 'under-construction' ? '\n\n## Status\n\nPage under construction.' : '';
   const links = resources.map(({ label, url }) => `- [${label}](${url})`).join('\n');
   const resourceSection = links ? `\n\n## Resources\n\n${links}` : '';
-  return `# ${record.title}\n\n${record.summary}${status}\n\n${record.body}${resourceSection}\n`;
+  return `# ${record.title}\n\n${record.summary}\n\n${record.body}${resourceSection}\n`;
 }
 
 function bestPracticesCards() {

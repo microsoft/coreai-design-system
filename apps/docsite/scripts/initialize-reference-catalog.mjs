@@ -98,8 +98,6 @@ for (const component of catalog.components) {
         readStoryDescriptions(path.join(storyRoot, source.sourceFile)),
       ),
     );
-    const description =
-      [...descriptions].reverse().find((item) => item.description)?.description ?? '';
     const summary =
       [...descriptions].reverse().find((item) => item.summary)?.summary ??
       `${name} ${kind === 'templates' ? 'copy-and-adapt template' : 'component'} reference and examples.`;
@@ -113,7 +111,7 @@ for (const component of catalog.components) {
       resources: [],
       reference,
     };
-    const body = `\n## Guidance status\n\nThis reference includes working examples. CoreAI UX guidance for this page still needs review.\n\n${description ? `## Component description\n\n${description}\n` : ''}`;
+    const body = '\n';
     await fs.writeFile(file, matter.stringify(body, data), { flag: 'wx' });
     created++;
   }

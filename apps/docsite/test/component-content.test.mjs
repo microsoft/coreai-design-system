@@ -129,9 +129,7 @@ test('authored Markdown drives every human and agent component page', async () =
       markdown.includes(authored.content.trim()),
       `${fileName} must preserve authored guidance`,
     );
-    if (content.status === 'under-construction') {
-      assert.match(markdown, /^## Status\n\nPage under construction\.$/m);
-    }
+    assert.doesNotMatch(markdown, /^## Status\n\nPage under construction\.$/m);
     if (content.previewSourceId) {
       const preview = sources.get(content.previewSourceId);
       assert.ok(markdown.includes(`- [Storybook](${preview.url}/?path=/story/${preview.storyId})`));

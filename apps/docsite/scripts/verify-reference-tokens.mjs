@@ -135,9 +135,16 @@ export async function assertReferenceTypography(page, label) {
         for (const element of document.querySelectorAll(selector)) {
           if (element.closest('[data-example-id], .preview')) continue;
           let size = defaultSize;
+          if (
+            element.matches(
+              '.component-markdown > :is(h2,h3), .standalone-guidance > :is(h2,h3), .standalone-guidance .guidance-section > :is(h2,h3)',
+            )
+          ) {
+            size = 'Base400';
+          }
           if (element.closest('.reference-page--compact-guidance')) {
             if (element.tagName === 'H2') size = 'Base400';
-            if (element.tagName === 'H3') size = 'Base300';
+            if (element.tagName === 'H3') size = 'Base400';
           }
           if (element.matches('.do-dont-card > h3')) size = 'Base400';
           const family = element.tagName === 'PRE' ? 'Monospace' : 'Base';

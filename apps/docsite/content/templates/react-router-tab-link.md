@@ -11,15 +11,3 @@ reference:
     - src/stories/templates/react-router/RouterLinkSlots.tsx
   route: templates/react-router-tab-link
 ---
-
-## Guidance status
-
-This reference includes working examples. CoreAI UX guidance for this page still needs review.
-
-## Component description
-
-Copy-paste template — not an importable component. Copy the full source from
-the `templates-react-router-tab-link--source-code` docs entry.
-
-Adapts the CoreAI Tab root to React Router's NavLink component while preserving
-Tab presentation props and applicable NavLink navigation props.

@@ -9,11 +9,3 @@ resources: []
 reference:
   component: components-combobox
 ---
-
-## Guidance status
-
-This reference includes working examples. CoreAI UX guidance for this page still needs review.
-
-## Component description
-
-A combobox (`Combobox`) combines a text field and a dropdown giving people a way to select an option from a list or enter their own choice.

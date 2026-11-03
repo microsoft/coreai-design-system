@@ -434,12 +434,8 @@ export function componentPageGuidanceHtml(page, metadata) {
   const parts = pageGuidanceParts(page.guidance, page.resources);
   const basic = page.examples?.find((example) => example.id === page.defaultExampleId);
   const api = componentApiMarkdown(page.api);
-  const unfinished = page.status === 'under-construction';
-  const body = unfinished
-    ? parts.body.replace(/^## Status\n\nPage under construction\.\n*/, '')
-    : parts.body;
-  const guidanceHtml = lowerBestPracticesHeading(renderGuidance(body).html);
-  return `<div class="reference-page-introduction${page.layout ? ` reference-page--${page.layout}` : ''}">${pageTemplateHeader(page, metadata, parts)}${basic ? exampleHtml(basic, metadata.basePath, true) : ''}${pageTemplateResources(page, metadata)}${unfinished ? workInProgressFallback(page, metadata) : ''}<div class="component-markdown">${guidanceHtml}</div>${api ? `<section class="reference-api"><details><summary><strong>API reference</strong><span>Generated CoreAI prop and type summaries</span></summary><div class="reference-api__content">${renderGuidance(api).html}</div></details></section>` : ''}</div>`;
+  const guidanceHtml = lowerBestPracticesHeading(renderGuidance(parts.body).html);
+  return `<div class="reference-page-introduction${page.layout ? ` reference-page--${page.layout}` : ''}">${pageTemplateHeader(page, metadata, parts)}${basic ? exampleHtml(basic, metadata.basePath, true) : ''}${pageTemplateResources(page, metadata)}<div class="component-markdown">${guidanceHtml}</div>${api ? `<section class="reference-api"><details><summary><strong>API reference</strong><span>Generated CoreAI prop and type summaries</span></summary><div class="reference-api__content">${renderGuidance(api).html}</div></details></section>` : ''}</div>`;
 }
 
 export function initialThemeStyles(themes, stylesheets) {
