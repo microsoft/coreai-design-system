@@ -10,6 +10,10 @@ import {
 
 const root = new URL(process.argv[2] ?? 'http://127.0.0.1:8080/');
 const metadata = await (await fetch(new URL('llms/index.json', root))).json();
+const isShowcaseResource = (resource) => {
+  const hostname = new URL(resource.href ?? resource.url, root).hostname;
+  return hostname.endsWith('figma.com') || hostname.includes('fluent');
+};
 const browser = await chromium.launch();
 let tabbedPages = 0;
 let checks = 0;
@@ -43,16 +47,40 @@ try {
     );
     assert.ok(await usage.isVisible());
     assert.ok(!(await samples.isVisible()));
-    const showcase = usage.locator('.reference-showcase-menu');
+    const hasShowcase = Boolean(record.defaultExampleId);
     const hasShowcaseOptions = Boolean(record.defaultExampleId) && record.examples.length > 1;
+    const showcaseResources = record.resources.filter(isShowcaseResource);
     assert.equal(
-      await showcase.count(),
+      await usage.locator('.reference-showcase-frame').count(),
+      hasShowcase ? 1 : 0,
+      `${record.id}: Default showcase uses the framed toolbar`,
+    );
+    assert.equal(
+      await usage.locator('.reference-showcase-menu__trigger').count(),
       hasShowcaseOptions ? 1 : 0,
       `${record.id}: showcase menu matches available examples`,
     );
+    if (hasShowcase) {
+      assert.equal(
+        await usage.locator('.reference-showcase-toolbar__action').count(),
+        showcaseResources.length,
+      );
+      for (const resource of showcaseResources) {
+        assert.equal(
+          await usage.getByRole('link', { name: resource.label, exact: true }).count(),
+          1,
+        );
+        assert.equal(
+          await usage
+            .locator('.component-resource-card')
+            .filter({ hasText: resource.label })
+            .count(),
+          0,
+        );
+      }
+    }
     if (hasShowcaseOptions) {
-      assert.equal(await usage.locator('.reference-showcase-frame').count(), 1);
-      const trigger = showcase.getByRole('button', {
+      const trigger = usage.getByRole('button', {
         name: `Choose ${record.title} example`,
         exact: true,
       });
@@ -302,6 +330,12 @@ try {
     alternateAccordion.id,
   );
   assert.equal(await page.locator('[data-basic-example] [data-preview-error]').count(), 0);
+  const accordionFigma = accordion.resources.find((resource) =>
+    new URL(resource.href ?? resource.url, root).hostname.endsWith('figma.com'),
+  );
+  assert.ok(accordionFigma);
+  await page.getByRole('link', { name: accordionFigma.label, exact: true }).hover();
+  await page.getByRole('tooltip', { name: accordionFigma.label, exact: true }).waitFor();
 
   await page.goto(new URL('components/dropdown/', root).href);
   await page.locator('[data-reference-ready="true"]').waitFor();

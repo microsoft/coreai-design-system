@@ -229,7 +229,7 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
     return null;
   }
   let showcase: PageTabTargets['showcase'];
-  if (basic && showcaseOptions.length > 1) {
+  if (basic && showcaseOptions.length) {
     const heading = basic.querySelector<HTMLElement>(
       ':scope > h1,:scope > h2,:scope > h3,:scope > h4,:scope > h5,:scope > h6',
     );
@@ -237,7 +237,7 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
     const defaultId = preview?.dataset.exampleId;
     if (heading && preview && defaultId) {
       const showcaseHost = document.createElement('span');
-      showcaseHost.className = 'reference-showcase-menu';
+      showcaseHost.className = 'reference-showcase-toolbar-host';
       basic.classList.add('reference-showcase-frame');
       heading.replaceChildren(showcaseHost);
       showcase = {

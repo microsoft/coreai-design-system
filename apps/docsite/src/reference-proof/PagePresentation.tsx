@@ -21,6 +21,11 @@ export interface PagePresentation {
   resources: PageResource[];
 }
 
+export function isShowcaseResource(resource: PageResource) {
+  const hostname = new URL(resource.href, window.location.href).hostname;
+  return hostname.endsWith('figma.com') || hostname.includes('fluent');
+}
+
 export function readPagePresentation(root: HTMLElement): PagePresentation {
   const header = root.querySelector<HTMLElement>('[data-page-header]');
   if (!header?.dataset.pageTitle || !header.dataset.markdownUrl || !header.dataset.headingId)
@@ -69,14 +74,24 @@ export function ResourceIcon({ href }: { href: string }) {
   return <DocumentText20Regular className="component-resource-card__brand" />;
 }
 
-export function ResourceCards({ model }: { model: PagePresentation }) {
+export function ResourceCards({
+  model,
+  omitShowcaseResources = false,
+}: {
+  model: PagePresentation;
+  omitShowcaseResources?: boolean;
+}) {
+  const resources = omitShowcaseResources
+    ? model.resources.filter((resource) => !isShowcaseResource(resource))
+    : model.resources;
+  if (!resources.length) return null;
   return (
     <>
       <Text as="h2" preset="heading3" foreground={1}>
         Resources
       </Text>
       <nav className="component-resources" aria-label={`${model.title} resources`}>
-        {model.resources.map((resource) => {
+        {resources.map((resource) => {
           const external = new URL(resource.href).origin !== window.location.origin;
           return (
             <Link

@@ -5,18 +5,23 @@ import * as React from 'react';
 import { createPortal } from 'react-dom';
 import {
   Button,
+  LinkButton,
   Menu,
   MenuButton,
   MenuItemRadio,
   MenuList,
   MenuPopover,
   MenuTrigger,
+  Tooltip,
 } from '@coreai-ds/react-components';
 import { loadExamples } from 'virtual:reference-proof-examples';
 import {
   PageHeader,
   ResourceCards,
+  ResourceIcon,
+  isShowcaseResource,
   readPagePresentation,
+  type PageResource,
   type PagePresentation,
 } from './PagePresentation';
 import type { PageWidgetProps } from './FoundationViews';
@@ -86,46 +91,72 @@ function HomeWidgetSlot({ target, children }: { target: HTMLElement; children: R
   );
 }
 
-function ShowcaseMenu({
+function ShowcaseToolbar({
   title,
   selected,
   options,
+  resources,
   onSelect,
 }: {
   title: string;
   selected: string;
   options: NonNullable<PageTabTargets['showcase']>['options'];
+  resources: PageResource[];
   onSelect: (id: string) => void;
 }) {
   const selectedOption = options.find((option) => option.id === selected) ?? options[0];
   return (
-    <Menu checkedValues={{ showcase: [selected] }} positioning={{ autoSize: true }}>
-      <MenuTrigger disableButtonEnhancement>
-        <MenuButton
-          appearance="secondary"
-          size="medium"
-          shape="rounded"
-          aria-label={`Choose ${title} example`}
-          className="reference-showcase-menu__trigger"
-        >
-          {selectedOption.label}
-        </MenuButton>
-      </MenuTrigger>
-      <MenuPopover className="reference-showcase-menu__popover">
-        <MenuList>
-          {options.map((option) => (
-            <MenuItemRadio
-              key={option.id}
-              name="showcase"
-              value={option.id}
-              onClick={() => onSelect(option.id)}
+    <span className="reference-showcase-toolbar">
+      {options.length > 1 ? (
+        <Menu checkedValues={{ showcase: [selected] }} positioning={{ autoSize: true }}>
+          <MenuTrigger disableButtonEnhancement>
+            <MenuButton
+              appearance="subtle"
+              size="medium"
+              shape="rounded"
+              aria-label={`Choose ${title} example`}
+              className="reference-showcase-menu__trigger"
             >
-              {option.label}
-            </MenuItemRadio>
+              {selectedOption.label}
+            </MenuButton>
+          </MenuTrigger>
+          <MenuPopover className="reference-showcase-menu__popover">
+            <MenuList>
+              {options.map((option) => (
+                <MenuItemRadio
+                  key={option.id}
+                  name="showcase"
+                  value={option.id}
+                  onClick={() => onSelect(option.id)}
+                >
+                  {option.label}
+                </MenuItemRadio>
+              ))}
+            </MenuList>
+          </MenuPopover>
+        </Menu>
+      ) : (
+        <span className="reference-showcase-toolbar__label">{selectedOption.label}</span>
+      )}
+      {resources.length ? (
+        <span className="reference-showcase-toolbar__actions">
+          {resources.map((resource) => (
+            <Tooltip key={resource.href} content={resource.label} relationship="label">
+              <LinkButton
+                href={resource.href}
+                external
+                appearance="subtle"
+                size="medium"
+                shape="rounded"
+                icon={<ResourceIcon href={resource.href} />}
+                aria-label={resource.label}
+                className="reference-showcase-toolbar__action"
+              />
+            </Tooltip>
           ))}
-        </MenuList>
-      </MenuPopover>
-    </Menu>
+        </span>
+      ) : null}
+    </span>
   );
 }
 
@@ -170,6 +201,13 @@ export function PageContent({
     const header = root.querySelector<HTMLElement>('[data-page-header]');
     if (!header) throw new Error('Missing page header.');
     const resources = model.home ? null : root.querySelector<HTMLElement>('[data-page-resources]');
+    if (
+      resources &&
+      tabs?.showcase &&
+      model.resources.every((resource) => isShowcaseResource(resource))
+    ) {
+      resources.hidden = true;
+    }
     const pageWidgets = [...root.querySelectorAll<HTMLElement>('[data-page-widget]')].map(
       (element) => {
         const name = element.dataset.pageWidget;
@@ -275,10 +313,11 @@ export function PageContent({
         : null}
       {presentation && pageTabs?.showcase && selectedShowcase
         ? createPortal(
-            <ShowcaseMenu
+            <ShowcaseToolbar
               title={presentation.model.title}
               selected={selectedShowcase}
               options={pageTabs.showcase.options}
+              resources={presentation.model.resources.filter(isShowcaseResource)}
               onSelect={(id) => {
                 setSelectedShowcase(id);
                 if (activeExample) setActiveExample(pageTabs.showcase?.defaultId);
@@ -288,7 +327,13 @@ export function PageContent({
           )
         : null}
       {presentation?.resources
-        ? createPortal(<ResourceCards model={presentation.model} />, presentation.resources)
+        ? createPortal(
+            <ResourceCards
+              model={presentation.model}
+              omitShowcaseResources={Boolean(pageTabs?.showcase)}
+            />,
+            presentation.resources,
+          )
         : null}
       {presentation
         ? widgets.map((widget, index) => {
