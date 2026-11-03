@@ -602,6 +602,29 @@ try {
   await page.locator('[data-reference-ready="true"]').waitFor();
   const themes = await import('@coreai-ds/react-components');
   await page.getByRole('heading', { name: 'Colors', exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  const settings = page.locator('.docsite-settings');
+  const colorMode = settings.getByRole('tablist', { name: 'Color mode', exact: true });
+  const productThemeLabel = settings.getByText('Product theme', { exact: true });
+  const productTheme = settings.getByRole('combobox', { name: 'Brand theme', exact: true });
+  assert.ok(
+    (await productThemeLabel.boundingBox()).y >=
+      (await colorMode.boundingBox()).y + (await colorMode.boundingBox()).height,
+    'Product theme appears below the color mode switch',
+  );
+  assert.equal(await productTheme.textContent(), 'CoreAI');
+  const shortcutsToggle = settings.getByRole('button', {
+    name: 'Keyboard shortcuts',
+    exact: true,
+  });
+  const firstShortcut = settings.getByText('Show/hide navigation', { exact: true });
+  assert.equal(await shortcutsToggle.getAttribute('aria-expanded'), 'false');
+  assert.equal(await firstShortcut.isVisible(), false);
+  await shortcutsToggle.click();
+  await firstShortcut.waitFor({ state: 'visible' });
+  assert.equal(await shortcutsToggle.getAttribute('aria-expanded'), 'true');
+  await page.keyboard.press('Escape');
+  await settings.waitFor({ state: 'hidden' });
   await setTheme('dark');
   assert.equal(
     await page.locator('.page-summary').innerText(),

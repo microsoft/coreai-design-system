@@ -330,14 +330,20 @@ code:not(pre code) {
 
 .docsite-settings__appearance {
   display: flex;
-  align-items: center;
-  gap: var(--spacingHorizontalS);
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacingVerticalM);
+}
+
+.docsite-settings__brand-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacingVerticalS);
 }
 
 .docsite-settings__brand {
-  width: 112px;
-  min-width: 104px;
-  flex: 0 0 112px;
+  width: 100%;
+  min-width: 0;
 }
 
 .docsite-settings__shortcuts {
@@ -346,6 +352,14 @@ code:not(pre code) {
   border-top: var(--strokeWidthThin) solid;
   border-top-color: inherit;
   padding-top: var(--spacingVerticalL);
+}
+
+.docsite-settings__shortcuts .fui-AccordionHeader__button {
+  padding-inline: 0;
+}
+
+.docsite-settings__shortcuts .fui-AccordionPanel {
+  margin: 0;
 }
 
 .docsite-settings__shortcut-list {

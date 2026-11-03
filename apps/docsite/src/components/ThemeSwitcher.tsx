@@ -3,6 +3,10 @@
 
 import * as React from 'react';
 import {
+  Accordion,
+  AccordionHeader,
+  AccordionItem,
+  AccordionPanel,
   Badge,
   Button,
   Dropdown,
@@ -14,7 +18,7 @@ import {
   TabList,
   Text,
 } from '@coreai-ds/react-components';
-import { Settings20Regular } from '@fluentui/react-icons';
+import { Options20Regular } from '@fluentui/react-icons';
 import { useThemeMode } from '../theme/ThemeProvider';
 
 export function ThemeSwitcher({ isApplePlatform }: { isApplePlatform: boolean }) {
@@ -45,7 +49,7 @@ export function ThemeSwitcher({ isApplePlatform }: { isApplePlatform: boolean })
         <Button
           shape="rounded"
           appearance="subtle"
-          icon={<Settings20Regular />}
+          icon={<Options20Regular />}
           aria-label="Settings"
           title="Settings"
         />
@@ -76,61 +80,73 @@ export function ThemeSwitcher({ isApplePlatform }: { isApplePlatform: boolean })
             <Tab value="dark">Dark</Tab>
             <Tab value="light">Light</Tab>
           </TabList>
-          <Dropdown
-            aria-label="Brand theme"
-            className="docsite-settings__brand"
-            size="small"
-            style={{ width: 112, minWidth: 112, maxWidth: 112 }}
-            selectedOptions={[brand]}
-            value={brand === 'coreai' ? 'CoreAI' : 'Azure'}
-            onOptionSelect={(_event, data) => {
-              if (data.optionValue === 'coreai' || data.optionValue === 'azure') {
-                setBrand(data.optionValue);
-              }
-            }}
-          >
-            <Option value="coreai">CoreAI</Option>
-            <Option value="azure">Azure</Option>
-          </Dropdown>
+          <div className="docsite-settings__brand-field">
+            <Text as="label" htmlFor="docsite-product-theme" size={200} weight="semibold">
+              Product theme
+            </Text>
+            <Dropdown
+              id="docsite-product-theme"
+              aria-label="Brand theme"
+              className="docsite-settings__brand"
+              size="small"
+              selectedOptions={[brand]}
+              value={brand === 'coreai' ? 'CoreAI' : 'Azure'}
+              onOptionSelect={(_event, data) => {
+                if (data.optionValue === 'coreai' || data.optionValue === 'azure') {
+                  setBrand(data.optionValue);
+                }
+              }}
+            >
+              <Option value="coreai">CoreAI</Option>
+              <Option value="azure">Azure</Option>
+            </Dropdown>
+          </div>
         </div>
-        <section className="docsite-settings__shortcuts" aria-label="Keyboard shortcuts">
-          <dl className="docsite-settings__shortcut-list">
-            {shortcuts.map(([label, keys, accessibleKeys]) => (
-              <div className="docsite-settings__shortcut" key={label}>
-                <dt>
-                  <Text size={200} foreground={2}>
-                    {label}
-                  </Text>
-                </dt>
-                <dd>
-                  <Badge
-                    appearance="tint"
-                    color="subtle"
-                    shape="rounded"
-                    size="large"
-                    title={accessibleKeys}
-                  >
-                    <span className="docsite-settings__keys" aria-hidden="true">
-                      {[...keys].map((key, index) => (
-                        <span
-                          className={
-                            /^[A-Z]$/.test(key)
-                              ? 'docsite-settings__key-letter'
-                              : 'docsite-settings__key-symbol'
-                          }
-                          key={index}
-                        >
-                          {key}
+        <Accordion className="docsite-settings__shortcuts" collapsible>
+          <AccordionItem value="keyboard-shortcuts">
+            <AccordionHeader expandIconPosition="end" size="small">
+              Keyboard shortcuts
+            </AccordionHeader>
+            <AccordionPanel>
+              <dl className="docsite-settings__shortcut-list">
+                {shortcuts.map(([label, keys, accessibleKeys]) => (
+                  <div className="docsite-settings__shortcut" key={label}>
+                    <dt>
+                      <Text size={200} foreground={2}>
+                        {label}
+                      </Text>
+                    </dt>
+                    <dd>
+                      <Badge
+                        appearance="tint"
+                        color="subtle"
+                        shape="rounded"
+                        size="large"
+                        title={accessibleKeys}
+                      >
+                        <span className="docsite-settings__keys" aria-hidden="true">
+                          {[...keys].map((key, index) => (
+                            <span
+                              className={
+                                /^[A-Z]$/.test(key)
+                                  ? 'docsite-settings__key-letter'
+                                  : 'docsite-settings__key-symbol'
+                              }
+                              key={index}
+                            >
+                              {key}
+                            </span>
+                          ))}
                         </span>
-                      ))}
-                    </span>
-                    <span className="sr-only">{accessibleKeys}</span>
-                  </Badge>
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </section>
+                        <span className="sr-only">{accessibleKeys}</span>
+                      </Badge>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
       </PopoverSurface>
     </Popover>
   );
