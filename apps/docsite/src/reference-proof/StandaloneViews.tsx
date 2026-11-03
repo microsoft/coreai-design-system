@@ -547,13 +547,18 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
       const month = release.date?.slice(0, 7) ?? 'unreleased';
       groups.set(month, [...(groups.get(month) ?? []), release]);
     }
+    const introduction = followingUntil(
+      introductionHeading,
+      (candidate) => candidate.tagName === 'H2',
+    );
     return {
-      introductionHtml: followingUntil(
-        introductionHeading,
-        (candidate) => candidate.tagName === 'H2',
-      )
-        .map((element) => element.outerHTML)
-        .join(''),
+      introductionHtml: introduction.map((element) => element.outerHTML).join(''),
+      packageName: introduction
+        .map((element) => element.querySelector('code')?.textContent)
+        .find(Boolean),
+      historyHref: introduction
+        .map((element) => element.querySelector('a[href$="/CHANGELOG.md"]')?.getAttribute('href'))
+        .find(Boolean),
       groups: [...groups],
     };
   }, [sourceHtml]);
@@ -575,10 +580,30 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
   }, [model]);
   return (
     <div className="reference-changelog-view">
-      <div
-        className="changelog-intro standalone-guidance"
-        dangerouslySetInnerHTML={{ __html: model.introductionHtml }}
-      />
+      <div className="changelog-overview">
+        <div className="changelog-overview__meta">
+          {model.packageName ? (
+            <Badge appearance="tint" color="subtle" shape="rounded">
+              {model.packageName}
+            </Badge>
+          ) : null}
+          {model.historyHref ? (
+            <Link href={model.historyHref} className="changelog-overview__history">
+              Full history <ExternalIcon aria-hidden="true" />
+            </Link>
+          ) : null}
+        </div>
+        <details className="changelog-about">
+          <summary>
+            <ChevronRight aria-hidden="true" />
+            About this changelog
+          </summary>
+          <div
+            className="changelog-intro standalone-guidance"
+            dangerouslySetInnerHTML={{ __html: model.introductionHtml }}
+          />
+        </details>
+      </div>
       <div className="changelog-list" ref={listRef}>
         <svg className="changelog-graph" aria-hidden="true">
           {rails.map((rail, index) => (
