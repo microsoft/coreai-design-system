@@ -32,6 +32,13 @@ export {
   type AccordionPanelSlots,
 } from './AccordionPanel.js';
 export {
+  AlphaSlider,
+  alphaSliderClassNames,
+  type AlphaSliderOnChangeData,
+  type AlphaSliderProps,
+  type AlphaSliderSlots,
+} from './AlphaSlider.js';
+export {
   Avatar,
   avatarClassNames,
   type AvatarColor,
@@ -136,6 +143,38 @@ export {
   type CheckboxProps,
   type CheckboxSlots,
 } from './Checkbox.js';
+export {
+  ColorArea,
+  colorAreaClassNames,
+  type ColorAreaOnColorChangeData,
+  type ColorAreaProps,
+  type ColorAreaSlots,
+} from './ColorArea.js';
+export {
+  ColorPicker,
+  colorPickerClassNames,
+  useColorPickerContextValue,
+  useColorPickerContextValues,
+  type ColorPickerContextValue,
+  type ColorPickerOnChangeData,
+  type ColorPickerProps,
+  type ColorPickerShape,
+  type ColorPickerSlots,
+} from './ColorPicker.js';
+export {
+  ColorSlider,
+  colorSliderClassNames,
+  type ColorSliderOnChangeData,
+  type ColorSliderProps,
+  type ColorSliderSlots,
+} from './ColorSlider.js';
+export {
+  ColorSwatch,
+  colorSwatchClassNames,
+  type ColorSwatchProps,
+  type ColorSwatchSlots,
+  type ColorSwatchState,
+} from './ColorSwatch.js';
 export {
   Combobox,
   comboboxClassNames,
@@ -276,6 +315,13 @@ export {
   type DropdownSlots,
 } from './Dropdown.js';
 export {
+  EmptySwatch,
+  emptySwatchClassNames,
+  type EmptySwatchProps,
+  type EmptySwatchSlots,
+  type EmptySwatchState,
+} from './EmptySwatch.js';
+export {
   DropdownButton,
   dropdownButtonClassNames,
   type DropdownButtonProps,
@@ -290,6 +336,13 @@ export {
   type FieldSlots,
 } from './Field.js';
 export { Image, imageClassNames, type ImageProps } from './Image.js';
+export {
+  ImageSwatch,
+  imageSwatchClassNames,
+  type ImageSwatchProps,
+  type ImageSwatchSlots,
+  type ImageSwatchState,
+} from './ImageSwatch.js';
 export {
   InlineDrawer,
   inlineDrawerClassNames,
@@ -615,6 +668,29 @@ export {
   type SpinButtonSlots,
 } from './SpinButton.js';
 export { Spinner, spinnerClassNames, type SpinnerProps, type SpinnerSlots } from './Spinner.js';
+export {
+  SwatchPicker,
+  swatchPickerClassNames,
+  useSwatchPickerContextValue,
+  useSwatchPickerContextValues,
+  type SwatchPickerContextValue,
+  type SwatchPickerContextValues,
+  type SwatchPickerOnSelectEventHandler,
+  type SwatchPickerOnSelectionChangeData,
+  type SwatchPickerProps,
+  type SwatchPickerShape,
+  type SwatchPickerSize,
+  type SwatchPickerSlots,
+  type SwatchPickerSpacing,
+  type SwatchPickerState,
+} from './SwatchPicker.js';
+export {
+  SwatchPickerRow,
+  swatchPickerRowClassNames,
+  type SwatchPickerRowProps,
+  type SwatchPickerRowSlots,
+  type SwatchPickerRowState,
+} from './SwatchPickerRow.js';
 export {
   Switch,
   switchClassNames,

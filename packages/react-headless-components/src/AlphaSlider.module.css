@@ -1,0 +1,55 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Ported from @fluentui/react-color-picker 9.3.3.
+ * Local source: [useAlphaSliderStyles.styles.raw.js](../../../node_modules/@fluentui/react-color-picker/lib/components/AlphaSlider/useAlphaSliderStyles.styles.raw.js).
+ * Upstream delegates to ColorSlider; compose that same local foundation.
+ * Map shared thumb placement to the public alpha progress variable without changing
+ * either component's public --fui-*-progress property or duplicating positioning.
+ * Family-qualified overrides retain priority
+ * when CSS Modules emits the composed foundation through another family member.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .AlphaSlider {
+    composes: ColorSlider from './ColorSlider.module.css';
+
+    &[data-orientation] {
+      --fui-ColorSlider__thumb--progress: var(--fui-AlphaSlider--progress);
+    }
+  }
+
+  .AlphaSlider__input {
+    composes: ColorSlider__input from './ColorSlider.module.css';
+  }
+
+  /* Styles for the rail slot */
+  .AlphaSlider__rail {
+    composes: ColorSlider__rail from './ColorSlider.module.css';
+
+    .AlphaSlider > & {
+      border: 1px solid var(--colorNeutralStroke1);
+      background-image:
+        linear-gradient(
+          var(--fui-AlphaSlider--direction),
+          transparent,
+          var(--fui-AlphaSlider__rail--color)
+        ),
+        url('https://fabricweb.azureedge.net/fabric-website/assets/images/transparent-pattern.png');
+    }
+  }
+
+  /* Styles for the thumb slot */
+  .AlphaSlider__thumb {
+    composes: ColorSlider__thumb from './ColorSlider.module.css';
+
+    .AlphaSlider > & {
+      background-color: var(--colorNeutralBackground1);
+
+      &::before {
+        background-color: var(--fui-AlphaSlider__thumb--color);
+      }
+    }
+  }
+}

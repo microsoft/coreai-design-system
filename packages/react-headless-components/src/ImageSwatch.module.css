@@ -1,0 +1,121 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Ported from @fluentui/react-swatch-picker 9.6.3, useImageSwatchStyles.styles.ts.
+ * Local source: [useImageSwatchStyles.styles.raw.js](../../../node_modules/@fluentui/react-swatch-picker/lib/components/ImageSwatch/useImageSwatchStyles.styles.raw.js).
+ * Native :focus-visible replaces legacy Tabster focus attributes.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .ImageSwatch {
+    display: inline-flex;
+    box-sizing: border-box;
+    border: 1px solid var(--colorTransparentStroke);
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--borderRadiusNone);
+
+    &:hover {
+      cursor: pointer;
+      border: none;
+      box-shadow:
+        inset 0 0 0 var(--strokeWidthThick) var(--colorBrandStroke1),
+        inset 0 0 0 var(--strokeWidthThicker) var(--colorStrokeFocus1);
+    }
+
+    &:hover:active {
+      border: none;
+      box-shadow:
+        inset 0 0 0 var(--strokeWidthThicker) var(--colorCompoundBrandStrokePressed),
+        inset 0 0 0 var(--strokeWidthThickest) var(--colorStrokeFocus1);
+    }
+
+    &:focus,
+    &:focus-visible {
+      outline: none;
+    }
+
+    &[data-size='extra-small'] {
+      width: 20px;
+      height: 20px;
+    }
+
+    &[data-size='small'] {
+      width: 24px;
+      height: 24px;
+    }
+
+    &[data-size='large'] {
+      width: 32px;
+      height: 32px;
+    }
+
+    &[data-shape='rounded'] {
+      border-radius: var(--borderRadiusMedium);
+    }
+
+    &[data-shape='circular'] {
+      border-radius: var(--borderRadiusCircular);
+    }
+
+    &[data-selected] {
+      border: none;
+      box-shadow:
+        inset 0 0 0 var(--strokeWidthThicker) var(--colorBrandStroke1),
+        inset 0 0 0 5px var(--colorStrokeFocus1);
+
+      &:hover {
+        box-shadow:
+          inset 0 0 0 var(--strokeWidthThickest) var(--colorCompoundBrandStrokeHover),
+          inset 0 0 0 6px var(--colorStrokeFocus1);
+      }
+
+      &:hover:active {
+        box-shadow:
+          inset 0 0 0 var(--strokeWidthThickest) var(--colorCompoundBrandStrokePressed),
+          inset 0 0 0 7px var(--colorStrokeFocus1);
+      }
+    }
+
+    /* The installed selected hover ring takes priority over its focus ring. */
+    &[data-size]:focus-visible:not([data-selected]:hover) {
+      border: none;
+      box-shadow:
+        inset 0 0 0 var(--strokeWidthThick) var(--colorStrokeFocus2),
+        inset 0 0 0 var(--strokeWidthThicker) var(--colorStrokeFocus1);
+
+      &[data-selected] {
+        box-shadow:
+          inset 0 0 0 var(--strokeWidthThicker) var(--colorStrokeFocus2),
+          inset 0 0 0 5px var(--colorStrokeFocus1);
+      }
+    }
+
+    /* High contrast styles */
+    @media (forced-colors: active) {
+      forced-color-adjust: none;
+
+      &:hover {
+        box-shadow:
+          inset 0 0 0 var(--strokeWidthThick) var(--colorBrandStroke2Hover),
+          inset 0 0 0 var(--strokeWidthThicker) var(--colorStrokeFocus1);
+      }
+
+      &:hover:active {
+        box-shadow:
+          inset 0 0 0 var(--strokeWidthThicker) var(--colorBrandStroke2Pressed),
+          inset 0 0 0 var(--strokeWidthThickest) var(--colorStrokeFocus1);
+      }
+
+      &[data-selected] {
+        box-shadow:
+          inset 0 0 0 var(--strokeWidthThicker) var(--colorBrandStroke2Pressed),
+          inset 0 0 0 5px var(--colorStrokeFocus1);
+      }
+    }
+  }
+}

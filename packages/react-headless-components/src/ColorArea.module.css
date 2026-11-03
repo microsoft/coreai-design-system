@@ -1,0 +1,101 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Ported from @fluentui/react-color-picker 9.3.3.
+ * Local source: [useColorAreaStyles.styles.raw.js](../../../node_modules/@fluentui/react-color-picker/lib/components/ColorArea/useColorAreaStyles.styles.raw.js).
+ * Focus source: [createFocusOutlineStyle.js](../../../node_modules/@fluentui/react-tabster/lib/focus/createFocusOutlineStyle.js).
+ * Native input :focus-visible replaces legacy focus-within attributes.
+ * The current public hook measures physical pointer X and handles Left/Right physically
+ * in both text directions. Keep its gradient and thumb on that same physical axis,
+ * rather than copying Griffel's RTL mirroring of the old visual styles.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot */
+  .ColorArea {
+    --fui-Slider__thumb--size: 20px;
+
+    position: relative;
+    border: 1px solid var(--colorNeutralStroke1);
+    background:
+      linear-gradient(to bottom, transparent, #000), linear-gradient(to right, #fff, transparent),
+      var(--fui-Area--main-color);
+    forced-color-adjust: none;
+    display: inline-grid;
+    touch-action: none;
+    align-items: start;
+    justify-items: start;
+    min-width: 300px;
+    min-height: 300px;
+    box-sizing: border-box;
+    margin-bottom: var(--spacingVerticalSNudge);
+    border-radius: var(--borderRadiusMedium);
+
+    &[data-shape='square'] {
+      border-radius: var(--borderRadiusNone);
+    }
+  }
+
+  /* Styles for the thumb slot */
+  .ColorArea__thumb {
+    position: absolute;
+    width: var(--fui-Slider__thumb--size);
+    height: var(--fui-Slider__thumb--size);
+    pointer-events: none;
+    outline-style: none;
+    forced-color-adjust: none;
+    border-radius: var(--borderRadiusCircular);
+    border: var(--strokeWidthThin) solid var(--colorNeutralForeground4);
+    box-shadow: var(--shadow4);
+    background-color: var(--fui-Area__thumb--color);
+    transform: translate(-50%, 50%);
+    left: var(--fui-AreaX--progress);
+    bottom: var(--fui-AreaY--progress);
+
+    &::before {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--borderRadiusCircular);
+      box-sizing: border-box;
+      content: '';
+      border: var(--strokeWidthThick) solid var(--colorNeutralBackground1);
+    }
+
+    /* The actual native inputs own focus; the thumb supplies the visible outline. */
+    &:has(> .ColorArea__inputX:focus-visible, > .ColorArea__inputY:focus-visible) {
+      border-color: transparent;
+
+      &::after {
+        content: '';
+        position: absolute;
+        pointer-events: none;
+        z-index: 1;
+        border: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+        border-radius: var(--borderRadiusCircular);
+        inset: calc(var(--strokeWidthThick) * -1);
+      }
+
+      @media (forced-colors: active) {
+        &::after {
+          border-color: Highlight;
+        }
+      }
+    }
+  }
+
+  /* Styles for the input slots */
+  .ColorArea__inputX,
+  .ColorArea__inputY {
+    overflow: hidden;
+    position: absolute;
+    pointer-events: none;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    opacity: 0;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+}

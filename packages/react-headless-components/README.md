@@ -146,6 +146,9 @@ not a claim that the whole application bundle is Griffel-free.
   [Toast in react-toast 9.8.5](https://unpkg.com/@fluentui/react-toast@9.8.5/lib/components/Toast/useToastStyles.styles.raw.js)
   and [Tooltip in react-tooltip 9.10.8](https://unpkg.com/@fluentui/react-tooltip@9.10.8/lib/components/Tooltip/useTooltipStyles.styles.raw.js).
   Tooltip and AvatarGroupPopover share the same content-slot visual adapter and CSS foundation.
+- The color/palette batch uses the installed snapshot at commit `d162113`:
+  [ColorPicker in react-color-picker 9.3.3](https://unpkg.com/@fluentui/react-color-picker@9.3.3/lib/components/ColorPicker/useColorPickerStyles.styles.raw.js)
+  and [SwatchPicker in react-swatch-picker 9.6.3](https://unpkg.com/@fluentui/react-swatch-picker@9.6.3/lib/components/SwatchPicker/useSwatchPickerStyles.styles.raw.js).
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -321,6 +324,17 @@ the supported custom `announce` callback demonstrates one application announcer 
 priority, suppression, and resumption. In the tested native browser, arrow navigation retains focus
 where the consumer polyfill moves it; native Tab/Shift+Tab remains available. Toaster's Delete
 hotkey also bubbles from editors, so the editing example explicitly stops that key's propagation.
+ColorPicker keeps current controlled color and native input contracts. Use AlphaSlider's public
+`min={0} max={100}` when exact-zero stepping matters; an omitted minimum can leave a tiny nonzero
+value. Rejected controlled alpha changes can notify both the requested and restored values.
+Native disabled ranges block interaction, but range `readOnly` does not. ColorArea has no top-level
+disabled/read-only API: disabling its axis inputs does not disable surface pointer or root keyboard
+handling. Use a static preview for noninteractive output rather than inventing an area-disable shim.
+Controlled color reset remains consumer-owned.
+SwatchPicker preserves CoreAI's omitted rounded shape; explicit `undefined` resolves to square.
+ImageSwatch keeps the installed parent size/shape precedence. Raw-current grid arrow navigation is
+unavailable in both tested browser modes; examples use supported `focusMode="tab"` instead.
+Consumers own EmptySwatch actions, form fields/reset, and any required focusgroup polyfill.
 
 ## Conversion workflow
 
@@ -555,6 +569,10 @@ geometry, consumer priority, and public trigger/content composition. Shared-foun
 the existing AvatarGroup and Popover suites as well as their live reports.
 Toast adds current controller dispatch/update/dismissal, timer pause/resume, focus restoration,
 intent/media/title/body/footer visuals, native forms/navigation, and position/offset reports.
+Color controls add area/rail/thumb/checkerboard geometry, controlled pointer/keyboard color changes,
+native editor submission/reset, and explicit current range/axis/RTL boundaries. Swatches add
+color/image/empty content, row/grid selection, callback identity, native forms, and consumer priority,
+with native and actual-polyfill interaction checks.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 
