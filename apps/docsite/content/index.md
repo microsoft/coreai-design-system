@@ -38,7 +38,7 @@ over ordinary HTTPS.
 
 ## Foundations and patterns
 
-- [Color](./foundations/colors.md)
+- [Colors](./foundations/colors.md)
 - [Typography](./foundations/typography.md)
 - [Content](./foundations/content.md)
 - [Surfaces](./foundations/materials.md)

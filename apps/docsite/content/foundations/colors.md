@@ -1,13 +1,13 @@
 ---
 id: colors
-title: Color
+title: Colors
 summary: 'Palette, semantic roles, token naming, and accessible color use.'
 resources: []
 reference:
   renderer: colors
-  route: foundations/color
+  route: foundations/colors
   aliases:
-    - /foundations/colors/
+    - /foundations/color/
     - /colors/
   migratedFrom:
     - apps/docsite/src/pages/Colors.tsx

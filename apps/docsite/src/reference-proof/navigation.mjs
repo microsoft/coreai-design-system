@@ -12,7 +12,7 @@ const navigationGroups = [
     label: 'Foundations',
     paths: [
       '/foundations/typography/',
-      '/foundations/color/',
+      '/foundations/colors/',
       '/foundations/surfaces/',
       '/foundations/spacing/',
       '/foundations/layout/',

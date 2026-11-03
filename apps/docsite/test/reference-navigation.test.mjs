@@ -37,7 +37,7 @@ test('site sections use the requested order with alphabetized component and temp
     { path: '/foundations/layout/', title: 'Layout' },
     { path: '/foundations/spacing/', title: 'Spacing' },
     { path: '/foundations/surfaces/', title: 'Surfaces' },
-    { path: '/foundations/color/', title: 'Color' },
+    { path: '/foundations/colors/', title: 'Colors' },
     { path: '/foundations/typography/', title: 'Typography' },
   ];
   const groups = groupNavigationEntries(entries);
@@ -49,7 +49,7 @@ test('site sections use the requested order with alphabetized component and temp
     groups.map((group) => group.items.map((entry) => entry.title)),
     [
       ['Home', 'Introduction', 'Changelog', 'FAQ'],
-      ['Typography', 'Color', 'Surfaces', 'Spacing', 'Layout'],
+      ['Typography', 'Colors', 'Surfaces', 'Spacing', 'Layout'],
       ['Button'],
       ['Empty State'],
       ['Build with your agent', 'Content', 'Forms', 'Theming'],
