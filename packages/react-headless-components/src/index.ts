@@ -561,6 +561,29 @@ export {
   type SwitchSlots,
 } from './Switch.js';
 export {
+  Tab,
+  tabClassNames,
+  tabReservedSpaceClassNames,
+  type TabProps,
+  type TabSlots,
+  type TabState,
+} from './Tab.js';
+export {
+  TabList,
+  tabListClassNames,
+  useTabListContext,
+  useTabListContextValues,
+  type SelectTabData,
+  type SelectTabEvent,
+  type SelectTabEventHandler,
+  type TabListAppearance,
+  type TabListContextValues,
+  type TabListProps,
+  type TabListSlots,
+  type TabListState,
+  type TabValue,
+} from './TabList.js';
+export {
   Tag,
   tagClassNames,
   useTagContextValues,
@@ -581,6 +604,72 @@ export {
   type TagGroupSlots,
   type TagGroupState,
 } from './TagGroup.js';
+export {
+  TagPicker,
+  useTagPickerContext_unstable,
+  useTagPickerContextValues,
+  useTagPickerFilter,
+  type TagPickerAppearance,
+  type TagPickerContextValue,
+  type TagPickerContextValues,
+  type TagPickerOnOpenChangeData,
+  type TagPickerOnOptionSelectData,
+  type TagPickerProps,
+  type TagPickerSize,
+  type TagPickerSlots,
+  type TagPickerState,
+} from './TagPicker.js';
+export {
+  TagPickerButton,
+  tagPickerButtonClassNames,
+  type TagPickerButtonProps,
+  type TagPickerButtonSlots,
+  type TagPickerButtonState,
+} from './TagPickerButton.js';
+export {
+  TagPickerControl,
+  tagPickerControlClassNames,
+  type TagPickerControlInternalSlots,
+  type TagPickerControlProps,
+  type TagPickerControlSlots,
+  type TagPickerControlState,
+} from './TagPickerControl.js';
+export {
+  TagPickerGroup,
+  tagPickerGroupClassNames,
+  useTagPickerGroupContextValues,
+  type TagPickerGroupProps,
+  type TagPickerGroupSlots,
+  type TagPickerGroupState,
+} from './TagPickerGroup.js';
+export {
+  TagPickerInput,
+  tagPickerInputClassNames,
+  type TagPickerInputProps,
+  type TagPickerInputSlots,
+  type TagPickerInputState,
+} from './TagPickerInput.js';
+export {
+  TagPickerList,
+  tagPickerListClassNames,
+  type TagPickerListProps,
+  type TagPickerListSlots,
+  type TagPickerListState,
+} from './TagPickerList.js';
+export {
+  TagPickerOption,
+  tagPickerOptionClassNames,
+  type TagPickerOptionProps,
+  type TagPickerOptionSlots,
+  type TagPickerOptionState,
+} from './TagPickerOption.js';
+export {
+  TagPickerOptionGroup,
+  tagPickerOptionGroupClassNames,
+  type TagPickerOptionGroupProps,
+  type TagPickerOptionGroupSlots,
+  type TagPickerOptionGroupState,
+} from './TagPickerOptionGroup.js';
 export {
   Textarea,
   textareaClassNames,

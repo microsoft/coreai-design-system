@@ -1,0 +1,89 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Handwritten experimental comparison/consumer layout; not an upstream style port.
+ */
+
+.comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.column {
+  min-width: 0;
+}
+
+.viewport {
+  min-height: 160px;
+  overflow: auto;
+}
+
+.pointerRest {
+  padding: 8px;
+  margin-block: 8px;
+}
+
+.report {
+  overflow: auto;
+  max-height: 320px;
+  padding: 12px;
+  background-color: var(--colorNeutralBackground2);
+  white-space: pre-wrap;
+}
+
+.flow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.flowList {
+  max-width: 100%;
+  overflow: auto;
+}
+
+.panel {
+  box-sizing: border-box;
+  width: min(100%, 400px);
+  padding: 12px;
+  border: 1px solid var(--colorNeutralStroke2);
+  border-radius: var(--borderRadiusMedium);
+}
+
+.panel h3 {
+  margin-block: 0 8px;
+}
+
+.panel p {
+  margin-block: 0 12px;
+}
+
+.consumerList {
+  gap: 3px;
+  padding: 7px;
+  border-radius: 3px;
+}
+
+.consumerTab {
+  min-width: 120px;
+  border-radius: 3px;
+}
+
+.consumerIcon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.consumerContent {
+  font-size: 18px;
+}
+
+@media (width <= 700px) {
+  .comparison {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

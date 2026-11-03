@@ -133,6 +133,11 @@ not a claim that the whole application bundle is Griffel-free.
   the [Toolbar family in react-toolbar 9.8.7](https://unpkg.com/@fluentui/react-toolbar@9.8.7/lib/components/Toolbar/useToolbarStyles.styles.raw.js)
   and [Tag family in react-tags 9.9.8](https://unpkg.com/@fluentui/react-tags@9.9.8/lib/components/Tag/useTagStyles.styles.raw.js).
   Experimental focusgroup consumers share one test/Storybook-only initializer.
+- The native-tab/tag-picker batch uses the installed snapshot at commit `51c66d8`:
+  the [Tab family in react-tabs 9.12.6](https://unpkg.com/@fluentui/react-tabs@9.12.6/lib/components/Tab/useTabStyles.styles.raw.js)
+  and [TagPicker family in react-tag-picker 9.10.5](https://unpkg.com/@fluentui/react-tag-picker@9.10.5/lib/components/TagPickerControl/useTagPickerControlStyles.styles.raw.js).
+  The installed headless facade also resolves a nested react-tag-picker 9.10.6; the local raw
+  source links in each CSS Module identify the visual source independently of that behavior package.
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -271,6 +276,15 @@ Toolbar retains the installed checked-event ordering and reset behavior; caller 
 not add a wrapper-specific selection veto. Controlled state can reject a requested change.
 TagGroup retains current selection/dismiss payloads, with post-dismiss focus restoration supplied
 by the consumer examples rather than a legacy focus manager in the components.
+Tab retains current activation, selection, and focusgroup behavior. Its reserved-space content
+uses the public root-render contract, preserving native button identity, refs, caller renderers,
+and callback targets across selection changes rather than altering the deprecated slot registry.
+TagPicker retains current native popup, selection, and focusgroup contracts. The pinned option
+does not supply `aria-selected`, and the trigger button does not inherit disabled behavior;
+consumers explicitly pass these supported native props, as the examples demonstrate. Raw-current
+regressions establish both boundaries without adding wrapper normalization. After ArrowRight from
+the last tag, backward Tab restores the last tag natively but the first tag with the current
+consumer polyfill; the examples/tests retain that distinction.
 
 ## Conversion workflow
 
@@ -490,6 +504,12 @@ Toolbar adds exact parent visual inheritance, checked radio/toggle groups, dynam
 editing/forms/Menu composition, and current event/reset boundaries. Tags add media/text/glyph
 geometry, dismissal and interaction-part contracts, controlled group payloads, native forms, and
 consumer-owned restoration after removal. Both families are checked in native and polyfill modes.
+Tabs add controlled and automatic/manual activation, content switching, dynamic groups, native
+forms, exact event/ref identity, and reserved-space geometry, including caller root renderers.
+TagPicker adds query/filtering, single/multiple selection, removal, grouped options, explicit
+selection/disabled accessibility, native forms/reset, and current slot/ref/callback contracts.
+Both families run with native focusgroup and the actual consumer polyfill, with strict live
+reports and trusted follow-ups at desktop and narrow viewport sizes.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 
