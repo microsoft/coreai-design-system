@@ -102,9 +102,38 @@ function followingUntil(element: Element, stop: (candidate: Element) => boolean)
   return elements;
 }
 
+function resourceItems(elements: Element[]) {
+  return elements
+    .flatMap((element) => [...element.querySelectorAll<HTMLLIElement>('li')])
+    .map((item) => {
+      const link = item.querySelector<HTMLAnchorElement>('a[href]');
+      if (!link) throw new Error('Missing resource link.');
+      const title = link.textContent?.trim() ?? '';
+      const description = (item.textContent ?? '')
+        .slice((item.textContent ?? '').indexOf(title) + title.length)
+        .replace(/^:\s*/, '')
+        .trim();
+      return {
+        title,
+        description,
+        href: link.href,
+      };
+    });
+}
+
 function resourceGroups(sourceHtml: string): ResourceGroup[] {
   const document = documentFrom(sourceHtml);
   const headings = [...document.querySelectorAll('h2, h3')];
+  if (!headings.length) {
+    return [
+      {
+        id: 'guidance-resource-links',
+        title: '',
+        headingLevel: 'h3',
+        items: resourceItems([...document.body.children]),
+      },
+    ];
+  }
   const headingLevel = headings.some((heading) => heading.tagName === 'H2') ? 'H2' : 'H3';
   return headings
     .filter((heading) => heading.tagName === headingLevel)
@@ -112,22 +141,9 @@ function resourceGroups(sourceHtml: string): ResourceGroup[] {
       id: heading.id,
       title: heading.textContent?.trim() ?? '',
       headingLevel: headingLevel.toLowerCase() as ResourceGroup['headingLevel'],
-      items: followingUntil(heading, (candidate) => candidate.tagName === headingLevel)
-        .flatMap((element) => [...element.querySelectorAll<HTMLLIElement>('li')])
-        .map((item) => {
-          const link = item.querySelector<HTMLAnchorElement>('a[href]');
-          if (!link) throw new Error(`Missing resource link in ${heading.textContent}.`);
-          const title = link.textContent?.trim() ?? '';
-          const description = (item.textContent ?? '')
-            .slice((item.textContent ?? '').indexOf(title) + title.length)
-            .replace(/^:\s*/, '')
-            .trim();
-          return {
-            title,
-            description,
-            href: link.href,
-          };
-        }),
+      items: resourceItems(
+        followingUntil(heading, (candidate) => candidate.tagName === headingLevel),
+      ),
     }));
 }
 
@@ -184,9 +200,11 @@ function ResourcesView({ sourceHtml }: PageWidgetProps) {
     <div className="reference-resources-view">
       {groups.map((group) => (
         <section className="page-section" id={group.id} key={group.id}>
-          <Text as={group.headingLevel} preset="heading3" foreground={1}>
-            {group.title}
-          </Text>
+          {group.title ? (
+            <Text as={group.headingLevel} preset="heading3" foreground={1}>
+              {group.title}
+            </Text>
+          ) : null}
           <div className="resources-grid">
             {group.items.map((resource) => {
               const titleId = `${group.id}-${resource.title.toLowerCase().replace(/\W+/g, '-')}`;

@@ -401,20 +401,12 @@ try {
     assert.equal(await page.locator('[data-example-id]').count(), record.examples.length);
     if (record.id === 'introduction') {
       const resourceSections = page.locator('.reference-resources-view .page-section');
-      assert.deepEqual(await resourceSections.locator('> h3').allTextContents(), [
-        'Assets',
-        'Code',
-        'Connect',
-      ]);
-      assert.deepEqual(
-        await resourceSections.evaluateAll((sections) =>
-          sections.map((section) => section.querySelectorAll('.resource-card-link').length),
-        ),
-        [3, 3, 3],
-      );
+      assert.equal(await resourceSections.count(), 1);
+      assert.equal(await resourceSections.locator('> h2, > h3').count(), 0);
+      assert.equal(await resourceSections.locator('.resource-card-link').count(), 3);
       assert.equal(await resourceSections.locator('.resource-card__icon').count(), 0);
       assert.equal(await resourceSections.locator('.resource-card__destination').count(), 0);
-      assert.equal(await resourceSections.locator('.resource-card__title svg').count(), 9);
+      assert.equal(await resourceSections.locator('.resource-card__title svg').count(), 3);
       assert.ok(
         await resourceSections
           .locator('.resource-card-link')
@@ -426,6 +418,12 @@ try {
                 card.firstElementChild?.classList.contains('fui-Card'),
             ),
           ),
+      );
+      assert.ok(
+        await resourceSections.locator('.resource-card').evaluateAll((cards) => {
+          const bottoms = cards.map((card) => card.getBoundingClientRect().bottom);
+          return Math.max(...bottoms) - Math.min(...bottoms) < 1;
+        }),
       );
       assert.ok(
         (
