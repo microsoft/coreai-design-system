@@ -603,11 +603,20 @@ try {
   }
 
   await page.goto(`${root}colors/`);
-  await page.waitForURL(`${root}foundations/color/`);
+  await page.waitForURL(`${root}foundations/colors/`);
   await page.locator('[data-reference-ready="true"]').waitFor();
   const themes = await import('@coreai-ds/react-components');
+  await page.getByRole('heading', { name: 'Colors', exact: true }).waitFor();
   assert.equal(await page.locator('#guidance-brand-ramps').count(), 1);
   assert.equal(await page.locator('#guidance-semantic-surface-and-text-colors').count(), 1);
+  assert.deepEqual(
+    await page
+      .locator('#guidance-brand-color, .reference-token-stack .stack-row__main > :first-child')
+      .evaluateAll((elements) =>
+        elements.slice(0, 2).map((element) => globalThis.getComputedStyle(element).lineHeight),
+      ),
+    ['38.4px', '22.4px'],
+  );
   await setTheme('light');
   assert.equal(
     await page.locator('[data-token-value="colorNeutralBackground1"]').innerText(),
@@ -641,7 +650,16 @@ try {
   await page.getByRole('heading', { name: 'Typography', exact: true }).waitFor();
   await page.locator('[data-reference-ready="true"]').waitFor();
   await page.locator('[data-example-id="components-text--presets"] .fui-Text').first().waitFor();
+  assert.equal(await page.locator('.reference-page-tabs').count(), 0);
   assert.equal(await page.locator('.font-card').count(), 2);
+  assert.deepEqual(
+    await page
+      .locator('#guidance-font-families, .reference-type-table .type-table__usage')
+      .evaluateAll((elements) =>
+        elements.slice(0, 2).map((element) => globalThis.getComputedStyle(element).lineHeight),
+      ),
+    ['38.4px', '22.4px'],
+  );
   const typeSizes = await page
     .locator('.reference-type-table [data-type-preset]')
     .evaluateAll((elements) =>
@@ -1048,7 +1066,7 @@ try {
       await staticPage.locator('[id="source-components-button-button--default"]').textContent()
     ).includes('export default Default'),
   );
-  await staticPage.goto(`${root}foundations/color/`);
+  await staticPage.goto(`${root}foundations/colors/`);
   assert.equal(await staticPage.locator('[data-page-widget="colors"] table').count(), 2);
   assert.ok(
     (await staticPage.locator('.standalone-guidance').innerText()).includes(
