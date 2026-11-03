@@ -552,13 +552,14 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
       (candidate) => candidate.tagName === 'H2',
     );
     return {
-      introductionHtml: introduction.map((element) => element.outerHTML).join(''),
-      packageName: introduction
-        .map((element) => element.querySelector('code')?.textContent)
-        .find(Boolean),
-      historyHref: introduction
-        .map((element) => element.querySelector('a[href$="/CHANGELOG.md"]')?.getAttribute('href'))
-        .find(Boolean),
+      links: introduction
+        .flatMap((element) => [...element.querySelectorAll('a[href]')])
+        .map((link) => ({
+          href: link.getAttribute('href') ?? '',
+          label: link.getAttribute('href')?.endsWith('/CHANGELOG.md')
+            ? 'Full history'
+            : link.textContent,
+        })),
       groups: [...groups],
     };
   }, [sourceHtml]);
@@ -580,29 +581,20 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
   }, [model]);
   return (
     <div className="reference-changelog-view">
-      <div className="changelog-overview">
-        <div className="changelog-overview__meta">
-          {model.packageName ? (
-            <Badge appearance="tint" color="subtle" shape="rounded">
-              {model.packageName}
-            </Badge>
-          ) : null}
-          {model.historyHref ? (
-            <Link href={model.historyHref} className="changelog-overview__history">
-              Full history <ExternalIcon aria-hidden="true" />
-            </Link>
-          ) : null}
-        </div>
-        <details className="changelog-about">
-          <summary>
-            <ChevronRight aria-hidden="true" />
-            About this changelog
-          </summary>
-          <div
-            className="changelog-intro standalone-guidance"
-            dangerouslySetInnerHTML={{ __html: model.introductionHtml }}
-          />
-        </details>
+      <div className="changelog-actions">
+        {model.links.map((link) => (
+          <Button
+            as="a"
+            href={link.href}
+            appearance="secondary"
+            size="small"
+            icon={<ExternalIcon />}
+            iconPosition="after"
+            key={link.href}
+          >
+            {link.label}
+          </Button>
+        ))}
       </div>
       <div className="changelog-list" ref={listRef}>
         <svg className="changelog-graph" aria-hidden="true">

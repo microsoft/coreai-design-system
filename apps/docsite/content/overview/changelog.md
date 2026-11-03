@@ -1,7 +1,7 @@
 ---
 id: changelog
 title: Changelog
-summary: Release history from the package's canonical changelog.
+summary: Updates to @coreai-ds/react-components.
 resources: []
 reference:
   renderer: changelog

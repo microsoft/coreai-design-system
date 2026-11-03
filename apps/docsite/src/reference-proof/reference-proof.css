@@ -350,69 +350,22 @@
   margin-block-start: 16px;
 }
 
-.changelog-overview {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.changelog-overview__meta {
+.changelog-actions {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px 24px;
+  gap: 8px;
 }
 
-.changelog-overview__history {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+.reference-shell .changelog-actions a {
+  color: var(--colorNeutralForeground1);
+  text-decoration: none;
 }
 
-.changelog-overview__history svg {
-  width: 14px;
-  height: 14px;
-}
-
-.changelog-about > summary {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  width: fit-content;
-  color: var(--colorNeutralForeground3);
-  cursor: pointer;
-  list-style: none;
-}
-
-.changelog-about > summary::-webkit-details-marker {
-  display: none;
-}
-
-.changelog-about > summary svg {
-  width: 14px;
-  height: 14px;
-  transition: transform var(--mf-duration-default) var(--mf-ease);
-}
-
-.changelog-about[open] > summary svg {
-  transform: rotate(90deg);
-}
-
-.changelog-about .changelog-intro {
-  margin-block-start: 16px;
-}
-
-.changelog-intro {
-  display: block;
-  max-width: 760px;
-}
-
-.changelog-intro > :first-child,
 .coreai-skill-guidance > :first-child {
   margin-block-start: 0;
 }
 
-.changelog-intro > :last-child,
 .coreai-skill-guidance > :last-child {
   margin-block-end: 0;
 }
