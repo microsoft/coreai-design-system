@@ -446,11 +446,13 @@ function sampleOptionForHash(group: SampleGroup | undefined) {
 function SampleSelector({
   group,
   label,
+  valuePrefix,
   selected,
   onSelect,
 }: {
   group: SampleGroup;
   label: string;
+  valuePrefix?: string;
   selected: string;
   onSelect: (id: string) => void;
 }) {
@@ -467,6 +469,7 @@ function SampleSelector({
               aria-label={label}
               className="reference-sample-menu__trigger"
             >
+              {valuePrefix}
               {selectedOption.label}
             </MenuButton>
           </MenuTrigger>
@@ -486,7 +489,10 @@ function SampleSelector({
           </MenuPopover>
         </Menu>
       ) : (
-        <span className="reference-showcase-toolbar__label">{selectedOption.label}</span>
+        <span className="reference-showcase-toolbar__label">
+          {valuePrefix}
+          {selectedOption.label}
+        </span>
       )}
     </div>
   );
@@ -647,6 +653,7 @@ export function PageTabs({
             <SampleSelector
               group={exampleGroup}
               label={`Choose ${title} sample`}
+              valuePrefix="Example: "
               selected={selectedSampleExample}
               onSelect={(id) => {
                 setSelectedSampleExample(id);

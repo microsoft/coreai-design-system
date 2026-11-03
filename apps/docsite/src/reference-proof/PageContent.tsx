@@ -117,7 +117,7 @@ function ShowcaseToolbar({
               aria-label={`Choose ${title} example`}
               className="reference-showcase-menu__trigger"
             >
-              {selectedOption.label}
+              Example: {selectedOption.label}
             </MenuButton>
           </MenuTrigger>
           <MenuPopover className="reference-showcase-menu__popover">
@@ -136,7 +136,7 @@ function ShowcaseToolbar({
           </MenuPopover>
         </Menu>
       ) : (
-        <span className="reference-showcase-toolbar__label">{selectedOption.label}</span>
+        <span className="reference-showcase-toolbar__label">Example: {selectedOption.label}</span>
       )}
       {resources.length ? (
         <span className="reference-showcase-toolbar__actions">

@@ -144,7 +144,7 @@ try {
         exact: true,
       });
       assert.equal(await trigger.count(), 1);
-      assert.equal((await trigger.innerText()).trim(), record.examples[0].name);
+      assert.equal((await trigger.innerText()).trim(), `Example: ${record.examples[0].name}`);
     }
     assert.equal(
       await usage.locator('.reference-api, .reference-template-source, .source-actions').count(),
@@ -439,7 +439,7 @@ try {
   await accordionMenu.click();
   assert.equal(await page.getByRole('menuitemradio').count(), accordion.examples.length);
   await page.getByRole('menuitemradio', { name: alternateAccordion.name, exact: true }).click();
-  assert.equal((await accordionMenu.innerText()).trim(), alternateAccordion.name);
+  assert.equal((await accordionMenu.innerText()).trim(), `Example: ${alternateAccordion.name}`);
   assert.equal(
     await page.locator('[data-basic-example] > .preview').getAttribute('data-showcase-example'),
     alternateAccordion.id,
@@ -449,7 +449,10 @@ try {
   const accordionSampleMenu = page
     .locator('[data-page-panel="samples"]')
     .getByRole('button', { name: `Choose ${accordion.title} sample`, exact: true });
-  assert.equal((await accordionSampleMenu.innerText()).trim(), alternateAccordion.name);
+  assert.equal(
+    (await accordionSampleMenu.innerText()).trim(),
+    `Example: ${alternateAccordion.name}`,
+  );
   const accordionReferenceMenu = page
     .locator('[data-page-panel="samples"]')
     .getByRole('button', { name: 'Choose reference code', exact: true });
