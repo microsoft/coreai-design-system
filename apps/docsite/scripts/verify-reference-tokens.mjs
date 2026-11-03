@@ -12,7 +12,13 @@ export async function assertReferenceTextTokens(page, label) {
     const alreadyTransitioning = document.documentElement.classList.contains('theme-transitioning');
     document.documentElement.classList.add('theme-transitioning');
     const host = document.querySelector('.coreai-docsite-provider') ?? document.documentElement;
-    const hosts = [...new Set([document.documentElement, host])];
+    const hosts = [
+      ...new Set([
+        document.documentElement,
+        host,
+        ...document.querySelectorAll('.colors-theme-scope'),
+      ]),
+    ];
     const groups = [
       [
         1,
@@ -135,13 +141,8 @@ export async function assertReferenceTypography(page, label) {
           }
           if (element.matches('.do-dont-card > h3')) size = 'Base400';
           const family = element.tagName === 'PRE' ? 'Monospace' : 'Base';
-          const foundationRhythm =
-            element
-              .closest('.reference-page-introduction')
-              ?.querySelector('[data-page-widget="typography"], [data-page-widget="colors"]') &&
-            element.matches('.standalone-guidance :is(p,li,h2:not(.fui-Text))');
           probe.style.fontSize = `var(--fontSize${size})`;
-          probe.style.lineHeight = foundationRhythm ? '1.6' : `var(--lineHeight${size})`;
+          probe.style.lineHeight = `var(--lineHeight${size})`;
           probe.style.fontWeight = `var(--fontWeight${weight})`;
           probe.style.fontFamily = `var(--fontFamily${family})`;
           const expected = globalThis.getComputedStyle(probe);

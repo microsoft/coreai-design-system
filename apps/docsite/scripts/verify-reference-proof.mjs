@@ -364,6 +364,16 @@ try {
       mode,
     );
   }
+  async function setBrand(brand) {
+    await page.getByRole('button', { name: 'Settings', exact: true }).click();
+    const settings = page.locator('.docsite-settings');
+    await settings.getByRole('combobox', { name: 'Brand theme', exact: true }).click();
+    await page
+      .getByRole('option', { name: brand === 'azure' ? 'Azure' : 'CoreAI', exact: true })
+      .click();
+    await page.keyboard.press('Escape');
+    await settings.waitFor({ state: 'hidden' });
+  }
   const errors = [];
   const pageProblems = [];
   const expectedNavigationErrors = [];
@@ -592,22 +602,55 @@ try {
   await page.locator('[data-reference-ready="true"]').waitFor();
   const themes = await import('@coreai-ds/react-components');
   await page.getByRole('heading', { name: 'Colors', exact: true }).waitFor();
-  assert.equal(await page.locator('#guidance-brand-ramps').count(), 1);
-  assert.equal(await page.locator('#guidance-semantic-surface-and-text-colors').count(), 1);
+  await setTheme('dark');
+  assert.equal(
+    await page.locator('.page-summary').innerText(),
+    'Palette, semantic roles, and token naming conventions.',
+  );
+  assert.equal(
+    await page.locator('.site-main').evaluate((element) => getComputedStyle(element).paddingTop),
+    '64px',
+  );
+  const colorSections = page.locator('.standalone-guidance .page-section');
   assert.deepEqual(
-    await page
-      .locator('#guidance-brand-color, .reference-token-stack .stack-row__main > :first-child')
-      .evaluateAll((elements) =>
-        elements.slice(0, 2).map((element) => globalThis.getComputedStyle(element).lineHeight),
+    await colorSections.locator('> h2').allTextContents(),
+    [
+      'Brand Color',
+      'Surface Colors',
+      'Text Colors',
+      'Accessibility requirements',
+      'Data Visualization',
+    ],
+  );
+  assert.deepEqual(
+    await colorSections.evaluateAll((sections) =>
+      sections.slice(1).map((section, index) =>
+        Math.round(
+          section.getBoundingClientRect().top - sections[index].getBoundingClientRect().bottom,
+        ),
       ),
-    ['38.4px', '22.4px'],
+    ),
+    [48, 48, 48, 48],
+  );
+  assert.equal(await page.locator('.colors-theme-tabs').count(), 0);
+  await page.getByText('brandVariants[70] · colorBrandBackground', { exact: true }).waitFor();
+  await page.getByText('brandVariants[110] · colorBrandForeground1', { exact: true }).waitFor();
+  assert.equal(await page.locator('.stack-table--filled .stack-row').count(), 4);
+  assert.equal(
+    await page.locator('.colors-theme-content .stack-table--outline .stack-row').count(),
+    6,
+  );
+  assert.equal(await page.locator('.ratio-card').count(), 0);
+  assert.equal(
+    await page.locator('.theme-dark-only .accessibility-card:visible').count(),
+    2,
   );
   await setTheme('light');
   assert.equal(
     await page.locator('[data-token-value="colorNeutralBackground1"]').innerText(),
     themes.coreaiLightTheme.colorNeutralBackground1,
   );
-  await page.getByRole('tab', { name: 'Azure theme', exact: true }).click();
+  await setBrand('azure');
   assert.equal(
     await page.locator('[data-token-value="colorBrandBackground"]').innerText(),
     themes.azureLightTheme.colorBrandBackground,
@@ -617,7 +660,7 @@ try {
     await page.locator('[data-token-value="colorBrandBackground"]').innerText(),
     themes.azureDarkTheme.colorBrandBackground,
   );
-  await page.getByRole('button', { name: 'Copy colorNeutralBackground1', exact: true }).click();
+  await page.locator('[data-copy="colorNeutralBackground1"]').click();
   await page
     .locator('.copy-toast')
     .filter({ hasText: 'Copied colorNeutralBackground1' })
@@ -636,15 +679,42 @@ try {
   await page.locator('[data-reference-ready="true"]').waitFor();
   await page.locator('[data-example-id="components-text--presets"] .fui-Text').first().waitFor();
   assert.equal(await page.locator('.reference-page-tabs').count(), 0);
+  assert.equal(
+    await page.locator('.page-summary').innerText(),
+    'Type scale, weight system, and readability rules.',
+  );
+  assert.equal(
+    await page.locator('.site-main').evaluate((element) => getComputedStyle(element).paddingTop),
+    '64px',
+  );
   assert.equal(await page.locator('.font-card').count(), 2);
   assert.deepEqual(
-    await page
-      .locator('#guidance-font-families, .reference-type-table .type-table__usage')
-      .evaluateAll((elements) =>
-        elements.slice(0, 2).map((element) => globalThis.getComputedStyle(element).lineHeight),
-      ),
-    ['38.4px', '22.4px'],
+    await page.locator('.standalone-guidance .page-section > h2').allTextContents(),
+    ['Font families', 'Type scale'],
   );
+  assert.deepEqual(
+    await page
+      .locator(
+        '[data-page-widget="font-families"], [data-page-widget="typography"]',
+      )
+      .evaluateAll((widgets) =>
+        widgets.slice(1).map((widget, index) =>
+          Math.round(
+            widget.getBoundingClientRect().top - widgets[index].getBoundingClientRect().bottom,
+          ),
+        ),
+      ),
+    [48],
+  );
+  assert.equal(
+    await page
+      .locator('.standalone-guidance')
+      .getByRole('link', { name: /Download Aptos from Microsoft/ })
+      .count(),
+    0,
+  );
+  await page.getByText('Body1Strong&Body1', { exact: true }).waitFor();
+  await page.getByText('Caption1Strong&Caption1', { exact: true }).waitFor();
   const typeSizes = await page
     .locator('.reference-type-table [data-type-preset]')
     .evaluateAll((elements) =>
@@ -654,7 +724,7 @@ try {
     typeSizes[0] > typeSizes[1] && typeSizes[1] > typeSizes[4],
     'Type samples use real text presets',
   );
-  await page.locator('.reference-type-table button.type-table__row').first().click();
+  await page.locator('.reference-type-table .type-table__row').first().click();
   await page
     .locator('.copy-toast')
     .filter({ hasText: 'Copied heading1' })
