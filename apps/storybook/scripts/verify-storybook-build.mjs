@@ -124,11 +124,14 @@ for (const expected of inventory.components) {
   for (const story of expected.stories) {
     const entry = index.entries[story.id];
     const documented = component.stories.find((item) => item.id === story.id);
-    if (
-      !entry?.importPath?.includes('/component-stories/') ||
-      !documented?.snippet ||
-      documented.error
-    ) {
+    if (!entry?.importPath?.includes('/component-stories/')) {
+      throw new Error(`Selected story is not published through its generated owner: ${story.id}`);
+    }
+    if (story.tags.includes('!manifest')) {
+      if (documented) {
+        throw new Error(`Manifest-disabled story is published in component docs: ${story.id}`);
+      }
+    } else if (!documented?.snippet || documented.error) {
       throw new Error(`Selected story is not published through its generated owner: ${story.id}`);
     }
   }

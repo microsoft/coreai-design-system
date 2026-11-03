@@ -366,6 +366,8 @@ A `Dev` filename or export suffix does not itself hide a story from MCP. Check t
 debugger and docs tools when changing inclusion or grouping stories under the same title.
 Mark verification-only stories with per-story `tags: ['!manifest']`; the inventory-backed
 source documentation provider also excludes these stories from MCP examples.
+Build verification still requires their generated owners in the story index and checks that
+they are absent from component manifest examples.
 
 ### Creating a template
 
