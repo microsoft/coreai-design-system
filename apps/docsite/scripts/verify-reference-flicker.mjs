@@ -35,6 +35,7 @@ const readNavigationGeometry = (page) =>
     ];
     return {
       scrollHeight: navigation?.scrollHeight,
+      divider: groups[0] ? globalThis.getComputedStyle(groups[0]).borderBottom : null,
       groups: groups.map((group) => ({
         rect: rect(group),
         expanded:
@@ -47,6 +48,36 @@ const readNavigationGeometry = (page) =>
       ),
     };
   });
+
+const readSearchPresentation = (page, fallback) =>
+  page.evaluate((staticFallback) => {
+    const element = globalThis.document.querySelector(
+      staticFallback ? '.reference-search-fallback' : '.fui-SearchBox',
+    );
+    const text = staticFallback ? element?.firstElementChild : element?.querySelector('input');
+    const shortcut = element?.querySelector('.app-sidenav__search-shortcut');
+    if (!element || !text || !shortcut) return null;
+    const rect = (target) => {
+      const bounds = target.getBoundingClientRect();
+      return [bounds.x, bounds.y, bounds.width, bounds.height].map((value) =>
+        Number(value.toFixed(3)),
+      );
+    };
+    const style = globalThis.getComputedStyle(element);
+    const textStyle = globalThis.getComputedStyle(text);
+    return {
+      rect: rect(element),
+      background: style.backgroundColor,
+      border: style.border,
+      borderRadius: style.borderRadius,
+      textX: staticFallback
+        ? rect(text)[0]
+        : Number(
+            (text.getBoundingClientRect().x + Number.parseFloat(textStyle.paddingLeft)).toFixed(3),
+          ),
+      shortcut: rect(shortcut),
+    };
+  }, fallback);
 
 try {
   const context = await browser.newContext({ reducedMotion: 'reduce' });
@@ -97,11 +128,13 @@ try {
   await reloadPage.getByRole('heading', { name: 'Button', exact: true }).waitFor();
   const before = await reloadPage.locator('.app-content').boundingBox();
   const navigationBefore = await readNavigationGeometry(reloadPage);
+  const searchBefore = await readSearchPresentation(reloadPage, true);
   assert.ok(before, 'The static shell is laid out before the application bundle loads');
   await reloadPage.locator('[data-reference-ready="true"]').waitFor();
   await reloadPage.locator('.app-sidenav__nav.shell-slot-ready').waitFor();
   const after = await reloadPage.locator('.app-content').boundingBox();
   const navigationAfter = await readNavigationGeometry(reloadPage);
+  const searchAfter = await readSearchPresentation(reloadPage, false);
   assert.ok(after, 'The hydrated shell remains laid out');
   assert.ok(Math.abs(before.x - after.x) <= 1, 'Hydration does not move the content shell');
   assert.ok(
@@ -113,6 +146,7 @@ try {
     navigationBefore,
     'Hydration keeps navigation groups and the active item in the same positions',
   );
+  assert.deepEqual(searchAfter, searchBefore, 'Hydration keeps the search control visually stable');
   const reloadFrames = await readFrames(reloadPage);
   assert.ok(reloadFrames.length > 10, 'The reload check samples multiple animation frames');
   assert.ok(
@@ -221,6 +255,27 @@ try {
   });
   await homePage.goto(root.href, { waitUntil: 'commit' });
   await homePage.locator('.home-widget').waitFor();
+  const readHomeActions = () =>
+    homePage.evaluate(() =>
+      [...globalThis.document.querySelectorAll('.home-agent-entry > :not(details)')].map(
+        (element) => {
+          const bounds = element.getBoundingClientRect();
+          const style = globalThis.getComputedStyle(element);
+          return {
+            rect: [bounds.x, bounds.y, bounds.width, bounds.height].map((value) =>
+              Number(value.toFixed(3)),
+            ),
+            background: style.backgroundColor,
+            border: style.border,
+            color: style.color,
+            font: style.font,
+            letterSpacing: style.letterSpacing,
+            padding: style.padding,
+          };
+        },
+      ),
+    );
+  const homeActionsBefore = await readHomeActions();
   const homeBackgroundBefore = await homePage.evaluate(() => {
     const content = globalThis.document.querySelector('.app-content');
     const page = globalThis.document.querySelector('.app-page');
@@ -232,6 +287,8 @@ try {
   });
   await graphicRequest;
   await homePage.locator('[data-reference-ready="true"]').waitFor();
+  await homePage.locator('.home-widget.page-widget-ready').waitFor();
+  const homeActionsAfter = await readHomeActions();
   const homeBackgroundAfter = await homePage.evaluate(() => {
     const content = globalThis.document.querySelector('.app-content');
     const page = globalThis.document.querySelector('.app-page');
@@ -245,6 +302,11 @@ try {
     homeBackgroundAfter,
     homeBackgroundBefore,
     'Home keeps the same shell classes and background through hydration',
+  );
+  assert.deepEqual(
+    homeActionsAfter,
+    homeActionsBefore,
+    'Home keeps the same starter actions through hydration',
   );
   assert.equal(
     await homePage.locator('.home-visual').locator('img, svg, canvas, [role="img"]').count(),

@@ -48,7 +48,8 @@
     .app-sidenav__quick-link,
     .app-sidenav__link,
     .app-sidenav__search-logo,
-    .font-card-link
+    .font-card-link,
+    .reference-home-action
   ) {
   color: var(--colorBrandForegroundLink);
   text-decoration: underline;
@@ -631,11 +632,17 @@
   width: 100%;
   height: 32px;
   padding: 0 8px 0 10px;
+  border: 1px solid transparent;
   border-radius: var(--borderRadiusMedium);
   background: var(--colorNeutralBackground3);
   color: var(--colorNeutralForeground4);
   font-size: var(--fontSizeBase300);
   line-height: var(--lineHeightBase300);
+  letter-spacing: 0.038em;
+}
+
+.reference-search-fallback .app-sidenav__search-shortcut {
+  letter-spacing: 0.0575em;
 }
 
 .reference-theme-fallback {
@@ -739,9 +746,55 @@
   max-width: calc(100vw - 64px);
 }
 
+.reference-home-action {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 32px;
+  padding: 5px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--borderRadiusCircular);
+  font-size: var(--fontSizeBase300);
+  font-weight: var(--fontWeightSemibold);
+  line-height: var(--lineHeightBase300);
+  letter-spacing: 0.038em;
+  text-decoration: none;
+}
+
+.reference-home-action svg {
+  flex-shrink: 0;
+  margin-right: 6px;
+}
+
+.reference-home-action--primary {
+  background: var(--colorBrandBackground);
+  color: var(--colorNeutralForegroundOnBrand);
+}
+
+.reference-shell .reference-home-action--secondary {
+  border-color: var(--colorNeutralStroke1);
+  background: transparent;
+  color: var(--colorNeutralForeground1);
+}
+
 .reference-shell .home-agent-entry a.fui-LinkButton {
   color: var(--colorNeutralForeground1);
   text-decoration: none;
+}
+
+.home-widget {
+  position: relative;
+}
+
+.reference-live-home-view {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+
+.home-widget.page-widget-ready > .reference-live-home-view {
+  position: static;
+  visibility: visible;
 }
 
 .home-agent-preview summary,

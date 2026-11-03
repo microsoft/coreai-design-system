@@ -55,6 +55,29 @@ class ExampleBoundary extends React.Component<
   }
 }
 
+function HomeWidgetSlot({ target, children }: { target: HTMLElement; children: React.ReactNode }) {
+  const liveRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    let secondFrame = 0;
+    const firstFrame = requestAnimationFrame(() => {
+      secondFrame = requestAnimationFrame(() => {
+        for (const child of [...target.children]) if (child !== liveRef.current) child.remove();
+        target.classList.add('page-widget-ready');
+      });
+    });
+    return () => {
+      cancelAnimationFrame(firstFrame);
+      cancelAnimationFrame(secondFrame);
+    };
+  }, [target]);
+  return createPortal(
+    <div ref={liveRef} className="reference-live-home-view">
+      {children}
+    </div>,
+    target,
+  );
+}
+
 // This subtree shares the theme, but not the site's router: examples may supply their own routers.
 export function PageContent({
   page,
@@ -134,7 +157,8 @@ export function PageContent({
       .then(([loaded, foundationViews, standaloneViews, homeView]) => {
         if (!active) return;
         for (const container of containers) container.replaceChildren();
-        for (const widget of pageWidgets) widget.element.replaceChildren();
+        for (const widget of pageWidgets)
+          if (widget.name !== 'home') widget.element.replaceChildren();
         setViews({ ...foundationViews, ...standaloneViews, ...homeView });
         setWidgets(pageWidgets);
         setExamples(
@@ -198,11 +222,14 @@ export function PageContent({
         ? widgets.map((widget, index) => {
             const View = views[widget.name];
             if (!View) throw new Error(`Unknown custom page view: ${widget.name}`);
-            return createPortal(
-              <View sourceHtml={widget.sourceHtml} model={presentation.model} />,
-              widget.element,
-              `page-view-${index}`,
-            );
+            const view = <View sourceHtml={widget.sourceHtml} model={presentation.model} />;
+            if (widget.name === 'home')
+              return (
+                <HomeWidgetSlot key={`page-view-${index}`} target={widget.element}>
+                  {view}
+                </HomeWidgetSlot>
+              );
+            return createPortal(view, widget.element, `page-view-${index}`);
           })
         : null}
       {targets?.map((container) => {
