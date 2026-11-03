@@ -106,13 +106,22 @@
 .reference-showcase-toolbar__actions {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacingHorizontalXS);
+  gap: 0;
   margin-inline-start: auto;
 }
 
 .reference-showcase-toolbar__action :is(svg, img) {
   width: 20px;
   height: 20px;
+}
+
+.reference-showcase-toolbar__action .figma-logo {
+  width: 18px;
+  height: 18px;
+}
+
+.reference-showcase-toolbar__action .fluent-logo {
+  color: var(--colorNeutralForeground2);
 }
 
 .reference-basic-example.reference-showcase-frame .preview {

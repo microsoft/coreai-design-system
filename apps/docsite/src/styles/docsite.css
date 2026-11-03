@@ -3372,6 +3372,15 @@ a.theme-crossfade:hover {
   transition: opacity var(--mf-duration-fast) var(--mf-ease);
 }
 
+.component-resource-card__icon .figma-logo {
+  width: 18px;
+  height: 18px;
+}
+
+.component-resource-card__icon .fluent-logo {
+  color: var(--colorNeutralForeground2);
+}
+
 .component-resource-card__open {
   opacity: 0;
 }

@@ -58,9 +58,11 @@ export function ExternalIcon(props: FluentIconsProps) {
 }
 
 export function FigmaLogo(props: React.ImgHTMLAttributes<HTMLImageElement>) {
+  const className = ['figma-logo', props.className].filter(Boolean).join(' ');
   return (
     <img
       {...props}
+      className={className}
       src={figmaColor32}
       alt=""
       width={32}
@@ -72,7 +74,8 @@ export function FigmaLogo(props: React.ImgHTMLAttributes<HTMLImageElement>) {
 }
 
 export function FluentLogo(props: FluentIconsProps) {
-  return <Fluent20Regular aria-hidden="true" {...props} />;
+  const className = ['fluent-logo', props.className].filter(Boolean).join(' ');
+  return <Fluent20Regular aria-hidden="true" {...props} className={className} />;
 }
 
 export function StorybookLogo(props: React.SVGProps<SVGSVGElement>) {
