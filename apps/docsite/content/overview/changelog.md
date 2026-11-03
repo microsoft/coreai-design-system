@@ -1,7 +1,7 @@
 ---
 id: changelog
 title: Changelog
-summary: Release notes for @coreai-ds/react-components, grouped by version. Browse package changes below, or open the full history in the repository.
+summary: Release notes for @coreai-ds/react-components, grouped by version.
 resources: []
 reference:
   renderer: changelog
