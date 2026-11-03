@@ -161,24 +161,6 @@
   gap: 24px;
 }
 
-.reference-resources-view .resource-card {
-  gap: 4px;
-}
-
-.reference-resources-view .resource-card__title {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--spacingHorizontalS);
-}
-
-.reference-resources-view .resource-card__title > span:last-child,
-.reference-resources-view .resource-card__title svg {
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-}
-
 .reference-faqs-view .faq-answer > :first-child {
   margin-block-start: 0;
 }

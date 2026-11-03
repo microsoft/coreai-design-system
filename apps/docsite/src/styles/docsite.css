@@ -1773,15 +1773,12 @@ code:not(pre code) {
 }
 
 .resource-card-link {
-  display: block;
-  height: 100%;
   min-width: 0;
   border-radius: var(--borderRadiusXLarge);
   text-decoration: none;
 }
 
 .fui-Card.resource-card {
-  box-sizing: border-box;
   height: 100%;
   min-width: 0;
   padding: var(--spacingHorizontalXXL);

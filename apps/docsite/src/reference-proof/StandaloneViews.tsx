@@ -214,26 +214,23 @@ function ResourcesView({ sourceHtml }: PageWidgetProps) {
                   href={resource.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="resource-card-link"
                   aria-labelledby={`${titleId}-title`}
                   aria-describedby={`${titleId}-description`}
                 >
-                  <Card focusMode="off" className="resource-card">
-                    <div className="resource-card__title">
-                      <Text
-                        as="h3"
-                        id={`${titleId}-title`}
-                        size={500}
-                        weight="regular"
-                        foreground={1}
-                      >
-                        {resource.title}
-                        <span className="sr-only"> (opens in a new tab)</span>
-                      </Text>
+                  <Card focusMode="off">
+                    <Text
+                      as="h3"
+                      id={`${titleId}-title`}
+                      size={500}
+                      weight="regular"
+                      foreground={1}
+                    >
+                      {resource.title}{' '}
                       <span aria-hidden="true">
                         <ExternalIcon />
                       </span>
-                    </div>
+                      <span className="sr-only"> (opens in a new tab)</span>
+                    </Text>
                     <Text as="p" id={`${titleId}-description`} size={300} foreground={2}>
                       {resource.description}
                     </Text>

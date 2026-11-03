@@ -403,34 +403,19 @@ try {
       const resourceSections = page.locator('.reference-resources-view .page-section');
       assert.equal(await resourceSections.count(), 1);
       assert.equal(await resourceSections.locator('> h2, > h3').count(), 0);
-      assert.equal(await resourceSections.locator('.resource-card-link').count(), 3);
-      assert.equal(await resourceSections.locator('.resource-card__icon').count(), 0);
-      assert.equal(await resourceSections.locator('.resource-card__destination').count(), 0);
-      assert.equal(await resourceSections.locator('.resource-card__title svg').count(), 3);
+      const resourceLinks = resourceSections.locator('.resources-grid > .fui-Link');
+      assert.equal(await resourceLinks.count(), 3);
+      assert.equal(await resourceSections.locator('.fui-Card').count(), 3);
+      assert.equal(await resourceSections.locator('[class*="resource-card"]').count(), 0);
       assert.ok(
-        await resourceSections
-          .locator('.resource-card-link')
-          .evaluateAll((cards) =>
-            cards.every(
-              (card) =>
-                card.tagName === 'A' &&
-                card.classList.contains('fui-Link') &&
-                card.firstElementChild?.classList.contains('fui-Card'),
-            ),
+        await resourceLinks.evaluateAll((cards) =>
+          cards.every(
+            (card) =>
+              card.tagName === 'A' &&
+              card.classList.contains('fui-Link') &&
+              card.firstElementChild?.classList.contains('fui-Card'),
           ),
-      );
-      assert.ok(
-        await resourceSections.locator('.resource-card').evaluateAll((cards) => {
-          const bottoms = cards.map((card) => card.getBoundingClientRect().bottom);
-          return Math.max(...bottoms) - Math.min(...bottoms) < 1;
-        }),
-      );
-      assert.ok(
-        (
-          await resourceSections
-            .locator('.resource-card')
-            .evaluateAll((cards) => cards.map((card) => globalThis.getComputedStyle(card).gap))
-        ).every((gap) => gap === '4px'),
+        ),
       );
     }
     if (!record.standalone) {
