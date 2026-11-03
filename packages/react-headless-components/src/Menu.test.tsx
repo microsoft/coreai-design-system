@@ -241,6 +241,13 @@ test('Menu reports expose actual selected fixture readiness, counts, native stat
   );
   const report = screen.getByRole('status', { name: 'Menu style report' });
   await expect.element(report).toHaveAttribute('data-menu-report-state', 'ready');
+  await settleMenuStyles();
+  screen
+    .getByLabelText('Menu visual fixture')
+    .element()
+    .dispatchEvent(new Event('change', { bubbles: true }));
+  await settleMenuStyles();
+  await expect.element(report).toHaveAttribute('data-menu-report-state', 'ready');
   await expect.element(report).toHaveAttribute('data-menu-unexpected-count', '0');
   expect(html(report).getBoundingClientRect().height).toBe(320);
   await userEvent.hover(screen.getByTestId('menu-report-pointer-rest'));

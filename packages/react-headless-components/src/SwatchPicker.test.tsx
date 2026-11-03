@@ -693,6 +693,14 @@ test('comparison reports publish current fixture readiness, counts and stable fi
   const screen = await renderFlow(<SwatchPickerComparisonWithReport />);
   await userEvent.hover(screen.getByTestId('swatch-report-pointer-rest'));
   const report = screen.getByRole('status', { name: 'SwatchPicker style report', exact: true });
+  await expect.element(report).toHaveAttribute('data-swatch-report-state', 'ready');
+  await settleSwatchPickerStyles();
+  screen
+    .getByLabelText('SwatchPicker visual fixture')
+    .element()
+    .dispatchEvent(new Event('change', { bubbles: true }));
+  await settleSwatchPickerStyles();
+  await expect.element(report).toHaveAttribute('data-swatch-report-state', 'ready');
   for (const name of ['Default', 'Grid', 'Explicit undefined visual props']) {
     await userEvent.selectOptions(screen.getByLabelText('SwatchPicker visual fixture'), name);
     await expect.element(report).toHaveAttribute('data-swatch-report-state', 'ready');

@@ -707,6 +707,13 @@ test('the actual comparison report reaches ready with matching final geometry an
   await userEvent.hover(screen.getByTestId('toolbar-report-pointer-rest'));
   const report = screen.getByRole('status', { name: 'Toolbar style report' });
   await expect.element(report).toHaveAttribute('data-toolbar-report-state', 'ready');
+  await settleToolbarStyles();
+  screen
+    .getByLabelText('Toolbar visual fixture')
+    .element()
+    .dispatchEvent(new Event('change', { bubbles: true }));
+  await settleToolbarStyles();
+  await expect.element(report).toHaveAttribute('data-toolbar-report-state', 'ready');
   await expect.element(report).toHaveAttribute('data-toolbar-unexpected-count', '0');
   const root = getComparisonToolbar(screen.container, 'headless');
   const rect = root.getBoundingClientRect();

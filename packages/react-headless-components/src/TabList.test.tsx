@@ -426,6 +426,13 @@ test('the actual report reaches ready with matching final dimensions, selected c
   await userEvent.hover(screen.getByTestId('tablist-report-pointer-rest'));
   const report = screen.getByRole('status', { name: 'TabList style report' });
   await expect.element(report).toHaveAttribute('data-tablist-report-state', 'ready');
+  await settleTabListStyles();
+  screen
+    .getByLabelText('TabList visual fixture')
+    .element()
+    .dispatchEvent(new Event('change', { bubbles: true }));
+  await settleTabListStyles();
+  await expect.element(report).toHaveAttribute('data-tablist-report-state', 'ready');
   await expect.element(report).toHaveAttribute('data-tablist-unexpected-count', '0');
   await expect.element(report).toHaveAttribute('data-tablist-tab-count', '3');
   const list = getComparisonTabList(screen.container, 'headless');

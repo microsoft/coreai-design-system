@@ -6,6 +6,18 @@ Private component migration pilot. Converted components are listed in the
 Each implementation calls Fluent's public component hook, styles the resolved slots, and calls
 the public render function. It does not call Fluent's Griffel styling hook.
 
+## Migration scope
+
+The pinned headless `0.3.2` catalog is implemented: 143 distinct component exports across
+51 supported component entry points, including behavior-only roots and triggers. The
+[public exports](./src/index.ts) are the supported experimental surface, not a production release.
+
+DataGrid, Table, Tree, and Text remain deferred because this pinned package does not publish them.
+The deprecated CoreAI Nav surface is not recreated. Provider/theme/defaults remain on the existing
+bridge; style-free overflow, positioning, and utility APIs do not need visual ports.
+Existing custom CoreAI composites such as Input's CopyButton remain explicit boundaries below.
+This coverage does not claim exhaustive visual parity or a Griffel-free application bundle.
+
 ## Run
 
 From the repository root:
@@ -149,6 +161,11 @@ not a claim that the whole application bundle is Griffel-free.
 - The color/palette batch uses the installed snapshot at commit `d162113`:
   [ColorPicker in react-color-picker 9.3.3](https://unpkg.com/@fluentui/react-color-picker@9.3.3/lib/components/ColorPicker/useColorPickerStyles.styles.raw.js)
   and [SwatchPicker in react-swatch-picker 9.6.3](https://unpkg.com/@fluentui/react-swatch-picker@9.6.3/lib/components/SwatchPicker/useSwatchPickerStyles.styles.raw.js).
+- The final supported-family batch uses the installed snapshot at commit `af75519`:
+  [TeachingPopoverSurface in react-teaching-popover 9.7.9](https://unpkg.com/@fluentui/react-teaching-popover@9.7.9/lib/components/TeachingPopoverSurface/useTeachingPopoverSurfaceStyles.styles.raw.js)
+  and [List in react-list 9.7.0](https://unpkg.com/@fluentui/react-list@9.7.0/lib/components/List/useListStyles.styles.raw.js).
+  TeachingPopover reuses the completed Popover and Button foundations; List's checkmark bridge
+  reuses Checkbox CSS without replacing its native control or focus behavior.
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -335,6 +352,18 @@ SwatchPicker preserves CoreAI's omitted rounded shape; explicit `undefined` reso
 ImageSwatch keeps the installed parent size/shape precedence. Raw-current grid arrow navigation is
 unavailable in both tested browser modes; examples use supported `focusMode="tab"` instead.
 Consumers own EmptySwatch actions, form fields/reset, and any required focusgroup polyfill.
+TeachingPopover retains its non-modal native group surface and trigger ARIA defaults. Its title
+dismiss button inherits `aria-hidden`; accessible dismissal examples explicitly supply
+`dismissButton={{ 'aria-hidden': false, 'aria-label': 'Close guide', type: 'button' }}`.
+Carousel footer action props-object slots do not support `ref`; typed renderers can use the public
+forward-ref `TeachingPopoverCarouselFooterButton` instead. Native DOM/Tab order remains unchanged.
+Controlled outside actions that also update guide content retain the upstream reopening boundary;
+plain outside dismissal works, and reset examples explicitly reset both the content version and
+controlled `open` state.
+List exposes only its current root and item APIs, not invented size/inset/spacing props or CoreAI
+defaults. Native selection, nested actions, and consumer focusgroup support remain hook-owned.
+`disabledSelection` blocks selection without disabling primary actions. Form values/reset and
+post-removal focus restoration remain consumer-owned rather than adding a legacy focus manager.
 
 ## Conversion workflow
 
@@ -417,6 +446,9 @@ remain deferred; do not recreate their behavior as part of a styling conversion.
 - Require play-exception propagation (`throwPlayFunctionExceptions: true`) and check final report
   state/geometry, not only a `storyFinished` success event. Layout changes without resize can leave
   legacy positioning stale; refresh through public handles and await stable geometry before capture.
+- Selecting an already selected report fixture is a no-op. Do not clear its completed capture
+  unless a dependency changes and starts another capture; regression checks must exercise this
+  after initial readiness rather than relying on an unfinished initial capture to restore the report.
 - Workers may format/lint their own files. The coordinator integrates exports, then runs the
   combined focused tests, existing Button regressions, type checks, and builds. Serialize shared
   validation to avoid unfinished-file, cache, and build-output interference. Return failures to
@@ -573,6 +605,10 @@ Color controls add area/rail/thumb/checkerboard geometry, controlled pointer/key
 native editor submission/reset, and explicit current range/axis/RTL boundaries. Swatches add
 color/image/empty content, row/grid selection, callback identity, native forms, and consumer priority,
 with native and actual-polyfill interaction checks.
+TeachingPopover adds all current carousel/navigation/footer members, native/modal forms, accessible
+dismissal, controlled steps/content reset, public slots/refs, and report-stable overlay geometry.
+List adds selection/action payload identity, native row/root rendering, checkbox visuals, dynamic
+items and forms, with native and actual consumer-polyfill navigation checks.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 

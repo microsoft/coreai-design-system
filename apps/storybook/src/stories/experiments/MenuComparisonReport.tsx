@@ -128,6 +128,7 @@ function ReadyMenuComparisonReport({
         id={selectId}
         value={selectedName}
         onChange={(event) => {
+          if (event.target.value === selectedName) return;
           setReport(null);
           setSelectedName(event.target.value);
         }}

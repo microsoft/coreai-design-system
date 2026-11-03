@@ -21,6 +21,7 @@ import {
   TagDismissFlow,
   TagSelectionFlow,
 } from '../../../apps/storybook/src/stories/experiments/TagFlows.js';
+import { TagComparisonWithReport } from '../../../apps/storybook/src/stories/experiments/TagComparisonReport.js';
 import { compareTagGroupStyles } from '../../../apps/storybook/src/stories/experiments/compareInteractionTagStyles.js';
 import {
   getComparisonTag,
@@ -62,6 +63,27 @@ async function renderPair(
   await settleTagStyles(legacy, headless);
   return { screen, legacy, headless };
 }
+
+test('the completed TagGroup report stays ready when its current fixture is selected again', async () => {
+  const screen = await renderCoreAIComponent(<TagComparisonWithReport family="group" />);
+  await userEvent.hover(screen.getByTestId('tag-report-pointer-rest'));
+  const report = screen.getByRole('status', { name: 'Tag style report' });
+  await expect.element(report).toHaveAttribute('data-tag-report-state', 'ready');
+  await settleTagStyles();
+  screen
+    .getByLabelText('Tag visual fixture')
+    .element()
+    .dispatchEvent(new Event('change', { bubbles: true }));
+  await settleTagStyles();
+  await expect.element(report).toHaveAttribute('data-tag-report-state', 'ready');
+  await expect.element(report).toHaveAttribute('data-tag-unexpected-count', '0');
+  const group = getComparisonTag(screen.container, 'headless');
+  const rect = group.getBoundingClientRect();
+  expect(Number(report.element().getAttribute('data-tag-root-width'))).toBe(rect.width);
+  expect(Number(report.element().getAttribute('data-tag-root-height'))).toBe(rect.height);
+  expect(rect.width).toBeGreaterThan(0);
+  expect(rect.height).toBeGreaterThan(0);
+});
 
 for (const [mode, theme] of [
   ['light', coreaiLightTheme],
