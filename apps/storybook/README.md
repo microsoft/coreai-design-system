@@ -214,6 +214,8 @@ entries delegate to Storybook's provider. Templates and MDX discovery are unchan
 `npm --workspace apps/storybook run test:source` checks source extraction and provider ownership.
 `npm --workspace apps/storybook run stories:verify-source` checks all consumer examples against
 the CoreAI types and writes `.storybook/.cache/story-source-validation.json`.
+Explicitly type CSF object stories' `render` parameters: extracted examples are standalone
+functions and do not retain contextual typing from `StoryObj`.
 All 689 selected examples now type-check with zero diagnostics.
 
 For upstream examples only, the source extractor adapts `Partial<ComboboxProps>` and

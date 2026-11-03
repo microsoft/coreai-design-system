@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import * as React from 'react';
-import { Illicon, tokens } from '@coreai-ds/react-components';
+import { Illicon, tokens, type IlliconProps } from '@coreai-ds/react-components';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 /**
@@ -17,7 +17,7 @@ export const EmptyGridDev: StoryObj<typeof Illicon> = {
     data: { rows: ['0000', '0000'] },
     style: { outline: `1px solid ${tokens.colorNeutralStroke2}` },
   },
-  render: (args) => <Illicon {...args} />,
+  render: (args: IlliconProps) => <Illicon {...args} />,
 };
 
 /**
@@ -40,7 +40,7 @@ export const CustomSvgDev: StoryObj<typeof Illicon> = {
       </svg>
     ),
   },
-  render: (args) => <Illicon {...args} />,
+  render: (args: IlliconProps) => <Illicon {...args} />,
 };
 
 export default {

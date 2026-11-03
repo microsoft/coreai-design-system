@@ -196,7 +196,7 @@ export const Default: StoryObj<DotGridRenderOptions> = {
     pitch: { control: { type: 'range', min: 4, max: 12, step: 1 } },
   },
   parameters: { controls: { disable: false, include: ['radius', 'pitch'] } },
-  render: (args) => (
+  render: (args: DotGridRenderOptions) => (
     <ConvertedIllicon
       {...args}
       icon={Agents24Filled}
@@ -300,7 +300,7 @@ export const StrokedSvg: StoryObj<SamplingProps> = {
   parameters: {
     controls: { disable: false, include: ['multiplier', 'radius', 'pitch'] },
   },
-  render: (args) => (
+  render: (args: SamplingProps) => (
     <IconComparison {...args} icon={StrokedSvgIcon} label="Stroked SVG" nativeSize={24} />
   ),
   play: async ({ canvas, args }) => {
