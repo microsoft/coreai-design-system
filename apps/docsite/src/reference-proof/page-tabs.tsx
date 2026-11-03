@@ -13,6 +13,15 @@ export interface PageTabTargets {
   usage: HTMLElement;
   samples: HTMLElement;
   prefix: string;
+  showcase?: {
+    host: HTMLElement;
+    preview: HTMLElement;
+    defaultId: string;
+    options: {
+      id: string;
+      label: string;
+    }[];
+  };
   codeBlocks: {
     host: HTMLElement;
     code: string;
@@ -140,6 +149,15 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
   if (!introduction || !header || header.hidden) return null;
   const article = introduction.querySelector<HTMLElement>('.standalone-guidance');
   const basic = introduction.querySelector<HTMLElement>('[data-basic-example]');
+  const showcaseOptions = [...root.querySelectorAll<HTMLElement>('.example')].flatMap((example) => {
+    const preview = example.querySelector<HTMLElement>(':scope > .preview[data-example-id]');
+    const heading = example.querySelector<HTMLElement>(
+      ':scope > h1,:scope > h2,:scope > h3,:scope > h4,:scope > h5,:scope > h6',
+    );
+    const id = preview?.dataset.exampleId;
+    const label = heading?.textContent?.trim();
+    return id && label ? [{ id, label }] : [];
+  });
   if (!basic && !article?.querySelector('pre')) return null;
   if (
     article &&
@@ -210,8 +228,27 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
     introduction.append(...usage.children);
     return null;
   }
+  let showcase: PageTabTargets['showcase'];
+  if (basic && showcaseOptions.length > 1) {
+    const heading = basic.querySelector<HTMLElement>(
+      ':scope > h1,:scope > h2,:scope > h3,:scope > h4,:scope > h5,:scope > h6',
+    );
+    const preview = basic.querySelector<HTMLElement>(':scope > .preview[data-example-id]');
+    const defaultId = preview?.dataset.exampleId;
+    if (heading && preview && defaultId) {
+      const showcaseHost = document.createElement('span');
+      showcaseHost.className = 'reference-showcase-menu';
+      heading.replaceChildren(showcaseHost);
+      showcase = {
+        host: showcaseHost,
+        preview,
+        defaultId,
+        options: showcaseOptions,
+      };
+    }
+  }
   introduction.append(host, usage, samples);
-  return { host, usage, samples, prefix, codeBlocks };
+  return { host, usage, samples, prefix, showcase, codeBlocks };
 }
 
 function hashTarget(hash = window.location.hash): HTMLElement | null {

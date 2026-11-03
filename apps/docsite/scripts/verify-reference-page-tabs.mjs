@@ -43,6 +43,21 @@ try {
     );
     assert.ok(await usage.isVisible());
     assert.ok(!(await samples.isVisible()));
+    const showcase = usage.locator('.reference-showcase-menu');
+    const hasShowcaseOptions = Boolean(record.defaultExampleId) && record.examples.length > 1;
+    assert.equal(
+      await showcase.count(),
+      hasShowcaseOptions ? 1 : 0,
+      `${record.id}: showcase menu matches available examples`,
+    );
+    if (hasShowcaseOptions) {
+      const trigger = showcase.getByRole('button', {
+        name: `Choose ${record.title} example`,
+        exact: true,
+      });
+      assert.equal(await trigger.count(), 1);
+      assert.equal((await trigger.innerText()).trim(), record.examples[0].name);
+    }
     assert.equal(
       await usage.locator('.reference-api, .reference-template-source, .source-actions').count(),
       0,
@@ -267,6 +282,25 @@ try {
     await page.locator('[data-page-panel="samples"]').isVisible(),
     'Reload preserves the selected tab for the current page',
   );
+
+  const accordion = metadata.pages.find((record) => record.id === 'accordion');
+  assert.ok(accordion && accordion.examples.length > 1);
+  const alternateAccordion = accordion.examples[1];
+  await page.goto(new URL(accordion.htmlPath, root).href);
+  await page.locator('[data-reference-ready="true"]').waitFor();
+  const accordionMenu = page.getByRole('button', {
+    name: `Choose ${accordion.title} example`,
+    exact: true,
+  });
+  await accordionMenu.click();
+  assert.equal(await page.getByRole('menuitemradio').count(), accordion.examples.length);
+  await page.getByRole('menuitemradio', { name: alternateAccordion.name, exact: true }).click();
+  assert.equal((await accordionMenu.innerText()).trim(), alternateAccordion.name);
+  assert.equal(
+    await page.locator('[data-basic-example] > .preview').getAttribute('data-showcase-example'),
+    alternateAccordion.id,
+  );
+  assert.equal(await page.locator('[data-basic-example] [data-preview-error]').count(), 0);
 
   await page.goto(new URL('components/dropdown/', root).href);
   await page.locator('[data-reference-ready="true"]').waitFor();

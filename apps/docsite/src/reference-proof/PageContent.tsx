@@ -3,7 +3,15 @@
 
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { Button } from '@coreai-ds/react-components';
+import {
+  Button,
+  Menu,
+  MenuButton,
+  MenuItemRadio,
+  MenuList,
+  MenuPopover,
+  MenuTrigger,
+} from '@coreai-ds/react-components';
 import { loadExamples } from 'virtual:reference-proof-examples';
 import {
   PageHeader,
@@ -78,6 +86,48 @@ function HomeWidgetSlot({ target, children }: { target: HTMLElement; children: R
   );
 }
 
+function ShowcaseMenu({
+  title,
+  selected,
+  options,
+  onSelect,
+}: {
+  title: string;
+  selected: string;
+  options: NonNullable<PageTabTargets['showcase']>['options'];
+  onSelect: (id: string) => void;
+}) {
+  const selectedOption = options.find((option) => option.id === selected) ?? options[0];
+  return (
+    <Menu checkedValues={{ showcase: [selected] }} positioning={{ autoSize: true }}>
+      <MenuTrigger disableButtonEnhancement>
+        <MenuButton
+          appearance="secondary"
+          size="large"
+          aria-label={`Choose ${title} example`}
+          className="reference-showcase-menu__trigger"
+        >
+          {selectedOption.label}
+        </MenuButton>
+      </MenuTrigger>
+      <MenuPopover className="reference-showcase-menu__popover">
+        <MenuList>
+          {options.map((option) => (
+            <MenuItemRadio
+              key={option.id}
+              name="showcase"
+              value={option.id}
+              onClick={() => onSelect(option.id)}
+            >
+              {option.label}
+            </MenuItemRadio>
+          ))}
+        </MenuList>
+      </MenuPopover>
+    </Menu>
+  );
+}
+
 // This subtree shares the theme, but not the site's router: examples may supply their own routers.
 export function PageContent({
   page,
@@ -93,6 +143,7 @@ export function PageContent({
   const [loadError, setLoadError] = React.useState<string>();
   const [pageTabs, setPageTabs] = React.useState<PageTabTargets | null>(null);
   const [activeExample, setActiveExample] = React.useState<string>();
+  const [selectedShowcase, setSelectedShowcase] = React.useState<string>();
   const [presentation, setPresentation] = React.useState<{
     model: PagePresentation;
     header: HTMLElement;
@@ -130,10 +181,12 @@ export function PageContent({
     setTargets(null);
     setExamples({});
     setLoadError(undefined);
+    setActiveExample(undefined);
     setWidgets([]);
     setViews({});
     setPresentation({ model, header, resources });
     setPageTabs(tabs);
+    setSelectedShowcase(tabs?.showcase?.defaultId);
     const components = [
       ...new Set(containers.map((container) => container.dataset.exampleId?.split('--')[0])),
     ];
@@ -184,6 +237,10 @@ export function PageContent({
       active = false;
     };
   }, [page, onReady]);
+  React.useLayoutEffect(() => {
+    if (!pageTabs?.showcase || !selectedShowcase) return;
+    pageTabs.showcase.preview.dataset.showcaseExample = selectedShowcase;
+  }, [pageTabs, selectedShowcase]);
   return (
     <div
       aria-busy={page.status === 'loading' || loading}
@@ -215,6 +272,20 @@ export function PageContent({
             pageTabs.host,
           )
         : null}
+      {presentation && pageTabs?.showcase && selectedShowcase
+        ? createPortal(
+            <ShowcaseMenu
+              title={presentation.model.title}
+              selected={selectedShowcase}
+              options={pageTabs.showcase.options}
+              onSelect={(id) => {
+                setSelectedShowcase(id);
+                if (activeExample) setActiveExample(pageTabs.showcase?.defaultId);
+              }}
+            />,
+            pageTabs.showcase.host,
+          )
+        : null}
       {presentation?.resources
         ? createPortal(<ResourceCards model={presentation.model} />, presentation.resources)
         : null}
@@ -234,11 +305,17 @@ export function PageContent({
         : null}
       {targets?.map((container) => {
         const id = container.dataset.exampleId;
-        const Example = id ? examples[id] : undefined;
-        if (!id || !Example) throw new Error(`Unknown reference example: ${id}`);
+        const showcasePreview = pageTabs?.showcase?.preview === container;
+        const renderedId = showcasePreview && selectedShowcase ? selectedShowcase : id;
+        const Example = renderedId ? examples[renderedId] : undefined;
+        if (!id || !renderedId || !Example)
+          throw new Error(`Unknown reference example: ${renderedId ?? id}`);
+        const inactive =
+          activeExample &&
+          (showcasePreview ? activeExample !== pageTabs.showcase?.defaultId : activeExample !== id);
         return createPortal(
-          <ExampleBoundary id={id}>
-            {activeExample && activeExample !== id ? (
+          <ExampleBoundary key={renderedId} id={renderedId}>
+            {inactive ? (
               <Button onClick={() => setActiveExample(id)}>Run this example</Button>
             ) : (
               <Example />

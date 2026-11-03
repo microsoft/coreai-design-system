@@ -53,6 +53,23 @@
   margin: 0;
 }
 
+.reference-showcase-menu {
+  display: inline-flex;
+  max-width: 100%;
+}
+
+.reference-basic-example > h2 .reference-showcase-menu__trigger {
+  max-width: 100%;
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: inherit;
+}
+
+.reference-showcase-menu__popover {
+  max-height: min(480px, calc(100vh - 32px));
+  overflow-y: auto;
+}
+
 .reference-page-introduction .reference-page-panel[data-page-panel='samples'] .standalone-guidance {
   gap: 48px;
 }
