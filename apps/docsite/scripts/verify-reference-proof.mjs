@@ -367,9 +367,12 @@ try {
   async function setBrand(brand) {
     await page.getByRole('button', { name: 'Settings', exact: true }).click();
     const settings = page.locator('.docsite-settings');
-    await settings.getByRole('combobox', { name: 'Brand theme', exact: true }).click();
+    await settings.getByRole('combobox', { name: 'Product theme', exact: true }).click();
     await page
-      .getByRole('option', { name: brand === 'azure' ? 'Azure' : 'CoreAI', exact: true })
+      .getByRole('option', {
+        name: brand === 'azure' ? 'Azure blue' : 'CoreAI purple',
+        exact: true,
+      })
       .click();
     await page.keyboard.press('Escape');
     await settings.waitFor({ state: 'hidden' });
@@ -606,13 +609,18 @@ try {
   const settings = page.locator('.docsite-settings');
   const colorMode = settings.getByRole('tablist', { name: 'Color mode', exact: true });
   const productThemeLabel = settings.getByText('Product theme', { exact: true });
-  const productTheme = settings.getByRole('combobox', { name: 'Brand theme', exact: true });
+  const productTheme = settings.getByRole('combobox', { name: 'Product theme', exact: true });
+  assert.equal(
+    await settings.evaluate((element) => element.scrollWidth),
+    await settings.evaluate((element) => element.clientWidth),
+    'Settings popover does not overflow horizontally',
+  );
   assert.ok(
     (await productThemeLabel.boundingBox()).y >=
       (await colorMode.boundingBox()).y + (await colorMode.boundingBox()).height,
     'Product theme appears below the color mode switch',
   );
-  assert.equal(await productTheme.textContent(), 'CoreAI');
+  assert.equal(await productTheme.textContent(), 'CoreAI purple');
   const shortcutsToggle = settings.getByRole('button', {
     name: 'Keyboard shortcuts',
     exact: true,
@@ -1138,6 +1146,10 @@ try {
   const noJavaScript = await browser.newContext({ javaScriptEnabled: false });
   const staticPage = await noJavaScript.newPage();
   await staticPage.goto(`${root}components/button/`);
+  assert.match(
+    await staticPage.locator('.reference-theme-fallback svg path').getAttribute('d'),
+    /^M14\.95 5/,
+  );
   assert.equal(await staticPage.getByRole('heading', { name: 'Button', exact: true }).count(), 1);
   assert.ok(
     (

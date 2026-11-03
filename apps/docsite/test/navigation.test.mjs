@@ -636,20 +636,23 @@ test('unfinished pages retain their routes and use the shared work-in-progress s
   );
 });
 
-test('settings reuses Fluent controls with color mode above platform-specific shortcuts', async () => {
+test('settings uses compact Fluent controls with expandable shortcuts', async () => {
   const [settings, sidebar, styles] = await Promise.all([
     fs.readFile(new URL('apps/docsite/src/components/ThemeSwitcher.tsx', repoRoot), 'utf8'),
     fs.readFile(new URL('apps/docsite/src/components/Sidebar.tsx', repoRoot), 'utf8'),
     fs.readFile(new URL('apps/docsite/src/styles/docsite.css', repoRoot), 'utf8'),
   ]);
-  assert.match(settings, /Settings20Regular.*from '@fluentui\/react-icons'/);
-  assert.match(settings, /icon=\{<Settings20Regular \/>\}/);
+  assert.match(settings, /Options20Regular.*from '@fluentui\/react-icons'/);
+  assert.match(settings, /icon=\{<Options20Regular \/>\}/);
   assert.match(settings, /<Popover\s+trapFocus/);
   assert.match(settings, /positioning="below-start"/);
   assert.doesNotMatch(settings, /Close popover or overlay/);
   assert.match(settings, /<TabList\s+aria-label="Color mode"[\s\S]*Keyboard shortcuts/);
   assert.match(settings, /appearance="elevated"/);
   assert.match(settings, /<Tab value="dark">Dark<\/Tab>\s*<Tab value="light">Light<\/Tab>/);
+  assert.match(settings, /<Field className="docsite-settings__brand-field" label="Product theme">/);
+  assert.match(settings, /<Option value="coreai">CoreAI purple<\/Option>/);
+  assert.match(settings, /<Option value="azure">Azure blue<\/Option>/);
   assert.match(settings, /<Text size=\{200\} foreground=\{2\}>\s*\{label\}\s*<\/Text>/);
   assert.match(styles, /\.docsite-settings__mode \{\s*align-self: flex-start;/);
   assert.match(styles, /\.docsite-settings__shortcuts \{[^}]*border-top-color: inherit;/);
@@ -660,16 +663,16 @@ test('settings reuses Fluent controls with color mode above platform-specific sh
   assert.match(settings, /className="docsite-settings__keys" aria-hidden="true"/);
   assert.match(settings, /<span className="sr-only">\{accessibleKeys\}<\/span>/);
   assert.doesNotMatch(settings, /<Select/);
-  assert.doesNotMatch(settings, /<Field/);
-  assert.match(styles, /\.docsite-settings \{\s*width: 220px;/);
+  assert.match(styles, /\.docsite-settings \{\s*width: 256px;/);
   assert.match(
     settings,
-    /<section className="docsite-settings__shortcuts" aria-label="Keyboard shortcuts">/,
+    /<Accordion className="docsite-settings__shortcuts" collapsible>/,
   );
+  assert.match(settings, /<AccordionHeader expandIconPosition="end" size="small">/);
   assert.doesNotMatch(settings, /as="h2"/);
   assert.match(
     styles,
-    /\.docsite-settings__shortcuts \{[^}]*margin-inline: calc\(-1 \* var\(--spacingHorizontalL\)\);[^}]*padding-inline: var\(--spacingHorizontalL\);/,
+    /\.docsite-settings__shortcuts \{[^}]*margin-inline: calc\(-1 \* var\(--spacingHorizontalM\)\);[^}]*padding-inline: var\(--spacingHorizontalM\);/,
   );
   assert.match(styles, /\.docsite-settings__key-letter \{[^}]*font-size: var\(--fontSizeBase200\)/);
   assert.match(styles, /\.docsite-settings__key-symbol \{[^}]*font-size: var\(--fontSizeBase200\)/);

@@ -312,15 +312,16 @@ code:not(pre code) {
 }
 
 .docsite-settings {
-  width: 288px;
+  width: 256px;
   box-sizing: border-box;
-  padding: var(--spacingHorizontalL);
+  padding: var(--spacingHorizontalM);
   max-width: calc(100vw - 32px);
   max-height: calc(100dvh - 32px);
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  gap: var(--spacingVerticalL);
+  gap: var(--spacingVerticalM);
 }
 
 .docsite-settings__mode {
@@ -332,13 +333,12 @@ code:not(pre code) {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: var(--spacingVerticalM);
+  gap: var(--spacingVerticalS);
 }
 
 .docsite-settings__brand-field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacingVerticalS);
+  width: 100%;
+  min-width: 0;
 }
 
 .docsite-settings__brand {
@@ -347,11 +347,11 @@ code:not(pre code) {
 }
 
 .docsite-settings__shortcuts {
-  margin-inline: calc(-1 * var(--spacingHorizontalL));
-  padding-inline: var(--spacingHorizontalL);
+  margin-inline: calc(-1 * var(--spacingHorizontalM));
+  padding-inline: var(--spacingHorizontalM);
   border-top: var(--strokeWidthThin) solid;
   border-top-color: inherit;
-  padding-top: var(--spacingVerticalL);
+  padding-top: var(--spacingVerticalM);
 }
 
 .docsite-settings__shortcuts .fui-AccordionHeader__button {
@@ -365,7 +365,7 @@ code:not(pre code) {
 .docsite-settings__shortcut-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacingVerticalM);
+  gap: var(--spacingVerticalS);
   margin: 0;
 }
 

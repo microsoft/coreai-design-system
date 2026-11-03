@@ -10,6 +10,7 @@ import {
   Badge,
   Button,
   Dropdown,
+  Field,
   Option,
   Popover,
   PopoverSurface,
@@ -80,27 +81,24 @@ export function ThemeSwitcher({ isApplePlatform }: { isApplePlatform: boolean })
             <Tab value="dark">Dark</Tab>
             <Tab value="light">Light</Tab>
           </TabList>
-          <div className="docsite-settings__brand-field">
-            <Text as="label" htmlFor="docsite-product-theme" size={200} weight="semibold">
-              Product theme
-            </Text>
+          <Field className="docsite-settings__brand-field" label="Product theme">
             <Dropdown
               id="docsite-product-theme"
-              aria-label="Brand theme"
               className="docsite-settings__brand"
               size="small"
+              style={{ width: '100%', minWidth: 0, maxWidth: '100%' }}
               selectedOptions={[brand]}
-              value={brand === 'coreai' ? 'CoreAI' : 'Azure'}
+              value={brand === 'coreai' ? 'CoreAI purple' : 'Azure blue'}
               onOptionSelect={(_event, data) => {
                 if (data.optionValue === 'coreai' || data.optionValue === 'azure') {
                   setBrand(data.optionValue);
                 }
               }}
             >
-              <Option value="coreai">CoreAI</Option>
-              <Option value="azure">Azure</Option>
+              <Option value="coreai">CoreAI purple</Option>
+              <Option value="azure">Azure blue</Option>
             </Dropdown>
-          </div>
+          </Field>
         </div>
         <Accordion className="docsite-settings__shortcuts" collapsible>
           <AccordionItem value="keyboard-shortcuts">
@@ -121,7 +119,7 @@ export function ThemeSwitcher({ isApplePlatform }: { isApplePlatform: boolean })
                         appearance="tint"
                         color="subtle"
                         shape="rounded"
-                        size="large"
+                        size="medium"
                         title={accessibleKeys}
                       >
                         <span className="docsite-settings__keys" aria-hidden="true">
