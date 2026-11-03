@@ -3,19 +3,32 @@
 
 import * as React from 'react';
 import {
+  Badge,
   Button,
+  DataGrid,
+  DataGridBody,
+  DataGridCell,
+  DataGridHeader,
+  DataGridHeaderCell,
+  DataGridRow,
+  SearchBox,
   Text,
   coreaiBrandVariants,
   coreaiDarkTheme,
   coreaiLightTheme,
+  createTableColumn,
 } from '@coreai-ds/react-components';
 import {
-  ArrowDown16Regular,
+  Add16Regular,
   Checkmark16Regular,
+  ChevronDown16Regular,
+  ChevronLeft16Regular,
+  ChevronRight16Regular,
   Code16Regular,
   Copy16Regular,
   Dismiss16Regular,
   DocumentText20Regular,
+  Filter16Regular,
   WeatherMoon16Regular,
   WeatherSunny16Regular,
 } from '@fluentui/react-icons';
@@ -130,39 +143,121 @@ function ComponentsScene() {
   );
 }
 
+interface TemplateAgent {
+  name: string;
+  status: 'published' | 'draft';
+  version: string;
+}
+
+const templateAgents: TemplateAgent[] = [
+  { name: 'Data Analysis Assistant', status: 'published', version: '1.5.2' },
+  { name: 'Code Review Bot', status: 'draft', version: '0.8.0' },
+  { name: 'Document Summarizer', status: 'published', version: '1.3.0' },
+];
+
+const templateColumns = [
+  createTableColumn<TemplateAgent>({
+    columnId: 'name',
+    renderHeaderCell: () => 'Name',
+    renderCell: (item) => item.name,
+    compare: (first, second) => first.name.localeCompare(second.name),
+  }),
+  createTableColumn<TemplateAgent>({
+    columnId: 'status',
+    renderHeaderCell: () => 'Status',
+    renderCell: (item) => (
+      <Badge
+        size="small"
+        appearance="tint"
+        color={item.status === 'published' ? 'brand' : 'subtle'}
+      >
+        {item.status === 'published' ? 'Published' : 'Draft'}
+      </Badge>
+    ),
+  }),
+  createTableColumn<TemplateAgent>({
+    columnId: 'version',
+    renderHeaderCell: () => 'Version',
+    renderCell: (item) => item.version,
+  }),
+];
+
 function TemplatesScene() {
   return (
     <>
-      <div className="intro-template-stage">
-        <span>Preview</span>
+      <div className="intro-grid-reference">
+        <Code16Regular /> DataGridWithFilters.tsx
+        <Copy16Regular className="intro-grid-copy" />
       </div>
-      <div className="intro-template-source">
-        <div className="intro-art-heading">
+      <div className="intro-grid-product">
+        <div className="intro-grid-heading">
+          <span>Agents</span>
+          <Button size="small" appearance="subtle" icon={<Add16Regular />} aria-label="New agent" />
+        </div>
+        <div className="intro-grid-toolbar">
+          <SearchBox size="small" placeholder="Search agents" aria-label="Search agents" />
+          <Button size="small" className="intro-grid-filter" icon={<Filter16Regular />}>
+            <span className="intro-grid-state">
+              <span className="intro-grid-all">Status</span>
+              <span className="intro-grid-applied">Published</span>
+            </span>
+            <span className="intro-grid-state intro-grid-filter-icon">
+              <ChevronDown16Regular className="intro-grid-all" />
+              <Dismiss16Regular className="intro-grid-applied" />
+            </span>
+          </Button>
+        </div>
+        <div className="intro-grid-filter-menu">
+          <span>All statuses</span>
           <span>
-            <Code16Regular /> template.tsx
+            <Checkmark16Regular /> Published
           </span>
-          <Copy16Regular />
         </div>
-        <div className="intro-template-code">
-          {['<Card>', '  <Text>Overview</Text>', '  <Button>Open</Button>', '</Card>'].map(
-            (line, index) => (
-              <code key={line} style={{ '--line-index': index } as React.CSSProperties}>
-                {line}
-              </code>
-            ),
-          )}
+        <DataGrid
+          className="intro-grid-table"
+          items={templateAgents}
+          columns={templateColumns}
+          getRowId={(item) => item.name}
+          selectionMode="multiselect"
+          sortable
+        >
+          <DataGridHeader>
+            <DataGridRow
+              selectionCell={{ checkboxIndicator: { 'aria-label': 'Select all agents' } }}
+            >
+              {({ renderHeaderCell, columnId }) => (
+                <DataGridHeaderCell className={`intro-grid-column-${columnId}`}>
+                  {renderHeaderCell()}
+                </DataGridHeaderCell>
+              )}
+            </DataGridRow>
+          </DataGridHeader>
+          <DataGridBody<TemplateAgent>>
+            {({ item, rowId }) => (
+              <DataGridRow<TemplateAgent>
+                key={rowId}
+                className={item.status === 'draft' ? 'intro-grid-row-draft' : undefined}
+                selectionCell={{ checkboxIndicator: { 'aria-label': 'Select agent' } }}
+              >
+                {({ renderCell, columnId }) => (
+                  <DataGridCell className={`intro-grid-column-${columnId}`}>
+                    {renderCell(item)}
+                  </DataGridCell>
+                )}
+              </DataGridRow>
+            )}
+          </DataGridBody>
+        </DataGrid>
+        <div className="intro-grid-footer">
+          <span className="intro-grid-state">
+            <span className="intro-grid-all">3 agents</span>
+            <span className="intro-grid-applied">2 agents</span>
+          </span>
+          <span>
+            <ChevronLeft16Regular /> <ChevronRight16Regular />
+          </span>
         </div>
       </div>
-      <ArrowDown16Regular className="intro-template-transfer" />
-      <div className="intro-template-preview">
-        <span>Overview</span>
-        <Button appearance="primary" size="small">
-          Open
-        </Button>
-      </div>
-      <span className="intro-template-caption">
-        <Copy16Regular /> Copy + adapt
-      </span>
     </>
   );
 }
