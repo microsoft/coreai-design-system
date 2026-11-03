@@ -2,7 +2,8 @@
 // Licensed under the MIT license.
 
 import * as React from 'react';
-import { Tab, TabList } from '@coreai-ds/react-components';
+import { createPortal } from 'react-dom';
+import { CodeBlock, Tab, TabList } from '@coreai-ds/react-components';
 import './page-tabs.css';
 
 type PageTab = 'usage' | 'samples';
@@ -12,6 +13,11 @@ export interface PageTabTargets {
   usage: HTMLElement;
   samples: HTMLElement;
   prefix: string;
+  codeBlocks: {
+    host: HTMLElement;
+    code: string;
+    language: string;
+  }[];
 }
 
 function sampleHeading(heading: HTMLElement, preserveIds = false) {
@@ -21,58 +27,111 @@ function sampleHeading(heading: HTMLElement, preserveIds = false) {
     if (preserveIds || name !== 'id') label.setAttribute(name, value);
   }
   label.innerHTML = heading.innerHTML;
-  if (!preserveIds) label.querySelectorAll('[id]').forEach((element) => element.removeAttribute('id'));
+  if (!preserveIds)
+    label.querySelectorAll('[id]').forEach((element) => element.removeAttribute('id'));
   return label;
 }
 
-function normalizeSampleHeadings(samples: HTMLElement) {
-  for (const heading of [...samples.querySelectorAll<HTMLElement>('h1,h2')]) {
-    heading.replaceWith(sampleHeading(heading, true));
+function codeLanguage(code: HTMLElement, download: HTMLAnchorElement | null) {
+  const className = [...code.classList].find((name) => name.startsWith('language-'));
+  if (className) return className.slice('language-'.length);
+  const extension = download?.pathname.split('.').at(-1)?.toLowerCase();
+  if (extension && ['css', 'html', 'js', 'json', 'jsx', 'ts', 'tsx'].includes(extension)) {
+    return extension;
   }
+  return code.id.startsWith('source-') ? 'tsx' : 'plaintext';
 }
 
-function extractSamples(source: HTMLElement, samples: HTMLElement) {
-  const groups = new Map<Element, HTMLElement>();
-  for (const section of [...source.querySelectorAll<HTMLElement>('.guidance-section')]) {
-    if (!source.contains(section) || !section.querySelector('pre')) continue;
-    const heading = section.querySelector('h2,h3,h4,h5,h6');
-    const guidance = /best practices|behavior|accessibility|design guidance/i.test(
-      heading?.textContent ?? '',
-    );
-    if (!guidance && !section.querySelector('[data-example-id], [data-page-widget]')) {
-      samples.append(section);
-    }
+function headingBefore(source: HTMLElement, code: HTMLElement) {
+  return [...source.querySelectorAll<HTMLElement>('h1,h2,h3,h4,h5,h6')]
+    .filter((heading) => heading.compareDocumentPosition(code) & Node.DOCUMENT_POSITION_FOLLOWING)
+    .at(-1);
+}
+
+function sourceLink(pre: HTMLElement, section: HTMLElement) {
+  const preceding =
+    pre.previousElementSibling?.querySelector<HTMLAnchorElement>('a[href*="source/"]');
+  return preceding ?? section.querySelector<HTMLAnchorElement>('a[href*="source/"]');
+}
+
+function sourceDownload(source: HTMLAnchorElement | null) {
+  if (!source) return null;
+  const link = document.createElement('a');
+  link.className = 'reference-sample-download';
+  link.href = source.getAttribute('href') ?? source.href;
+  link.textContent = 'Download source';
+  if (source.hasAttribute('download')) link.setAttribute('download', '');
+  return link;
+}
+
+function removeSourceChrome(pre: HTMLElement, source: HTMLAnchorElement | null) {
+  const details = pre.closest('.reference-basic-source');
+  if (details) {
+    details.remove();
+    return;
   }
-  for (const code of [...source.querySelectorAll('pre')]) {
-    const section = code.closest('.guidance-section') ?? source;
+  const sourceChrome = source?.closest('.source-actions, p');
+  if (sourceChrome && sourceChrome !== pre.parentElement) sourceChrome.remove();
+  pre.parentElement?.querySelector(':scope > .source-actions')?.remove();
+  pre.remove();
+}
+
+function extractSamples(
+  source: HTMLElement,
+  samples: HTMLElement,
+  codeBlocks: PageTabTargets['codeBlocks'],
+  {
+    movePreviews = false,
+    preserveHeadingIds = false,
+    removeSources = false,
+  }: {
+    movePreviews?: boolean;
+    preserveHeadingIds?: boolean;
+    removeSources?: boolean;
+  } = {},
+) {
+  const groups = new Map<Element, HTMLElement>();
+  const sourceBlocks = [...source.querySelectorAll<HTMLElement>('pre')].filter(
+    (pre) => !pre.closest('[data-example-id]'),
+  );
+  for (const pre of sourceBlocks) {
+    const section =
+      pre.closest<HTMLElement>('.example, .reference-template-source, .guidance-section') ?? source;
     const heading =
-      section === source
-        ? [...source.querySelectorAll('h2,h3,h4,h5,h6')]
-            .filter(
-              (element) => element.compareDocumentPosition(code) & Node.DOCUMENT_POSITION_FOLLOWING,
-            )
-            .at(-1)
-        : section.querySelector('h2,h3,h4,h5,h6');
+      section.querySelector<HTMLElement>(
+        ':scope > h1,:scope > h2,:scope > h3,:scope > h4,:scope > h5,:scope > h6',
+      ) ?? headingBefore(source, pre);
     const context = heading ?? section;
     let group = groups.get(context);
     if (!group) {
       group = document.createElement('section');
       group.className = 'reference-sample-section';
-      if (heading) {
-        group.append(sampleHeading(heading));
-      }
+      if (heading) group.append(sampleHeading(heading, preserveHeadingIds));
+      const downloadSource = sourceLink(pre, section);
+      const preview = movePreviews
+        ? section.querySelector<HTMLElement>(':scope > .preview[data-example-id]')
+        : null;
+      if (preview) group.append(preview);
+      const download = sourceDownload(downloadSource);
+      if (download) group.append(download);
       samples.append(group);
       groups.set(context, group);
     }
-    const download = code.previousElementSibling;
-    if (download?.matches('p') && download.querySelector('a[href*="source/"]')) {
-      group.append(download);
-    }
-    for (const paragraph of section.querySelectorAll('p')) {
-      if (paragraph.textContent?.startsWith('Source: ')) group.append(paragraph);
-    }
-    group.append(code);
+    const code = pre.querySelector<HTMLElement>('code') ?? pre;
+    const downloadSource = sourceLink(pre, section);
+    const host = document.createElement('div');
+    host.className = 'reference-page-code-block-host';
+    const sourceId = code.id || pre.id;
+    if (sourceId) host.id = sourceId;
+    group.append(host);
+    codeBlocks.push({
+      host,
+      code: code.textContent ?? '',
+      language: codeLanguage(code, downloadSource),
+    });
+    if (removeSources) removeSourceChrome(pre, downloadSource);
   }
+  return sourceBlocks.length;
 }
 
 export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
@@ -92,9 +151,7 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
           'data-visualization',
           'font-families',
           'typography',
-        ].includes(
-          widget.dataset.pageWidget ?? '',
-        ),
+        ].includes(widget.dataset.pageWidget ?? ''),
     )
   )
     return null;
@@ -103,6 +160,7 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
   host.className = 'reference-page-tabs';
   const usage = document.createElement('div');
   const samples = document.createElement('div');
+  const codeBlocks: PageTabTargets['codeBlocks'] = [];
   const prefix = `${header.dataset.headingId}-content`;
   for (const [name, panel] of [
     ['usage', usage],
@@ -121,39 +179,39 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
     if (child !== header) usage.append(child);
   }
   const source = basic?.querySelector<HTMLDetailsElement>('.reference-basic-source');
-  if (source) {
-    const example = document.createElement('section');
-    example.className = 'example reference-default-source';
-    const heading = basic?.querySelector<HTMLElement>('h2,h3,h4,h5,h6');
-    if (heading) example.append(sampleHeading(heading));
-    for (const paragraph of basic?.querySelectorAll(':scope > p') ?? []) {
-      if (paragraph.textContent?.startsWith('Source: ')) example.append(paragraph);
+  if (source && basic) {
+    extractSamples(basic, samples, codeBlocks, { removeSources: true });
+    for (const paragraph of basic.querySelectorAll(':scope > p')) {
+      if (paragraph.textContent?.startsWith('Source: ')) paragraph.remove();
     }
-    source.open = true;
-    example.append(source);
-    samples.append(example);
   }
-  const api = usage.querySelector('.reference-api');
-  if (api) samples.append(api);
+  const api = usage.querySelector<HTMLElement>('.reference-api');
+  if (api) {
+    extractSamples(api, samples, codeBlocks);
+    api.remove();
+  }
   const markdown = usage.querySelector<HTMLElement>('.component-markdown, .standalone-guidance');
   if (markdown) {
     const sampleContent = document.createElement('article');
     sampleContent.className = 'standalone-guidance';
-    extractSamples(markdown, sampleContent);
+    extractSamples(markdown, sampleContent, codeBlocks, { removeSources: true });
     if (sampleContent.childElementCount) samples.append(sampleContent);
   }
   for (const child of [...root.children]) {
     if (child === introduction || child.matches('.reference-footer, [data-single-preview]'))
       continue;
-    samples.append(child);
+    extractSamples(child as HTMLElement, samples, codeBlocks, {
+      movePreviews: true,
+      preserveHeadingIds: true,
+    });
+    child.remove();
   }
-  normalizeSampleHeadings(samples);
   if (!samples.childElementCount) {
     introduction.append(...usage.children);
     return null;
   }
   introduction.append(host, usage, samples);
-  return { host, usage, samples, prefix };
+  return { host, usage, samples, prefix, codeBlocks };
 }
 
 function hashTarget(hash = window.location.hash): HTMLElement | null {
@@ -172,16 +230,34 @@ function tabForHash(targets: PageTabTargets): PageTab | undefined {
   return undefined;
 }
 
+function storedPageTab(targets: PageTabTargets): PageTab | undefined {
+  try {
+    const value = sessionStorage.getItem(`coreai-docsite-page-tab:${targets.prefix}`);
+    return value === 'usage' || value === 'samples' ? value : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export function PageTabs({ targets, title }: { targets: PageTabTargets; title: string }) {
-  const [selected, setSelected] = React.useState<PageTab>(() => tabForHash(targets) ?? 'usage');
+  const [selected, setSelected] = React.useState<PageTab>(
+    () => tabForHash(targets) ?? storedPageTab(targets) ?? 'usage',
+  );
   React.useLayoutEffect(() => {
     targets.usage.hidden = selected !== 'usage';
     targets.samples.hidden = selected !== 'samples';
   }, [selected, targets]);
   React.useEffect(() => {
+    try {
+      sessionStorage.setItem(`coreai-docsite-page-tab:${targets.prefix}`, selected);
+    } catch {
+      // Session storage can be unavailable in restricted browser contexts.
+    }
+  }, [selected, targets.prefix]);
+  React.useEffect(() => {
     const revealHash = () => {
       const tab = tabForHash(targets);
-      setSelected(tab ?? 'usage');
+      setSelected(tab ?? storedPageTab(targets) ?? 'usage');
       if (tab) requestAnimationFrame(() => hashTarget()?.scrollIntoView({ block: 'start' }));
     };
     const revealLink = (event: MouseEvent) => {
@@ -210,22 +286,35 @@ export function PageTabs({ targets, title }: { targets: PageTabTargets; title: s
     };
   }, [targets]);
   return (
-    <TabList
-      appearance="elevated"
-      aria-label={`${title} content`}
-      selectedValue={selected}
-      onTabSelect={(_, data) => setSelected(data.value as PageTab)}
-    >
-      {(['usage', 'samples'] as const).map((value) => (
-        <Tab
-          key={value}
-          value={value}
-          id={`${targets.prefix}-${value}-tab`}
-          aria-controls={`${targets.prefix}-${value}-panel`}
-        >
-          {value === 'usage' ? 'Usage' : 'Samples'}
-        </Tab>
-      ))}
-    </TabList>
+    <>
+      <TabList
+        appearance="elevated"
+        aria-label={`${title} content`}
+        selectedValue={selected}
+        onTabSelect={(_, data) => setSelected(data.value as PageTab)}
+      >
+        {(['usage', 'samples'] as const).map((value) => (
+          <Tab
+            key={value}
+            value={value}
+            id={`${targets.prefix}-${value}-tab`}
+            aria-controls={`${targets.prefix}-${value}-panel`}
+          >
+            {value === 'usage' ? 'Usage' : 'Samples'}
+          </Tab>
+        ))}
+      </TabList>
+      {targets.codeBlocks.map((block, index) =>
+        createPortal(
+          <CodeBlock
+            className="reference-page-code-block"
+            code={block.code}
+            language={block.language}
+          />,
+          block.host,
+          `${targets.prefix}-code-${index}`,
+        ),
+      )}
+    </>
   );
 }

@@ -434,6 +434,8 @@ try {
       );
     }
     if (!record.standalone) {
+      const expectedCodeBlocks = (html.match(/<pre>/g) ?? []).length;
+      const expectedDownloads = (html.match(/class="source-actions"/g) ?? []).length;
       assert.equal(
         await page.locator('[data-example-id]').first().getAttribute('data-example-id'),
         record.defaultExampleId,
@@ -460,8 +462,13 @@ try {
         assert.ok(order.indexOf('resources') < order.indexOf('guidance'));
       }
       if (record.api.length) {
-        assert.equal(await page.locator('[data-page-panel="samples"] .reference-api').count(), 1);
-        assert.equal(await page.locator('.reference-api details[open]').count(), 0);
+        assert.equal(
+          await page
+            .locator('[data-page-panel="samples"] .reference-sample-section')
+            .filter({ has: page.getByRole('heading', { name: / API$/, includeHidden: true }) })
+            .count(),
+          record.api.length,
+        );
       }
       assert.ok(
         await page
@@ -470,8 +477,47 @@ try {
         `${record.id}: only live preview content can contain code in Usage`,
       );
       assert.equal(
-        await page.locator('[data-page-panel="samples"] .reference-basic-source[open]').count(),
-        1,
+        await page.locator('[data-page-panel="samples"] .reference-page-code-block').count(),
+        expectedCodeBlocks,
+      );
+      assert.equal(
+        await page
+          .locator('[data-page-panel="samples"] .reference-page-code-block')
+          .getByRole('button', { name: 'Copy code', exact: true })
+          .count(),
+        expectedCodeBlocks,
+      );
+      assert.equal(
+        await page
+          .locator(
+            '[data-page-panel="samples"] .reference-api, [data-page-panel="samples"] .reference-basic-source, [data-page-panel="samples"] .source-actions',
+          )
+          .count(),
+        0,
+      );
+      assert.equal(
+        await page.locator('[data-page-panel="samples"] .reference-sample-download').count(),
+        expectedDownloads,
+      );
+      assert.equal(
+        await page
+          .locator('[data-page-panel="samples"] .reference-page-code-block .fui-CodeBlock__pre')
+          .evaluateAll(
+            (blocks) =>
+              blocks.filter((block) => getComputedStyle(block).maxHeight === '480px').length,
+          ),
+        expectedCodeBlocks,
+      );
+      assert.equal(
+        await page
+          .locator('[data-page-panel="samples"] .reference-page-code-block code')
+          .evaluateAll(
+            (blocks) =>
+              blocks.filter((block) =>
+                [...block.classList].some((className) => className.startsWith('language-')),
+              ).length,
+          ),
+        expectedCodeBlocks,
       );
       assert.equal(
         await page
@@ -483,7 +529,14 @@ try {
       for (const member of record.api) {
         assert.equal(
           await page
-            .locator('.reference-api')
+            .locator('[data-page-panel="samples"] .reference-sample-section')
+            .filter({
+              has: page.getByRole('heading', {
+                name: `${member.name} API`,
+                exact: true,
+                includeHidden: true,
+              }),
+            })
             .getByRole('heading', {
               name: `${member.name} API`,
               exact: true,
@@ -493,10 +546,23 @@ try {
           1,
         );
       }
-      assert.equal(await page.locator('.reference-api table').count(), 0);
       assert.deepEqual(
-        (await page.locator('.reference-api pre code').allTextContents()).map((source) =>
-          source.trimEnd(),
+        await Promise.all(
+          record.api.map(async (member) =>
+            (
+              await page
+                .locator('[data-page-panel="samples"] .reference-sample-section')
+                .filter({
+                  has: page.getByRole('heading', {
+                    name: `${member.name} API`,
+                    exact: true,
+                    includeHidden: true,
+                  }),
+                })
+                .locator('code')
+                .textContent()
+            ).trimEnd(),
+          ),
         ),
         record.api.map(componentApiSource),
         `${record.id}: complete interface/function API code`,
@@ -862,7 +928,11 @@ try {
   );
   const defaultButton = page.locator('[data-example-id="components-button-button--default"]');
   await defaultButton.getByRole('button', { name: 'Example', exact: true }).waitFor();
-  const buttonApi = await page.locator('.reference-api pre code').textContent();
+  const buttonApi = (
+    await page
+      .locator('[data-page-panel="samples"] .reference-page-code-block code')
+      .allTextContents()
+  ).join('\n');
   assert.match(buttonApi, /interface ButtonProps \{/);
   assert.match(buttonApi, /@default 'circular'/);
   assert.match(buttonApi, /shape\?:/);
@@ -870,16 +940,18 @@ try {
     .locator('.reference-page-tabs')
     .getByRole('tab', { name: 'Samples', exact: true })
     .click();
-  await page.locator('[data-copy-source="source-components-button-button--default"]').click();
+  await page
+    .locator('[id="source-components-button-button--default"]')
+    .getByRole('button', { name: 'Copy code', exact: true })
+    .click();
+  await page.waitForFunction(async () =>
+    (await navigator.clipboard.readText()).includes(
+      "import { Button } from '@coreai-ds/react-components'",
+    ),
+  );
   assert.equal(
     normalizeSource(await page.evaluate(() => navigator.clipboard.readText())),
     await get('source/examples/components-button-button--default.tsx'),
-  );
-  assert.equal(
-    await page
-      .locator('[data-copy-status="source-components-button-button--default"]')
-      .textContent(),
-    'Copied.',
   );
 
   await page.goto(`${root}components/dropdown/`);

@@ -26,51 +26,35 @@
   margin-block: 0;
 }
 
+.reference-sample-download {
+  align-self: flex-start;
+}
+
+.reference-page-code-block-host,
+.reference-page-code-block {
+  width: 100%;
+  min-width: 0;
+}
+
+.reference-page-code-block .fui-CodeBlock__pre {
+  max-height: 480px;
+  overflow-y: auto;
+}
+
 .reference-page-panel[hidden] {
   display: none !important;
 }
 
-.reference-page-panel[data-page-panel='samples'] > .example {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacingVerticalS);
-}
-
-.reference-page-panel[data-page-panel='samples'] > :is(.example, .standalone-guidance) {
+.reference-page-panel[data-page-panel='samples'] > .standalone-guidance {
   margin-block: 0;
-}
-
-.reference-page-panel[data-page-panel='samples'] > .example > :is(h3, p) {
-  margin: 0;
 }
 
 .reference-page-panel[data-page-panel='samples'] pre {
   margin: 0;
 }
 
-.reference-page-introduction
-  .reference-page-panel[data-page-panel='samples']
-  .standalone-guidance {
+.reference-page-introduction .reference-page-panel[data-page-panel='samples'] .standalone-guidance {
   gap: 48px;
-}
-
-.reference-page-introduction
-  .reference-page-panel[data-page-panel='samples']
-  .standalone-guidance
-  > .guidance-section {
-  gap: var(--spacingVerticalS);
-  margin: 0;
-}
-
-.reference-page-panel[data-page-panel='samples']
-  .standalone-guidance
-  > .guidance-section
-  > * {
-  margin-block: 0;
-}
-
-.reference-page-panel > .reference-basic-source {
-  margin: 0;
 }
 
 .reference-sample-section > :is(h2, h3, h4, h5, h6) {

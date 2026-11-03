@@ -60,7 +60,24 @@ try {
           .filter((element) => !element.closest('[data-example-id]'))
           .map((element) => element.textContent)
           .sort();
-      return { original: sources(original), actual: sources(globalThis.document) };
+      const downloads = [
+        ...new Set(
+          [...original.querySelectorAll('pre')]
+            .filter((element) => !element.closest('[data-example-id]'))
+            .flatMap((element) => {
+              const section = element.closest('.example, .reference-template-source');
+              const link =
+                element.previousElementSibling?.querySelector('a[href*="source/"]') ??
+                section?.querySelector('a[href*="source/"]');
+              return link ? [link.getAttribute('href')] : [];
+            }),
+        ),
+      ].sort();
+      return {
+        original: sources(original),
+        actual: sources(globalThis.document),
+        downloads,
+      };
     }, html);
     assert.deepEqual(
       parity.actual,
@@ -74,6 +91,69 @@ try {
     assert.ok(await samples.isVisible());
     assert.ok(!(await usage.isVisible()));
     assert.equal(page.url(), url.href, 'Tab selection does not create another page');
+    assert.equal(
+      await samples.locator('.reference-page-code-block').count(),
+      parity.original.length,
+      `${record.id}: every source uses the shared CodeBlock`,
+    );
+    assert.equal(
+      await samples
+        .locator('.reference-page-code-block')
+        .getByRole('button', { name: 'Copy code', exact: true })
+        .count(),
+      parity.original.length,
+      `${record.id}: every CodeBlock has a copy action`,
+    );
+    assert.ok(
+      await samples
+        .locator('.reference-page-code-block code')
+        .evaluateAll((blocks) =>
+          blocks.every((block) =>
+            [...block.classList].some((className) => className.startsWith('language-')),
+          ),
+        ),
+      `${record.id}: every CodeBlock declares its syntax language`,
+    );
+    assert.ok(
+      await samples
+        .locator('.reference-page-code-block .fui-CodeBlock__pre')
+        .evaluateAll((blocks) =>
+          blocks.every((block) => {
+            const style = getComputedStyle(block);
+            return style.maxHeight === '480px' && style.overflowY === 'auto';
+          }),
+        ),
+      `${record.id}: CodeBlocks scroll beyond 480px`,
+    );
+    assert.deepEqual(
+      await samples
+        .locator('.reference-sample-download')
+        .evaluateAll((links) => links.map((link) => link.getAttribute('href')).sort()),
+      parity.downloads,
+      `${record.id}: source downloads survive`,
+    );
+    assert.equal(
+      await samples
+        .locator(
+          '.reference-api, .reference-template-source, .reference-basic-source, .source-actions, details, summary, [data-copy-source], [data-copy-status]',
+        )
+        .count(),
+      0,
+      `${record.id}: Samples omit legacy source and API chrome`,
+    );
+    assert.equal(
+      await samples.locator('.reference-sample-section > :is(p, h1, h2)').count(),
+      0,
+      `${record.id}: Samples omit loose prose and oversized headings`,
+    );
+    assert.ok(
+      await samples
+        .locator('.reference-sample-section')
+        .evaluateAll((sections) =>
+          sections.every((section) => /^H[3-6]$/.test(section.firstElementChild?.tagName ?? '')),
+        ),
+      `${record.id}: every Samples section starts with an h3-or-lower label`,
+    );
     for (const value of ['usage', 'samples']) {
       const tab = tabs.getByRole('tab', { name: value === 'usage' ? 'Usage' : 'Samples' });
       assert.equal(
@@ -143,9 +223,14 @@ try {
     await page.locator('[data-page-panel="samples"]').isVisible(),
     'A source deep link opens Samples',
   );
-  await page.locator('[data-copy-source="source-components-button-button--default"]').click();
-  await page.waitForFunction(
-    () => globalThis.document.querySelector('[data-copy-status]')?.textContent === 'Copied.',
+  await page
+    .locator('[id="source-components-button-button--default"]')
+    .getByRole('button', { name: 'Copy code', exact: true })
+    .click();
+  await page.waitForFunction(async () =>
+    (await navigator.clipboard.readText()).includes(
+      "import { Button } from '@coreai-ds/react-components'",
+    ),
   );
   assert.equal(
     await page.evaluate(() => navigator.clipboard.readText()),
@@ -170,6 +255,17 @@ try {
     (await page.evaluate(() => navigator.clipboard.readText())).trim(),
     (await (await fetch(new URL('components/button.md', root))).text()).trim(),
     'Copy .md includes both Usage and Samples',
+  );
+
+  await page
+    .locator('.reference-page-tabs')
+    .getByRole('tab', { name: 'Samples', exact: true })
+    .click();
+  await page.reload();
+  await page.locator('[data-reference-ready="true"]').waitFor();
+  assert.ok(
+    await page.locator('[data-page-panel="samples"]').isVisible(),
+    'Reload preserves the selected tab for the current page',
   );
 
   await page.goto(new URL('components/dropdown/', root).href);

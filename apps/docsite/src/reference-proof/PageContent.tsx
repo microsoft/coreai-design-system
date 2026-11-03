@@ -211,7 +211,7 @@ export function PageContent({
         : null}
       {presentation && pageTabs
         ? createPortal(
-            <PageTabs targets={pageTabs} title={presentation.model.title} />,
+            <PageTabs key={pageTabs.prefix} targets={pageTabs} title={presentation.model.title} />,
             pageTabs.host,
           )
         : null}
