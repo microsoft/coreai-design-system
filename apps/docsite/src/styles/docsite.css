@@ -312,7 +312,7 @@ code:not(pre code) {
 }
 
 .docsite-settings {
-  width: 220px;
+  width: 288px;
   box-sizing: border-box;
   padding: var(--spacingHorizontalL);
   max-width: calc(100vw - 32px);
@@ -325,6 +325,19 @@ code:not(pre code) {
 
 .docsite-settings__mode {
   align-self: flex-start;
+  flex: 0 0 auto;
+}
+
+.docsite-settings__appearance {
+  display: flex;
+  align-items: center;
+  gap: var(--spacingHorizontalS);
+}
+
+.docsite-settings__brand {
+  width: 112px;
+  min-width: 104px;
+  flex: 0 0 112px;
 }
 
 .docsite-settings__shortcuts {

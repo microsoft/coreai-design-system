@@ -5,6 +5,8 @@ import * as React from 'react';
 import {
   Badge,
   Button,
+  Dropdown,
+  Option,
   Popover,
   PopoverSurface,
   PopoverTrigger,
@@ -16,7 +18,7 @@ import { Settings20Regular } from '@fluentui/react-icons';
 import { useThemeMode } from '../theme/ThemeProvider';
 
 export function ThemeSwitcher({ isApplePlatform }: { isApplePlatform: boolean }) {
-  const { preference, setPreference } = useThemeMode();
+  const { preference, brand, setPreference, setBrand } = useThemeMode();
   const [open, setOpen] = React.useState(false);
   const modifier = isApplePlatform ? 'Option' : 'Alt';
   const primary = isApplePlatform ? 'Cmd' : 'Ctrl';
@@ -58,21 +60,39 @@ export function ThemeSwitcher({ isApplePlatform }: { isApplePlatform: boolean })
           }
         }}
       >
-        <TabList
-          aria-label="Color mode"
-          className="docsite-settings__mode"
-          appearance="elevated"
-          size="small"
-          selectedValue={preference}
-          onTabSelect={(_event, data) => {
-            if (data.value === 'light' || data.value === 'dark') {
-              setPreference(data.value);
-            }
-          }}
-        >
-          <Tab value="dark">Dark</Tab>
-          <Tab value="light">Light</Tab>
-        </TabList>
+        <div className="docsite-settings__appearance">
+          <TabList
+            aria-label="Color mode"
+            className="docsite-settings__mode"
+            appearance="elevated"
+            size="small"
+            selectedValue={preference}
+            onTabSelect={(_event, data) => {
+              if (data.value === 'light' || data.value === 'dark') {
+                setPreference(data.value);
+              }
+            }}
+          >
+            <Tab value="dark">Dark</Tab>
+            <Tab value="light">Light</Tab>
+          </TabList>
+          <Dropdown
+            aria-label="Brand theme"
+            className="docsite-settings__brand"
+            size="small"
+            style={{ width: 112, minWidth: 112, maxWidth: 112 }}
+            selectedOptions={[brand]}
+            value={brand === 'coreai' ? 'CoreAI' : 'Azure'}
+            onOptionSelect={(_event, data) => {
+              if (data.optionValue === 'coreai' || data.optionValue === 'azure') {
+                setBrand(data.optionValue);
+              }
+            }}
+          >
+            <Option value="coreai">CoreAI</Option>
+            <Option value="azure">Azure</Option>
+          </Dropdown>
+        </div>
         <section className="docsite-settings__shortcuts" aria-label="Keyboard shortcuts">
           <dl className="docsite-settings__shortcut-list">
             {shortcuts.map(([label, keys, accessibleKeys]) => (

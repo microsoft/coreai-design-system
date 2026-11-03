@@ -10,13 +10,17 @@ import {
 
 export type ThemeMode = 'light' | 'dark';
 export type ThemePreference = ThemeMode;
+export type BrandPreference = 'coreai' | 'azure';
 
 const STORAGE_KEY = 'coreai-docsite-theme';
+const BRAND_STORAGE_KEY = 'coreai-docsite-brand';
 
 interface ThemeContextValue {
   preference: ThemePreference;
   mode: ThemeMode;
+  brand: BrandPreference;
   setPreference: (preference: ThemePreference) => void;
+  setBrand: (brand: BrandPreference) => void;
 }
 
 const ThemeContext = React.createContext<ThemeContextValue | undefined>(undefined);
@@ -33,8 +37,17 @@ function readStoredPreference(): ThemePreference {
     : 'dark';
 }
 
+function readStoredBrand(): BrandPreference {
+  if (typeof localStorage !== 'undefined') {
+    const stored = localStorage.getItem(BRAND_STORAGE_KEY);
+    if (stored === 'coreai' || stored === 'azure') return stored;
+  }
+  return 'coreai';
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [preference, setPreferenceState] = React.useState<ThemePreference>(readStoredPreference);
+  const [brand, setBrandState] = React.useState<BrandPreference>(readStoredBrand);
   const mode = preference;
 
   React.useEffect(() => {
@@ -73,9 +86,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(STORAGE_KEY, next);
   }, []);
 
+  const setBrand = React.useCallback((next: BrandPreference) => {
+    setBrandState(next);
+    localStorage.setItem(BRAND_STORAGE_KEY, next);
+  }, []);
+
   const value = React.useMemo<ThemeContextValue>(
-    () => ({ preference, mode, setPreference }),
-    [preference, mode, setPreference],
+    () => ({ preference, mode, brand, setPreference, setBrand }),
+    [preference, mode, brand, setPreference, setBrand],
   );
 
   const theme = mode === 'dark' ? coreaiDarkTheme : coreaiLightTheme;
