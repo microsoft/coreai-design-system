@@ -121,7 +121,28 @@ export {
   type DividerLabeledSlots,
   type DividerProps,
 } from './Divider.js';
+export {
+  Field,
+  fieldClassNames,
+  useFieldContext,
+  useFieldControlProps,
+  type FieldControlProps,
+  type FieldProps,
+  type FieldSlots,
+} from './Field.js';
 export { Image, imageClassNames, type ImageProps } from './Image.js';
+export {
+  InfoButton,
+  infoButtonClassNames,
+  type InfoButtonProps,
+  type InfoButtonSlots,
+} from './InfoButton.js';
+export {
+  InfoLabel,
+  infoLabelClassNames,
+  type InfoLabelProps,
+  type InfoLabelSlots,
+} from './InfoLabel.js';
 export { Input, inputClassNames, type InputOnChangeData, type InputProps } from './Input.js';
 export { Label, labelClassNames, type LabelProps, type LabelSlots } from './Label.js';
 export { Link, linkClassNames, type LinkProps, type LinkSlots } from './Link.js';
@@ -189,6 +210,27 @@ export {
   type RadioGroupProps,
   type RadioGroupSlots,
 } from './RadioGroup.js';
+export {
+  Rating,
+  ratingClassNames,
+  type RatingColor,
+  type RatingOnChangeEventData,
+  type RatingProps,
+  type RatingSize,
+  type RatingSlots,
+} from './Rating.js';
+export {
+  RatingDisplay,
+  ratingDisplayClassNames,
+  type RatingDisplayProps,
+  type RatingDisplaySlots,
+} from './RatingDisplay.js';
+export {
+  RatingItem,
+  ratingItemClassNames,
+  type RatingItemProps,
+  type RatingItemSlots,
+} from './RatingItem.js';
 export {
   SearchBox,
   searchBoxClassNames,

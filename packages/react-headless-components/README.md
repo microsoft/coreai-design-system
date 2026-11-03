@@ -116,6 +116,13 @@ not a claim that the whole application bundle is Griffel-free.
   and [SpinButton in react-spinbutton 9.6.8](https://unpkg.com/@fluentui/react-spinbutton@9.6.8/lib/components/SpinButton/useSpinButtonStyles.styles.raw.js).
   Popover and its trigger are behavior-only; the current facade has no public PopoverProvider.
   The surface supplies the ported CSS, keeping native closed-state hiding and top-layer behavior.
+- The form-information/rating batch uses the installed snapshot at commit `9c7a515`:
+  [Field in react-field 9.5.6](https://unpkg.com/@fluentui/react-field@9.5.6/lib/components/Field/useFieldStyles.styles.raw.js),
+  [InfoLabel in react-infolabel 9.4.27](https://unpkg.com/@fluentui/react-infolabel@9.4.27/lib/components/InfoLabel/useInfoLabelStyles.styles.raw.js),
+  and the [Rating family in react-rating 9.4.7](https://unpkg.com/@fluentui/react-rating@9.4.7/lib/components/Rating/useRatingStyles.styles.raw.js).
+  Public InfoButton preserves CoreAI's required accessible-name contract; InfoLabel uses a private
+  current-base adapter. Both reuse the completed Label/Popover foundations without legacy behavior.
+  Rating and RatingDisplay share one RatingItem implementation and a visual-only color/size context.
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -226,6 +233,13 @@ Headless `0.3.2` has a first-right-click `openOnContext` timing defect on Window
 platform-scoped expected-failure regression records it. The controlled native-context-menu
 example is verified and adds no compatibility behavior to the component.
 
+Rating remains interactive when `onChange` is omitted in the installed public headless API.
+Use RatingDisplay for read-only output; no wrapper-specific read-only behavior is added.
+
+InfoButton root render-function children hit the pinned public trigger's Fragment guard in both
+headless and this wrapper; use ordinary root content. Field's control-children render function and
+the other tested label/info/surface slot renderers remain supported. No trigger workaround is added.
+
 ## Conversion workflow
 
 ### API policy
@@ -242,6 +256,9 @@ helper uses a typed public slot render function to render the styled Label, pres
 props, refs, caller render functions, and required content without changing compatibility registries.
 The contentless Divider likewise retains native slot metadata and uses a public render function
 for its `hr` root, preserving native refs without triggering the pinned renderer's slot rewrite.
+Check the published slot type before using a render function: props-object slots can reserve
+`children` for ordinary content instead. Keep that contract and use a compatible visual boundary,
+not a cast that forces a render-function slot.
 
 Preserve the current headless slot, ref, and accessibility contracts. Reuse local styling
 foundations only through type-safe current APIs; do not use casts to force an incompatible slot
@@ -419,6 +436,10 @@ and exposes fixture-specific readiness/counts to prevent stale successful captur
 SpinButton covers typed/controlled formatting, numeric callbacks, keyboard/step/repeat cancellation,
 forms/reset, and current range/ref boundaries. Emitted library CSS is also smoke-tested in the
 live Popover/SpinButton comparisons after removing their development component stylesheets.
+Field and information controls cover generated associations, validation/hint glyphs, native form
+controls, required labels, accessible naming, and native help overlays. Rating and RatingDisplay
+cover shared item styling, native radio input, fractional/read-only summaries, default owned items,
+glyph geometry, form/callback behavior, and native accessible names including generated separators.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 
