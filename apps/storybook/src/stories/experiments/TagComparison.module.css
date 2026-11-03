@@ -1,0 +1,98 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Handwritten experimental fixtures/consumer overrides, not a Fluent style port.
+ */
+
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  padding-block: 12px;
+}
+
+.pair > section {
+  min-width: 0;
+  overflow-x: auto;
+  padding: 4px;
+}
+
+.pair h3 {
+  font-size: 14px;
+  margin-block: 0 12px;
+}
+
+.pointerRest {
+  width: fit-content;
+  padding: 8px;
+  border: 1px dashed currentColor;
+  margin-block: 12px;
+}
+
+.report {
+  overflow: auto;
+  max-height: 28rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.fixtureGlyph {
+  display: inline;
+  line-height: 0;
+}
+
+.customGlyph {
+  font-size: 18px;
+  color: rgb(130 45 80);
+  display: inline;
+  line-height: 0;
+}
+
+.wrappingGroup {
+  width: 248px;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.consumerRoot {
+  min-width: 180px;
+  border-radius: 3px;
+}
+
+.consumerText {
+  padding-bottom: 4px;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.consumerIcon {
+  font-size: 18px;
+  width: 18px;
+}
+
+.consumerGroup {
+  column-gap: 18px;
+}
+
+.consumerSecondary {
+  border-inline-start: 3px solid rgb(130 45 80);
+  margin-inline-start: 4px;
+}
+
+.flow {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  max-width: 42rem;
+}
+
+.flowGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (width <= 600px) {
+  .pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

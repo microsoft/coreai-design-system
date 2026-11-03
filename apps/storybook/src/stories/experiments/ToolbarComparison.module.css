@@ -1,0 +1,71 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Handwritten experimental comparison/consumer layout; not an upstream style port.
+ */
+
+.comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.column {
+  min-width: 0;
+}
+
+.viewport {
+  overflow: auto;
+  min-height: 100px;
+}
+
+.pointerRest {
+  padding: 8px;
+  margin-block: 8px;
+}
+
+.report {
+  overflow: auto;
+  max-height: 320px;
+  padding: 12px;
+  background-color: var(--colorNeutralBackground2);
+  white-space: pre-wrap;
+}
+
+.flow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  width: 100%;
+}
+
+.flowToolbar {
+  max-width: 100%;
+  overflow: auto;
+}
+
+.editor {
+  box-sizing: border-box;
+  width: min(100%, 360px);
+  min-height: 100px;
+}
+
+.consumerToolbar {
+  padding: 10px;
+}
+
+.consumerButton {
+  min-width: 120px;
+  border-radius: 3px;
+}
+
+.consumerIcon {
+  font-size: 16px;
+}
+
+@media (width <= 700px) {
+  .comparison {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

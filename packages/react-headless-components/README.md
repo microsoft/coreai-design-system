@@ -129,6 +129,10 @@ not a claim that the whole application bundle is Griffel-free.
 - The native-menu/drawer batch uses the installed snapshot at commit `ebb5a9e`:
   the [Menu family in react-menu 9.25.8](https://unpkg.com/@fluentui/react-menu@9.25.8/lib/components/MenuPopover/useMenuPopoverStyles.styles.raw.js)
   and [Drawer family in react-drawer 9.13.5](https://unpkg.com/@fluentui/react-drawer@9.13.5/lib/components/OverlayDrawer/useOverlayDrawerStyles.styles.raw.js).
+- The native-toolbar/tag batch uses the installed snapshot at commit `b8337ab`:
+  the [Toolbar family in react-toolbar 9.8.7](https://unpkg.com/@fluentui/react-toolbar@9.8.7/lib/components/Toolbar/useToolbarStyles.styles.raw.js)
+  and [Tag family in react-tags 9.9.8](https://unpkg.com/@fluentui/react-tags@9.9.8/lib/components/Tag/useTagStyles.styles.raw.js).
+  Experimental focusgroup consumers share one test/Storybook-only initializer.
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -263,6 +267,10 @@ controlled submission; bare `method="dialog"` retains the upstream native-close/
 OverlayDrawer is controlled-only in the pinned facade. Drawer dispatches to the supported overlay
 or inline variant, with the current DrawerProvider/context; no defaultOpen, legacy motion, or
 backdrop-slot aliases are added. DrawerHeaderTitle reuses the completed DialogTitle CSS foundation.
+Toolbar retains the installed checked-event ordering and reset behavior; caller cancellation does
+not add a wrapper-specific selection veto. Controlled state can reject a requested change.
+TagGroup retains current selection/dismiss payloads, with post-dismiss focus restoration supplied
+by the consumer examples rather than a legacy focus manager in the components.
 
 ## Conversion workflow
 
@@ -478,6 +486,10 @@ Menu covers current native/popover and checked-item composition, first-open/reop
 focusgroup navigation, submenus/split actions, links/forms, and both native/polyfill execution.
 Drawer covers overlay/inline geometry, modal/non-modal focus and dismissal, viewport/RTL edges,
 headers/footers/separators, native forms and nested top layers.
+Toolbar adds exact parent visual inheritance, checked radio/toggle groups, dynamic group navigation,
+editing/forms/Menu composition, and current event/reset boundaries. Tags add media/text/glyph
+geometry, dismissal and interaction-part contracts, controlled group payloads, native forms, and
+consumer-owned restoration after removal. Both families are checked in native and polyfill modes.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 
