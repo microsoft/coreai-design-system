@@ -3,7 +3,7 @@
 
 import type * as React from 'react';
 import { useButtonContext } from '@fluentui/react-headless-components-preview/button';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import { buttonClassNames, type ButtonProps } from './Button.js';
 import overrides from './Button.overrides.module.css';
 

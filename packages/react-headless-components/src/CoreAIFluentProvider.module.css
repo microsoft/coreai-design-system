@@ -1,0 +1,28 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-provider 9.22.23, useFluentProviderStyles.styles.ts.
+ * Local source: [useFluentProviderStyles.styles.raw.js](../../../node_modules/@fluentui/react-provider/lib/components/FluentProvider/useFluentProviderStyles.styles.raw.js).
+ * Native headless contexts replace the Griffel, Tabster, and portal styling pipeline.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .FluentProvider {
+    color: var(--colorNeutralForeground1);
+    background-color: var(--colorNeutralBackground1);
+    text-align: left;
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+
+    &:dir(rtl) {
+      text-align: right;
+    }
+  }
+}

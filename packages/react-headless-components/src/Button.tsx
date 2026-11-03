@@ -8,7 +8,7 @@ import {
   useButtonContext,
   type ButtonProps as HeadlessButtonProps,
 } from '@fluentui/react-headless-components-preview/button';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import styles from './Button.module.css';
 import overrides from './Button.overrides.module.css';
 

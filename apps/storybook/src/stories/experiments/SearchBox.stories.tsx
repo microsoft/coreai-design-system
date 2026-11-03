@@ -1,10 +1,12 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import { withHeadlessProvider } from './ComparisonProvider.js';
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, waitFor } from 'storybook/test';
-import { CoreAIFluentProvider, useFluent } from '@coreai-ds/react-components';
+import { useFluent } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from './ComparisonProvider.js';
 import { SearchBox, type SearchBoxProps } from '@coreai-ds/react-headless-components';
 import {
   SearchBoxComparison,
@@ -176,6 +178,7 @@ function NativeFormBoundary(props: SearchBoxProps) {
 }
 
 const meta = {
+  decorators: [withHeadlessProvider],
   title: 'Experiments/Headless SearchBox',
   component: SearchBox,
   parameters: {

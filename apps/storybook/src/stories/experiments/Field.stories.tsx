@@ -1,10 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import { withHeadlessProvider } from './ComparisonProvider.js';
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor } from 'storybook/test';
-import { CoreAIFluentProvider } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from './ComparisonProvider.js';
 import { Field, Input } from '@coreai-ds/react-headless-components';
 import {
   FieldComparisonWithReport,
@@ -21,6 +22,7 @@ import {
 } from './compareFieldStyles.js';
 
 const meta = {
+  decorators: [withHeadlessProvider],
   title: 'Experiments/Headless Field',
   component: Field,
   args: { label: 'Project name', children: <Input /> },

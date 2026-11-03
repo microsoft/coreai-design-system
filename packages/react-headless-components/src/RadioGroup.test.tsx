@@ -15,12 +15,12 @@ import {
   RadioGroup as RawRadioGroup,
 } from '@fluentui/react-headless-components-preview/radio-group';
 import {
-  CoreAIFluentProvider,
   Field,
   Radio as LegacyRadio,
   RadioGroup as LegacyRadioGroup,
   coreaiLightTheme,
 } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from '../../../apps/storybook/src/stories/experiments/ComparisonProvider.js';
 import {
   RadioGroupComparison,
   radioGroupLayouts,

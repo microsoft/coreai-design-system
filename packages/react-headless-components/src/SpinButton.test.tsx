@@ -11,12 +11,8 @@ import type {
   SlotRenderFunction,
 } from '@fluentui/react-utilities';
 import { SpinButton as RawSpinButton } from '@fluentui/react-headless-components-preview/spin-button';
-import {
-  CoreAIFluentProvider,
-  Field,
-  coreaiDarkTheme,
-  coreaiLightTheme,
-} from '@coreai-ds/react-components';
+import { Field, coreaiDarkTheme, coreaiLightTheme } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from '../../../apps/storybook/src/stories/experiments/ComparisonProvider.js';
 import {
   SpinButtonComparison,
   SpinButtonNumericFlow,

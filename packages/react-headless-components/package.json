@@ -15,30 +15,41 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./styles.css": "./dist/styles.css"
+    "./styles.css": "./dist/styles.css",
+    "./fonts/fonts.css": "./src/fonts/fonts.css"
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "src/fonts/fonts.css"
   ],
   "scripts": {
-    "build": "npm --workspace @coreai-ds/react-components run build && vite build && tsc -p tsconfig.build.json",
+    "build": "vite build && tsc -p tsconfig.build.json",
     "type-check": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:package": "npm run build && node scripts/verify-package.mjs"
   },
   "dependencies": {
-    "@coreai-ds/react-components": "*",
     "@fluentui/react-headless-components-preview": "0.3.2",
     "@fluentui/react-icons": "2.0.343",
     "@fluentui/react-shared-contexts": "9.26.4",
-    "@fluentui/react-utilities": "9.27.0"
+    "@fluentui/react-theme": "9.2.2",
+    "@fluentui/react-utilities": "9.27.0",
+    "hast-util-to-jsx-runtime": "^2.3.6",
+    "react-dropzone": "^14.4.1",
+    "react-markdown": "^9.1.0",
+    "rehype-highlight": "^7.0.2",
+    "remark-gfm": "^4.0.1",
+    "unified": "^11.0.5"
   },
   "peerDependencies": {
     "react": ">=16.14.0 <20.0.0"
   },
   "devDependencies": {
+    "@coreai-ds/react-components": "*",
     "@fluentui/react-button": "9.11.1",
     "@microsoft/focusgroup-polyfill": "1.6.0",
+    "@types/hast": "^3.0.5",
     "@types/node": "^20",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",

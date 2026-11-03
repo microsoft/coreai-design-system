@@ -21,7 +21,6 @@ import type {
   SlotRenderFunction,
 } from '@fluentui/react-utilities';
 import {
-  CoreAIFluentProvider,
   Breadcrumb as LegacyBreadcrumb,
   BreadcrumbButton as LegacyBreadcrumbButton,
   BreadcrumbDivider as LegacyBreadcrumbDivider,
@@ -29,6 +28,7 @@ import {
   coreaiDarkTheme,
   coreaiLightTheme,
 } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from '../../../apps/storybook/src/stories/experiments/ComparisonProvider.js';
 import {
   BreadcrumbCalendarIcon,
   BreadcrumbCollapsedAncestors,

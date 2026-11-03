@@ -7,11 +7,8 @@ import { userEvent } from 'vitest/browser';
 import { cleanup, render } from 'vitest-browser-react';
 import type { ForwardRefComponent, SlotRenderFunction } from '@fluentui/react-utilities';
 import { ButtonContextProvider } from '@fluentui/react-headless-components-preview/button';
-import {
-  CoreAIFluentProvider,
-  coreaiLightTheme,
-  coreaiDarkTheme,
-} from '@coreai-ds/react-components';
+import { coreaiLightTheme, coreaiDarkTheme } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from '../../../apps/storybook/src/stories/experiments/ComparisonProvider.js';
 import {
   CompoundButtonComparison,
   compoundButtonExamples,

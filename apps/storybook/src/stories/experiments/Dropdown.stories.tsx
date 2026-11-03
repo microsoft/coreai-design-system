@@ -1,10 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import { withHeadlessProvider } from './ComparisonProvider.js';
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent } from 'storybook/test';
-import { CoreAIFluentProvider } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from './ComparisonProvider.js';
 import { Dropdown } from '@coreai-ds/react-headless-components';
 import {
   DropdownSelectionFlow,
@@ -16,6 +17,7 @@ import { OptionPickerComparisonReport } from './OptionPickerComparisonReport.js'
 import { assertPickerReport } from './OptionPickerStoryPlay.js';
 
 const meta = {
+  decorators: [withHeadlessProvider],
   title: 'Experiments/Headless Dropdown',
   component: Dropdown,
   parameters: {

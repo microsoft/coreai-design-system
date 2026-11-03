@@ -9,7 +9,7 @@ import {
   type DialogSurfaceProps,
 } from '@fluentui/react-headless-components-preview/dialog';
 import type { ForwardRefComponent } from '@fluentui/react-utilities';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import styles from './DialogSurface.module.css';
 import overrides from './DialogSurface.overrides.module.css';
 

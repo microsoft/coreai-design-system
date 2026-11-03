@@ -8,7 +8,8 @@ import {
   type InputProps as HeadlessInputProps,
 } from '@fluentui/react-headless-components-preview/input';
 import { useFieldContext } from '@fluentui/react-headless-components-preview/field';
-import { CopyButton, useId } from '@coreai-ds/react-components';
+import { useId } from '@fluentui/react-utilities';
+import { CopyButton } from './CopyButton.js';
 import styles from './Input.module.css';
 import overrides from './Input.overrides.module.css';
 

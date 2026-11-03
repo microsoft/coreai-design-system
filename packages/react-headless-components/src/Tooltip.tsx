@@ -8,7 +8,7 @@ import {
   useTooltip,
   type TooltipProps as HeadlessTooltipProps,
 } from '@fluentui/react-headless-components-preview/tooltip';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import { applyTooltipContentStyles, type TooltipAppearance } from './TooltipStyles.js';
 
 export { tooltipClassNames } from './TooltipStyles.js';

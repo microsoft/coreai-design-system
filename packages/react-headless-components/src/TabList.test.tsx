@@ -7,11 +7,8 @@ import { userEvent } from 'vitest/browser';
 import { cleanup, render } from 'vitest-browser-react';
 import * as primitive from '@fluentui/react-headless-components-preview/tab-list';
 import type { ForwardRefComponent } from '@fluentui/react-utilities';
-import {
-  CoreAIFluentProvider,
-  coreaiDarkTheme,
-  coreaiLightTheme,
-} from '@coreai-ds/react-components';
+import { coreaiDarkTheme, coreaiLightTheme } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from '../../../apps/storybook/src/stories/experiments/ComparisonProvider.js';
 import { FocusgroupConsumer } from '../../../apps/storybook/src/stories/experiments/FocusgroupConsumer.js';
 import {
   TabListComparison,

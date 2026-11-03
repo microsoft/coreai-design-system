@@ -12,7 +12,7 @@ import {
 } from '@fluentui/react-headless-components-preview/link';
 import type { ExtractSlotProps, SlotRenderFunction } from '@fluentui/react-utilities';
 import { Link as LegacyLink, coreaiDarkTheme, coreaiLightTheme } from '@coreai-ds/react-components';
-import { renderCoreAIComponent } from '../../react-components/src/test-utils.js';
+import { renderCoreAIComponent } from '../../../apps/storybook/src/stories/experiments/HeadlessTestUtils.js';
 import {
   LinkComparison,
   LinkContentIcon,

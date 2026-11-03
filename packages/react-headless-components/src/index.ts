@@ -2,6 +2,59 @@
 // Licensed under the MIT license.
 
 export {
+  CoreAIFluentProvider,
+  coreaiFluentProviderClassNames,
+  type CoreAIFluentProviderProps,
+} from './CoreAIFluentProvider.js';
+export * from './theme.js';
+export * from './azureTheme.js';
+export { useFluentThemeMode, type FluentThemeMode } from './FluentThemeModeContext.js';
+export { CopyButton, copyButtonClassNames, type CopyButtonProps } from './CopyButton.js';
+export { LinkButton, linkButtonClassNames, type LinkButtonProps } from './LinkButton.js';
+export {
+  Text,
+  textClassNames,
+  type TextProps,
+  type TextForeground,
+  type TextPreset,
+} from './Text.js';
+export {
+  FileUpload,
+  fileUploadClassNames,
+  type FileUploadProps,
+  type FileUploadState,
+} from './FileUpload.js';
+export { CodeBlock, codeBlockClassNames, type CodeBlockProps } from './CodeBlock.js';
+export { Markdown, markdownClassNames, type MarkdownProps } from './Markdown.js';
+export {
+  DateTimePicker,
+  dateTimePickerClassNames,
+  type DateTimePickerProps,
+  type DateTimePickerType,
+  type DateTimePickerOnChangeData,
+  type DateTimePickerErrorType,
+  type DateTimePickerValidationResultData,
+} from './DateTimePicker.js';
+export {
+  createDarkTheme,
+  createHighContrastTheme,
+  createLightTheme,
+  createTeamsDarkTheme,
+  teamsDarkTheme,
+  teamsDarkV21Theme,
+  teamsHighContrastTheme,
+  teamsLightTheme,
+  teamsLightV21Theme,
+  tokens,
+  typographyStyles,
+  webDarkTheme,
+  webLightTheme,
+  type BrandVariants,
+  type PartialTheme,
+  type Theme,
+} from '@fluentui/react-theme';
+
+export {
   Accordion,
   accordionClassNames,
   type AccordionProps,

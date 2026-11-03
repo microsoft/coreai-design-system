@@ -1,10 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import { withHeadlessProvider } from './ComparisonProvider.js';
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent } from 'storybook/test';
-import { CoreAIFluentProvider } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from './ComparisonProvider.js';
 import { Tab, TabList } from '@coreai-ds/react-headless-components';
 import { tabListConsumerExample, tabListExamples } from './TabListComparison.js';
 import { TabListComparisonWithReport } from './TabListComparisonReport.js';
@@ -17,6 +18,7 @@ import {
 } from './TabListStoryPlay.js';
 
 const meta = {
+  decorators: [withHeadlessProvider],
   title: 'Experiments/Headless TabList',
   component: TabList,
   subcomponents: { Tab },

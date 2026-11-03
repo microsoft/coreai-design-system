@@ -9,7 +9,7 @@ import {
   type AccordionPanelSlots as HeadlessAccordionPanelSlots,
 } from '@fluentui/react-headless-components-preview/accordion';
 import type { ForwardRefComponent } from '@fluentui/react-utilities';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import styles from './AccordionPanel.module.css';
 import overrides from './AccordionPanel.overrides.module.css';
 

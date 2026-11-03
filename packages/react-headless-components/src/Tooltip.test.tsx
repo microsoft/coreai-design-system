@@ -16,11 +16,8 @@ import {
   type SlotRenderFunction,
 } from '@fluentui/react-utilities';
 import type { PositioningImperativeRef } from '@fluentui/react-headless-components-preview/positioning';
-import {
-  CoreAIFluentProvider,
-  coreaiDarkTheme,
-  coreaiLightTheme,
-} from '@coreai-ds/react-components';
+import { coreaiDarkTheme, coreaiLightTheme } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from '../../../apps/storybook/src/stories/experiments/ComparisonProvider.js';
 import {
   TooltipComparison,
   TooltipHelpFlow,

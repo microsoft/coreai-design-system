@@ -8,7 +8,7 @@ import {
   type PopoverSurfaceProps,
 } from '@fluentui/react-headless-components-preview/popover';
 import type { ForwardRefComponent, InferredElementRefType } from '@fluentui/react-utilities';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import { PopoverVisualContext } from './PopoverVisualContext.js';
 import styles from './PopoverSurface.module.css';
 import overrides from './PopoverSurface.overrides.module.css';

@@ -1,10 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import { withHeadlessProvider } from './ComparisonProvider.js';
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent } from 'storybook/test';
-import { CoreAIFluentProvider } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from './ComparisonProvider.js';
 import {
   InteractionTag,
   InteractionTagPrimary,
@@ -20,6 +21,7 @@ import { assertTagReport, playTagDismissFlow, playTagFormFlow } from './TagStory
 import { getComparisonTag } from './compareTagStyles.js';
 
 const meta = {
+  decorators: [withHeadlessProvider],
   title: 'Experiments/Headless InteractionTag',
   component: InteractionTag,
   subcomponents: { InteractionTagPrimary, InteractionTagSecondary },

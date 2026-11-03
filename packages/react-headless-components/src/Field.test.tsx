@@ -6,11 +6,8 @@ import { afterEach, expect, expectTypeOf, test, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { cleanup, render } from 'vitest-browser-react';
 import type { ExtractSlotProps, SlotRenderFunction } from '@fluentui/react-utilities';
-import {
-  CoreAIFluentProvider,
-  coreaiDarkTheme,
-  coreaiLightTheme,
-} from '@coreai-ds/react-components';
+import { coreaiDarkTheme, coreaiLightTheme } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from '../../../apps/storybook/src/stories/experiments/ComparisonProvider.js';
 import {
   FieldComparison,
   FieldFormFlow,

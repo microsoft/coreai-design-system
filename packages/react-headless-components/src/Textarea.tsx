@@ -8,7 +8,7 @@ import {
   type TextareaProps as HeadlessTextareaProps,
 } from '@fluentui/react-headless-components-preview/textarea';
 import { useFieldContext } from '@fluentui/react-headless-components-preview/field';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import styles from './Textarea.module.css';
 import './Textarea.overrides.module.css';
 

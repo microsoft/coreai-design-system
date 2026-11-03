@@ -10,7 +10,7 @@ import {
 import { SearchRegular } from '@fluentui/react-icons/headless/svg/search';
 import { DismissRegular } from '@fluentui/react-icons/headless/svg/dismiss';
 import type { ForwardRefComponent } from '@fluentui/react-utilities';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import styles from './SearchBox.module.css';
 import './SearchBox.overrides.module.css';
 

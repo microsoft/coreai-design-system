@@ -9,7 +9,7 @@ import {
   type CardProps as HeadlessCardProps,
 } from '@fluentui/react-headless-components-preview/card';
 import type { ForwardRefComponent } from '@fluentui/react-utilities';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import styles from './Card.module.css';
 import overrides from './Card.overrides.module.css';
 

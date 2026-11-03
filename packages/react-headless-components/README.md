@@ -8,15 +8,17 @@ the public render function. It does not call Fluent's Griffel styling hook.
 
 ## Migration scope
 
-The pinned headless `0.3.2` catalog is implemented: 143 distinct component exports across
+The pinned headless `0.3.2` visual catalog is implemented: 143 distinct upstream component exports across
 51 supported component entry points, including behavior-only roots and triggers. The
 [public exports](./src/index.ts) are the supported experimental surface, not a production release.
 
-DataGrid, Table, Tree, and Text remain deferred because this pinned package does not publish them.
-The deprecated CoreAI Nav surface is not recreated. Provider/theme/defaults remain on the existing
-bridge; style-free overflow, positioning, and utility APIs do not need visual ports.
-Existing custom CoreAI composites such as Input's CopyButton remain explicit boundaries below.
-This coverage does not claim exhaustive visual parity or a Griffel-free application bundle.
+DataGrid, Table, Tree, and the standard Carousel family remain deferred because this pinned package
+does not publish them. Smaller old exports such as MessageBarGroup and ToastTrigger likewise have
+no current facade. The deprecated CoreAI Nav and old typography-preset components are not recreated.
+Text is a local typography component, not a component we expect headless to publish.
+Style-free overflow, positioning, and utility APIs do not need visual ports or blanket re-exports.
+This coverage does not claim exhaustive visual parity or a Griffel-free application that also
+imports old styled components.
 
 ## Run
 
@@ -26,6 +28,7 @@ From the repository root:
 npm install
 npm --workspace packages/react-headless-components test
 npm --workspace packages/react-headless-components run build
+npm --workspace packages/react-headless-components run test:package
 npm run storybook
 ```
 
@@ -51,9 +54,15 @@ Storybook and tests resolve the experimental package to source. Built-package co
 load the emitted CSS once:
 
 ```tsx
-import { CoreAIFluentProvider } from '@coreai-ds/react-components';
-import { Button, Input, Textarea } from '@coreai-ds/react-headless-components';
+import {
+  CoreAIFluentProvider,
+  Button,
+  Input,
+  Textarea,
+} from '@coreai-ds/react-headless-components';
 import '@coreai-ds/react-headless-components/styles.css';
+// Optional registration of locally installed, separately licensed Aptos fonts:
+import '@coreai-ds/react-headless-components/fonts/fonts.css';
 
 <CoreAIFluentProvider>
   <Button appearance="primary">Save</Button>
@@ -62,12 +71,56 @@ import '@coreai-ds/react-headless-components/styles.css';
 </CoreAIFluentProvider>;
 ```
 
-The existing provider supplies theme variables, inherited typography, and the component-default
-context. This temporary bridge still depends on the old package and its provider; this pilot is
-not a claim that the whole application bundle is Griffel-free.
+The new provider supplies theme variables, inherited typography, responsive tracking, scrollbars,
+component-default and theme-mode contexts. It uses the public headless provider hook/render pipeline
+for direction and target-document context. Native CSS variables are emitted inline, including SSR;
+partial nested themes merge with the parent, and caller inline styles retain priority.
+RTL follows stock Fluent's right alignment rather than the old CoreAI provider's mixed-direction
+Griffel class collision, which leaves it left-aligned. Regression tests assert both outcomes
+explicitly and keep every other selected provider property exact.
+The CoreAI and Azure themes, their factories, and style-free Fluent theme helpers are exported here.
+The optional font stylesheet registers local faces only; no font binaries or downloads are included.
+
+The provider intentionally does not expose the old custom style hooks, internal appearance overrides,
+portal styling, Griffel renderer, or Tabster focus pipeline. Use classes, slots, and native CSS.
+Old/new comparison consumers publish both independent context families in a test-only
+`ComparisonProvider`; that bridge is not part of the production library. Experimental stories opt
+into the new provider without adding it to normal published Storybook builds.
+The comparison bridge keeps its inner root layout/typography-neutral so the new provider does not
+restyle the legacy reference. Independent provider tests cover the actual new root styles.
+
+CI checks the emitted package, SSR token output, packaged CSS/fonts, and a consumer bundle of the
+complete public surface. It also runs the headless Chromium suites in addition to the original
+package's tests. The package remains private: this is not a production replacement or publish step.
+SSR verification uses a real CSS-aware consumer build, since public headless glyph modules import
+their native stylesheet. Icon contexts stay external/shared rather than being duplicated inside
+the library. The provider publishes the current style-free icon direction context for both owned
+and consumer-supplied glyphs.
+Official headless icon CSS is imported into `fluent-components`, not directly as an unlayered JS
+side effect. Its zero-specificity SVG defaults must not override layered component slot geometry.
+These global-only defaults use `Icon.css`: a locals-empty CSS Module can be pruned from the
+production bundle. Package verification requires the actual global visibility selector in emitted
+CSS, and live checks replace source sheets with the built stylesheet.
+
+The pinned headless behavior still includes Keyborg and small Fluent focus helpers. The bundle check
+rejects Griffel, the actual Tabster engine, and the old CoreAI package, not the current facade's
+internal helper filenames. This boundary is reported rather than patched or replaced with private APIs.
 
 ## Style source and ownership
 
+- Provider base styles use
+  [react-provider 9.22.23](https://unpkg.com/@fluentui/react-provider@9.22.23/lib/components/FluentProvider/useFluentProviderStyles.styles.raw.js).
+  CoreAI tracking and scrollbars come from the original `theme/globalStyles.ts`; theme data and
+  mode/defaults contexts remain separate from styling. Theme factories use `@fluentui/react-theme`
+  directly, not the old styled component barrel.
+- Text is a native typography primitive using the installed
+  [react-text 9.6.21 styles](https://unpkg.com/@fluentui/react-text@9.6.21/lib/components/Text/useTextStyles.styles.raw.js)
+  as its visual reference and the original CoreAI Text wrapper for overrides.
+  CopyButton and LinkButton compose the completed Button/Tooltip foundations without a second
+  visual style port. FileUpload keeps react-dropzone behavior and ports its CoreAI-only stylesheet.
+- DateTimePicker composes the local native Input/Button foundations and preserves local-wall-clock
+  Date conversion and constraint validation. CodeBlock and Markdown retain their existing content
+  processors and CoreAI-only visual sources, composing the local clipboard and link components.
 - Baseline: CoreAI main commit `9e7876c`, with `@fluentui/react-button@9.11.1`.
   The exact dev dependency preserves the legacy Button reference during this experiment.
 - Fluent source: [`useButtonStyles.styles.ts` in react-button 9.11.1](https://unpkg.com/@fluentui/react-button@9.11.1/lib/components/Button/useButtonStyles.styles.raw.js).
@@ -214,13 +267,29 @@ Size inherits the headless Button context; mixed old/new component-family contex
 Arbitrary `customStyleHooks_unstable` overrides from the legacy provider are not invoked by this
 new styling pipeline; use CSS classes, slots, or inline styles for the experimental Button.
 Input and Textarea likewise do not invoke legacy custom style hooks or the internal provider
-`inputDefaultAppearance` override. Input's automatic copy action still composes the existing
-legacy `CopyButton`; converting that component is a separate job.
+`inputDefaultAppearance` override.
+Input's automatic copy action now composes the local CopyButton, and its id helper comes directly
+from the current style-free utility API rather than the old component barrel.
 Input also preserves the legacy `filled-darker` fallback even when component defaults are disabled.
 Its automatic copy action uses the supplied `value` or `defaultValue`, not subsequent uncontrolled
 edits. These inherited limitations are not corrected as part of the styling migration.
 Input and Textarea expose only current appearances. Deprecated shadow appearances, their CSS,
 compatibility diagnostics, and comparison fixtures are intentionally excluded from this package.
+
+Text's uppercase tracking is `0.1em` under the new provider. The old provider's unlayered descendant
+tracking rule overrides that value in the legacy implementation and can still affect a mixed
+old/new comparison subtree. Independent provider tests keep the current local contract explicit.
+LinkButton's supported custom-anchor composition removes a disabled `href`; the old cast bypassed
+that supported branch. Native anchors, external-link defaults, and current disabled activation
+semantics remain owned by the local Button/headless contracts.
+Text's live comparison retains observed `0.01px` fractional grid-track width allocation differences
+rather than hiding them with a general CSS-property tolerance.
+
+DateTimePicker leaves arrow stepping to the native browser instead of copying the old rollback
+workaround. Its ISO-week conversion resolves the selected week's Monday across year boundaries.
+Incomplete native date edits can change validity while keeping an empty value without dispatching
+an input/change notification; no callback or validation shim is added. Regressions observe the actual
+DOM events and require exact change/validation recovery after a complete edit.
 
 Image inherits Fluent's native-property filter: `decoding`, `sizes`, and `referrerPolicy` are accepted
 by its TypeScript props but are not forwarded to the native image in either implementation.
@@ -392,8 +461,8 @@ Current headless and native-browser behavior takes precedence over reproducing o
 quirks. Document intentional visual or behavioral differences instead of recreating obsolete
 markup, focus machinery, or compatibility branches to make comparisons pass.
 
-The existing theme/defaults provider bridge is an explicit temporary pilot boundary, not permission
-to introduce deprecated APIs or new dependencies on old styled component implementations.
+The old package is a comparison-only development dependency, not a runtime provider/defaults bridge.
+Do not introduce deprecated APIs or dependencies on old styled component implementations.
 
 ### Worker process
 

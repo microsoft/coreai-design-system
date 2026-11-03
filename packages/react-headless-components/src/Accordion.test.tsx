@@ -16,11 +16,8 @@ import {
   AccordionItem as RawAccordionItem,
   AccordionPanel as RawAccordionPanel,
 } from '@fluentui/react-headless-components-preview/accordion';
-import {
-  CoreAIFluentProvider,
-  coreaiDarkTheme,
-  coreaiLightTheme,
-} from '@coreai-ds/react-components';
+import { coreaiDarkTheme, coreaiLightTheme } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from '../../../apps/storybook/src/stories/experiments/ComparisonProvider.js';
 import {
   AccordionComparison,
   AccordionFixtureIcon,

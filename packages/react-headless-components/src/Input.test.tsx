@@ -5,12 +5,8 @@ import * as React from 'react';
 import { afterEach, expect, expectTypeOf, test, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { cleanup, render } from 'vitest-browser-react';
-import {
-  CoreAIFluentProvider,
-  Field,
-  coreaiDarkTheme,
-  coreaiLightTheme,
-} from '@coreai-ds/react-components';
+import { Field, coreaiDarkTheme, coreaiLightTheme } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from '../../../apps/storybook/src/stories/experiments/ComparisonProvider.js';
 import {
   InputComparison,
   inputAppearances,

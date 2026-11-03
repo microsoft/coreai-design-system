@@ -11,12 +11,12 @@ import type {
   SlotRenderFunction,
 } from '@fluentui/react-utilities';
 import {
-  CoreAIFluentProvider,
   Field,
   SearchBox as LegacySearchBox,
   coreaiDarkTheme,
   coreaiLightTheme,
 } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from '../../../apps/storybook/src/stories/experiments/ComparisonProvider.js';
 import {
   SearchBoxComparison,
   searchBoxAppearances,

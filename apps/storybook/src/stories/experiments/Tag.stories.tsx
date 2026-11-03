@@ -1,10 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import { withHeadlessProvider } from './ComparisonProvider.js';
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent } from 'storybook/test';
-import { CoreAIFluentProvider } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from './ComparisonProvider.js';
 import { Tag } from '@coreai-ds/react-headless-components';
 import { tagConsumerExample, tagExamples } from './TagComparison.js';
 import { TagComparisonWithReport } from './TagComparisonReport.js';
@@ -13,6 +14,7 @@ import { assertTagReport, playTagDismissFlow, playTagFormFlow } from './TagStory
 import { getComparisonTag } from './compareTagStyles.js';
 
 const meta = {
+  decorators: [withHeadlessProvider],
   title: 'Experiments/Headless Tag',
   component: Tag,
   args: { children: 'Project Atlas' },

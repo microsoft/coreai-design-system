@@ -11,11 +11,11 @@ import {
   type InfoButtonSlots as PrimitiveInfoButtonSlots,
 } from '@fluentui/react-headless-components-preview/info-label';
 import {
-  CoreAIFluentProvider,
   InfoButton as LegacyInfoButton,
   coreaiDarkTheme,
   coreaiLightTheme,
 } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from '../../../apps/storybook/src/stories/experiments/ComparisonProvider.js';
 import type { PositioningImperativeRef } from '@fluentui/react-headless-components-preview/positioning';
 import {
   InfoButtonComparison,

@@ -22,12 +22,8 @@ import {
   type ToastTitleSlots as PrimitiveToastTitleSlots,
   type ToasterProps as PrimitiveToasterProps,
 } from '@fluentui/react-headless-components-preview/toast';
-import {
-  AriaLiveAnnouncer,
-  CoreAIFluentProvider,
-  coreaiDarkTheme,
-  coreaiLightTheme,
-} from '@coreai-ds/react-components';
+import { AriaLiveAnnouncer, coreaiDarkTheme, coreaiLightTheme } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from '../../../apps/storybook/src/stories/experiments/ComparisonProvider.js';
 import {
   BackgroundAppearanceProvider,
   useAnnounce,

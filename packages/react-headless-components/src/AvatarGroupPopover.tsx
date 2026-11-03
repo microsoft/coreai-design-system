@@ -18,7 +18,7 @@ import {
   type ForwardRefComponent,
   type SlotRenderFunction,
 } from '@fluentui/react-utilities';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import type { PopoverProps } from './Popover.js';
 import { PopoverSurface, type PopoverSurfaceProps } from './PopoverSurface.js';
 import { PopoverVisualContext } from './PopoverVisualContext.js';

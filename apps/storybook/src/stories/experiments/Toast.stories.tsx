@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import { withHeadlessProvider } from './ComparisonProvider.js';
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor } from 'storybook/test';
@@ -102,6 +103,7 @@ function ComparisonWithReport({
 }
 
 const meta = {
+  decorators: [withHeadlessProvider],
   title: 'Experiments/Headless Toast',
   component: Toast,
   subcomponents: { ToastTitle, ToastBody, ToastFooter, ToastContainer, Toaster },

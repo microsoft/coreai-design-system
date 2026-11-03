@@ -18,7 +18,7 @@ import type {
 } from '@fluentui/react-utilities';
 import { ChevronDownRegular } from '@fluentui/react-icons/headless/svg/chevron-down';
 import { supportsFocusGroup } from '@microsoft/focusgroup-polyfill';
-import { renderCoreAIComponent } from '../../react-components/src/test-utils.js';
+import { renderCoreAIComponent } from '../../../apps/storybook/src/stories/experiments/HeadlessTestUtils.js';
 import { FocusgroupConsumer } from '../../../apps/storybook/src/stories/experiments/FocusgroupConsumer.js';
 import {
   getTagPickerPerson,

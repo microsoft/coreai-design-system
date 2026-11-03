@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import { withHeadlessProvider } from './ComparisonProvider.js';
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@coreai-ds/react-headless-components';
@@ -67,6 +68,7 @@ function ComparisonWithReport({ examples }: { examples?: readonly ButtonExample[
 }
 
 const meta = {
+  decorators: [withHeadlessProvider],
   title: 'Experiments/Headless Button',
   component: Button,
   parameters: {

@@ -10,7 +10,7 @@ import {
 import { useFieldContext } from '@fluentui/react-headless-components-preview/field';
 import { ChevronDownRegular } from '@fluentui/react-icons/headless/svg/chevron-down';
 import type { ForwardRefComponent } from '@fluentui/react-utilities';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import styles from './Select.module.css';
 import './Select.overrides.module.css';
 

@@ -5,7 +5,7 @@ import * as React from 'react';
 import { expect } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { coreaiLightTheme, type PositioningImperativeRef } from '@coreai-ds/react-components';
-import { renderCoreAIComponent } from '../../../../../packages/react-components/src/test-utils.js';
+import { renderCoreAIComponent } from './HeadlessTestUtils.js';
 import { FocusgroupConsumer } from './FocusgroupConsumer.js';
 import { TagPickerComparison, type TagPickerExample } from './TagPickerComparison.js';
 import {

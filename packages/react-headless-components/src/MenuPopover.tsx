@@ -8,7 +8,7 @@ import {
   type MenuPopoverProps,
 } from '@fluentui/react-headless-components-preview/menu';
 import type { ForwardRefComponent } from '@fluentui/react-utilities';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import styles from './MenuPopover.module.css';
 import overrides from './MenuPopover.overrides.module.css';
 

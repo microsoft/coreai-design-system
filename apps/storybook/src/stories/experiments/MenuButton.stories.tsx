@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import { withHeadlessProvider } from './ComparisonProvider.js';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent } from 'storybook/test';
 import { MenuButton } from '@coreai-ds/react-headless-components';
@@ -15,6 +16,7 @@ import { ButtonVariantsReport } from './ButtonVariantsReport.js';
 import { MenuButtonFlow } from './ButtonVariantsFlows.js';
 
 const meta = {
+  decorators: [withHeadlessProvider],
   title: 'Experiments/Headless MenuButton',
   component: MenuButton,
   parameters: { layout: 'padded' },

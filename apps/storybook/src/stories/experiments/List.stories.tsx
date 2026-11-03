@@ -1,10 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import { withHeadlessProvider } from './ComparisonProvider.js';
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor } from 'storybook/test';
-import { CoreAIFluentProvider } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from './ComparisonProvider.js';
 import { List, ListItem } from '@coreai-ds/react-headless-components';
 import { listConsumerExample, listExamples } from './ListComparison.js';
 import { ListComparisonWithReport } from './ListComparisonReport.js';
@@ -19,6 +20,7 @@ import {
 import { assertListFocus, assertListReport, focusListStoryItem } from './ListStoryPlay.js';
 
 const meta = {
+  decorators: [withHeadlessProvider],
   title: 'Experiments/Headless List',
   component: List,
   subcomponents: { ListItem },

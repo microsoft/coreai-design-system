@@ -9,7 +9,7 @@ import {
 } from '@fluentui/react-headless-components-preview/interaction-tag';
 import type { ForwardRefComponent } from '@fluentui/react-utilities';
 import { DismissRegular } from '@fluentui/react-icons/headless/svg/dismiss';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import { InteractionTagVisualContext } from './TagVisualContext.js';
 import styles from './InteractionTagSecondary.module.css';
 import overrides from './InteractionTagSecondary.overrides.module.css';

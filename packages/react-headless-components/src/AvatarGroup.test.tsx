@@ -25,7 +25,7 @@ import {
   coreaiDarkTheme,
   coreaiLightTheme,
 } from '@coreai-ds/react-components';
-import { renderCoreAIComponent } from '../../react-components/src/test-utils.js';
+import { renderCoreAIComponent } from '../../../apps/storybook/src/stories/experiments/HeadlessTestUtils.js';
 import {
   AvatarGroupComparison,
   AvatarGroupPeopleFlow,

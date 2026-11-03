@@ -5,11 +5,8 @@ import * as React from 'react';
 import { expect } from 'vitest';
 import { userEvent } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
-import {
-  CoreAIFluentProvider,
-  coreaiLightTheme,
-  type PositioningImperativeRef,
-} from '@coreai-ds/react-components';
+import { coreaiLightTheme, type PositioningImperativeRef } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from './ComparisonProvider.js';
 import { OptionPickerComparison, type PickerExample } from './OptionPickerComparison.js';
 import {
   captureOptionPickerStyles,

@@ -9,7 +9,7 @@ import {
   type InteractionTagPrimaryProps,
 } from '@fluentui/react-headless-components-preview/interaction-tag';
 import type { ForwardRefComponent } from '@fluentui/react-utilities';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import {
   InteractionTagVisualContext,
   tagAvatarShapes,

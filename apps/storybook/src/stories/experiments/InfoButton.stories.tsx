@@ -1,10 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import { withHeadlessProvider } from './ComparisonProvider.js';
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor } from 'storybook/test';
-import { CoreAIFluentProvider } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from './ComparisonProvider.js';
 import { InfoButton } from '@coreai-ds/react-headless-components';
 import {
   InfoButtonComparisonWithReport,
@@ -19,6 +20,7 @@ import {
 } from './compareInfoButtonStyles.js';
 
 const meta = {
+  decorators: [withHeadlessProvider],
   title: 'Experiments/Headless InfoButton',
   component: InfoButton,
   args: { 'aria-label': 'About project access', info: 'Editors can update project settings.' },

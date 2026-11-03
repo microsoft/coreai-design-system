@@ -1,0 +1,71 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten comparison layout and unlayered consumer examples, not an upstream style port.
+ */
+
+.DateTimePickerComparison {
+  display: grid;
+  gap: var(--spacingVerticalM);
+  overflow-x: auto;
+}
+
+.DateTimePickerComparison__row {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.6fr) repeat(2, minmax(310px, 1fr));
+  align-items: center;
+  gap: var(--spacingHorizontalL);
+  min-height: 48px;
+}
+
+.DateTimePickerComparison__row > div {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.DateTimePickerConsumerRoot {
+  background-color: rgb(232, 240, 255);
+  border-radius: 3px;
+}
+
+.DateTimePickerConsumerInput {
+  padding-inline: 14px;
+  color: rgb(32, 48, 96);
+}
+
+.DateTimePickerConsumerRoot :global(.fui-Input__contentAfter) {
+  gap: 7px;
+  color: rgb(72, 32, 128);
+}
+
+.DateTimePickerConsumerRoot :global(.fui-Button) {
+  border-radius: 2px;
+  min-width: 28px;
+  max-width: 28px;
+}
+
+.DateTimePickerComparison__report {
+  display: block;
+  max-height: 32rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+  margin-block: var(--spacingVerticalL);
+}
+
+.DateTimePickerNativeForm {
+  display: grid;
+  justify-items: start;
+  gap: var(--spacingVerticalM);
+  max-width: 400px;
+}
+
+.DateTimePickerNativeForm__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacingHorizontalS);
+}

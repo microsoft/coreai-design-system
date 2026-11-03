@@ -9,7 +9,7 @@ import {
   type SwatchPickerProps as HeadlessSwatchPickerProps,
 } from '@fluentui/react-headless-components-preview/swatch-picker';
 import type { ForwardRefComponent } from '@fluentui/react-utilities';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import styles from './SwatchPicker.module.css';
 
 export {

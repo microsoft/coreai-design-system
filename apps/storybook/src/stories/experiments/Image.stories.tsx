@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import { withHeadlessProvider } from './ComparisonProvider.js';
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, waitFor } from 'storybook/test';
@@ -130,6 +131,7 @@ function ImagePlayground(props: ImageProps) {
 }
 
 const meta = {
+  decorators: [withHeadlessProvider],
   title: 'Experiments/Headless Image',
   component: Image,
   parameters: {

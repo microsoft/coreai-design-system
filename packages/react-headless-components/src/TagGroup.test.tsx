@@ -9,7 +9,7 @@ import * as primitive from '@fluentui/react-headless-components-preview/tag-grou
 import type { ForwardRefComponent } from '@fluentui/react-utilities';
 import { supportsFocusGroup } from '@microsoft/focusgroup-polyfill';
 import { coreaiDarkTheme, coreaiLightTheme } from '@coreai-ds/react-components';
-import { renderCoreAIComponent } from '../../react-components/src/test-utils.js';
+import { renderCoreAIComponent } from '../../../apps/storybook/src/stories/experiments/HeadlessTestUtils.js';
 import { FocusgroupConsumer } from '../../../apps/storybook/src/stories/experiments/FocusgroupConsumer.js';
 import {
   TagGroupComparison,

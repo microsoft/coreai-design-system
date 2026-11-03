@@ -10,7 +10,7 @@ import {
 import { ChevronUp16Regular } from '@fluentui/react-icons/headless/svg/chevron-up';
 import { ChevronDown16Regular } from '@fluentui/react-icons/headless/svg/chevron-down';
 import type { ForwardRefComponent } from '@fluentui/react-utilities';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import styles from './SpinButton.module.css';
 import './SpinButton.overrides.module.css';
 

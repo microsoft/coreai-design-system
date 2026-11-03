@@ -10,7 +10,7 @@ import {
 } from '@fluentui/react-headless-components-preview/accordion';
 import { ChevronRightRegular } from '@fluentui/react-icons/headless/svg/chevron-right';
 import type { ForwardRefComponent } from '@fluentui/react-utilities';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import styles from './AccordionHeader.module.css';
 import overrides from './AccordionHeader.overrides.module.css';
 

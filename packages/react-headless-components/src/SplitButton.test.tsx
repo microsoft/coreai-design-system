@@ -12,11 +12,8 @@ import type {
   SlotRenderFunction,
 } from '@fluentui/react-utilities';
 import { ButtonContextProvider } from '@fluentui/react-headless-components-preview/button';
-import {
-  CoreAIFluentProvider,
-  coreaiLightTheme,
-  coreaiDarkTheme,
-} from '@coreai-ds/react-components';
+import { coreaiLightTheme, coreaiDarkTheme } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from '../../../apps/storybook/src/stories/experiments/ComparisonProvider.js';
 import {
   SplitButtonComparison,
   splitButtonExamples,

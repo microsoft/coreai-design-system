@@ -1,0 +1,67 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Shared fixture layout and ordinary consumer CSS; not a component style port.
+ */
+
+.examples {
+  display: grid;
+  gap: 12px;
+  max-width: 1080px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) repeat(2, minmax(180px, 1fr));
+  align-items: center;
+  gap: 16px;
+  min-height: 48px;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.pointerRest {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+}
+
+.consumerRoot {
+  min-width: 144px;
+  border-radius: 3px;
+  color: rgb(20, 90, 160);
+}
+
+.consumerIcon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+.report {
+  display: block;
+  min-height: 48px;
+  max-height: 360px;
+  overflow: auto;
+  margin-block: 16px;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+}
+
+.flow {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+}
+
+.flow label {
+  display: grid;
+  gap: 4px;
+}

@@ -1,10 +1,12 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import { withHeadlessProvider } from './ComparisonProvider.js';
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent } from 'storybook/test';
-import { CoreAIFluentProvider, useFluent } from '@coreai-ds/react-components';
+import { useFluent } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from './ComparisonProvider.js';
 import { Select, type SelectProps } from '@coreai-ds/react-headless-components';
 import {
   SelectComparison,
@@ -162,6 +164,7 @@ function NativeForm(props: SelectProps) {
 }
 
 const meta = {
+  decorators: [withHeadlessProvider],
   title: 'Experiments/Headless Select',
   component: Select,
   parameters: {

@@ -8,7 +8,7 @@ import { cleanup } from 'vitest-browser-react';
 import { Slider as PrimitiveSlider } from '@fluentui/react-headless-components-preview/slider';
 import type { ExtractSlotProps, SlotRenderFunction } from '@fluentui/react-utilities';
 import { Field, coreaiDarkTheme, coreaiLightTheme } from '@coreai-ds/react-components';
-import { renderCoreAIComponent } from '../../react-components/src/test-utils.js';
+import { renderCoreAIComponent } from '../../../apps/storybook/src/stories/experiments/HeadlessTestUtils.js';
 import {
   SliderComparison,
   SliderVolumeForm,

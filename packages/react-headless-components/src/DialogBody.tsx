@@ -8,7 +8,7 @@ import {
   type DialogBodyProps,
 } from '@fluentui/react-headless-components-preview/dialog';
 import type { ForwardRefComponent } from '@fluentui/react-utilities';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 import styles from './DialogBody.module.css';
 import overrides from './DialogBody.overrides.module.css';
 

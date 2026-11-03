@@ -9,7 +9,7 @@ import {
   type TagPickerProps as HeadlessTagPickerProps,
   type TagPickerSize,
 } from '@fluentui/react-headless-components-preview/tag-picker';
-import { useCoreAIDefaults } from '@coreai-ds/react-components';
+import { useCoreAIDefaults } from './ComponentDefaultsContext.js';
 
 export {
   useTagPickerContext_unstable,

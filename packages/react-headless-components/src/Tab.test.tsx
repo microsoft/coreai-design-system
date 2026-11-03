@@ -11,7 +11,8 @@ import type {
   ForwardRefComponent,
   SlotRenderFunction,
 } from '@fluentui/react-utilities';
-import { CoreAIFluentProvider, coreaiLightTheme } from '@coreai-ds/react-components';
+import { coreaiLightTheme } from '@coreai-ds/react-components';
+import { ComparisonProvider as CoreAIFluentProvider } from '../../../apps/storybook/src/stories/experiments/ComparisonProvider.js';
 import { FocusgroupConsumer } from '../../../apps/storybook/src/stories/experiments/FocusgroupConsumer.js';
 import { TabListFormFlow } from '../../../apps/storybook/src/stories/experiments/TabListFlows.js';
 import { requireTabListHTML } from '../../../apps/storybook/src/stories/experiments/compareTabListStyles.js';
