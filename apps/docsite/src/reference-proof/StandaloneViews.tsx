@@ -458,6 +458,7 @@ interface ChangelogPoint {
 interface ChangelogRail {
   kind: 'month' | 'release' | 'change';
   change?: string;
+  join?: { x: number; color: string; path: string };
   path: string;
   points: ChangelogPoint[];
 }
@@ -500,21 +501,27 @@ function measureChangelogRails(list: HTMLDivElement): ChangelogRail[] {
         rails.push({
           kind: 'change',
           change: section.dataset.change,
-          path:
-            branch(releasePoint, sectionPoint) +
-            (items.length
-              ? ` M ${sectionPoint.x} ${sectionPoint.y} V ${items[items.length - 1].y}`
-              : ''),
+          join: {
+            x: releasePoint.x,
+            color: 'var(--colorBrandStroke1)',
+            path: branch(releasePoint, sectionPoint),
+          },
+          path: items.length
+            ? `M ${sectionPoint.x} ${sectionPoint.y} V ${items[items.length - 1].y}`
+            : '',
           points: [sectionPoint, ...items],
         });
       }
       rails.push({
         kind: 'release',
-        path:
-          branch(monthPoint, releasePoint) +
-          (sections.length
-            ? ` M ${releasePoint.x} ${releasePoint.y} V ${sections[sections.length - 1].y - 12}`
-            : ''),
+        join: {
+          x: monthPoint.x,
+          color: 'var(--colorNeutralForeground3)',
+          path: branch(monthPoint, releasePoint),
+        },
+        path: sections.length
+          ? `M ${releasePoint.x} ${releasePoint.y} V ${sections[sections.length - 1].y - 12}`
+          : '',
         points: [releasePoint],
       });
     }
@@ -551,6 +558,7 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
     };
   }, [sourceHtml]);
   const listRef = React.useRef<HTMLDivElement>(null);
+  const graphId = React.useId();
   const [rails, setRails] = React.useState<ChangelogRail[]>([]);
   React.useLayoutEffect(() => {
     const list = listRef.current;
@@ -575,7 +583,29 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
         <svg className="changelog-graph" aria-hidden="true">
           {rails.map((rail, index) => (
             <g className={`changelog-graph__${rail.kind}`} data-change={rail.change} key={index}>
-              <path d={rail.path} />
+              {rail.join ? (
+                <>
+                  <defs>
+                    <linearGradient
+                      id={`${graphId}-join-${index}`}
+                      gradientUnits="userSpaceOnUse"
+                      x1={rail.join.x}
+                      y1={rail.points[0].y - 12}
+                      x2={rail.points[0].x}
+                      y2={rail.points[0].y}
+                    >
+                      <stop offset="0" stopColor={rail.join.color} />
+                      <stop offset="1" stopColor="currentColor" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    className="changelog-graph__join"
+                    d={rail.join.path}
+                    stroke={`url(#${graphId}-join-${index})`}
+                  />
+                </>
+              ) : null}
+              <path className="changelog-graph__rail" d={rail.path} stroke="currentColor" />
               {rail.points.map((point, pointIndex) => (
                 <circle
                   cx={point.x}
@@ -607,9 +637,11 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
                         : `Version ${release.version}`}
                     </a>
                     {release.date ? (
-                      <time dateTime={release.date}>
-                        {dateFormatter.format(new Date(`${release.date}T00:00:00Z`))}
-                      </time>
+                      <Badge appearance="tint" color="subtle" shape="rounded">
+                        <time dateTime={release.date}>
+                          {dateFormatter.format(new Date(`${release.date}T00:00:00Z`))}
+                        </time>
+                      </Badge>
                     ) : null}
                   </div>
                   <div className="changelog-entry__content">
@@ -629,7 +661,14 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
                           key={section.title}
                         >
                           <Text as="h4" weight="semibold" foreground={1}>
-                            {section.title}
+                            <Badge
+                              className="changelog-change-badge"
+                              appearance="tint"
+                              color="brand"
+                              shape="rounded"
+                            >
+                              {section.title}
+                            </Badge>
                           </Text>
                           <ul>
                             {section.items.map((item, index) => (

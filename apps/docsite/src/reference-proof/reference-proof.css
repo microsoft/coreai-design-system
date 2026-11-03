@@ -198,6 +198,7 @@
 }
 
 .reference-changelog-view {
+  --changelog-branch-color: var(--colorBrandStroke1);
   display: flex;
   flex-direction: column;
   gap: 48px;
@@ -220,7 +221,6 @@
 
 .changelog-graph path {
   fill: none;
-  stroke: currentColor;
   stroke-width: 1;
   stroke-opacity: 0.5;
 }
@@ -265,8 +265,13 @@
 .reference-changelog-view .changelog-entry__version {
   flex-direction: row;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   gap: 12px;
+}
+
+.reference-changelog-view .changelog-entry__version a {
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
 }
 
 .reference-changelog-view .changelog-entry__version time {
@@ -280,8 +285,6 @@
 
 .reference-changelog-view .changelog-entry__sections {
   gap: 28px;
-  border-block-start: 1px solid var(--colorNeutralStroke2);
-  padding-block-start: 24px;
 }
 
 .reference-changelog-view .changelog-entry__section {
@@ -289,25 +292,41 @@
   padding-inline-start: 24px;
 }
 
+.reference-changelog-view .changelog-entry__section > h4 {
+  display: flex;
+  align-items: center;
+}
+
+.reference-changelog-view .changelog-change-badge {
+  color: var(--changelog-badge-color, var(--colorBrandForeground1));
+  background: color-mix(in srgb, var(--changelog-branch-color) 12%, transparent);
+  border-color: color-mix(in srgb, var(--changelog-branch-color) 25%, transparent);
+}
+
 .reference-changelog-view [data-change='Breaking'],
 .reference-changelog-view [data-change='Removed'] {
   --changelog-branch-color: var(--colorPaletteRedBorderActive);
+  --changelog-badge-color: var(--colorPaletteRedForeground2);
 }
 
 .reference-changelog-view [data-change='Added'] {
   --changelog-branch-color: var(--colorPaletteGreenBorderActive);
+  --changelog-badge-color: var(--colorPaletteGreenForeground2);
 }
 
 .reference-changelog-view [data-change='Changed'] {
   --changelog-branch-color: var(--colorPaletteRoyalBlueBorderActive);
+  --changelog-badge-color: var(--colorPaletteRoyalBlueForeground2);
 }
 
 .reference-changelog-view [data-change='Fixed'] {
   --changelog-branch-color: var(--colorPaletteTealBorderActive);
+  --changelog-badge-color: var(--colorPaletteTealForeground2);
 }
 
 .reference-changelog-view [data-change='Deprecated'] {
   --changelog-branch-color: var(--colorPaletteMarigoldBorderActive);
+  --changelog-badge-color: var(--colorPaletteMarigoldForeground2);
 }
 
 .reference-changelog-view .changelog-entry__section > ul {
