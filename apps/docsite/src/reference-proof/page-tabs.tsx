@@ -68,6 +68,7 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
   const article = introduction.querySelector<HTMLElement>('.standalone-guidance');
   const basic = introduction.querySelector<HTMLElement>('[data-basic-example]');
   if (!basic && !article?.querySelector('pre')) return null;
+  if (article?.querySelector('[data-page-widget="typography"]')) return null;
   if (
     article &&
     [...article.querySelectorAll<HTMLElement>('[data-page-widget]')].some(
