@@ -364,6 +364,8 @@ Story files under `src/stories/` are grouped into three folders:
 Storybook supports `manifest` and `!manifest` tags to control manifest inclusion.
 A `Dev` filename or export suffix does not itself hide a story from MCP. Check the manifest
 debugger and docs tools when changing inclusion or grouping stories under the same title.
+Mark verification-only stories with per-story `tags: ['!manifest']`; the inventory-backed
+source documentation provider also excludes these stories from MCP examples.
 
 ### Creating a template
 

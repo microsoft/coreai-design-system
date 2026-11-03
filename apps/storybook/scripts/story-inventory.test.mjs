@@ -230,7 +230,7 @@ test('real catalog preserves every local story and expected upstream variants wi
   assert.equal(new Set(stories.map((story) => story.id)).size, stories.length);
   assert.equal(stories.filter((story) => story.origin === 'local').length, 150);
   assert.equal(
-    stories.find((story) => story.id === 'components-illicon--stroked-svg-dev')?.origin,
+    stories.find((story) => story.id === 'components-illicon--stroked-svg')?.origin,
     'local',
   );
   for (const name of ['AccordionCard', 'ContentAlignmentDev']) {

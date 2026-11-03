@@ -141,8 +141,9 @@ export function generateComponentIndex(
   component.stories.forEach((story, index) => {
     const conflict = bindings.names?.includes(story.exportName);
     const name = conflict ? `__story${index}` : story.exportName;
+    const tags = story.tags.length ? `, tags: ${JSON.stringify(story.tags)}` : '';
     lines.push(
-      `${conflict ? '' : 'export '}const ${name} = { ...storyWithMetadata(${sourceNames.get(story.sourceFile)}, story${index}, ${JSON.stringify(story.id)}), name: ${JSON.stringify(story.name)} };`,
+      `${conflict ? '' : 'export '}const ${name} = { ...storyWithMetadata(${sourceNames.get(story.sourceFile)}, story${index}, ${JSON.stringify(story.id)}), name: ${JSON.stringify(story.name)}${tags} };`,
     );
     if (conflict) lines.push(`export { ${name} as ${story.exportName} };`);
   });
