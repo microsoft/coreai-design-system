@@ -391,7 +391,6 @@ export function Sidebar({ isOpen, onOpen, onClose }: SidebarProps) {
                       className="app-search-result"
                       onClick={() => selectSearchResult(normalizeRoutePath(page.slug))}
                     >
-                      <span className="app-search-result__path">{page.slug}</span>
                       <span className="app-search-result__title">
                         <HighlightedText text={page.title} query={needle} />
                       </span>

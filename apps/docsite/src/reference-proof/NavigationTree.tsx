@@ -82,7 +82,6 @@ export const NavigationTree = React.forwardRef<
                   className="app-search-result"
                   onClick={() => navigate(entry.path)}
                 >
-                  <span className="app-search-result__path">{entry.path}</span>
                   <span className="app-search-result__title">
                     <HighlightedText text={entry.title} />
                   </span>

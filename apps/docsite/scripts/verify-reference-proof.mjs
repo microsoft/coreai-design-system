@@ -1350,6 +1350,7 @@ try {
   await page.getByRole('searchbox', { name: 'Search navigation' }).fill('dropdown');
   const filtered = page.locator('.app-search-result:visible');
   assert.ok((await filtered.count()) >= 1);
+  assert.equal(await filtered.locator('.app-search-result__path').count(), 0);
   for (const title of await filtered.allTextContents())
     assert.match(title.toLowerCase(), /dropdown/);
   await page.getByRole('searchbox', { name: 'Search navigation' }).fill('');

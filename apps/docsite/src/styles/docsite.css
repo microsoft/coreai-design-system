@@ -780,14 +780,6 @@ code:not(pre code) {
   background: var(--colorNeutralBackground3Hover);
 }
 
-.app-search-result__path {
-  color: var(--colorNeutralForeground3);
-  font-family: var(--mf-font-code);
-  font-size: var(--fontSizeBase100);
-  line-height: var(--lineHeightBase100);
-  overflow-wrap: anywhere;
-}
-
 .app-search-result__title {
   color: var(--colorNeutralForeground1);
   font-size: var(--fontSizeBase300);
