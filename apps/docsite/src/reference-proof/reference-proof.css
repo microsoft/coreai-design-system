@@ -252,16 +252,52 @@
 }
 
 .reference-changelog-view .changelog-entry {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding-inline-start: 24px;
+}
+
+.reference-changelog-view .changelog-entry::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -29px;
+  inset-block-start: -13px;
+  width: 33px;
+  height: 24px;
+  border-inline-start: 2px solid var(--colorBrandStroke1);
+  border-block-end: 2px solid var(--colorBrandStroke1);
+  border-end-start-radius: 12px;
+}
+
+.reference-changelog-view .changelog-entry::after {
+  content: '';
+  position: absolute;
+  inset-inline-start: 3px;
+  inset-block: 11px 0;
+  width: 2px;
+  background: var(--colorBrandStroke1);
 }
 
 .reference-changelog-view .changelog-entry__version {
+  position: relative;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 12px;
+}
+
+.reference-changelog-view .changelog-entry__version::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -24px;
+  inset-block-start: calc(var(--lineHeightBase400) / 2 - 4px);
+  width: 8px;
+  height: 8px;
+  border-radius: var(--borderRadiusCircular);
+  background: var(--colorBrandStroke1);
+  box-shadow: 0 0 0 4px var(--colorNeutralBackground1);
 }
 
 .reference-changelog-view .changelog-entry__version time {
@@ -280,7 +316,68 @@
 }
 
 .reference-changelog-view .changelog-entry__section {
+  --changelog-branch-color: var(--colorBrandStroke1);
+  position: relative;
   gap: 12px;
+  padding-inline-start: 24px;
+}
+
+.reference-changelog-view .changelog-entry__section[data-change='Breaking'],
+.reference-changelog-view .changelog-entry__section[data-change='Removed'] {
+  --changelog-branch-color: var(--colorPaletteRedBorderActive);
+}
+
+.reference-changelog-view .changelog-entry__section[data-change='Added'] {
+  --changelog-branch-color: var(--colorPaletteGreenBorderActive);
+}
+
+.reference-changelog-view .changelog-entry__section[data-change='Changed'] {
+  --changelog-branch-color: var(--colorPaletteRoyalBlueBorderActive);
+}
+
+.reference-changelog-view .changelog-entry__section[data-change='Fixed'] {
+  --changelog-branch-color: var(--colorPaletteTealBorderActive);
+}
+
+.reference-changelog-view .changelog-entry__section[data-change='Deprecated'] {
+  --changelog-branch-color: var(--colorPaletteMarigoldBorderActive);
+}
+
+.reference-changelog-view .changelog-entry__section::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -20px;
+  inset-block-start: -14px;
+  width: 24px;
+  height: 24px;
+  border-inline-start: 2px solid var(--changelog-branch-color);
+  border-block-end: 2px solid var(--changelog-branch-color);
+  border-end-start-radius: 12px;
+}
+
+.reference-changelog-view .changelog-entry__section::after {
+  content: '';
+  position: absolute;
+  inset-inline-start: 3px;
+  inset-block: 10px 0;
+  width: 2px;
+  background: var(--changelog-branch-color);
+}
+
+.reference-changelog-view .changelog-entry__section > h4 {
+  position: relative;
+}
+
+.reference-changelog-view .changelog-entry__section > h4::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -24px;
+  inset-block-start: calc(var(--lineHeightBase300) / 2 - 4px);
+  width: 8px;
+  height: 8px;
+  border-radius: var(--borderRadiusCircular);
+  background: var(--changelog-branch-color);
+  box-shadow: 0 0 0 4px var(--colorNeutralBackground1);
 }
 
 .reference-changelog-view .changelog-entry__section > ul {
@@ -296,12 +393,12 @@
 .reference-changelog-view .changelog-entry__section > ul > li::before {
   content: '';
   position: absolute;
-  inset-inline-start: -31px;
-  inset-block-start: calc(var(--lineHeightBase300) / 2 - 2.5px);
-  width: 5px;
-  height: 5px;
+  inset-inline-start: -23px;
+  inset-block-start: calc(var(--lineHeightBase300) / 2 - 3px);
+  width: 6px;
+  height: 6px;
   border-radius: var(--borderRadiusCircular);
-  background: var(--colorBrandForegroundLink);
+  background: var(--changelog-branch-color);
   box-shadow: 0 0 0 4px var(--colorNeutralBackground1);
 }
 

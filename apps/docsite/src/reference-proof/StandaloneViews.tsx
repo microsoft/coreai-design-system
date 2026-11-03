@@ -514,7 +514,11 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
                     </div>
                     <div className="changelog-entry__sections">
                       {release.sections.map((section) => (
-                        <section className="changelog-entry__section" key={section.title}>
+                        <section
+                          className="changelog-entry__section"
+                          data-change={section.title}
+                          key={section.title}
+                        >
                           <Text as="h4" weight="semibold" foreground={1}>
                             {section.title}
                           </Text>
