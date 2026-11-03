@@ -23,6 +23,7 @@ export function componentStoryDocsProvider(nextStoryDocs) {
     const cache = new Map();
     const stories = {};
     for (const story of component.stories) {
+      if (story.tags.includes('!manifest')) continue;
       const result = await extractStorySource(story, { root: appRoot, cache });
       const documentation = await readStoryDescriptions(
         path.join(appRoot, story.implementationFile),

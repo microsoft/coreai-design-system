@@ -228,7 +228,11 @@ test('real catalog preserves every local story and expected upstream variants wi
   assert.ok(controlled.implementationFile.endsWith('/AccordionControlled.stories.tsx'));
   const stories = inventory.components.flatMap((component) => component.stories);
   assert.equal(new Set(stories.map((story) => story.id)).size, stories.length);
-  assert.equal(stories.filter((story) => story.origin === 'local').length, 144);
+  assert.equal(stories.filter((story) => story.origin === 'local').length, 150);
+  assert.equal(
+    stories.find((story) => story.id === 'components-illicon--stroked-svg')?.origin,
+    'local',
+  );
   for (const name of ['AccordionCard', 'ContentAlignmentDev']) {
     assert.equal(accordion.stories.find((story) => story.exportName === name)?.origin, 'local');
   }
@@ -236,7 +240,7 @@ test('real catalog preserves every local story and expected upstream variants wi
   assert.ok(stories.some((story) => story.id === 'components-popover--non-interactive-content'));
   assert.ok(stories.some((story) => story.id === 'components-tooltip--overflow-hidden'));
   assert.equal(stories.filter((story) => story.overridden).length, 70);
-  assert.equal(inventory.components.length, 75);
+  assert.equal(inventory.components.length, 76);
   const counterBadge = inventory.components.find(
     (component) => component.id === 'components-badge-counter-badge',
   );

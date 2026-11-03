@@ -7,6 +7,8 @@
  * Composable empty-state pattern for pages and data surfaces that have no
  * content to display. Supply only the slots needed for the use case, from a
  * compact message through to metrics, cards, actions, and supporting links.
+ * Use Illicon with saved grid data for illustrations; the slot also accepts
+ * custom artwork without converting it during rendering.
  *
  * Copy-paste starting point — not a published, importable component. Copy
  * this file into your codebase and adjust as needed.
@@ -75,7 +77,7 @@ export const useEmptyStateStyles = makeStyles({
 });
 
 export interface EmptyStateProps {
-  /** Optional illustration or icon displayed above the message. */
+  /** Optional Illicon or custom artwork displayed above the message. */
   illustration?: React.ReactNode;
   /** Main empty-state heading. */
   header: React.ReactNode;
