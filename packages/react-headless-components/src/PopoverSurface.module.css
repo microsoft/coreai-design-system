@@ -1,0 +1,154 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Ported from @fluentui/react-popover 9.14.10, usePopoverSurfaceStyles.styles.ts.
+ * Local source: [usePopoverSurfaceStyles.styles.raw.js](../../../node_modules/@fluentui/react-popover/lib/components/PopoverSurface/usePopoverSurfaceStyles.styles.raw.js).
+ * Arrow source: [createArrowStyles.js](../../../node_modules/@fluentui/react-positioning/lib/createArrowStyles.js), @fluentui/react-positioning 9.23.4.
+ * The native top layer replaces legacy Portal/z-index rules. The public positioning hook
+ * owns inset, margin, position-anchor, position-area, and flipping. Its arrow is a data-arrow
+ * element, not a replaceable slot. Its containing block cannot resolve the external
+ * trigger anchor; centered arrows use the surface center and edge-aligned arrows use
+ * the arrow-padding variable, rather than inventing a JS arrow positioner.
+ * CoreAI deviations: [Overlay.styles.ts](../../react-components/src/components/Overlay.styles.ts),
+ * reference commit a8a84a1, are kept in PopoverSurface.overrides.module.css.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .PopoverSurface {
+    /* The arrow is a square rotated 45 degrees. Multiply its triangle height by sqrt(2)
+     * to get the edge length; the original helper uses 1.414 for this conversion. */
+    --fui-positioning-arrow-height: 11.312px;
+    --fui-positioning-arrow-offset: -5.656px;
+    --fui-PopoverSurface--arrow-padding: 8px;
+
+    color: var(--colorNeutralForeground1);
+    background-color: var(--colorNeutralBackground1);
+    border-radius: var(--borderRadiusMedium);
+    border: 1px solid var(--colorTransparentStroke);
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+    padding: 0;
+    overflow: visible;
+
+    /* TODO need versions of shadow16 tokens that work with filter. */
+    filter: drop-shadow(0 0 2px var(--colorNeutralShadowAmbient))
+      drop-shadow(0 8px 16px var(--colorNeutralShadowKey));
+
+    /* Do not set display: the UA must keep closed dialog/popover surfaces hidden. */
+    &::backdrop {
+      background-color: transparent;
+    }
+
+    &[data-appearance='inverted'] {
+      background-color: var(--colorNeutralBackgroundStatic);
+      color: var(--colorNeutralForegroundStaticInverted);
+    }
+
+    &[data-appearance='brand'] {
+      background-color: var(--colorBrandBackground);
+      color: var(--colorNeutralForegroundOnBrand);
+    }
+
+    &[data-size='small'] {
+      --fui-positioning-arrow-height: 8.484px;
+      --fui-positioning-arrow-offset: -4.242px;
+
+      padding: 12px;
+    }
+
+    &[data-size='medium'] {
+      padding: 16px;
+    }
+
+    &[data-size='large'] {
+      padding: 20px;
+    }
+
+    & > [data-arrow] {
+      box-sizing: border-box;
+      position: absolute;
+      z-index: -1;
+      background-color: inherit;
+      background-clip: content-box;
+      border-bottom-left-radius: var(--borderRadiusSmall);
+      transform: rotate(var(--fui-positioning-arrow-angle));
+      height: var(--fui-positioning-arrow-height);
+      width: var(--fui-positioning-arrow-height);
+
+      &::before {
+        content: '';
+        display: block;
+        background-color: inherit;
+        margin: -1px;
+        width: 100%;
+        height: 100%;
+        border: 1px solid var(--colorTransparentStroke);
+        border-bottom-left-radius: var(--borderRadiusSmall);
+        clip-path: polygon(0% 0%, 100% 100%, 0% 100%);
+      }
+    }
+
+    /* data-placement reports the resolved physical side after native flipping. */
+    &[data-placement^='above'] > [data-arrow],
+    &[data-placement^='below'] > [data-arrow] {
+      left: 50%;
+      /* Translate uses the actual laid-out square size, without half-edge rounding drift. */
+      translate: -50%;
+    }
+
+    &[data-placement^='before'] > [data-arrow],
+    &[data-placement^='after'] > [data-arrow] {
+      top: 50%;
+      translate: 0 -50%;
+    }
+
+    &[data-placement^='above'] > [data-arrow] {
+      --fui-positioning-arrow-angle: -45deg;
+
+      bottom: var(--fui-positioning-arrow-offset);
+    }
+
+    &[data-placement^='below'] > [data-arrow] {
+      --fui-positioning-arrow-angle: 135deg;
+
+      top: var(--fui-positioning-arrow-offset);
+    }
+
+    &[data-placement^='before'] > [data-arrow] {
+      --fui-positioning-arrow-angle: 225deg;
+
+      right: var(--fui-positioning-arrow-offset);
+    }
+
+    &[data-placement^='after'] > [data-arrow] {
+      --fui-positioning-arrow-angle: 45deg;
+
+      left: var(--fui-positioning-arrow-offset);
+    }
+
+    &[data-placement$='-start'] > [data-arrow] {
+      left: var(--fui-PopoverSurface--arrow-padding);
+      translate: none;
+    }
+
+    &[data-placement$='-end'] > [data-arrow] {
+      left: auto;
+      right: var(--fui-PopoverSurface--arrow-padding);
+      translate: none;
+    }
+
+    &[data-placement$='-top'] > [data-arrow] {
+      top: var(--fui-PopoverSurface--arrow-padding);
+      translate: none;
+    }
+
+    &[data-placement$='-bottom'] > [data-arrow] {
+      top: auto;
+      bottom: var(--fui-PopoverSurface--arrow-padding);
+      translate: none;
+    }
+  }
+}

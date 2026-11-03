@@ -111,6 +111,11 @@ not a claim that the whole application bundle is Griffel-free.
   and [Persona in react-persona 9.7.11](https://unpkg.com/@fluentui/react-persona@9.7.11/lib/components/Persona/usePersonaStyles.styles.raw.js).
   Persona reuses the completed Avatar/PresenceBadge foundations; Card fixtures reuse completed
   Button/Image components without importing styled legacy implementations for behavior.
+- The overlay/numeric-input batch uses the installed snapshot at commit `a8a84a1`:
+  [PopoverSurface in react-popover 9.14.10](https://unpkg.com/@fluentui/react-popover@9.14.10/lib/components/PopoverSurface/usePopoverSurfaceStyles.styles.raw.js)
+  and [SpinButton in react-spinbutton 9.6.8](https://unpkg.com/@fluentui/react-spinbutton@9.6.8/lib/components/SpinButton/useSpinButtonStyles.styles.raw.js).
+  Popover and its trigger are behavior-only; the current facade has no public PopoverProvider.
+  The surface supplies the ported CSS, keeping native closed-state hiding and top-layer behavior.
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -211,6 +216,16 @@ CoreAI floating-action `left`/`right` positions retain physical edges in RTL. Cu
 selection predicates and consumer event handlers control nested-action selection; inherited
 checkbox notification and nested-Enter behavior remain explicit in the tests/examples.
 
+SpinButton leaves parsing and range handling to its public hook: typed values are not additionally
+clamped by this wrapper. Its current repeat-button, ref-precedence, and latest-value native-reset
+contracts remain intact; no second numeric state or compatibility reset model is introduced.
+
+Popover uses native popovers/dialogs, modal focus, and CSS anchors instead of the legacy portal
+and positioning pipeline. Arrows are surface-centered unless the caller supplies offsets.
+Headless `0.3.2` has a first-right-click `openOnContext` timing defect on Windows Chromium; one
+platform-scoped expected-failure regression records it. The controlled native-context-menu
+example is verified and adds no compatibility behavior to the component.
+
 ## Conversion workflow
 
 ### API policy
@@ -286,6 +301,9 @@ remain deferred; do not recreate their behavior as part of a styling conversion.
   before pure keyboard-focus checks and assert actual hover state; test combined hover/focus
   separately. Check callbacks and form results, not just a changed native value. Smoke-check the
   actual Storybook reports and interaction plays in addition to the browser-test fixtures.
+- Require play-exception propagation (`throwPlayFunctionExceptions: true`) and check final report
+  state/geometry, not only a `storyFinished` success event. Layout changes without resize can leave
+  legacy positioning stale; refresh through public handles and await stable geometry before capture.
 - Workers may format/lint their own files. The coordinator integrates exports, then runs the
   combined focused tests, existing Button regressions, type checks, and builds. Serialize shared
   validation to avoid unfinished-file, cache, and build-output interference. Return failures to
@@ -395,6 +413,12 @@ Card covers appearances, orientation, preview/header/footer edges, physical floa
 selection predicates, native focus/actions/forms, and slot/ref contracts. Persona covers text-line
 layout and Avatar/PresenceBadge composition, including the current initials/out-of-office
 accessibility differences and native identity/image-fallback flows.
+Popover covers native closed/open hiding, top-layer nesting, modal focus/inertness, restoration,
+dismissal, CSS anchors, and explicit arrow-geometry differences. Its report reserves layout space
+and exposes fixture-specific readiness/counts to prevent stale successful captures.
+SpinButton covers typed/controlled formatting, numeric callbacks, keyboard/step/repeat cancellation,
+forms/reset, and current range/ref boundaries. Emitted library CSS is also smoke-tested in the
+live Popover/SpinButton comparisons after removing their development component stylesheets.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 

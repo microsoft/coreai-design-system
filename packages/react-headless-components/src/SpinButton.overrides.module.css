@@ -1,0 +1,13 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * CoreAI source: [SpinButton.ts](../../react-components/src/components/SpinButton.ts) at a8a84a1
+ * defaults appearance to filled-darker. [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts)
+ * registers no SpinButton style override.
+ * Fluent baseline: @fluentui/react-spinbutton 9.6.8,
+ * [useSpinButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-spinbutton/lib/components/SpinButton/useSpinButtonStyles.styles.raw.js).
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ * The appearance default is applied in SpinButton.tsx; CoreAI adds no SpinButton CSS.
+ * This layer is intentionally empty.
+ */
+
+@layer fluent-components, coreai-overrides;

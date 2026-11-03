@@ -140,6 +140,30 @@ export {
   type PersonaSlots,
 } from './Persona.js';
 export {
+  Popover,
+  usePopoverContext,
+  usePopoverContextValues,
+  type OpenPopoverEvents,
+  type PopoverAppearance,
+  type PopoverContextValue,
+  type PopoverOnOpenChangeData,
+  type PopoverProps,
+  type PopoverSize,
+  type PopoverState,
+} from './Popover.js';
+export {
+  PopoverSurface,
+  popoverSurfaceClassNames,
+  type PopoverSurfaceProps,
+  type PopoverSurfaceSlots,
+  type PopoverSurfaceState,
+} from './PopoverSurface.js';
+export {
+  PopoverTrigger,
+  type PopoverTriggerProps,
+  type PopoverTriggerState,
+} from './PopoverTrigger.js';
+export {
   PresenceBadge,
   presenceBadgeClassNames,
   type PresenceBadgeProps,
@@ -200,6 +224,14 @@ export {
   type SplitButtonProps,
   type SplitButtonSlots,
 } from './SplitButton.js';
+export {
+  SpinButton,
+  spinButtonClassNames,
+  type SpinButtonChangeEvent,
+  type SpinButtonOnChangeData,
+  type SpinButtonProps,
+  type SpinButtonSlots,
+} from './SpinButton.js';
 export { Spinner, spinnerClassNames, type SpinnerProps, type SpinnerSlots } from './Spinner.js';
 export {
   Switch,

@@ -8,6 +8,11 @@
   max-width: 1000px;
 }
 
+.pointerParking {
+  width: 24px;
+  height: 24px;
+}
+
 .row {
   display: grid;
   grid-template-columns: minmax(180px, 1fr) repeat(2, minmax(180px, 1fr));

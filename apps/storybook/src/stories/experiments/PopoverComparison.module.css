@@ -1,0 +1,83 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Handwritten shared-fixture layout and unlayered consumer examples; not a Fluent port.
+ */
+
+.comparison {
+  display: grid;
+  gap: var(--spacingVerticalM);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  gap: var(--spacingHorizontalXL);
+}
+
+.cell {
+  display: grid;
+  place-items: center;
+  min-height: 320px;
+}
+
+@media (max-width: 720px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.trigger {
+  width: 160px;
+}
+
+.surface {
+  width: 240px;
+}
+
+.content,
+.flow {
+  display: grid;
+  justify-items: start;
+  gap: var(--spacingVerticalS);
+}
+
+.title,
+.text {
+  margin: 0;
+  font: inherit;
+}
+
+.title {
+  font-weight: var(--fontWeightSemibold);
+}
+
+.report {
+  display: block;
+  min-height: 28rem;
+  max-height: 28rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+}
+
+.consumerSurface {
+  padding: 9px;
+  border: 3px dashed rgb(98, 42, 139);
+  border-radius: 3px;
+  background-color: rgb(237, 232, 247);
+  color: rgb(80, 40, 120);
+}
+
+.consumerSurface > [data-arrow]::before {
+  border: 3px dashed rgb(98, 42, 139);
+}
+
+.anchorStage {
+  display: grid;
+  place-items: center;
+  min-height: 380px;
+}
+
+.outsideAction {
+  margin-block-start: 160px;
+}

@@ -24,6 +24,7 @@ import {
   getComparisonButton,
   settleButtonStyles,
 } from '../../../apps/storybook/src/stories/experiments/compareButtonStyles.js';
+import comparisonStyles from '../../../apps/storybook/src/stories/experiments/ButtonComparison.module.css';
 import { Button } from './Button.js';
 
 afterEach(cleanup);
@@ -39,16 +40,35 @@ async function renderPair(
   withComponentDefaults = true,
   dir: 'ltr' | 'rtl' = 'ltr',
 ) {
-  await render(
+  const screen = await render(
     <CoreAIFluentProvider theme={theme} withComponentDefaults={withComponentDefaults} dir={dir}>
+      <div className={comparisonStyles.pointerParking} data-testid="pointer-parking" aria-hidden />
       <ButtonComparison examples={[example]} />
     </CoreAIFluentProvider>,
   );
   const legacy = getComparisonButton(document, 'legacy');
   const headless = getComparisonButton(document, 'headless');
+  // Pointer coordinates survive fixture cleanup and can hover a newly mounted button.
+  await userEvent.hover(screen.getByTestId('pointer-parking'));
+  expect(legacy.matches(':hover')).toBe(false);
+  expect(headless.matches(':hover')).toBe(false);
   await Promise.all([settleButtonStyles(legacy), settleButtonStyles(headless)]);
   return { legacy, headless };
 }
+
+test('clears retained pointer hover before comparing resting styles', async () => {
+  const example = buttonExamples.find(({ name }) => name === 'Appearance: secondary');
+  if (!example) throw new Error('Missing secondary Button fixture');
+  const initial = await renderPair(example);
+  await userEvent.hover(initial.legacy);
+  expect(initial.legacy.matches(':hover')).toBe(true);
+  await cleanup();
+
+  const { legacy, headless } = await renderPair(example);
+  expect(compareButtonStyles(captureButtonStyles(legacy), captureButtonStyles(headless))).toEqual(
+    [],
+  );
+});
 
 for (const [mode, theme] of themes) {
   test.each(buttonExamples)(`matches $name at rest in ${mode} mode`, async (example) => {
