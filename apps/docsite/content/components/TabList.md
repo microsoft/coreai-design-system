@@ -19,6 +19,7 @@ storybookTitles:
   - Components/TabList
 reference:
   component: components-tablist
+  aliases: [/horizontal-tab/, /vertical-tab/, /vertical-tab-list/]
 ---
 
 ## Best practices
@@ -40,6 +41,10 @@ reference:
 - One tab, usually the first, should always be active on first render.
 - Horizontal tabs don’t scroll or wrap to the next line.
 - Use an overflow menu button when the container can’t show every tab.
+- Icon-only tabs require an aria-label and a tooltip.
+- Identify the current selection to screen readers using aria-current.
+- Vertical tablists place tabs in a column.
+- When space is limited, consider an accordion or dropdown instead.
 - Use one consistent label format for every tab in the tablist.
 - They’re are ideal for dividing content-heavy pages into distinct but related categories that are easier to process and require less scrolling.
 - Tabs can also be used for navigation between a small set of closely related, frequently accessed pages.

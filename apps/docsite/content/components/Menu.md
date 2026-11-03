@@ -19,6 +19,7 @@ storybookTitles:
   - Components/Menu/Menu
 reference:
   component: components-menu-menu
+  aliases: [/menu-item/, /menu-section/, /menu-split-item/]
 ---
 
 ## Best practices
@@ -40,4 +41,7 @@ reference:
 - The default menu treats each item as a button that initiates an action.
 - Checkbox menus let people select multiple items.
 - Radio menus let people select one item that turns a setting on or off.
+- Menus have a maximum width of 300 pixels.
 - Menu items with long labels wrap onto the next line.
+- An option can open related options in a submenu.
+- Add an aria-label to submenu trigger components.

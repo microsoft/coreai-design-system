@@ -20,6 +20,7 @@ storybookTitles:
   - Components/SwatchPicker
 reference:
   component: components-swatchpicker
+  aliases: [/swatch/]
 ---
 
 ## Best practices

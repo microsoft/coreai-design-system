@@ -21,6 +21,7 @@ storybookTitles:
   - Components/RadioGroup
 reference:
   component: components-radiogroup
+  aliases: [/radio/]
 ---
 
 ## Best practices
@@ -41,6 +42,7 @@ reference:
 
 - Present a selected option by default.
 - Place the default selection first and use the most logical response.
+- When tabbing, focus falls on the selected option first, or the first option when none is selected.
 - Radio groups can be aligned vertically or horizontally.
 - Vertical alignment is preferred for scannability and localization.
 - If there isn't enough space, try a dropdown instead.

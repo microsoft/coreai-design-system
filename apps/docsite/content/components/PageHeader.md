@@ -15,4 +15,8 @@ resources:
   - label: Figma component
     url: >-
       https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=433307-80738
+reference:
+  standalone: true
+  route: templates/page-header
+  aliases: [/components/page-header/]
 ---

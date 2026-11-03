@@ -1,19 +1,25 @@
 ---
 id: interaction-tag
-title: InteractionTag
+title: Interaction tag
 summary: >-
-  Tag with primary and secondary actions. Subcomponents: InteractionTagPrimary,
-  InteractionTagSecondary.
-status: under-construction
-resources: []
+  A tag is a representation of a value that someone has picked, like recipients
+  for an email or categories on a planner task.
+status: complete
+resources:
+  - label: Figma component
+    url: >-
+      https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=175028-86039
+  - label: Fluent guidance
+    url: 'https://fluent2.microsoft.design/components/web/react/core/tag/usage'
 reference:
   component: components-tag-interactiontag
 ---
 
-## Guidance status
+## Behavior and states
 
-This reference includes working examples. CoreAI UX guidance for this page still needs review.
-
-## Component description
-
-A InteractionTag follows the same characteristics as a Tag, but with the added functionality of having a primary and secondary action. This is mostly used in scenarios where gaining more context for a InteractionTag is available for the user, an example would be clicking into a persona to expand their profile page.
+- Interaction tags can include one primary action in addition to dismissal.
+- The primary action should directly relate to the represented object.
+- The secondary action is always dismiss.
+- Interaction states are always enabled because interaction tags always have actions.
+- Tags create a visual pattern that lets people know they can change or remove the selection.
+- To show system-generated data that people can’t change, use a badge instead.

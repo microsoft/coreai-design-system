@@ -21,6 +21,7 @@ storybookTitles:
   - Components/ProgressBar
 reference:
   component: components-progressbar
+  aliases: [/static-progress-bar/]
 ---
 
 ## Best practices

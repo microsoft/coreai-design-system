@@ -1,19 +1,20 @@
 ---
 id: info-button
-title: InfoButton
+title: Info button
 summary: A button that reveals supplemental information in a popover.
-status: under-construction
-resources: []
+status: complete
+resources:
+  - label: Figma component
+    url: >-
+      https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=77695-190112
+  - label: Fluent info label guidance
+    url: 'https://fluent2.microsoft.design/components/web/react/core/infolabel/usage'
 reference:
   component: components-infobutton
 ---
 
-## Guidance status
+## Behavior and states
 
-This reference includes working examples. CoreAI UX guidance for this page still needs review.
-
-## Component description
-
-A button that reveals supplemental information in a `Popover`. It requires an
-accessible name and mirrors primitive `info` content into the popover surface
-so screen readers announce it.
+- When someone selects the info button, a popover appears and remains visible until they select something else or press Esc.
+- Popovers can include formatting and links.
+- Make sure the info button is included in the page’s tab order.

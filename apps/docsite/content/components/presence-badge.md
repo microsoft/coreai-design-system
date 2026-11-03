@@ -1,20 +1,15 @@
 ---
 id: presence-badge
-title: PresenceBadge
-summary: 'Badge that shows a presence status such as available, away, or busy.'
-status: under-construction
-resources: []
+title: Presence badge
+summary: Presence indicates the user's current availability and status.
+status: complete
+resources:
+  - label: Figma component
+    url: >-
+      https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=2746-98970
 reference:
   component: components-badge-presencebadge
   omitDecorators: >-
     Storybook-only layout decorators are omitted. Examples use the documentation
     preview spacing instead.
 ---
-
-## Guidance status
-
-This reference includes working examples. CoreAI UX guidance for this page still needs review.
-
-## Component description
-
-A presence badge is a badge that displays a status indicator such as available, away, or busy.

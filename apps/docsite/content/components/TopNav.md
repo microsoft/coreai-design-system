@@ -15,6 +15,10 @@ resources:
   - label: Figma component
     url: >-
       https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=433307-79538
+reference:
+  standalone: true
+  route: templates/top-nav
+  aliases: [/components/top-nav/]
 ---
 
 ## Behavior and states

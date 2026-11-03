@@ -17,6 +17,9 @@ resources:
       https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=326713-271
   - label: Fluent badge guidance
     url: 'https://fluent2.microsoft.design/components/web/react/core/badge/usage'
+reference:
+  standalone: true
+  route: components/status-indicator
 ---
 
 ## Best practices

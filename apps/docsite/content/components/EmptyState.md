@@ -4,6 +4,7 @@ title: Empty state
 reference:
   component: templates-empty-state
   route: templates/empty-state
+  aliases: [/empty-states/]
   sources:
     - src/stories/templates/EmptyState.tsx
     - src/stories/templates/DetailsList.tsx

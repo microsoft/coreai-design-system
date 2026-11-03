@@ -20,6 +20,7 @@ storybookTitles:
   - Templates/Shell and Navigation
 reference:
   component: templates-shell-and-navigation
+  aliases: [/left-nav/]
   sources:
     - src/stories/templates/ShellAndNavigation.tsx
   route: templates/shell-and-navigation

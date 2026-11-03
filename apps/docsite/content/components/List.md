@@ -19,6 +19,7 @@ storybookTitles:
   - Components/List
 reference:
   component: components-list
+  aliases: [/list-content/]
   singlePreview: List examples reuse selection values as DOM IDs. Run one example at a time to keep IDs unique.
 ---
 
@@ -42,6 +43,9 @@ reference:
 - For secondary actions, use the Right Arrow key to navigate into the list item.
 - Use the Left Arrow key or Esc to return to the parent container.
 - If selection is the only action, clicking the item or pressing Space or Enter triggers selection.
+- For multi-select interactions, each list item is accompanied by a checkbox.
+- The list of options stays open until someone dismisses it by clicking off the list or pressing Esc.
+- If selections exceed the width of the container, the field shows how many options are selected.
 - Items in a list are independent of one another.
 - If you need a way to display information in columns that relate to each other, try a DataGrid or Table.
 - If you need nested hierarchy in your list, try Tree.
