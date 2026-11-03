@@ -594,8 +594,8 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
                       x2={rail.points[0].x}
                       y2={rail.points[0].y}
                     >
-                      <stop offset="0" stopColor={rail.join.color} />
-                      <stop offset="1" stopColor="currentColor" />
+                      <stop offset="0" style={{ color: rail.join.color }} />
+                      <stop offset="1" />
                     </linearGradient>
                   </defs>
                   <path

@@ -222,7 +222,15 @@
 .changelog-graph path {
   fill: none;
   stroke-width: 1;
-  stroke-opacity: 0.5;
+}
+
+/* Opaque, surface-blended colors keep overlapping joins from brightening. */
+.changelog-graph__rail {
+  stroke: color-mix(in srgb, currentColor 50%, var(--colorNeutralBackground1));
+}
+
+.changelog-graph stop {
+  stop-color: color-mix(in srgb, currentColor 50%, var(--colorNeutralBackground1));
 }
 
 .changelog-graph circle {
