@@ -49,10 +49,10 @@ test('site sections use the requested order with alphabetized component and temp
     groups.map((group) => group.items.map((entry) => entry.title)),
     [
       ['Home', 'Introduction', 'Changelog', 'FAQ'],
-      ['Typography', 'Colors', 'Surfaces', 'Spacing', 'Layout'],
+      ['Typography', 'Colors', 'Content', 'Surfaces', 'Spacing', 'Layout'],
       ['Button'],
       ['Empty State'],
-      ['Build with your agent', 'Content', 'Forms', 'Theming'],
+      ['Build with your agent', 'Forms', 'Theming'],
     ],
   );
   assert.equal(groups.flatMap((group) => group.items).length, entries.length);

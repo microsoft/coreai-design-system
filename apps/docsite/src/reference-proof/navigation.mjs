@@ -13,6 +13,7 @@ const navigationGroups = [
     paths: [
       '/foundations/typography/',
       '/foundations/colors/',
+      '/foundations/content/',
       '/foundations/surfaces/',
       '/foundations/spacing/',
       '/foundations/layout/',
