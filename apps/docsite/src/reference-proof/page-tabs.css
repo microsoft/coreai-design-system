@@ -50,9 +50,9 @@
 .reference-sample-section {
   display: flex;
   flex-direction: column;
-  gap: var(--spacingVerticalS);
+  gap: 0;
   min-width: 0;
-  padding: var(--spacingVerticalL);
+  padding: 0;
 }
 
 .reference-sample-section[hidden] {
@@ -93,6 +93,12 @@
 .reference-page-code-block {
   width: 100%;
   min-width: 0;
+}
+
+.reference-sample-section > .preview,
+.reference-sample-section > .reference-page-code-block-host .reference-page-code-block {
+  border-inline: 0;
+  border-radius: 0;
 }
 
 .reference-page-code-block .fui-CodeBlock__pre {
