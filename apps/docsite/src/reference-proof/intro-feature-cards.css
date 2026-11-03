@@ -22,11 +22,13 @@
   --scene-highlight: var(--colorBrandForeground1);
   --scene-wash-strength: 65%;
   --scene-edge-strength: 14%;
+  --scene-surface: color-mix(in srgb, var(--colorNeutralBackground1) 70%, transparent);
   container-type: inline-size;
   min-width: 0;
   overflow: hidden;
   border-radius: var(--borderRadiusLarge);
   background:
+    linear-gradient(var(--scene-surface), var(--scene-surface)),
     radial-gradient(
       ellipse at var(--scene-glow-x) var(--scene-glow-y),
       color-mix(in srgb, var(--scene-highlight) var(--scene-glow-strength), transparent),
