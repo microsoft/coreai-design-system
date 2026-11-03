@@ -110,7 +110,7 @@
   margin-inline-start: auto;
 }
 
-.reference-showcase-toolbar__action svg {
+.reference-showcase-toolbar__action :is(svg, img) {
   width: 20px;
   height: 20px;
 }

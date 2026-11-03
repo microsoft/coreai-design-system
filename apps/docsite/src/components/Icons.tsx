@@ -4,11 +4,13 @@
 import * as React from 'react';
 import {
   ChevronRight20Regular,
+  Fluent20Regular,
   Open20Filled,
   WeatherMoon20Regular,
   WeatherSunny20Regular,
   type FluentIconsProps,
 } from '@fluentui/react-icons';
+import figmaColor32 from '../assets/figma-color-32.svg';
 
 export function CoreAILogo(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -55,26 +57,22 @@ export function ExternalIcon(props: FluentIconsProps) {
   return <Open20Filled aria-hidden="true" {...props} />;
 }
 
-export function FigmaLogo(props: React.SVGProps<SVGSVGElement>) {
+export function FigmaLogo(props: React.ImgHTMLAttributes<HTMLImageElement>) {
   return (
-    <svg viewBox="5 2 10 15" aria-hidden="true" focusable="false" {...props}>
-      <path
-        fill="currentColor"
-        d="M7.5 2A2.5 2.5 0 0 0 7.5 7H10V2H7.5ZM10 2v5h2.5a2.5 2.5 0 1 0 0-5H10ZM7.5 7a2.5 2.5 0 0 0 0 5H10V7H7.5ZM12.5 7a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5ZM7.5 12a2.5 2.5 0 1 0 2.5 2.5V12H7.5Z"
-      />
-    </svg>
+    <img
+      {...props}
+      src={figmaColor32}
+      alt=""
+      width={32}
+      height={32}
+      aria-hidden="true"
+      draggable={false}
+    />
   );
 }
 
-export function FluentLogo(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 17 30" aria-hidden="true" focusable="false" {...props}>
-      <path
-        fill="currentColor"
-        d="M8.17362.673779.678882 4.86611C.259079 5.10094 0 5.53796 0 6.01127V24.2645c0 .4733.25908.9103.678882 1.1451l7.155258 4.0025c.44912.2512 1.00794-.0662 1.00794-.5726v-8.7551l7.81852-4.3734c.4525-.2532.4525-.892 0-1.1452L8.84208 10.1919l7.81852-4.37346c.4525-.25316.4525-.89199 0-1.14516L9.51054.673779a1.362 1.362 0 0 0-1.33692 0Z"
-      />
-    </svg>
-  );
+export function FluentLogo(props: FluentIconsProps) {
+  return <Fluent20Regular aria-hidden="true" {...props} />;
 }
 
 export function StorybookLogo(props: React.SVGProps<SVGSVGElement>) {

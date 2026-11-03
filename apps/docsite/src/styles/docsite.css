@@ -3365,7 +3365,7 @@ a.theme-crossfade:hover {
   place-items: center;
 }
 
-.component-resource-card__icon svg {
+.component-resource-card__icon :is(svg, img) {
   position: absolute;
   width: 20px;
   height: 20px;

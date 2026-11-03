@@ -345,19 +345,28 @@ test('search selection clears the filter, navigates, and closes the sidebar with
 });
 
 test('Figma previews and resources coexist with Storybook and Markdown actions', async () => {
-  const [component, icons, introduction, styles, home, markdownActions] = await Promise.all([
-    fs.readFile(new URL('apps/docsite/src/components/ComponentPage.tsx', repoRoot), 'utf8'),
-    fs.readFile(new URL('apps/docsite/src/components/Icons.tsx', repoRoot), 'utf8'),
-    fs.readFile(new URL('apps/storybook/src/stories/docs/IntroductionPage.tsx', repoRoot), 'utf8'),
-    fs.readFile(new URL('apps/docsite/src/styles/docsite.css', repoRoot), 'utf8'),
-    fs.readFile(new URL('apps/docsite/src/pages/Introduction.tsx', repoRoot), 'utf8'),
-    fs.readFile(new URL('apps/docsite/src/components/MarkdownActions.tsx', repoRoot), 'utf8'),
-  ]);
+  const [component, icons, figmaLogo, introduction, styles, home, markdownActions] =
+    await Promise.all([
+      fs.readFile(new URL('apps/docsite/src/components/ComponentPage.tsx', repoRoot), 'utf8'),
+      fs.readFile(new URL('apps/docsite/src/components/Icons.tsx', repoRoot), 'utf8'),
+      fs.readFile(new URL('apps/docsite/src/assets/figma-color-32.svg', repoRoot), 'utf8'),
+      fs.readFile(
+        new URL('apps/storybook/src/stories/docs/IntroductionPage.tsx', repoRoot),
+        'utf8',
+      ),
+      fs.readFile(new URL('apps/docsite/src/styles/docsite.css', repoRoot), 'utf8'),
+      fs.readFile(new URL('apps/docsite/src/pages/Introduction.tsx', repoRoot), 'utf8'),
+      fs.readFile(new URL('apps/docsite/src/components/MarkdownActions.tsx', repoRoot), 'utf8'),
+    ]);
   assert.match(component, /if \(source\.kind === 'figma'\)/);
   assert.match(component, /encodeURIComponent\(figmaPreviewSource\.url\)/);
   assert.match(component, /src=\{figmaEmbedUrl\}/);
   assert.match(component, /content\.figmaPreviewSourceId && !hasStorybookResource/);
   assert.match(icons, /export function FigmaLogo/);
+  assert.match(icons, /figma-color-32\.svg/);
+  assert.match(icons, /<Fluent20Regular/);
+  assert.match(figmaLogo, /width="32" height="32"/);
+  assert.match(figmaLogo, /#F24E1E/);
   assert.match(styles, /\.component-embed--figma \{\s*height: 560px/);
   assert.match(styles, /\.component-resources \.component-resource-card--disabled/);
   assert.match(home, /href=\{siteLinks\.figma\}/);
@@ -668,10 +677,7 @@ test('settings uses compact Fluent controls with expandable shortcuts', async ()
   assert.match(settings, /<span className="sr-only">\{accessibleKeys\}<\/span>/);
   assert.doesNotMatch(settings, /<Select/);
   assert.match(styles, /\.fui-PopoverSurface\.docsite-settings \{\s*width: 256px;/);
-  assert.match(
-    settings,
-    /<Accordion className="docsite-settings__shortcuts" collapsible>/,
-  );
+  assert.match(settings, /<Accordion className="docsite-settings__shortcuts" collapsible>/);
   assert.match(settings, /<AccordionHeader expandIconPosition="end" size="small">/);
   assert.doesNotMatch(settings, /as="h2"/);
   assert.match(
