@@ -26,7 +26,7 @@ headings in this changelog.
 ### Added
 
 - `Illicon` renders occupancy-only `DotGridData` as theme-aware SVG circles at cells-times-pitch pixel dimensions, with diameter-aware pixel alignment and separate custom inline SVG sizing.
-- `iconToDotGrid` converts static SVG and Fluent icons through browser canvas sampling; `dotGridToSvg` exports editable circle-based SVG for Figma. Both are exported from the main package.
+- `iconToDotGrid` converts static SVG (including local inline CSS masks) and Fluent icons through browser canvas sampling; `dotGridToSvg` exports editable circle-based SVG for Figma. Both are exported from the main package.
 
 ## [0.12.0] - 2026-10-16
 

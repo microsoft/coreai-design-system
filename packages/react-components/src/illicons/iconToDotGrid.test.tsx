@@ -74,6 +74,36 @@ test('supports local definitions, clipping, and gradients', async () => {
   });
 });
 
+const maskDefinition =
+  '<defs><mask id="mask"><rect x="1" y="1" width="2" height="2" fill="white"/></mask></defs>';
+
+test.each([
+  { name: 'mask attribute', paint: 'mask="url(#mask)"' },
+  { name: 'inline mask shorthand', paint: 'style="mask: url(#mask)"' },
+  { name: 'inline mask longhand', paint: 'style="mask-image: url(#mask)"' },
+])('samples only the visible cells of a local $name', async ({ paint }) => {
+  const source = svg(maskDefinition + `<rect width="4" height="4" ${paint}/>`);
+  expect(await iconToDotGrid(source, { columns: 4 })).toEqual({
+    rows: ['0000', '0110', '0110', '0000'],
+  });
+});
+
+test('supports local mask shorthand in React SVG styles', async () => {
+  const source = (
+    <svg viewBox="0 0 4 4">
+      <defs>
+        <mask id="mask">
+          <rect x="1" y="1" width="2" height="2" fill="white" />
+        </mask>
+      </defs>
+      <rect width="4" height="4" style={{ mask: 'url(#mask)' }} />
+    </svg>
+  );
+  expect(await iconToDotGrid(source, { columns: 4 })).toEqual({
+    rows: ['0000', '0110', '0110', '0000'],
+  });
+});
+
 test('preserves source origins, whitespace, and equivalent geometry at different native sizes', async () => {
   const small = await iconToDotGrid(
     svg('<rect x="12" y="22" width="4" height="4"/>', '10 20 8 8'),
@@ -231,6 +261,10 @@ test.each([
   '<rect style="fill: var(--app-color)"/>',
   '<rect style="animation: pulse 1s infinite"/>',
   '<rect style="background-image: url(https://example.com/image.png)"/>',
+  '<rect style="mask: url(https://example.com/art.svg#mask)"/>',
+  '<rect style="mask-image: url(https://example.com/art.svg#mask)"/>',
+  '<rect style="mask: url(#missing)"/>',
+  '<rect style="mask-image: url(#missing)"/>',
   '<rect xml:base="https://example.com"/>',
   '<rect xmlns="https://example.com"/>',
 ])('rejects unsupported or externally dependent SVG: %s', async (content) => {

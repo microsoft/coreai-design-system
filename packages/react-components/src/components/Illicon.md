@@ -91,7 +91,9 @@ The output always retains every requested row and column, even when entirely emp
 
 The browser renders static vector shapes, paths, strokes, transforms, and local
 definitions such as gradients, masks, and clipping paths. External styles are not
-captured. Scripts, event handlers, animation, stylesheets, text/fonts, images,
+captured. Local masks work as SVG attributes or inline CSS (`mask` or its longhands);
+all mask references must resolve within the source SVG.
+Scripts, event handlers, animation, stylesheets, text/fonts, images,
 external references, and unsupported SVG elements/styles are rejected. Sources are
 limited to 1 MiB of UTF-8 text and 10,000 elements. Conversion errors reject the promise;
 callers must surface them. During server rendering, use saved grid data instead.
