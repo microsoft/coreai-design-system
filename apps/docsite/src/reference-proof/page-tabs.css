@@ -101,6 +101,16 @@
   border-radius: 0;
 }
 
+.reference-sample-section > .preview {
+  display: grid;
+  min-height: 220px;
+  place-items: center;
+}
+
+.reference-sample-section > .preview > * {
+  max-width: 100%;
+}
+
 .reference-page-code-block .fui-CodeBlock__pre {
   max-height: 480px;
   overflow-y: auto;
