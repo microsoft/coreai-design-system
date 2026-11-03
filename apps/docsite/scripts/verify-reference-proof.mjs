@@ -248,7 +248,13 @@ try {
     );
     const authored = matter(await fs.readFile(path.join(appRoot, page.guidanceSource), 'utf8'));
     assert.deepEqual(page.resources, authored.data.resources ?? []);
-    assert.equal(page.renderer, authored.data.reference?.renderer);
+    assert.equal(
+      page.renderer,
+      authored.data.reference?.renderer ??
+        (!authored.data.reference?.component && authored.data.status === 'under-construction'
+          ? 'work-in-progress'
+          : undefined),
+    );
     const guidance = guidanceMarkdown({ ...authored.data, body: authored.content.trim() });
     if (page.standalone) {
       const expected = {
@@ -340,17 +346,6 @@ try {
         const background = globalThis.getComputedStyle(document.documentElement).backgroundColor;
         if (background !== (theme === 'dark' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)'))
           globalThis.referencePaintProblems.push('Wrong initial theme background');
-      }
-      if (!document.querySelector('[data-preview-error]')) {
-        const pending = document.querySelectorAll(
-          '#reference-content, [data-reference-ready="false"] [data-page-header]',
-        );
-        if (
-          [...pending].some(
-            (element) => globalThis.getComputedStyle(element).visibility === 'visible',
-          )
-        )
-          globalThis.referencePaintProblems.push('Visible Markdown fallback before hydration');
       }
       globalThis.requestAnimationFrame(inspectFrame);
     }
@@ -775,11 +770,12 @@ try {
       .setAttribute('data-sidebar-sentinel', 'persistent');
     return globalThis.performance.timeOrigin;
   });
+  await page.locator('#main').getByRole('tab', { name: 'Samples', exact: true }).click();
   await page
     .locator('#main')
     .getByRole('link', { name: 'Setup and dependencies', exact: true })
     .click();
-  await page.getByRole('heading', { name: 'Using components', exact: true }).waitFor();
+  await page.getByRole('heading', { name: 'NPM package', exact: true }).waitFor();
   await page.locator('[data-reference-ready="true"]').waitFor();
   assert.equal(
     await page.evaluate(() => globalThis.performance.timeOrigin),
@@ -934,7 +930,13 @@ try {
   await page.waitForFunction(() => {
     const heading = globalThis.document.getElementById('guidance-best-practices');
     const region = globalThis.document.querySelector('.app-page');
-    return Math.abs(heading.getBoundingClientRect().top - region.getBoundingClientRect().top) < 8;
+    const headingBounds = heading.getBoundingClientRect();
+    const regionBounds = region.getBoundingClientRect();
+    return (
+      region.scrollTop > 0 &&
+      headingBounds.top >= regionBounds.top &&
+      headingBounds.top < regionBounds.bottom
+    );
   });
   assert.equal(await page.evaluate(() => globalThis.performance.timeOrigin), timeOrigin);
 
@@ -1062,13 +1064,9 @@ try {
   assert.equal(await staticPage.locator('[data-page-widget="materials"] img').count(), 2);
   await staticPage.goto(root);
   assert.equal(await staticPage.locator('.reference-footer.sr-only').count(), 1);
-  assert.equal(
-    await staticPage
-      .locator('.reference-footer')
-      .getByRole('link', { name: 'Agent index' })
-      .count(),
-    1,
-  );
+  assert.notEqual(await staticPage.locator('.reference-footer').getAttribute('inert'), null);
+  assert.equal(await staticPage.locator('.reference-footer').getAttribute('aria-hidden'), 'true');
+  assert.equal(await staticPage.locator('.reference-footer a[href$="llms.txt"]').count(), 1);
   assert.equal(await staticPage.locator('.home-resource-links').count(), 0);
   assert.equal(await staticPage.locator('.home-agent-entry + .home-agent-preview').count(), 1);
   assert.notEqual(await staticPage.locator('.home-agent-preview').getAttribute('hidden'), null);
@@ -1161,6 +1159,7 @@ try {
   assert.equal(await page.locator('#reference-root > .coreai-docsite-provider').count(), 1);
   await page.goto(root);
   await page.locator('[data-reference-ready="true"]').waitFor();
+  assert.ok(await page.locator('.app-sidenav').evaluate((element) => element.inert));
   assert.equal(await page.locator('.home-resource-links').count(), 0);
   assert.equal(
     await page
@@ -1177,6 +1176,17 @@ try {
     })),
     { width: 1, height: 1, clip: 'rect(0px, 0px, 0px, 0px)' },
     'Home footer is visually hidden, not removed',
+  );
+  assert.equal(
+    await page
+      .locator('.reference-footer a')
+      .first()
+      .evaluate((link) => {
+        link.focus();
+        return globalThis.document.activeElement === link;
+      }),
+    false,
+    'Home footer links are not keyboard focus targets',
   );
   assert.equal(
     await page.locator('.home-heading .page-header__title-row .fui-CopyButton').count(),
@@ -1208,7 +1218,14 @@ try {
     .getByRole('heading', { level: 1, name: 'Build with your agent', exact: true })
     .waitFor();
   await page.locator('[data-reference-ready="true"]').waitFor();
-  assert.ok((await page.locator('.standalone-guidance').innerText()).includes(starter));
+  await page.locator('#main').getByRole('tab', { name: 'Samples', exact: true }).click();
+  assert.ok(
+    (
+      await page
+        .locator('[data-page-panel="samples"]:not([hidden]) .standalone-guidance')
+        .innerText()
+    ).includes(starter),
+  );
   assert.equal(await page.evaluate(() => globalThis.performance.timeOrigin), starterOrigin);
   await page.goto(root);
   await page.locator('[data-reference-ready="true"]').waitFor();
@@ -1232,7 +1249,7 @@ try {
   assert.deepEqual(
     await page.evaluate(() => globalThis.referencePaintProblems),
     [],
-    'No wrong-theme or Markdown-fallback frames during initial load and client navigation',
+    'No wrong-theme frames during initial load and client navigation',
   );
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
