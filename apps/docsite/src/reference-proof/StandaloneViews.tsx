@@ -583,17 +583,9 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
     <div className="reference-changelog-view">
       <div className="changelog-actions">
         {model.links.map((link) => (
-          <Button
-            as="a"
-            href={link.href}
-            appearance="secondary"
-            size="small"
-            icon={<ExternalIcon />}
-            iconPosition="after"
-            key={link.href}
-          >
+          <Link href={link.href} key={link.href}>
             {link.label}
-          </Button>
+          </Link>
         ))}
       </div>
       <div className="changelog-list" ref={listRef}>

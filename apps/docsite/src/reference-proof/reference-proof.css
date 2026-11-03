@@ -354,12 +354,11 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 8px 24px;
 }
 
 .reference-shell .changelog-actions a {
-  color: var(--colorNeutralForeground1);
-  text-decoration: none;
+  text-underline-offset: 3px;
 }
 
 .coreai-skill-guidance > :first-child {
