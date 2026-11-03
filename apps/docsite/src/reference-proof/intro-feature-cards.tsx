@@ -3,14 +3,15 @@
 
 import * as React from 'react';
 import {
-  Badge,
   Button,
+  Combobox,
   DataGrid,
   DataGridBody,
   DataGridCell,
   DataGridHeader,
   DataGridHeaderCell,
   DataGridRow,
+  Option,
   SearchBox,
   Text,
   coreaiBrandVariants,
@@ -19,16 +20,13 @@ import {
   createTableColumn,
 } from '@coreai-ds/react-components';
 import {
-  Add16Regular,
   Checkmark16Regular,
-  ChevronDown16Regular,
   ChevronLeft16Regular,
   ChevronRight16Regular,
   Code16Regular,
   Copy16Regular,
   Dismiss16Regular,
   DocumentText20Regular,
-  Filter16Regular,
   WeatherMoon16Regular,
   WeatherSunny16Regular,
 } from '@fluentui/react-icons';
@@ -83,16 +81,34 @@ function FoundationsScene() {
       </div>
       <div className="intro-foundation-spacing">
         <span className="intro-art-label">Spacing</span>
-        {[
-          ['8', 'var(--spacingHorizontalS)'],
-          ['16', 'var(--spacingHorizontalL)'],
-          ['24', 'var(--spacingHorizontalXXL)'],
-        ].map(([label, width], index) => (
-          <span className="intro-foundation-measure" key={label}>
-            <i style={{ width, '--measure-index': index } as React.CSSProperties} />
-            <span>{label}</span>
-          </span>
-        ))}
+        <div className="intro-foundation-space-demo">
+          <span className="intro-foundation-space-block" />
+          {[
+            ['8', 'var(--spacingHorizontalS)', '24', 'var(--spacingHorizontalXXL)'],
+            ['16', 'var(--spacingHorizontalL)', '32', 'var(--spacingHorizontalXXXL)'],
+            ['24', 'var(--spacingHorizontalXXL)', '48', 'calc(var(--spacingHorizontalXXL) * 2)'],
+          ].map(([label, width, expandedLabel, expandedWidth]) => (
+            <React.Fragment key={label}>
+              <span
+                className="intro-foundation-measure"
+                style={
+                  {
+                    '--space-base': width,
+                    '--space-expanded': expandedWidth,
+                  } as React.CSSProperties
+                }
+              >
+                <i />
+                <span className="intro-foundation-space-label">
+                  <span>{label}</span>
+                  <span>{expandedLabel}</span>
+                  <span>4</span>
+                </span>
+              </span>
+              <span className="intro-foundation-space-block" />
+            </React.Fragment>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -165,15 +181,7 @@ const templateColumns = [
   createTableColumn<TemplateAgent>({
     columnId: 'status',
     renderHeaderCell: () => 'Status',
-    renderCell: (item) => (
-      <Badge
-        size="small"
-        appearance="tint"
-        color={item.status === 'published' ? 'brand' : 'subtle'}
-      >
-        {item.status === 'published' ? 'Published' : 'Draft'}
-      </Badge>
-    ),
+    renderCell: (item) => item.status,
   }),
   createTableColumn<TemplateAgent>({
     columnId: 'version',
@@ -182,41 +190,73 @@ const templateColumns = [
   }),
 ];
 
-function TemplatesScene() {
+type FilterPhase = 'idle' | 'open' | 'selecting' | 'filtered' | 'clearing';
+
+function TemplatesScene({ running }: { running: boolean }) {
+  const [phase, setPhase] = React.useState<FilterPhase>('idle');
+  const filtered = phase === 'filtered' || phase === 'clearing';
+  const items = filtered
+    ? templateAgents.filter((item) => item.status === 'published')
+    : templateAgents;
+
+  React.useEffect(() => {
+    if (!running) {
+      setPhase('idle');
+      return;
+    }
+
+    let timers: number[] = [];
+    const cycle = () => {
+      setPhase('open');
+      timers = [
+        window.setTimeout(() => setPhase('selecting'), 700),
+        window.setTimeout(() => setPhase('filtered'), 1100),
+        window.setTimeout(() => setPhase('clearing'), 4100),
+        window.setTimeout(() => setPhase('idle'), 4400),
+        window.setTimeout(cycle, 6000),
+      ];
+    };
+    cycle();
+    return () => timers.forEach(window.clearTimeout);
+  }, [running]);
+
   return (
     <>
       <div className="intro-grid-reference">
         <Code16Regular /> DataGridWithFilters.tsx
         <Copy16Regular className="intro-grid-copy" />
       </div>
-      <div className="intro-grid-product">
-        <div className="intro-grid-heading">
-          <span>Agents</span>
-          <Button size="small" appearance="subtle" icon={<Add16Regular />} aria-label="New agent" />
-        </div>
+      <div className="intro-grid-product" data-phase={phase}>
         <div className="intro-grid-toolbar">
-          <SearchBox size="small" placeholder="Search agents" aria-label="Search agents" />
-          <Button size="small" className="intro-grid-filter" icon={<Filter16Regular />}>
-            <span className="intro-grid-state">
-              <span className="intro-grid-all">Status</span>
-              <span className="intro-grid-applied">Published</span>
-            </span>
-            <span className="intro-grid-state intro-grid-filter-icon">
-              <ChevronDown16Regular className="intro-grid-all" />
-              <Dismiss16Regular className="intro-grid-applied" />
-            </span>
-          </Button>
-        </div>
-        <div className="intro-grid-filter-menu">
-          <span>All statuses</span>
-          <span>
-            <Checkmark16Regular /> Published
-          </span>
+          <SearchBox placeholder="Search agents" aria-label="Search agents" />
+          <Combobox
+            className="intro-grid-filter"
+            label="Status"
+            aria-label="Filter by status"
+            dynamicWidth
+            clearable
+            inlinePopup
+            positioning={{ position: 'below', align: 'end' }}
+            open={phase === 'open' || phase === 'selecting'}
+            value={filtered ? 'Published' : ''}
+            selectedOptions={filtered ? ['published'] : []}
+          >
+            <Option value="draft">Draft</Option>
+            <Option value="published" className="intro-grid-published-option">
+              Published
+            </Option>
+            <Option value="deployed">Deployed</Option>
+          </Combobox>
         </div>
         <DataGrid
           className="intro-grid-table"
-          items={templateAgents}
+          items={items}
           columns={templateColumns}
+          columnFlexOptions={{
+            name: { minWidth: 208, flexBasis: 208, flexGrow: 0 },
+            status: { minWidth: 112, flexBasis: 112, flexGrow: 0 },
+            version: { minWidth: 88, flexBasis: 88, flexGrow: 1 },
+          }}
           getRowId={(item) => item.name}
           selectionMode="multiselect"
           sortable
@@ -225,10 +265,8 @@ function TemplatesScene() {
             <DataGridRow
               selectionCell={{ checkboxIndicator: { 'aria-label': 'Select all agents' } }}
             >
-              {({ renderHeaderCell, columnId }) => (
-                <DataGridHeaderCell className={`intro-grid-column-${columnId}`}>
-                  {renderHeaderCell()}
-                </DataGridHeaderCell>
+              {({ renderHeaderCell }) => (
+                <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>
               )}
             </DataGridRow>
           </DataGridHeader>
@@ -236,25 +274,27 @@ function TemplatesScene() {
             {({ item, rowId }) => (
               <DataGridRow<TemplateAgent>
                 key={rowId}
-                className={item.status === 'draft' ? 'intro-grid-row-draft' : undefined}
+                className={
+                  item.name === templateAgents[0].name ? undefined : 'intro-grid-row-secondary'
+                }
                 selectionCell={{ checkboxIndicator: { 'aria-label': 'Select agent' } }}
               >
-                {({ renderCell, columnId }) => (
-                  <DataGridCell className={`intro-grid-column-${columnId}`}>
-                    {renderCell(item)}
-                  </DataGridCell>
-                )}
+                {({ renderCell }) => <DataGridCell>{renderCell(item)}</DataGridCell>}
               </DataGridRow>
             )}
           </DataGridBody>
         </DataGrid>
         <div className="intro-grid-footer">
-          <span className="intro-grid-state">
-            <span className="intro-grid-all">3 agents</span>
-            <span className="intro-grid-applied">2 agents</span>
+          <span>
+            1-{items.length} of {items.length}
           </span>
           <span>
-            <ChevronLeft16Regular /> <ChevronRight16Regular />
+            <Button
+              appearance="subtle"
+              icon={<ChevronLeft16Regular />}
+              aria-label="Previous page"
+            />
+            <Button appearance="subtle" icon={<ChevronRight16Regular />} aria-label="Next page" />
           </span>
         </div>
       </div>
@@ -263,6 +303,7 @@ function TemplatesScene() {
 }
 
 function AgentsScene() {
+  const code = '<Button appearance="primary">Save</Button>';
   return (
     <>
       <div className="intro-agent-request">
@@ -284,7 +325,12 @@ function AgentsScene() {
           <span># Button</span>
           <span>## Best practices</span>
           <span>- Use buttons for actions.</span>
-          <code>&lt;Button&gt;Save&lt;/Button&gt;</code>
+          <code
+            className="intro-agent-code"
+            style={{ '--code-length': code.length } as React.CSSProperties}
+          >
+            <span>{code}</span>
+          </code>
         </div>
       </div>
       <span className="intro-agent-result">
@@ -294,7 +340,7 @@ function AgentsScene() {
   );
 }
 
-const scenes = [
+const scenes: { kind: string; Scene: React.ComponentType<{ running: boolean }> }[] = [
   { kind: 'foundations', Scene: FoundationsScene },
   { kind: 'components', Scene: ComponentsScene },
   { kind: 'templates', Scene: TemplatesScene },
@@ -335,6 +381,7 @@ export function IntroFeatureCards({ sourceHtml }: PageWidgetProps) {
       <div className="intro-features-grid">
         {items.map((item, index) => {
           const { kind, Scene } = scenes[index];
+          const running = !reducedMotion && pageVisible && index === active;
           return (
             <article
               className={`intro-feature intro-feature--${kind}`}
@@ -355,9 +402,9 @@ export function IntroFeatureCards({ sourceHtml }: PageWidgetProps) {
                 className="intro-feature-scene"
                 aria-hidden="true"
                 ref={makeInert}
-                data-running={!reducedMotion && pageVisible && index === active}
+                data-running={running}
               >
-                <Scene />
+                <Scene running={running} />
               </div>
               <div className="intro-feature-copy">
                 <Text as="h3" id={item.id} preset="heading4" foreground={1}>
