@@ -450,6 +450,85 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
   timeZone: 'UTC',
 });
 
+interface ChangelogPoint {
+  x: number;
+  y: number;
+}
+
+interface ChangelogRail {
+  kind: 'month' | 'release' | 'change';
+  change?: string;
+  path: string;
+  points: ChangelogPoint[];
+}
+
+function measureChangelogRails(list: HTMLDivElement): ChangelogRail[] {
+  const bounds = list.getBoundingClientRect();
+  const point = (element: Element, offset: number): ChangelogPoint => {
+    const rect = element.getBoundingClientRect();
+    return {
+      x: rect.left - bounds.left - offset,
+      y: rect.top - bounds.top + parseFloat(getComputedStyle(element).lineHeight) / 2,
+    };
+  };
+  const branch = (parent: ChangelogPoint, child: ChangelogPoint) =>
+    `M ${parent.x} ${child.y - 12} Q ${parent.x} ${child.y} ${parent.x + 12} ${child.y} H ${child.x}`;
+  const rails: ChangelogRail[] = [];
+  const months: ChangelogPoint[] = [];
+  let end = 0;
+  for (const month of list.querySelectorAll<HTMLDetailsElement>('.changelog-month')) {
+    const heading = month.querySelector('.changelog-month__header h2');
+    if (!heading) continue;
+    const monthPoint = point(heading, 28.5);
+    months.push(monthPoint);
+    end = monthPoint.y;
+    if (!month.open) continue;
+    for (const release of month.querySelectorAll('.changelog-entry')) {
+      const version = release.querySelector('.changelog-entry__version a');
+      if (!version) continue;
+      const releasePoint = point(version, 20);
+      end = releasePoint.y - 12;
+      const sections: ChangelogPoint[] = [];
+      for (const section of release.querySelectorAll<HTMLElement>('.changelog-entry__section')) {
+        const title = section.querySelector('h4');
+        if (!title) continue;
+        const sectionPoint = point(title, 20);
+        sections.push(sectionPoint);
+        const items = [...section.querySelectorAll(':scope > ul > li')].map((item) =>
+          point(item, 20),
+        );
+        rails.push({
+          kind: 'change',
+          change: section.dataset.change,
+          path:
+            branch(releasePoint, sectionPoint) +
+            (items.length
+              ? ` M ${sectionPoint.x} ${sectionPoint.y} V ${items[items.length - 1].y}`
+              : ''),
+          points: [sectionPoint, ...items],
+        });
+      }
+      rails.push({
+        kind: 'release',
+        path:
+          branch(monthPoint, releasePoint) +
+          (sections.length
+            ? ` M ${releasePoint.x} ${releasePoint.y} V ${sections[sections.length - 1].y - 12}`
+            : ''),
+        points: [releasePoint],
+      });
+    }
+  }
+  if (months.length) {
+    rails.push({
+      kind: 'month',
+      path: `M ${months[0].x} ${months[0].y} V ${end}`,
+      points: months,
+    });
+  }
+  return rails;
+}
+
 function ChangelogView({ sourceHtml }: PageWidgetProps) {
   const model = React.useMemo(() => {
     const document = documentFrom(sourceHtml);
@@ -471,13 +550,43 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
       groups: [...groups],
     };
   }, [sourceHtml]);
+  const listRef = React.useRef<HTMLDivElement>(null);
+  const [rails, setRails] = React.useState<ChangelogRail[]>([]);
+  React.useLayoutEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+    const update = () => setRails(measureChangelogRails(list));
+    const observer = new ResizeObserver(update);
+    observer.observe(list);
+    list.addEventListener('toggle', update, true);
+    update();
+    return () => {
+      observer.disconnect();
+      list.removeEventListener('toggle', update, true);
+    };
+  }, [model]);
   return (
     <div className="reference-changelog-view">
       <div
         className="changelog-intro standalone-guidance"
         dangerouslySetInnerHTML={{ __html: model.introductionHtml }}
       />
-      <div className="changelog-list">
+      <div className="changelog-list" ref={listRef}>
+        <svg className="changelog-graph" aria-hidden="true">
+          {rails.map((rail, index) => (
+            <g className={`changelog-graph__${rail.kind}`} data-change={rail.change} key={index}>
+              <path d={rail.path} />
+              {rail.points.map((point, pointIndex) => (
+                <circle
+                  cx={point.x}
+                  cy={point.y}
+                  r={rail.kind === 'change' && pointIndex > 0 ? 2.5 : 3.5}
+                  key={pointIndex}
+                />
+              ))}
+            </g>
+          ))}
+        </svg>
         {model.groups.map(([month, releases]) => (
           <details className="changelog-month" key={month} open>
             <summary className="changelog-month__header">
