@@ -45,6 +45,16 @@
   display: none !important;
 }
 
+.reference-page-panel[data-page-panel='usage'] > [data-page-resources][hidden] {
+  display: none !important;
+}
+
+.reference-page-panel[data-page-panel='usage']
+  > .component-markdown
+  > :first-child {
+  margin-block-start: 0;
+}
+
 .reference-page-panel[data-page-panel='samples'] > .standalone-guidance {
   margin-block: 0;
 }
@@ -74,7 +84,7 @@
   align-items: center;
   min-height: 48px;
   margin: 0;
-  padding: var(--spacingVerticalS) var(--spacingHorizontalM);
+  padding: var(--spacingVerticalS);
   border-block-end: 1px solid var(--colorNeutralStroke2);
 }
 
