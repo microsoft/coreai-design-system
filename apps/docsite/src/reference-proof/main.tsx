@@ -292,6 +292,12 @@ function DocumentationShell({
       sidebar.removeAttribute('aria-modal');
     }
     body.inert = navigationOpen;
+    const syncSidebarState = () => {
+      const mobile = window.innerWidth <= 1100;
+      sidebar.inert = mobile && !navigationOpen;
+      if (!mobile) setNavigationOpen(false);
+    };
+    syncSidebarState();
     const close = () => {
       setNavigationOpen(false);
       requestAnimationFrame(() => menuButtonRef.current?.focus());
@@ -320,14 +326,11 @@ function DocumentationShell({
     const dismiss = sidebar.querySelector('[data-close-navigation]');
     dismiss?.addEventListener('click', close);
     document.addEventListener('keydown', onKeyDown);
-    const resize = () => {
-      if (window.innerWidth > 1100) setNavigationOpen(false);
-    };
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', syncSidebarState);
     return () => {
       dismiss?.removeEventListener('click', close);
       document.removeEventListener('keydown', onKeyDown);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener('resize', syncSidebarState);
     };
   }, [navigationOpen, slots]);
 

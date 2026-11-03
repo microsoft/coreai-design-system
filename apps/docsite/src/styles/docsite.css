@@ -3689,6 +3689,7 @@ a.theme-crossfade:hover {
     border-radius: var(--borderRadiusXLarge, 8px);
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
     transform: translateY(-8px);
     transition:
       opacity var(--mf-duration-default) var(--mf-ease),
@@ -3699,6 +3700,7 @@ a.theme-crossfade:hover {
   .app-sidenav.is-open {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
     transform: translateY(0);
     transition-delay: 0s;
   }

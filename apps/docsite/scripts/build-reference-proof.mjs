@@ -494,7 +494,7 @@ ${assets.css.map((file) => `<link rel="stylesheet" href="${metadata.basePath}${f
 <nav class="app-sidenav__nav" id="app-navigation-links" aria-label="Documentation">${navigation}</nav>
 <div class="app-sidenav__footer"><a class="app-sidenav__link" href="https://github.com/microsoft/coreai-design-system/issues">Questions?</a><a class="app-sidenav__link" href="https://github.com/microsoft/coreai-design-system/issues/new">Feedback</a></div></aside>
 <div class="app-content${home ? ' app-content--home' : ''}"><div data-shell-header></div><div class="app-page${home ? ' app-page--home' : ''}"><main class="site-main" id="main" tabindex="-1">${body}
-<footer class="reference-footer${currentPath === '' ? ' sr-only' : ''}">CoreAI ${escapeHtml(metadata.versions['@coreai-ds/react-components'])}; Fluent ${escapeHtml(metadata.versions['@fluentui/react-components'])}.
+<footer class="reference-footer${currentPath === '' ? ' sr-only' : ''}"${currentPath === '' ? ' aria-hidden="true" inert' : ''}>CoreAI ${escapeHtml(metadata.versions['@coreai-ds/react-components'])}; Fluent ${escapeHtml(metadata.versions['@fluentui/react-components'])}.
 <a href="${metadata.basePath}llms.txt">Agent index</a> · <a href="${metadata.basePath}llms/index.json">Coverage and provenance</a> · <a href="${metadata.basePath}THIRD-PARTY-NOTICES.txt">License</a></footer>
 </main></div></div></div></div><div class="copy-toast" role="status"></div></div></div><script type="module" src="${metadata.basePath}${assets.entry}"></script></body></html>\n`;
 }
