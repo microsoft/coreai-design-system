@@ -191,6 +191,16 @@ try {
     assert.ok(await samples.isVisible());
     assert.ok(!(await usage.isVisible()));
     assert.equal(page.url(), url.href, 'Tab selection does not create another page');
+    if (hasShowcase) {
+      assert.ok(
+        await samples
+          .locator(
+            `.reference-sample-group--examples .reference-sample-section:not([hidden]) .preview[data-example-id="${record.defaultExampleId}"]`,
+          )
+          .isVisible(),
+        `${record.id}: the default sample shows its live preview`,
+      );
+    }
     assert.equal(
       await samples.locator(':scope > .reference-sample-section').count(),
       0,
@@ -254,6 +264,12 @@ try {
         .evaluateAll((links) => links.map((link) => link.getAttribute('href')).sort()),
       parity.downloads,
       `${record.id}: source downloads survive`,
+    );
+    assert.ok(
+      await samples
+        .locator('.reference-sample-download')
+        .evaluateAll((links) => links.every((link) => link.hasAttribute('download'))),
+      `${record.id}: source actions download their files`,
     );
     assert.equal(
       await samples

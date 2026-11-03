@@ -52,6 +52,7 @@
     .app-sidenav__link,
     .app-sidenav__search-logo,
     .font-card-link,
+    .reference-sample-download,
     .reference-home-action
   ) {
   color: var(--colorBrandForegroundLink);

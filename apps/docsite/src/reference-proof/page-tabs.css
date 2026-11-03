@@ -16,6 +16,7 @@
 }
 
 .reference-sample-group {
+  position: relative;
   overflow: hidden;
   min-width: 0;
   border: 1px solid var(--colorNeutralStroke2);
@@ -34,6 +35,7 @@
 .reference-sample-toolbar-host {
   min-height: 48px;
   padding: var(--spacingVerticalS);
+  padding-inline-end: 152px;
   border-block-end: 1px solid var(--colorNeutralStroke2);
 }
 
@@ -62,7 +64,29 @@
 }
 
 .reference-sample-download {
-  align-self: flex-start;
+  position: absolute;
+  inset-block-start: var(--spacingVerticalS);
+  inset-inline-end: var(--spacingHorizontalS);
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  padding-inline: var(--spacingHorizontalM);
+  border-radius: var(--borderRadiusMedium);
+  color: var(--colorNeutralForeground1);
+  font-size: var(--fontSizeBase300);
+  line-height: var(--lineHeightBase300);
+  font-weight: var(--fontWeightSemibold);
+  text-decoration: none;
+}
+
+.reference-sample-download:hover {
+  background: var(--colorNeutralBackground1Hover);
+  color: var(--colorNeutralForeground1Hover);
+}
+
+.reference-sample-download:active {
+  background: var(--colorNeutralBackground1Pressed);
+  color: var(--colorNeutralForeground1Pressed);
 }
 
 .reference-page-code-block-host,

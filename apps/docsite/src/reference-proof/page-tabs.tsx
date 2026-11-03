@@ -38,6 +38,10 @@ export interface PageTabTargets {
   showcase?: {
     host: HTMLElement;
     preview: HTMLElement;
+    previewHome: {
+      parent: HTMLElement;
+      nextSibling: ChildNode | null;
+    };
     defaultId: string;
     options: {
       id: string;
@@ -95,7 +99,8 @@ function sourceDownload(source: HTMLAnchorElement | null) {
   link.className = 'reference-sample-download';
   link.href = source.getAttribute('href') ?? source.href;
   link.textContent = 'Download source';
-  if (source.hasAttribute('download')) link.setAttribute('download', '');
+  const filename = new URL(link.href, window.location.href).pathname.split('/').at(-1);
+  link.setAttribute('download', source.getAttribute('download') || filename || '');
   return link;
 }
 
@@ -372,6 +377,10 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
       showcase = {
         host: showcaseHost,
         preview,
+        previewHome: {
+          parent: preview.parentElement ?? basic,
+          nextSibling: preview.nextSibling,
+        },
         defaultId,
         options: showcaseOptions,
       };
@@ -497,6 +506,21 @@ export function PageTabs({
     targets.usage.hidden = selected !== 'usage';
     targets.samples.hidden = selected !== 'samples';
   }, [selected, targets]);
+  React.useLayoutEffect(() => {
+    const showcase = targets.showcase;
+    if (!showcase || !exampleGroup) return;
+    const defaultSection = exampleGroup.options.find(
+      (option) => option.id === showcase.defaultId,
+    )?.section;
+    if (selected === 'samples' && selectedSampleExample === showcase.defaultId && defaultSection) {
+      const code = defaultSection.querySelector('.reference-page-code-block-host');
+      defaultSection.insertBefore(showcase.preview, code);
+      return;
+    }
+    const { parent, nextSibling } = showcase.previewHome;
+    if (nextSibling?.parentNode === parent) parent.insertBefore(showcase.preview, nextSibling);
+    else parent.append(showcase.preview);
+  }, [exampleGroup, selected, selectedSampleExample, targets]);
   React.useLayoutEffect(() => {
     for (const option of exampleGroup?.options ?? []) {
       option.section.hidden = option.id !== selectedSampleExample;
