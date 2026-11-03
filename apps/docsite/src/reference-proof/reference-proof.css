@@ -350,25 +350,22 @@
   margin-block-start: 16px;
 }
 
-.changelog-actions {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
-  gap: 24px;
-}
-
-.changelog-resource {
+.changelog-resource__title {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
-.changelog-resource p {
-  margin: 0;
+.changelog-resource__title svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--colorBrandForegroundLink);
 }
 
-.reference-shell .changelog-actions a {
-  text-underline-offset: 3px;
+.reference-shell .changelog-actions .resource-card-link {
+  text-decoration: none;
 }
 
 .coreai-skill-guidance > :first-child {

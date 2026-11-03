@@ -587,17 +587,39 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
   }, [model]);
   return (
     <div className="reference-changelog-view">
-      <div className="changelog-actions">
-        {model.links.map((link) => (
-          <div className="changelog-resource" key={link.href}>
-            <Link href={link.href}>{link.label}</Link>
-            {changelogLinkDescriptions[link.label] ? (
-              <Text as="p" size={200} foreground={3}>
-                {changelogLinkDescriptions[link.label]}
-              </Text>
-            ) : null}
-          </div>
-        ))}
+      <div className="resources-grid changelog-actions">
+        {model.links.map((link, index) => {
+          const resourceId = `${graphId}-resource-${index}`;
+          const description = changelogLinkDescriptions[link.label];
+          return (
+            <Link
+              className="resource-card-link"
+              href={link.href}
+              key={link.href}
+              aria-labelledby={`${resourceId}-title`}
+              aria-describedby={description ? `${resourceId}-description` : undefined}
+            >
+              <Card className="resource-card" focusMode="off">
+                <Text
+                  as="h3"
+                  className="changelog-resource__title"
+                  id={`${resourceId}-title`}
+                  size={400}
+                  weight="semibold"
+                  foreground={1}
+                >
+                  {link.label}
+                  <ExternalIcon />
+                </Text>
+                {description ? (
+                  <Text as="p" id={`${resourceId}-description`} size={300} foreground={2}>
+                    {description}
+                  </Text>
+                ) : null}
+              </Card>
+            </Link>
+          );
+        })}
       </div>
       <div className="changelog-list" ref={listRef}>
         <svg className="changelog-graph" aria-hidden="true">
