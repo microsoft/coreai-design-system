@@ -7,7 +7,7 @@
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
     "*.ts": "${capture}.test.ts, ${capture}.test.tsx",
-    "*.tsx": "${capture}.ts, ${capture}*.module.css, ${capture}.stories.tsx, ${capture}.test.tsx, ${capture}*.md, ${capture}*.mdx"
+    "*.tsx": "${capture}.ts, ${capture}.module.css, ${capture}.stories.tsx, ${capture}.test.tsx, ${capture}*.md, ${capture}*.mdx"
   },
   "eslint.codeActionsOnSave.mode": "problems",
   "eslint.format.enable": false,
