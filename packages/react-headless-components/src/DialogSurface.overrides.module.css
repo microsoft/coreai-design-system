@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * CoreAI sources: [Dialog.styles.ts](../../react-components/src/components/Dialog.styles.ts)
  * and [Overlay.styles.ts](../../react-components/src/components/Overlay.styles.ts),
  * reference commit 1cabc6b. There are no CoreAI Dialog prop defaults.

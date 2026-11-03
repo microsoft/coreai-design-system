@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Fluent baseline: @fluentui/react-divider 9.7.6, useDividerStyles.styles.ts.
  * Local source: [useDividerStyles.styles.raw.js](../../../node_modules/@fluentui/react-divider/lib/components/Divider/useDividerStyles.styles.raw.js).
  * Used by the Fluent-compatible DividerLabeled export, not CoreAI's contentless hr.

@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-link 9.8.6, useLinkStyles.styles.ts.
  * Local source: [useLinkStyles.styles.raw.js](../../../node_modules/@fluentui/react-link/lib/components/Link/useLinkStyles.styles.raw.js).
  * Glyph baseline: @fluentui/react-icons 2.0.343

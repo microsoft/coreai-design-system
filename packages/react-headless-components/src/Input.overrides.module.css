@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * CoreAI source: [Input.tsx](../../react-components/src/components/Input.tsx) at 51997c2e.
  * Fluent baseline: [useInputStyles.styles.raw.js](../../../node_modules/@fluentui/react-input/lib/components/Input/useInputStyles.styles.raw.js).
  * Explicit inline-label/sizing/read-only features remain available when defaults are disabled.

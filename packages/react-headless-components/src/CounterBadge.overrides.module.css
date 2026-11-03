@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * CoreAI source: [index.ts](../../react-components/src/index.ts) re-exports Fluent CounterBadge without a wrapper.
  * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts) registers no CounterBadge override.
  * Fluent baseline: @fluentui/react-badge 9.5.7,

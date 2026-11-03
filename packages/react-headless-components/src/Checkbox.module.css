@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-checkbox 9.6.6, useCheckboxStyles.styles.ts.
  * Local source: [useCheckboxStyles.styles.raw.js](../../../node_modules/@fluentui/react-checkbox/lib/components/Checkbox/useCheckboxStyles.styles.raw.js).
  * Label's visual foundation is reused, not copied: [Label.module.css](./Label.module.css),

@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * CoreAI source: [SpinButton.ts](../../react-components/src/components/SpinButton.ts) at a8a84a1
  * defaults appearance to filled-darker. [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts)
  * registers no SpinButton style override.

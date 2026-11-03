@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
+
 // @fluentui/react-menu 9.25.8 adds only its stable marker, with no CoreAI override/default.
 // Local source: [useMenuGroupStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuGroup/useMenuGroupStyles.styles.raw.js).
 

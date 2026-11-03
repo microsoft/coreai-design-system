@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-radio 9.6.7, useRadioStyles.styles.ts.
  * Local source: [useRadioStyles.styles.raw.js](../../../node_modules/@fluentui/react-radio/lib/components/Radio/useRadioStyles.styles.raw.js).
  * Label's foundation is reused: @fluentui/react-label 9.4.6

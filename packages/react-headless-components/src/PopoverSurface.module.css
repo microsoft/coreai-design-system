@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-popover 9.14.10, usePopoverSurfaceStyles.styles.ts.
  * Local source: [usePopoverSurfaceStyles.styles.raw.js](../../../node_modules/@fluentui/react-popover/lib/components/PopoverSurface/usePopoverSurfaceStyles.styles.raw.js).
  * Arrow source: [createArrowStyles.js](../../../node_modules/@fluentui/react-positioning/lib/createArrowStyles.js), @fluentui/react-positioning 9.23.4.

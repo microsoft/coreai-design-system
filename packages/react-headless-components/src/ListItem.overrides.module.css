@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Native checkmark visual bridge, not an additional CoreAI List override.
  * List baseline: @fluentui/react-list 9.7.0 [useListItemStyles.styles.raw.js](../../../node_modules/@fluentui/react-list/lib/components/ListItem/useListItemStyles.styles.raw.js).
  * Current input/gridcell contract: @fluentui/react-headless-components-preview 0.3.2 [renderListItem.js](../../../node_modules/@fluentui/react-headless-components-preview/lib/components/List/ListItem/renderListItem.js).

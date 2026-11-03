@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Fluent visual reference: @fluentui/react-divider 9.7.6.
  * Local baseline source: [useDividerStyles.styles.raw.js](../../../node_modules/@fluentui/react-divider/lib/components/Divider/useDividerStyles.styles.raw.js).
  * Actual CoreAI source at d1f4f10: [Divider.tsx](../../react-components/src/components/Divider.tsx).

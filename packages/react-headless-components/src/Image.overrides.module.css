@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * CoreAI source at df8917195abb529e5239d5490cdfede15dbe578a:
  * [public exports](../../react-components/src/index.ts) re-export Fluent Image unchanged;
  * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts) registers no Image override.

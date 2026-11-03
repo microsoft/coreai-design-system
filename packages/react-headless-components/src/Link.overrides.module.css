@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * CoreAI source: [Link.tsx](../../react-components/src/components/Link.tsx).
  * The wrapper owns external-link layout, glyph sizing, and navigation defaults.
  * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts) registers no Link override;

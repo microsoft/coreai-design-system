@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-message-bar 9.7.9, useMessageBarActionsStyles.styles.ts.
  * Local source: [useMessageBarActionsStyles.styles.raw.js](../../../node_modules/@fluentui/react-message-bar/lib/components/MessageBarActions/useMessageBarActionsStyles.styles.raw.js).
  * CoreAI re-exports MessageBarActions unchanged. The public renderer places containerAction

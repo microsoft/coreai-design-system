@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-card 9.7.4, useCardStyles.styles.ts.
  * Local source: [useCardStyles.styles.raw.js](../../../node_modules/@fluentui/react-card/lib/components/Card/useCardStyles.styles.raw.js).
  * Inherited focus reference: [createFocusOutlineStyle.js](../../../node_modules/@fluentui/react-tabster/lib/focus/createFocusOutlineStyle.js), @fluentui/react-tabster 9.26.19.

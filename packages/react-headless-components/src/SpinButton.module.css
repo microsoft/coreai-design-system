@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-spinbutton 9.6.8, useSpinButtonStyles.styles.raw.js.
  * Local source: [useSpinButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-spinbutton/lib/components/SpinButton/useSpinButtonStyles.styles.raw.js).
  * This source owns its input and repeat-button styling; it does not delegate to Input or Button.

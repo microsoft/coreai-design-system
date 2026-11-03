@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported directly from @fluentui/react-tag-picker 9.10.5.
  * Local source: [useTagPickerListStyles.styles.raw.js](../../../node_modules/@fluentui/react-tag-picker/lib/components/TagPickerList/useTagPickerListStyles.styles.raw.js).
  * Inherited source: [useListboxStyles.styles.raw.js](../../../node_modules/@fluentui/react-combobox/lib/components/Listbox/useListboxStyles.styles.raw.js)

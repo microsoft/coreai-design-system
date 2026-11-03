@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-spinner 9.8.7, useSpinnerStyles.styles.ts.
  * Local source: [useSpinnerStyles.styles.raw.js](../../../node_modules/@fluentui/react-spinner/lib/components/Spinner/useSpinnerStyles.styles.raw.js).
  * Inherited Label foundation: [useLabelStyles.styles.raw.js](../../../node_modules/@fluentui/react-label/lib/components/Label/useLabelStyles.styles.raw.js), @fluentui/react-label 9.4.6.

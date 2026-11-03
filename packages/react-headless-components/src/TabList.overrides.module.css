@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * CoreAI source: [TabList.tsx](../../react-components/src/components/TabList.tsx).
  * Fluent baseline: @fluentui/react-tabs 9.12.6.
  * Local baseline: [useTabListStyles.styles.raw.js](../../../node_modules/@fluentui/react-tabs/lib/components/TabList/useTabListStyles.styles.raw.js)

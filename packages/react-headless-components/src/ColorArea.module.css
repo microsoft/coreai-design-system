@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-color-picker 9.3.3.
  * Local source: [useColorAreaStyles.styles.raw.js](../../../node_modules/@fluentui/react-color-picker/lib/components/ColorArea/useColorAreaStyles.styles.raw.js).
  * Focus source: [createFocusOutlineStyle.js](../../../node_modules/@fluentui/react-tabster/lib/focus/createFocusOutlineStyle.js).

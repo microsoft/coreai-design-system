@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * CoreAI brand intent from [MessageBar.tsx](../../react-components/src/components/MessageBar.tsx).
  * Fluent baseline: @fluentui/react-message-bar 9.7.9,
  * [useMessageBarStyles.styles.raw.js](../../../node_modules/@fluentui/react-message-bar/lib/components/MessageBar/useMessageBarStyles.styles.raw.js).

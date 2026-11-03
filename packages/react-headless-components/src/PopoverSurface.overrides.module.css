@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * CoreAI source: [Overlay.styles.ts](../../react-components/src/components/Overlay.styles.ts),
  * reference commit a8a84a1. The shared override adds the floating-surface and arrow border,
  * gated by CoreAI component defaults. There are no CoreAI Popover prop defaults.

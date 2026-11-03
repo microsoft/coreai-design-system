@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * CoreAI source: [Dialog.styles.ts](../../react-components/src/components/Dialog.styles.ts),
  * reference commit 1cabc6b. The current native DialogBody is the scrollable
  * content area, so it receives the former DialogContent visual override.

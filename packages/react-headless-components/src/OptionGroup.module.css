@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-combobox 9.17.7.
  * Local source: [useOptionGroupStyles.styles.raw.js](../../../node_modules/@fluentui/react-combobox/lib/components/OptionGroup/useOptionGroupStyles.styles.raw.js).
  * CoreAI has no OptionGroup style override.

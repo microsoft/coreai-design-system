@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Layout adapted from @fluentui/react-dialog 9.18.6,
  * [useDialogBodyStyles.styles.raw.js](../../../node_modules/@fluentui/react-dialog/lib/components/DialogBody/useDialogBodyStyles.styles.raw.js)
  * and [useDialogTitleStyles.styles.raw.js](../../../node_modules/@fluentui/react-dialog/lib/components/DialogTitle/useDialogTitleStyles.styles.raw.js).

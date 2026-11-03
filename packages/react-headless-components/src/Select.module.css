@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported directly from @fluentui/react-select 9.5.7, useSelectStyles.styles.raw.js.
  * Local source: [useSelectStyles.styles.raw.js](../../../node_modules/@fluentui/react-select/lib/components/Select/useSelectStyles.styles.raw.js).
  * Source: https://unpkg.com/@fluentui/react-select@9.5.7/lib/components/Select/useSelectStyles.styles.raw.js

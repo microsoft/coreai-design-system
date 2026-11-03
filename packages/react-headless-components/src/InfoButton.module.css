@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-infolabel 9.4.27, useInfoButtonStyles.styles.ts.
  * Local source: [useInfoButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-infolabel/lib/components/InfoButton/useInfoButtonStyles.styles.raw.js).
  * Focus source: @fluentui/react-tabster 9.26.19,

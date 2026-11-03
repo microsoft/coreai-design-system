@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-search 9.4.8, useSearchBoxStyles.styles.raw.js.
  * Local source: [useSearchBoxStyles.styles.raw.js](../../../node_modules/@fluentui/react-search/lib/components/SearchBox/useSearchBoxStyles.styles.raw.js).
  * Inherited baseline: @fluentui/react-input 9.8.8,

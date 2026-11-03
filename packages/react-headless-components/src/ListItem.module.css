@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-list 9.7.0.
  * Local source: [useListItemStyles.styles.raw.js](../../../node_modules/@fluentui/react-list/lib/components/ListItem/useListItemStyles.styles.raw.js).
  * Focus source: @fluentui/react-tabster 9.26.19 [createCustomFocusIndicatorStyle.js](../../../node_modules/@fluentui/react-tabster/lib/focus/createCustomFocusIndicatorStyle.js).

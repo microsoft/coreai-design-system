@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported directly from @fluentui/react-tags 9.9.8.
  * Local source: [useTagStyles.styles.raw.js](../../../node_modules/@fluentui/react-tags/lib/components/Tag/useTagStyles.styles.raw.js).
  * Source: https://unpkg.com/@fluentui/react-tags@9.9.8/lib/components/Tag/useTagStyles.styles.raw.js

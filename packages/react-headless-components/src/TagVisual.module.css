@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Shared visual constants from @fluentui/react-tags 9.9.8.
  * Local source: [useTagStyles.styles.raw.js](../../../node_modules/@fluentui/react-tags/lib/components/Tag/useTagStyles.styles.raw.js).
  * Inherited by [InteractionTagPrimary styles](../../../node_modules/@fluentui/react-tags/lib/components/InteractionTagPrimary/useInteractionTagPrimaryStyles.styles.raw.js).

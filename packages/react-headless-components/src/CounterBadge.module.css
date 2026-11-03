@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported directly from @fluentui/react-badge 9.5.7.
  * Local source: [useCounterBadgeStyles.styles.raw.js](../../../node_modules/@fluentui/react-badge/lib/components/CounterBadge/useCounterBadgeStyles.styles.raw.js).
  * Inherited baseline: [useBadgeStyles.styles.raw.js](../../../node_modules/@fluentui/react-badge/lib/components/Badge/useBadgeStyles.styles.raw.js), reused through Badge.module.css.

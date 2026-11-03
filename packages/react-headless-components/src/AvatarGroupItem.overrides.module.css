@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * CoreAI source: [Avatar.tsx](../../react-components/src/components/Avatar.tsx), reference ee9b499.
  * Reused local override: [Avatar.overrides.module.css](./Avatar.overrides.module.css).
  * Fluent baseline: @fluentui/react-avatar 9.11.9,

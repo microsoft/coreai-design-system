@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Fluent baseline: @fluentui/react-card 9.7.4.
  * Local source: [useCardStyles.styles.raw.js](../../../node_modules/@fluentui/react-card/lib/components/Card/useCardStyles.styles.raw.js).
  * CoreAI source: [Card.styles.ts](../../react-components/src/components/Card.styles.ts) and [Card.tsx](../../react-components/src/components/Card.tsx), reference commit 53ebde2.

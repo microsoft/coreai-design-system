@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-color-picker 9.3.3.
  * Local source: [useColorSliderStyles.styles.raw.js](../../../node_modules/@fluentui/react-color-picker/lib/components/ColorSlider/useColorSliderStyles.styles.raw.js).
  * The public hook owns the resolved --fui-Slider-* variables and data-channel/orientation.

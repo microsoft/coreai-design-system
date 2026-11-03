@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-message-bar 9.7.9, useMessageBarStyles.styles.ts.
  * Local source: [useMessageBarStyles.styles.raw.js](../../../node_modules/@fluentui/react-message-bar/lib/components/MessageBar/useMessageBarStyles.styles.raw.js).
  * The current headless 0.3.2 facade delegates behavior to this same installed version.

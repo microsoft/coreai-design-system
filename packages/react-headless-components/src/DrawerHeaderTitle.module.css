@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-drawer 9.13.5:
  * [useDrawerHeaderTitleStyles.styles.raw.js](../../../node_modules/@fluentui/react-drawer/lib/components/DrawerHeaderTitle/useDrawerHeaderTitleStyles.styles.raw.js).
  * Actual delegated foundation: @fluentui/react-dialog 9.18.6,

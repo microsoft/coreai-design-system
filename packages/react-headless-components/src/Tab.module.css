@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-tabs 9.12.6, useTabStyles.styles.ts and
  * useTabAnimatedIndicator.styles.ts (CSS only; no private animation/registration hook).
  * Local sources: [useTabStyles.styles.raw.js](../../../node_modules/@fluentui/react-tabs/lib/components/Tab/useTabStyles.styles.raw.js)

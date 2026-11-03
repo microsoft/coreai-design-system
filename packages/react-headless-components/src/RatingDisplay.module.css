@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-rating 9.4.7, useRatingDisplayStyles.styles.ts.
  * Local source: [useRatingDisplayStyles.styles.raw.js](../../../node_modules/@fluentui/react-rating/lib/components/RatingDisplay/useRatingDisplayStyles.styles.raw.js).
  * Root flex/wrap foundation reuses [Rating.module.css](./Rating.module.css), sourced from

@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * CoreAI source: [Select.ts](../../react-components/src/components/Select.ts) defaults appearance to filled-darker.
  * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts) registers no Select style override.
  * Fluent baseline: @fluentui/react-select 9.5.7,

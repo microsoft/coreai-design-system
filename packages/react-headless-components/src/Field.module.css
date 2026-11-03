@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-field 9.5.6, useFieldStyles.styles.ts.
  * Local source: [useFieldStyles.styles.raw.js](../../../node_modules/@fluentui/react-field/lib/components/Field/useFieldStyles.styles.raw.js).
  * Inherited Label source: @fluentui/react-label 9.4.6,

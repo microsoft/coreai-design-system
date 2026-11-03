@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
+
 // @fluentui/react-menu 9.25.8 useMenuItem.js default chevrons, with style-free icons 2.0.343.
 // Visibility source: [useMenuItemStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuItem/useMenuItemStyles.styles.raw.js).
 

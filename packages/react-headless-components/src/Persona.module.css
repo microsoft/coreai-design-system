@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-persona 9.7.11 at reference 53ebde2.
  * Local source: [usePersonaStyles.styles.raw.js](../../../node_modules/@fluentui/react-persona/lib/components/Persona/usePersonaStyles.styles.raw.js).
  * Source: https://unpkg.com/@fluentui/react-persona@9.7.11/lib/components/Persona/usePersonaStyles.styles.raw.js

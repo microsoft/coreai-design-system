@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported directly from @fluentui/react-image 9.4.6, useImageStyles.styles.raw.js.
  * Local source: [useImageStyles.styles.raw.js](../../../node_modules/@fluentui/react-image/lib/components/Image/useImageStyles.styles.raw.js).
  * Source: https://unpkg.com/@fluentui/react-image@9.4.6/lib/components/Image/useImageStyles.styles.raw.js

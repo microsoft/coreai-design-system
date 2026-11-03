@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported directly from @fluentui/react-badge 9.5.7.
  * Local source: [usePresenceBadgeStyles.styles.raw.js](../../../node_modules/@fluentui/react-badge/lib/components/PresenceBadge/usePresenceBadgeStyles.styles.raw.js).
  * Source: https://unpkg.com/@fluentui/react-badge@9.5.7/lib/components/PresenceBadge/usePresenceBadgeStyles.styles.raw.js

@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Fluent baseline: @fluentui/react-tags 9.9.8,
  * [useInteractionTagSecondaryStyles.styles.raw.js](../../../node_modules/@fluentui/react-tags/lib/components/InteractionTagSecondary/useInteractionTagSecondaryStyles.styles.raw.js).
  * Actual CoreAI source: [Tag.styles.ts](../../react-components/src/components/Tag.styles.ts).

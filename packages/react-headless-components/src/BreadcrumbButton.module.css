@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-breadcrumb 9.4.8, useBreadcrumbButtonStyles.styles.raw.js.
  * Local source: [useBreadcrumbButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-breadcrumb/lib/components/BreadcrumbButton/useBreadcrumbButtonStyles.styles.raw.js).
  * Inherited baseline: @fluentui/react-button 9.11.1,

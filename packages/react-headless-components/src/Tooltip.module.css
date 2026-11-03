@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-tooltip 9.10.8, useTooltipStyles.styles.ts.
  * Local source: [useTooltipStyles.styles.raw.js](../../../node_modules/@fluentui/react-tooltip/lib/components/Tooltip/useTooltipStyles.styles.raw.js).
  * Arrow height: [constants.js](../../../node_modules/@fluentui/react-tooltip/lib/components/Tooltip/private/constants.js).

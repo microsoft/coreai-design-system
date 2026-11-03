@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-toolbar 9.8.7, reference b8337ab.
  * Local source: [useToolbarStyles.styles.raw.js](../../../node_modules/@fluentui/react-toolbar/lib/components/Toolbar/useToolbarStyles.styles.raw.js).
  * CoreAI has no Toolbar wrapper/defaults or style hook:

@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * CoreAI sources: [index.ts](../../react-components/src/index.ts) re-exports Fluent Accordion;
  * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts) registers no Accordion root override.
  * Fluent baseline: @fluentui/react-accordion 9.12.5,

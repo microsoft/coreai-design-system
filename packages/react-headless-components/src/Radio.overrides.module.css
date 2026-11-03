@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Fluent baseline: @fluentui/react-radio 9.6.7
  * [useRadioStyles.styles.raw.js](../../../node_modules/@fluentui/react-radio/lib/components/Radio/useRadioStyles.styles.raw.js).
  * CoreAI sources: [index.ts](../../react-components/src/index.ts) re-exports Fluent Radio;

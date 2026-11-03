@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * CoreAI sources: [index.ts](../../react-components/src/index.ts) re-exports Fluent Spinner;
  * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts) registers no Spinner override.
  * Fluent baseline: @fluentui/react-spinner 9.8.7, [useSpinnerStyles.styles.raw.js](../../../node_modules/@fluentui/react-spinner/lib/components/Spinner/useSpinnerStyles.styles.raw.js).

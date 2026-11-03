@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-tabs 9.12.6, useTabListStyles.styles.ts.
  * Local source: [useTabListStyles.styles.raw.js](../../../node_modules/@fluentui/react-tabs/lib/components/TabList/useTabListStyles.styles.raw.js).
  * Headless behavior: @fluentui/react-headless-components-preview 0.3.2 /tab-list.

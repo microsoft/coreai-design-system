@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * CoreAI sources: [index.ts](../../react-components/src/index.ts) re-exports Fluent Label;
  * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts) registers no Label override.
  * Fluent baseline: [useLabelStyles.styles.raw.js](../../../node_modules/@fluentui/react-label/lib/components/Label/useLabelStyles.styles.raw.js).

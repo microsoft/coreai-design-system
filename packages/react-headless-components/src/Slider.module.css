@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-slider 9.6.8, useSliderStyles.styles.ts.
  * Local source: [useSliderStyles.styles.raw.js](../../../node_modules/@fluentui/react-slider/lib/components/Slider/useSliderStyles.styles.raw.js).
  * Focus dependency: [createFocusOutlineStyle.js](../../../node_modules/@fluentui/react-tabster/lib/focus/createFocusOutlineStyle.js).

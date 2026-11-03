@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-menu 9.25.8, useMenuItemSwitchStyles.styles.ts.
  * Local source: [useMenuItemSwitchStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuItemSwitch/useMenuItemSwitchStyles.styles.raw.js).
  * Inherited foundation: [useMenuItemStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuItem/useMenuItemStyles.styles.raw.js),

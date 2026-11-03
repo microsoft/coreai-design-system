@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * CoreAI source: [Overlay.styles.ts](../../react-components/src/components/Overlay.styles.ts),
  * reference commit ebb5a9e. The defaults-gated surface border is the only Menu override.
  * Fluent baseline: @fluentui/react-menu 9.25.8,

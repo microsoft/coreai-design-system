@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-skeleton 9.7.7, useSkeletonItemStyles.styles.ts.
  * Local source: [useSkeletonItemStyles.styles.raw.js](../../../node_modules/@fluentui/react-skeleton/lib/components/SkeletonItem/useSkeletonItemStyles.styles.raw.js).
  * CoreAI has no SkeletonItem defaults or style overrides.

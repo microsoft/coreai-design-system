@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported directly from @fluentui/react-input 9.8.8, useInputStyles.styles.raw.js.
  * Local source: [useInputStyles.styles.raw.js](../../../node_modules/@fluentui/react-input/lib/components/Input/useInputStyles.styles.raw.js).
  * Source: https://unpkg.com/@fluentui/react-input@9.8.8/lib/components/Input/useInputStyles.styles.raw.js

@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-card 9.7.4, useCardHeaderStyles.styles.ts.
  * Local source: [useCardHeaderStyles.styles.raw.js](../../../node_modules/@fluentui/react-card/lib/components/CardHeader/useCardHeaderStyles.styles.raw.js).
  * CoreAI re-exports CardHeader without additional defaults or style overrides at reference commit 53ebde2.

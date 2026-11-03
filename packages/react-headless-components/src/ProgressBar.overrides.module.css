@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * CoreAI sources: [index.ts](../../react-components/src/index.ts) re-exports Fluent ProgressBar;
  * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts) registers no ProgressBar override.
  * Fluent baseline: @fluentui/react-progress 9.5.7, [useProgressBarStyles.styles.raw.js](../../../node_modules/@fluentui/react-progress/lib/components/ProgressBar/useProgressBarStyles.styles.raw.js).

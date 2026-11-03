@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-infolabel 9.4.27, useInfoLabelStyles.styles.ts.
  * Local source: [useInfoLabelStyles.styles.raw.js](../../../node_modules/@fluentui/react-infolabel/lib/components/InfoLabel/useInfoLabelStyles.styles.raw.js).
  * Inherited Label: @fluentui/react-label 9.4.6,

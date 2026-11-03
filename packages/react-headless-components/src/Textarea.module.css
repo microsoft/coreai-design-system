@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported directly from @fluentui/react-textarea 9.7.8:
  * Local source: [useTextareaStyles.styles.raw.js](../../../node_modules/@fluentui/react-textarea/lib/components/Textarea/useTextareaStyles.styles.raw.js).
  * https://unpkg.com/@fluentui/react-textarea@9.7.8/lib/components/Textarea/useTextareaStyles.styles.raw.js

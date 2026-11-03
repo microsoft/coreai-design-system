@@ -1,5 +1,9 @@
-/* Copyright (c) Microsoft Corporation.
+/*
+ * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT license.
+ */
+
+/*
  * Ported from @fluentui/react-swatch-picker 9.6.3, useColorSwatchStyles.styles.ts.
  * Local source: [useColorSwatchStyles.styles.raw.js](../../../node_modules/@fluentui/react-swatch-picker/lib/components/ColorSwatch/useColorSwatchStyles.styles.raw.js).
  * Native :focus-visible replaces legacy Tabster focus attributes.
