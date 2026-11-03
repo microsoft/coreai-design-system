@@ -654,6 +654,63 @@
   color: var(--colorNeutralForeground2);
 }
 
+:is(
+    .reference-page-introduction:has([data-page-widget='typography']),
+    .reference-page-introduction:has([data-page-widget='colors'])
+  )
+  .standalone-guidance {
+  line-height: 1.6;
+}
+
+:is(
+    .reference-page-introduction:has([data-page-widget='typography']),
+    .reference-page-introduction:has([data-page-widget='colors'])
+  )
+  .standalone-guidance
+  > .guidance-section
+  > h2 {
+  margin-block: 32px 0.83em;
+  line-height: 1.6;
+}
+
+:is(
+    .reference-page-introduction:has([data-page-widget='typography']),
+    .reference-page-introduction:has([data-page-widget='colors'])
+  )
+  .standalone-guidance
+  > .guidance-section:first-child
+  > h2 {
+  margin-block-start: 24px;
+}
+
+:is(
+    .reference-page-introduction:has([data-page-widget='typography']),
+    .reference-page-introduction:has([data-page-widget='colors'])
+  )
+  .standalone-guidance
+  > .guidance-section
+  > p {
+  margin-block: 1em;
+}
+
+:is(
+    .reference-page-introduction:has([data-page-widget='typography']),
+    .reference-page-introduction:has([data-page-widget='colors'])
+  )
+  .reference-token-stack
+  :is(.stack-row__main, .stack-row__meta)
+  > .fui-Text,
+:is(
+    .reference-page-introduction:has([data-page-widget='typography']),
+    .reference-page-introduction:has([data-page-widget='colors'])
+  )
+  .reference-token-stack
+  .stack-row__hex,
+.reference-page-introduction:has([data-page-widget='typography']) .type-table__usage,
+.reference-page-introduction:has([data-page-widget='typography']) .font-card {
+  line-height: 1.6;
+}
+
 .reference-color-view {
   display: flex;
   flex-direction: column;
