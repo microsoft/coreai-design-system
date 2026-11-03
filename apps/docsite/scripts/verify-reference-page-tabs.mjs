@@ -192,6 +192,29 @@ try {
     assert.ok(!(await usage.isVisible()));
     assert.equal(page.url(), url.href, 'Tab selection does not create another page');
     assert.equal(
+      await samples.locator(':scope > .reference-sample-section').count(),
+      0,
+      `${record.id}: Samples sections are consolidated into compact groups`,
+    );
+    const sampleGroups = await samples.locator('.reference-sample-group').evaluateAll((groups) =>
+      groups.map((group) => ({
+        options: group.querySelectorAll('.reference-sample-section').length,
+        visible: [...group.querySelectorAll('.reference-sample-section')].filter(
+          (section) => !section.hidden,
+        ).length,
+        menus: group.querySelectorAll('.reference-sample-menu__trigger').length,
+      })),
+    );
+    assert.ok(sampleGroups.length > 0 && sampleGroups.length <= 2);
+    for (const group of sampleGroups) {
+      assert.equal(group.visible, 1, `${record.id}: each Samples group shows one option`);
+      assert.equal(
+        group.menus,
+        group.options > 1 ? 1 : 0,
+        `${record.id}: Samples groups use a menu only when needed`,
+      );
+    }
+    assert.equal(
       await samples.locator('.reference-page-code-block').count(),
       parity.original.length,
       `${record.id}: every source uses the shared CodeBlock`,
@@ -199,7 +222,7 @@ try {
     assert.equal(
       await samples
         .locator('.reference-page-code-block')
-        .getByRole('button', { name: 'Copy code', exact: true })
+        .locator('button[aria-label="Copy code"]')
         .count(),
       parity.original.length,
       `${record.id}: every CodeBlock has a copy action`,
@@ -323,6 +346,10 @@ try {
     await page.locator('[data-page-panel="samples"]').isVisible(),
     'A source deep link opens Samples',
   );
+  assert.ok(
+    await page.locator('[id="source-components-button-button--default"]').isVisible(),
+    'A source deep link reveals its selected sample',
+  );
   await page
     .locator('[id="source-components-button-button--default"]')
     .getByRole('button', { name: 'Copy code', exact: true })
@@ -386,6 +413,18 @@ try {
     alternateAccordion.id,
   );
   assert.equal(await page.locator('[data-basic-example] [data-preview-error]').count(), 0);
+  await page.locator('.reference-page-tabs').getByRole('tab', { name: 'Samples' }).click();
+  const accordionSampleMenu = page
+    .locator('[data-page-panel="samples"]')
+    .getByRole('button', { name: `Choose ${accordion.title} sample`, exact: true });
+  assert.equal((await accordionSampleMenu.innerText()).trim(), alternateAccordion.name);
+  const accordionReferenceMenu = page
+    .locator('[data-page-panel="samples"]')
+    .getByRole('button', { name: 'Choose reference code', exact: true });
+  await accordionReferenceMenu.click();
+  await page.getByRole('menuitemradio', { name: 'AccordionHeader API', exact: true }).click();
+  assert.equal((await accordionReferenceMenu.innerText()).trim(), 'AccordionHeader API');
+  await page.locator('.reference-page-tabs').getByRole('tab', { name: 'Usage' }).click();
   const accordionFigma = accordion.resources.find((resource) =>
     new URL(resource.href ?? resource.url, root).hostname.endsWith('figma.com'),
   );
@@ -396,6 +435,11 @@ try {
   await page.goto(new URL('components/dropdown/', root).href);
   await page.locator('[data-reference-ready="true"]').waitFor();
   await page.locator('.reference-page-tabs').getByRole('tab', { name: 'Samples' }).click();
+  const dropdownSampleMenu = page
+    .locator('[data-page-panel="samples"]')
+    .getByRole('button', { name: 'Choose Dropdown sample', exact: true });
+  await dropdownSampleMenu.click();
+  await page.getByRole('menuitemradio', { name: 'Inline Label', exact: true }).click();
   const dropdown = page
     .locator('[data-example-id="components-dropdown--inline-label"]')
     .getByRole('combobox')

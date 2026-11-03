@@ -25,7 +25,7 @@ import {
   type PagePresentation,
 } from './PagePresentation';
 import type { PageWidgetProps } from './FoundationViews';
-import { PageTabs, preparePageTabs, type PageTabTargets } from './page-tabs';
+import { PageTabs, preparePageTabs, type PageTab, type PageTabTargets } from './page-tabs';
 
 const standaloneViewNames = new Set([
   'resources',
@@ -225,7 +225,7 @@ export function PageContent({
     setViews({});
     setPresentation({ model, header, resources });
     setPageTabs(tabs);
-    setSelectedShowcase(tabs?.showcase?.defaultId);
+    setSelectedShowcase(tabs?.showcase?.defaultId ?? tabs?.sampleGroups.examples?.defaultId);
     const components = [
       ...new Set(containers.map((container) => container.dataset.exampleId?.split('--')[0])),
     ];
@@ -280,6 +280,24 @@ export function PageContent({
     if (!pageTabs?.showcase || !selectedShowcase) return;
     pageTabs.showcase.preview.dataset.showcaseExample = selectedShowcase;
   }, [pageTabs, selectedShowcase]);
+  const selectSampleExample = React.useCallback(
+    (id: string) => {
+      setSelectedShowcase(id);
+      if (activeExample) setActiveExample(id);
+    },
+    [activeExample],
+  );
+  const handlePageTabChange = React.useCallback(
+    (tab: PageTab) => {
+      if (!activeExample) return;
+      setActiveExample(
+        tab === 'usage'
+          ? (pageTabs?.showcase?.defaultId ?? activeExample)
+          : (selectedShowcase ?? pageTabs?.sampleGroups.examples?.defaultId ?? activeExample),
+      );
+    },
+    [activeExample, pageTabs, selectedShowcase],
+  );
   return (
     <div
       aria-busy={page.status === 'loading' || loading}
@@ -307,7 +325,14 @@ export function PageContent({
         : null}
       {presentation && pageTabs
         ? createPortal(
-            <PageTabs key={pageTabs.prefix} targets={pageTabs} title={presentation.model.title} />,
+            <PageTabs
+              key={pageTabs.prefix}
+              targets={pageTabs}
+              title={presentation.model.title}
+              selectedExample={selectedShowcase}
+              onSelectExample={selectSampleExample}
+              onTabChange={handlePageTabChange}
+            />,
             pageTabs.host,
           )
         : null}

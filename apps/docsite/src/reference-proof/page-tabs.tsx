@@ -3,10 +3,32 @@
 
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { CodeBlock, Tab, TabList } from '@coreai-ds/react-components';
+import {
+  CodeBlock,
+  Menu,
+  MenuButton,
+  MenuItemRadio,
+  MenuList,
+  MenuPopover,
+  MenuTrigger,
+  Tab,
+  TabList,
+} from '@coreai-ds/react-components';
 import './page-tabs.css';
 
-type PageTab = 'usage' | 'samples';
+export type PageTab = 'usage' | 'samples';
+
+interface SampleOption {
+  id: string;
+  label: string;
+  section: HTMLElement;
+}
+
+interface SampleGroup {
+  host: HTMLElement;
+  defaultId: string;
+  options: SampleOption[];
+}
 
 export interface PageTabTargets {
   host: HTMLElement;
@@ -27,6 +49,10 @@ export interface PageTabTargets {
     code: string;
     language: string;
   }[];
+  sampleGroups: {
+    examples?: SampleGroup;
+    references?: SampleGroup;
+  };
 }
 
 function sampleHeading(heading: HTMLElement, preserveIds = false) {
@@ -119,11 +145,17 @@ function extractSamples(
   source: HTMLElement,
   samples: HTMLElement,
   codeBlocks: PageTabTargets['codeBlocks'],
+  sampleOptions: {
+    examples: SampleOption[];
+    references: SampleOption[];
+  },
   {
+    exampleId,
     movePreviews = false,
     preserveHeadingIds = false,
     removeSources = false,
   }: {
+    exampleId?: string;
     movePreviews?: boolean;
     preserveHeadingIds?: boolean;
     removeSources?: boolean;
@@ -157,6 +189,16 @@ function extractSamples(
       if (download) group.append(download);
       samples.append(group);
       groups.set(context, group);
+      const options = exampleId ? sampleOptions.examples : sampleOptions.references;
+      const baseId = exampleId ?? `reference-code-${options.length + 1}`;
+      const id = options.some((option) => option.id === baseId)
+        ? `${baseId}-${options.length + 1}`
+        : baseId;
+      options.push({
+        id,
+        label: heading?.textContent?.trim() || `Code ${options.length + 1}`,
+        section: group,
+      });
     }
     const code = pre.querySelector<HTMLElement>('code') ?? pre;
     const downloadSource = sourceLink(pre, section);
@@ -178,6 +220,46 @@ function extractSamples(
     }
   }
   return sourceBlocks.length;
+}
+
+function sampleGroup(
+  samples: HTMLElement,
+  options: SampleOption[],
+  kind: 'examples' | 'references',
+) {
+  if (!options.length) return undefined;
+  const group = document.createElement('section');
+  group.className = `reference-sample-group reference-sample-group--${kind}`;
+  const host = document.createElement('div');
+  host.className = 'reference-sample-toolbar-host';
+  const content = document.createElement('div');
+  content.className = 'reference-sample-group__content';
+  for (const option of options) {
+    option.section.dataset.sampleOption = option.id;
+    option.section.setAttribute('aria-label', option.label);
+    const heading = option.section.querySelector<HTMLElement>(
+      ':scope > h1,:scope > h2,:scope > h3,:scope > h4,:scope > h5,:scope > h6',
+    );
+    if (heading) heading.classList.add('sr-only');
+    content.append(option.section);
+  }
+  group.append(host, content);
+  samples.append(group);
+  return { host, defaultId: options[0].id, options };
+}
+
+function consolidateSamples(
+  samples: HTMLElement,
+  options: {
+    examples: SampleOption[];
+    references: SampleOption[];
+  },
+) {
+  samples.replaceChildren();
+  return {
+    examples: sampleGroup(samples, options.examples, 'examples'),
+    references: sampleGroup(samples, options.references, 'references'),
+  };
 }
 
 export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
@@ -216,6 +298,10 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
   const usage = document.createElement('div');
   const samples = document.createElement('div');
   const codeBlocks: PageTabTargets['codeBlocks'] = [];
+  const sampleOptions: {
+    examples: SampleOption[];
+    references: SampleOption[];
+  } = { examples: [], references: [] };
   const prefix = `${header.dataset.headingId}-content`;
   for (const [name, panel] of [
     ['usage', usage],
@@ -235,33 +321,38 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
   }
   const source = basic?.querySelector<HTMLDetailsElement>('.reference-basic-source');
   if (source && basic) {
-    extractSamples(basic, samples, codeBlocks, { removeSources: true });
+    extractSamples(basic, samples, codeBlocks, sampleOptions, {
+      exampleId: basic.querySelector<HTMLElement>('.preview[data-example-id]')?.dataset.exampleId,
+      removeSources: true,
+    });
     for (const paragraph of basic.querySelectorAll(':scope > p')) {
       if (paragraph.textContent?.startsWith('Source: ')) paragraph.remove();
     }
   }
   const api = usage.querySelector<HTMLElement>('.reference-api');
   if (api) {
-    extractSamples(api, samples, codeBlocks);
+    extractSamples(api, samples, codeBlocks, sampleOptions);
     api.remove();
   }
   const markdown = usage.querySelector<HTMLElement>('.component-markdown, .standalone-guidance');
   if (markdown) {
     const sampleContent = document.createElement('article');
     sampleContent.className = 'standalone-guidance';
-    extractSamples(markdown, sampleContent, codeBlocks, { removeSources: true });
+    extractSamples(markdown, sampleContent, codeBlocks, sampleOptions, { removeSources: true });
     if (sampleContent.childElementCount) samples.append(sampleContent);
   }
   for (const child of [...root.children]) {
     if (child === introduction || child.matches('.reference-footer, [data-single-preview]'))
       continue;
-    extractSamples(child as HTMLElement, samples, codeBlocks, {
+    extractSamples(child as HTMLElement, samples, codeBlocks, sampleOptions, {
+      exampleId: child.querySelector<HTMLElement>('.preview[data-example-id]')?.dataset.exampleId,
       movePreviews: true,
       preserveHeadingIds: true,
     });
     child.remove();
   }
   removeEmptyGuidanceSections(usage);
+  const sampleGroups = consolidateSamples(samples, sampleOptions);
   if (!samples.childElementCount) {
     introduction.append(...usage.children);
     return null;
@@ -287,7 +378,7 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
     }
   }
   introduction.append(host, usage, samples);
-  return { host, usage, samples, prefix, showcase, codeBlocks };
+  return { host, usage, samples, prefix, showcase, codeBlocks, sampleGroups };
 }
 
 function hashTarget(hash = window.location.hash): HTMLElement | null {
@@ -315,14 +406,115 @@ function storedPageTab(targets: PageTabTargets): PageTab | undefined {
   }
 }
 
-export function PageTabs({ targets, title }: { targets: PageTabTargets; title: string }) {
+function sampleOptionForHash(group: SampleGroup | undefined) {
+  const target = hashTarget();
+  return target ? group?.options.find((option) => option.section.contains(target)) : undefined;
+}
+
+function SampleSelector({
+  group,
+  label,
+  selected,
+  onSelect,
+}: {
+  group: SampleGroup;
+  label: string;
+  selected: string;
+  onSelect: (id: string) => void;
+}) {
+  const selectedOption = group.options.find((option) => option.id === selected) ?? group.options[0];
+  return (
+    <div className="reference-sample-toolbar">
+      {group.options.length > 1 ? (
+        <Menu checkedValues={{ sample: [selectedOption.id] }} positioning={{ autoSize: true }}>
+          <MenuTrigger disableButtonEnhancement>
+            <MenuButton
+              appearance="subtle"
+              size="medium"
+              shape="rounded"
+              aria-label={label}
+              className="reference-sample-menu__trigger"
+            >
+              {selectedOption.label}
+            </MenuButton>
+          </MenuTrigger>
+          <MenuPopover className="reference-showcase-menu__popover">
+            <MenuList>
+              {group.options.map((option) => (
+                <MenuItemRadio
+                  key={option.id}
+                  name="sample"
+                  value={option.id}
+                  onClick={() => onSelect(option.id)}
+                >
+                  {option.label}
+                </MenuItemRadio>
+              ))}
+            </MenuList>
+          </MenuPopover>
+        </Menu>
+      ) : (
+        <span className="reference-showcase-toolbar__label">{selectedOption.label}</span>
+      )}
+    </div>
+  );
+}
+
+export function PageTabs({
+  targets,
+  title,
+  selectedExample,
+  onSelectExample,
+  onTabChange,
+}: {
+  targets: PageTabTargets;
+  title: string;
+  selectedExample?: string;
+  onSelectExample: (id: string) => void;
+  onTabChange?: (tab: PageTab) => void;
+}) {
+  const exampleGroup = targets.sampleGroups.examples;
+  const referenceGroup = targets.sampleGroups.references;
   const [selected, setSelected] = React.useState<PageTab>(
     () => tabForHash(targets) ?? storedPageTab(targets) ?? 'usage',
   );
+  const [selectedSampleExample, setSelectedSampleExample] = React.useState(
+    () =>
+      sampleOptionForHash(exampleGroup)?.id ??
+      (exampleGroup?.options.some((option) => option.id === selectedExample)
+        ? selectedExample
+        : exampleGroup?.defaultId),
+  );
+  const [selectedReference, setSelectedReference] = React.useState(
+    () => sampleOptionForHash(referenceGroup)?.id ?? referenceGroup?.defaultId,
+  );
+  React.useEffect(() => {
+    if (exampleGroup?.options.some((option) => option.id === selectedExample)) {
+      setSelectedSampleExample(selectedExample);
+    }
+  }, [exampleGroup, selectedExample]);
   React.useLayoutEffect(() => {
     targets.usage.hidden = selected !== 'usage';
     targets.samples.hidden = selected !== 'samples';
   }, [selected, targets]);
+  React.useLayoutEffect(() => {
+    for (const option of exampleGroup?.options ?? []) {
+      option.section.hidden = option.id !== selectedSampleExample;
+    }
+    for (const option of referenceGroup?.options ?? []) {
+      option.section.hidden = option.id !== selectedReference;
+    }
+  }, [exampleGroup, referenceGroup, selectedReference, selectedSampleExample]);
+  React.useEffect(() => {
+    onTabChange?.(selected);
+  }, [onTabChange, selected]);
+  React.useLayoutEffect(() => {
+    const example = sampleOptionForHash(exampleGroup);
+    if (example) {
+      setSelectedSampleExample(example.id);
+      onSelectExample(example.id);
+    }
+  }, [exampleGroup, onSelectExample]);
   React.useEffect(() => {
     try {
       sessionStorage.setItem(`coreai-docsite-page-tab:${targets.prefix}`, selected);
@@ -334,6 +526,13 @@ export function PageTabs({ targets, title }: { targets: PageTabTargets; title: s
     const revealHash = () => {
       const tab = tabForHash(targets);
       setSelected(tab ?? storedPageTab(targets) ?? 'usage');
+      const example = sampleOptionForHash(exampleGroup);
+      if (example) {
+        setSelectedSampleExample(example.id);
+        onSelectExample(example.id);
+      }
+      const reference = sampleOptionForHash(referenceGroup);
+      if (reference) setSelectedReference(reference.id);
       if (tab) requestAnimationFrame(() => hashTarget()?.scrollIntoView({ block: 'start' }));
     };
     const revealLink = (event: MouseEvent) => {
@@ -360,7 +559,7 @@ export function PageTabs({ targets, title }: { targets: PageTabTargets; title: s
       window.removeEventListener('popstate', revealHash);
       document.removeEventListener('click', revealLink);
     };
-  }, [targets]);
+  }, [exampleGroup, onSelectExample, referenceGroup, targets]);
   return (
     <>
       <TabList
@@ -380,6 +579,31 @@ export function PageTabs({ targets, title }: { targets: PageTabTargets; title: s
           </Tab>
         ))}
       </TabList>
+      {exampleGroup && selectedSampleExample
+        ? createPortal(
+            <SampleSelector
+              group={exampleGroup}
+              label={`Choose ${title} sample`}
+              selected={selectedSampleExample}
+              onSelect={(id) => {
+                setSelectedSampleExample(id);
+                onSelectExample(id);
+              }}
+            />,
+            exampleGroup.host,
+          )
+        : null}
+      {referenceGroup && selectedReference
+        ? createPortal(
+            <SampleSelector
+              group={referenceGroup}
+              label="Choose reference code"
+              selected={selectedReference}
+              onSelect={setSelectedReference}
+            />,
+            referenceGroup.host,
+          )
+        : null}
       {targets.codeBlocks.map((block, index) =>
         createPortal(
           <CodeBlock
