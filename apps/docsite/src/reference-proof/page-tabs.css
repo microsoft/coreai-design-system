@@ -60,9 +60,13 @@
 .reference-sample-section {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: var(--spacingVerticalS);
   min-width: 0;
   padding: 0;
+}
+
+.reference-sample-group .reference-sample-section {
+  gap: 0;
 }
 
 .reference-sample-section[hidden] {
@@ -105,8 +109,11 @@
   min-width: 0;
 }
 
-.reference-sample-section > .preview,
-.reference-sample-section > .reference-page-code-block-host .reference-page-code-block {
+.reference-sample-group .reference-sample-section > .preview,
+.reference-sample-group
+  .reference-sample-section
+  > .reference-page-code-block-host
+  .reference-page-code-block {
   border-inline: 0;
   border-radius: 0;
 }

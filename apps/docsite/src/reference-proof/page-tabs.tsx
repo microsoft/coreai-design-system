@@ -368,6 +368,11 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
     child.remove();
   }
   removeEmptyGuidanceSections(usage);
+  if (!compactSamples) {
+    samples
+      .querySelectorAll<HTMLAnchorElement>('.reference-sample-download')
+      .forEach((link) => link.remove());
+  }
   const sampleGroups: PageTabTargets['sampleGroups'] = compactSamples
     ? consolidateSamples(samples, sampleOptions)
     : {};

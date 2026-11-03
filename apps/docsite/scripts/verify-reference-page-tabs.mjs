@@ -278,7 +278,7 @@ try {
       await samples
         .locator('.reference-sample-download')
         .evaluateAll((links) => links.map((link) => link.getAttribute('href')).sort()),
-      parity.downloads,
+      expandedFoundationCode ? [] : parity.downloads,
       `${record.id}: source downloads survive`,
     );
     assert.ok(
