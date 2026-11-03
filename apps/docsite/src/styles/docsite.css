@@ -745,7 +745,7 @@ code:not(pre code) {
 }
 
 .app-search-results__header {
-  padding: 4px 4px 12px;
+  padding: 4px 12px 12px;
   color: var(--colorNeutralForeground1);
   font-size: var(--fontSizeBase200);
   font-weight: var(--fontWeightSemibold);
