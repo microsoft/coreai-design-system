@@ -51,6 +51,7 @@ try {
       `${record.id}: showcase menu matches available examples`,
     );
     if (hasShowcaseOptions) {
+      assert.equal(await usage.locator('.reference-showcase-frame').count(), 1);
       const trigger = showcase.getByRole('button', {
         name: `Choose ${record.title} example`,
         exact: true,

@@ -58,11 +58,29 @@
   max-width: 100%;
 }
 
-.reference-basic-example > h2 .reference-showcase-menu__trigger {
+.reference-showcase-frame {
+  overflow: hidden;
+  border: 1px solid var(--colorNeutralStroke2);
+  border-radius: var(--borderRadiusXLarge, 12px);
+  background: var(--colorNeutralBackground1);
+}
+
+.reference-basic-example.reference-showcase-frame > h2 {
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  margin: 0;
+  padding: var(--spacingVerticalM) var(--spacingHorizontalL);
+  border-block-end: 1px solid var(--colorNeutralStroke2);
+}
+
+.reference-showcase-menu__trigger {
   max-width: 100%;
-  font-size: inherit;
-  line-height: inherit;
-  font-weight: inherit;
+}
+
+.reference-basic-example.reference-showcase-frame .preview {
+  border: 0;
+  border-radius: 0;
 }
 
 .reference-showcase-menu__popover {

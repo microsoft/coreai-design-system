@@ -238,6 +238,7 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
     if (heading && preview && defaultId) {
       const showcaseHost = document.createElement('span');
       showcaseHost.className = 'reference-showcase-menu';
+      basic.classList.add('reference-showcase-frame');
       heading.replaceChildren(showcaseHost);
       showcase = {
         host: showcaseHost,

@@ -103,7 +103,8 @@ function ShowcaseMenu({
       <MenuTrigger disableButtonEnhancement>
         <MenuButton
           appearance="secondary"
-          size="large"
+          size="medium"
+          shape="rounded"
           aria-label={`Choose ${title} example`}
           className="reference-showcase-menu__trigger"
         >
