@@ -25,6 +25,7 @@ interface SampleOption {
 }
 
 interface SampleGroup {
+  header: HTMLElement;
   host: HTMLElement;
   defaultId: string;
   options: SampleOption[];
@@ -35,6 +36,10 @@ export interface PageTabTargets {
   usage: HTMLElement;
   samples: HTMLElement;
   prefix: string;
+  tabHome: {
+    parent: HTMLElement;
+    nextSibling: ChildNode | null;
+  };
   showcase?: {
     host: HTMLElement;
     preview: HTMLElement;
@@ -235,6 +240,8 @@ function sampleGroup(
   if (!options.length) return undefined;
   const group = document.createElement('section');
   group.className = `reference-sample-group reference-sample-group--${kind}`;
+  const header = document.createElement('div');
+  header.className = 'reference-sample-header';
   const host = document.createElement('div');
   host.className = 'reference-sample-toolbar-host';
   const content = document.createElement('div');
@@ -248,9 +255,10 @@ function sampleGroup(
     if (heading) heading.classList.add('sr-only');
     content.append(option.section);
   }
-  group.append(host, content);
+  header.append(host);
+  group.append(header, content);
   samples.append(group);
-  return { host, defaultId: options[0].id, options };
+  return { header, host, defaultId: options[0].id, options };
 }
 
 function consolidateSamples(
@@ -373,7 +381,7 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
       const showcaseHost = document.createElement('span');
       showcaseHost.className = 'reference-showcase-toolbar-host';
       basic.classList.add('reference-showcase-frame');
-      heading.replaceChildren(showcaseHost);
+      heading.replaceChildren(host, showcaseHost);
       showcase = {
         host: showcaseHost,
         preview,
@@ -386,8 +394,13 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
       };
     }
   }
-  introduction.append(host, usage, samples);
-  return { host, usage, samples, prefix, showcase, codeBlocks, sampleGroups };
+  if (!host.parentElement) introduction.append(host);
+  introduction.append(usage, samples);
+  const tabHome = {
+    parent: host.parentElement ?? introduction,
+    nextSibling: host.nextSibling,
+  };
+  return { host, usage, samples, prefix, tabHome, showcase, codeBlocks, sampleGroups };
 }
 
 function hashTarget(hash = window.location.hash): HTMLElement | null {
@@ -507,6 +520,22 @@ export function PageTabs({
     targets.samples.hidden = selected !== 'samples';
   }, [selected, targets]);
   React.useLayoutEffect(() => {
+    const focusedElement =
+      targets.host.contains(document.activeElement) && document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+    const codeHeader = (exampleGroup ?? referenceGroup)?.header;
+    if (selected === 'samples' && codeHeader) {
+      codeHeader.insertBefore(targets.host, codeHeader.firstChild);
+      focusedElement?.focus({ preventScroll: true });
+      return;
+    }
+    const { parent, nextSibling } = targets.tabHome;
+    if (nextSibling?.parentNode === parent) parent.insertBefore(targets.host, nextSibling);
+    else parent.append(targets.host);
+    focusedElement?.focus({ preventScroll: true });
+  }, [exampleGroup, referenceGroup, selected, targets]);
+  React.useLayoutEffect(() => {
     const showcase = targets.showcase;
     if (!showcase || !exampleGroup) return;
     const defaultSection = exampleGroup.options.find(
@@ -599,7 +628,7 @@ export function PageTabs({
             id={`${targets.prefix}-${value}-tab`}
             aria-controls={`${targets.prefix}-${value}-panel`}
           >
-            {value === 'usage' ? 'Usage' : 'Samples'}
+            {value === 'usage' ? 'Usage' : 'Code'}
           </Tab>
         ))}
       </TabList>

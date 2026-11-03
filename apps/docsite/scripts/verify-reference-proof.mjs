@@ -602,7 +602,7 @@ try {
         if (panel)
           await page
             .locator('.reference-page-tabs')
-            .getByRole('tab', { name: panel === 'usage' ? 'Usage' : 'Samples', exact: true })
+            .getByRole('tab', { name: panel === 'usage' ? 'Usage' : 'Code', exact: true })
             .click();
         const run = container.getByRole('button', { name: 'Run this example', exact: true });
         if (await run.count()) await run.click();
@@ -805,7 +805,7 @@ try {
     await page.evaluate(() => navigator.clipboard.readText()),
     'colorNeutralBackground1',
   );
-  await colorTabs.getByRole('tab', { name: 'Samples', exact: true }).click();
+  await colorTabs.getByRole('tab', { name: 'Code', exact: true }).click();
   assert.ok(await page.locator('[data-page-panel="samples"]').isVisible());
   assert.equal(
     await page
@@ -875,7 +875,7 @@ try {
     typeSizes[0] > typeSizes[1] && typeSizes[1] > typeSizes[4],
     'Type samples use real text presets',
   );
-  await typographyTabs.getByRole('tab', { name: 'Samples', exact: true }).click();
+  await typographyTabs.getByRole('tab', { name: 'Code', exact: true }).click();
   assert.ok(await page.locator('[data-page-panel="samples"]').isVisible());
   assert.equal(
     await page
@@ -944,7 +944,7 @@ try {
   assert.match(buttonApi, /shape\?:/);
   await page
     .locator('.reference-page-tabs')
-    .getByRole('tab', { name: 'Samples', exact: true })
+    .getByRole('tab', { name: 'Code', exact: true })
     .click();
   await page
     .locator('[id="source-components-button-button--default"]')
@@ -963,7 +963,7 @@ try {
   await page.goto(`${root}components/dropdown/`);
   await page
     .locator('.reference-page-tabs')
-    .getByRole('tab', { name: 'Samples', exact: true })
+    .getByRole('tab', { name: 'Code', exact: true })
     .click();
   const inlineLabel = page.locator('[data-example-id="components-dropdown--inline-label"]');
   const dropdown = inlineLabel.getByRole('combobox').first();
@@ -1019,7 +1019,7 @@ try {
       .setAttribute('data-sidebar-sentinel', 'persistent');
     return globalThis.performance.timeOrigin;
   });
-  await page.locator('#main').getByRole('tab', { name: 'Samples', exact: true }).click();
+  await page.locator('#main').getByRole('tab', { name: 'Code', exact: true }).click();
   await page
     .locator('#main')
     .getByRole('link', { name: 'Setup and dependencies', exact: true })
@@ -1263,7 +1263,7 @@ try {
   await page.goto(`${root}components/tree/`);
   await page
     .locator('.reference-page-tabs')
-    .getByRole('tab', { name: 'Samples', exact: true })
+    .getByRole('tab', { name: 'Code', exact: true })
     .click();
   const lazyTree = page.locator('[data-example-id="components-tree--lazy-loading"]');
   await lazyTree.getByRole('treeitem', { name: 'People', exact: true }).click();
@@ -1272,7 +1272,7 @@ try {
   await page.goto(`${root}components/codeblock/`);
   await page
     .locator('.reference-page-tabs')
-    .getByRole('tab', { name: 'Samples', exact: true })
+    .getByRole('tab', { name: 'Code', exact: true })
     .click();
   await page
     .locator('[data-example-id="components-codeblock--header"]')
@@ -1472,7 +1472,7 @@ try {
     .getByRole('heading', { level: 1, name: 'Build with your agent', exact: true })
     .waitFor();
   await page.locator('[data-reference-ready="true"]').waitFor();
-  await page.locator('#main').getByRole('tab', { name: 'Samples', exact: true }).click();
+  await page.locator('#main').getByRole('tab', { name: 'Code', exact: true }).click();
   assert.ok(
     (
       await page
