@@ -39,10 +39,13 @@ this site's Markdown endpoints with ordinary HTTPS.
 <!-- view:resources -->
 
 - [GitHub repository](https://github.com/microsoft/coreai-design-system):
-  Browse the source, pull requests, and GitHub Actions.
+  Browse the source, pull requests,
+  and GitHub Actions.
 - [Issues and support](https://github.com/microsoft/coreai-design-system/issues):
-  Ask usage questions and review bugs or feature requests.
+  Ask usage questions and review
+  bugs or feature requests.
 - [Open an issue](https://github.com/microsoft/coreai-design-system/issues/new):
-  Report a bug or request a feature.
+  Report a bug or
+  request a feature.
 
 <!-- /view:resources -->

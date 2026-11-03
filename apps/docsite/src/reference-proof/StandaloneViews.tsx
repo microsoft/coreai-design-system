@@ -540,8 +540,8 @@ function measureChangelogRails(list: HTMLDivElement): ChangelogRail[] {
 
 const changelogLinkDescriptions: Partial<Record<string, string>> = {
   'Full history': 'Complete package release history.',
-  'Keep a Changelog': 'The format used for these release notes.',
-  'Semantic Versioning': 'The versioning rules this package follows.',
+  'Keep a Changelog': 'Release note format.',
+  'Semantic Versioning': 'Package versioning rules.',
 };
 
 function ChangelogView({ sourceHtml }: PageWidgetProps) {

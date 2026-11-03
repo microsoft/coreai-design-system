@@ -364,6 +364,10 @@
   margin: 0;
 }
 
+.reference-resources-view .resource-card p {
+  white-space: pre-line;
+}
+
 .reference-shell .resource-card__title {
   display: flex;
   align-items: center;
