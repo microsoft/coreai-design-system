@@ -617,6 +617,7 @@ export function PageTabs({
     <>
       <TabList
         appearance="elevated"
+        size="small"
         aria-label={`${title} content`}
         selectedValue={selected}
         onTabSelect={(_, data) => setSelected(data.value as PageTab)}
