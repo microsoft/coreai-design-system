@@ -24,7 +24,7 @@ reference:
   aliases: [/static-progress-bar/]
 ---
 
-### Best practices
+## Best practices
 
 ### Do
 

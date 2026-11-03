@@ -22,7 +22,7 @@ reference:
     preview spacing instead.
 ---
 
-### Best practices
+## Best practices
 
 ### Do
 

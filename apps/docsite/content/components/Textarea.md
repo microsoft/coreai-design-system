@@ -22,7 +22,7 @@ reference:
   component: components-textarea
 ---
 
-### Best practices
+## Best practices
 
 ### Do
 

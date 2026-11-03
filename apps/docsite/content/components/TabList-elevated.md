@@ -28,7 +28,7 @@ reference:
 
 <!-- example: components-tablist--elevated-appearance -->
 
-### Best practices
+## Best practices
 
 ### Do
 

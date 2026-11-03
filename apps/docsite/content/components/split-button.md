@@ -15,7 +15,7 @@ reference:
   component: components-button-splitbutton
 ---
 
-### Best practices
+## Best practices
 
 ### Do
 

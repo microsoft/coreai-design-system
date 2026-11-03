@@ -21,7 +21,7 @@ reference:
   component: components-carousel-carousel
 ---
 
-### Best practices
+## Best practices
 
 ### Do
 

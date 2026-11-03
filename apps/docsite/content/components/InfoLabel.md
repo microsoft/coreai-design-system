@@ -22,7 +22,7 @@ reference:
   component: components-infolabel
 ---
 
-### Best practices
+## Best practices
 
 ### Do
 

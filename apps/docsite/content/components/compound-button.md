@@ -15,7 +15,7 @@ reference:
   component: components-button-compoundbutton
 ---
 
-### Best practices
+## Best practices
 
 ### Do
 

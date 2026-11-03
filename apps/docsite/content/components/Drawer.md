@@ -22,7 +22,7 @@ reference:
   component: components-drawer
 ---
 
-### Best practices
+## Best practices
 
 ### Do
 

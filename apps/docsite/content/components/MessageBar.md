@@ -23,7 +23,7 @@ reference:
   component: components-messagebar
 ---
 
-### Best practices
+## Best practices
 
 ### Do
 

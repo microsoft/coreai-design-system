@@ -408,17 +408,26 @@ export function standalonePageHtml(page, metadata) {
   const bodyMarkdown = wholePageRendererNames.includes(page.renderer)
     ? `<!-- view:${page.renderer} -->\n\n${parts.body}\n\n<!-- /view:${page.renderer} -->`
     : parts.body;
-  const body = renderGuidance(bodyMarkdown, {
-    sections: true,
-    examples: Object.fromEntries(page.examples.map((example) => [example.id, example])),
-    views: Object.fromEntries([
-      ...standaloneRendererNames.map((name) => [name, true]),
-      ['data-visualization', true],
-      ['color-accessibility', true],
-      ['font-families', true],
-    ]),
-  }).html;
+  const body = lowerBestPracticesHeading(
+    renderGuidance(bodyMarkdown, {
+      sections: true,
+      examples: Object.fromEntries(page.examples.map((example) => [example.id, example])),
+      views: Object.fromEntries([
+        ...standaloneRendererNames.map((name) => [name, true]),
+        ['data-visualization', true],
+        ['color-accessibility', true],
+        ['font-families', true],
+      ]),
+    }).html,
+  );
   return `<div class="reference-page-introduction${page.renderer === 'home' ? ' reference-home-introduction' : ''}${page.layout ? ` reference-page--${page.layout}` : ''}">${pageTemplateHeader(page, metadata, parts)}${pageTemplateResources(page, metadata)}${page.renderer === 'home' ? homeHeroFallback(page, metadata, parts) : `<article class="standalone-guidance">${tokenSwatches(body)}</article>`}</div>`;
+}
+
+function lowerBestPracticesHeading(html) {
+  return html.replace(
+    '<h2 id="guidance-best-practices">Best practices</h2>',
+    '<h3 id="guidance-best-practices">Best practices</h3>',
+  );
 }
 
 export function componentPageGuidanceHtml(page, metadata) {
@@ -429,7 +438,8 @@ export function componentPageGuidanceHtml(page, metadata) {
   const body = unfinished
     ? parts.body.replace(/^## Status\n\nPage under construction\.\n*/, '')
     : parts.body;
-  return `<div class="reference-page-introduction${page.layout ? ` reference-page--${page.layout}` : ''}">${pageTemplateHeader(page, metadata, parts)}${basic ? exampleHtml(basic, metadata.basePath, true) : ''}${pageTemplateResources(page, metadata)}${unfinished ? workInProgressFallback(page, metadata) : ''}<div class="component-markdown">${renderGuidance(body).html}</div>${api ? `<section class="reference-api"><details><summary><strong>API reference</strong><span>Generated CoreAI prop and type summaries</span></summary><div class="reference-api__content">${renderGuidance(api).html}</div></details></section>` : ''}</div>`;
+  const guidanceHtml = lowerBestPracticesHeading(renderGuidance(body).html);
+  return `<div class="reference-page-introduction${page.layout ? ` reference-page--${page.layout}` : ''}">${pageTemplateHeader(page, metadata, parts)}${basic ? exampleHtml(basic, metadata.basePath, true) : ''}${pageTemplateResources(page, metadata)}${unfinished ? workInProgressFallback(page, metadata) : ''}<div class="component-markdown">${guidanceHtml}</div>${api ? `<section class="reference-api"><details><summary><strong>API reference</strong><span>Generated CoreAI prop and type summaries</span></summary><div class="reference-api__content">${renderGuidance(api).html}</div></details></section>` : ''}</div>`;
 }
 
 export function initialThemeStyles(themes, stylesheets) {

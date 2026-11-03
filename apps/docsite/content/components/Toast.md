@@ -19,7 +19,7 @@ reference:
   component: components-toast
 ---
 
-### Best practices
+## Best practices
 
 ### Do
 

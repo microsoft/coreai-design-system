@@ -21,7 +21,7 @@ reference:
   component: components-popover
 ---
 
-### Best practices
+## Best practices
 
 ### Do
 

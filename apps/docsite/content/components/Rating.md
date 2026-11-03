@@ -21,7 +21,7 @@ reference:
   component: components-rating
 ---
 
-### Best practices
+## Best practices
 
 ### Do
 

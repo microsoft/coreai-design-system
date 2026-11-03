@@ -21,7 +21,7 @@ reference:
   component: components-toolbar
 ---
 
-### Best practices
+## Best practices
 
 ### Do
 

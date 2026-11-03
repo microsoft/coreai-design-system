@@ -21,7 +21,7 @@ reference:
   component: components-skeleton
 ---
 
-### Best practices
+## Best practices
 
 ### Do
 

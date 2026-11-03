@@ -54,6 +54,11 @@ try {
         'H3',
         `${record.id}: Best practices is an h3`,
       );
+      assert.equal(
+        await usage.locator('#guidance-best-practices + .do-dont-grid').count(),
+        1,
+        `${record.id}: Best practices keeps the Do/Don’t cards`,
+      );
     }
     const hasShowcase = Boolean(record.defaultExampleId);
     const hasShowcaseOptions = Boolean(record.defaultExampleId) && record.examples.length > 1;

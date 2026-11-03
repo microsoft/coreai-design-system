@@ -25,7 +25,7 @@ reference:
     - /data-grid-content-header/
 ---
 
-### Best practices
+## Best practices
 
 ### Do
 
