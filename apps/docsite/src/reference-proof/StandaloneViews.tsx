@@ -210,6 +210,7 @@ function ResourcesView({ sourceHtml }: PageWidgetProps) {
               const titleId = `${group.id}-${resource.title.toLowerCase().replace(/\W+/g, '-')}`;
               return (
                 <Link
+                  className="resource-card-link"
                   key={resource.href}
                   href={resource.href}
                   target="_blank"
@@ -217,12 +218,13 @@ function ResourcesView({ sourceHtml }: PageWidgetProps) {
                   aria-labelledby={`${titleId}-title`}
                   aria-describedby={`${titleId}-description`}
                 >
-                  <Card focusMode="off">
+                  <Card className="resource-card" focusMode="off">
                     <Text
                       as="h3"
+                      className="resource-card__title"
                       id={`${titleId}-title`}
-                      size={500}
-                      weight="regular"
+                      size={300}
+                      weight="semibold"
                       foreground={1}
                     >
                       {resource.title}{' '}
@@ -231,7 +233,7 @@ function ResourcesView({ sourceHtml }: PageWidgetProps) {
                       </span>
                       <span className="sr-only"> (opens in a new tab)</span>
                     </Text>
-                    <Text as="p" id={`${titleId}-description`} size={300} foreground={2}>
+                    <Text as="p" id={`${titleId}-description`} size={200} foreground={3}>
                       {resource.description}
                     </Text>
                   </Card>
@@ -602,9 +604,9 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
               <Card className="resource-card" focusMode="off">
                 <Text
                   as="h3"
-                  className="changelog-resource__title"
+                  className="resource-card__title"
                   id={`${resourceId}-title`}
-                  size={400}
+                  size={300}
                   weight="semibold"
                   foreground={1}
                 >
@@ -612,7 +614,7 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
                   <ExternalIcon />
                 </Text>
                 {description ? (
-                  <Text as="p" id={`${resourceId}-description`} size={300} foreground={2}>
+                  <Text as="p" id={`${resourceId}-description`} size={200} foreground={3}>
                     {description}
                   </Text>
                 ) : null}

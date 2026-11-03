@@ -350,21 +350,36 @@
   margin-block-start: 16px;
 }
 
-.changelog-resource__title {
+.reference-shell .resources-grid {
+  align-items: start;
+}
+
+.reference-shell .resource-card {
+  height: auto;
+  padding: var(--spacingVerticalM) var(--spacingHorizontalL);
+  gap: var(--spacingVerticalSNudge);
+}
+
+.reference-shell .resources-grid .resource-card p {
+  margin: 0;
+}
+
+.reference-shell .resource-card__title {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
 }
 
-.changelog-resource__title svg {
+.reference-shell .resource-card__title svg {
   flex-shrink: 0;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   color: var(--colorBrandForegroundLink);
 }
 
-.reference-shell .changelog-actions .resource-card-link {
+.reference-shell .resource-card-link,
+.reference-shell .resource-card-link:is(:hover, :focus-visible, :active) {
   text-decoration: none;
 }
 
