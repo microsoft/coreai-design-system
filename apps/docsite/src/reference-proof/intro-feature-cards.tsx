@@ -2,197 +2,209 @@
 // Licensed under the MIT license.
 
 import * as React from 'react';
-import { Badge, Button, Checkbox, Input, Switch, Text } from '@coreai-ds/react-components';
 import {
-  ArrowRight16Regular,
-  ArrowUndo16Regular,
+  Button,
+  Text,
+  coreaiBrandVariants,
+  coreaiDarkTheme,
+  coreaiLightTheme,
+} from '@coreai-ds/react-components';
+import {
+  ArrowDown16Regular,
   Checkmark16Regular,
+  Code16Regular,
   Copy16Regular,
-  Cursor20Filled,
+  Dismiss16Regular,
   DocumentText20Regular,
-  Pause16Regular,
-  Play16Regular,
+  WeatherMoon16Regular,
+  WeatherSunny16Regular,
 } from '@fluentui/react-icons';
 import type { PageWidgetProps } from './FoundationViews';
 import './intro-feature-cards.css';
-
-const kinds = ['components', 'templates', 'samples', 'agents'] as const;
-const beats = [0, 800, 1800, 3400, 4400, 7000, 8000];
-const duration = 9200;
-
-interface SceneProps {
-  beat: number;
-  running: boolean;
-}
 
 function makeInert(element: HTMLDivElement | null) {
   element?.setAttribute('inert', '');
 }
 
-function DemoCursor({ target, pressed }: { target: string; pressed: boolean }) {
-  const cursor = React.useRef<HTMLSpanElement>(null);
-  React.useLayoutEffect(() => {
-    const element = cursor.current;
-    const scene = element?.parentElement;
-    const targetElement = scene?.querySelector<HTMLElement>(`[data-demo-target="${target}"]`);
-    const control = targetElement?.querySelector('input') ?? targetElement;
-    if (!element || !scene || !control) return;
-    function measure() {
-      if (!element || !scene || !control) return;
-      const bounds = scene.getBoundingClientRect();
-      const destination = control.getBoundingClientRect();
-      element.style.left = `${destination.right - bounds.left - 10}px`;
-      element.style.top = `${destination.top - bounds.top + destination.height * 0.65}px`;
-    }
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(scene);
-    observer.observe(control);
-    return () => observer.disconnect();
-  }, [target]);
+function FoundationsScene() {
   return (
-    <span ref={cursor} className="intro-demo-cursor" data-pressed={pressed}>
-      <Cursor20Filled />
-    </span>
-  );
-}
-
-function ComponentsScene({ beat }: SceneProps) {
-  return (
-    <>
-      <div className="intro-component-button">
-        <Button appearance="primary">Continue</Button>
-      </div>
-      <div className="intro-component-checkbox">
-        <Checkbox checked label="Selected" />
-      </div>
-      <div className="intro-component-badge">
-        <Badge appearance="tint" color="brand" size="large">
-          CoreAI
-        </Badge>
-      </div>
-      <div className="intro-component-switch" data-demo-target="switch">
-        <Switch checked={beat >= 2 && beat < 6} label="Enable preview" />
-      </div>
-      <DemoCursor target="switch" pressed={beat === 2 || beat === 6} />
-    </>
-  );
-}
-
-function TemplatesScene({ beat }: SceneProps) {
-  return (
-    <>
-      <div className="intro-template" data-assembled={beat >= 2 && beat < 5}>
-        <div className="intro-template-header">
-          <span>Workspace</span>
-          <Button
-            size="small"
-            appearance="subtle"
-            icon={<Copy16Regular />}
-            aria-label="Copy template"
-            data-demo-target="copy"
-          />
-          <Button
-            size="small"
-            appearance="subtle"
-            icon={<ArrowUndo16Regular />}
-            aria-label="Reset template"
-            data-demo-target="reset"
-          />
-        </div>
-        <div className="intro-template-sidebar">
-          <i />
-          <i />
-          <i />
-        </div>
-        <div className="intro-template-main">
-          <span>Overview</span>
-          <div className="intro-template-blocks">
-            <i />
-            <i />
-          </div>
-          <div className="intro-template-lines">
-            <i />
-            <i />
-            <i />
-          </div>
-        </div>
-      </div>
-      <span className="intro-template-caption">Shell + navigation</span>
-      <DemoCursor target={beat >= 4 ? 'reset' : 'copy'} pressed={beat === 2 || beat === 5} />
-    </>
-  );
-}
-
-function SamplesScene({ beat, running }: SceneProps) {
-  const [name, setName] = React.useState('');
-  React.useEffect(() => {
-    if (beat !== 2) {
-      setName(beat >= 3 && beat < 6 ? 'Prototype' : '');
-      return;
-    }
-    if (!running || name === 'Prototype') return;
-    const timer = window.setTimeout(() => setName('Prototype'.slice(0, name.length + 1)), 100);
-    return () => window.clearTimeout(timer);
-  }, [beat, name, running]);
-  return (
-    <>
-      <div className="intro-sample-form">
-        <div className="intro-sample-heading">
-          <span>New project</span>
-          <Button
-            size="small"
-            appearance="subtle"
-            icon={<ArrowUndo16Regular />}
-            aria-label="Reset form"
-            data-demo-target="reset"
-          />
-        </div>
-        <span className="intro-sample-label">Project name</span>
-        <Input size="small" value={name} placeholder="Enter a name" data-demo-target="name" />
-        <div className="intro-sample-footer">
-          <span className="intro-sample-success" data-visible={beat >= 4 && beat < 6}>
-            <Checkmark16Regular /> Project created
+    <div className="intro-foundation-board">
+      <div
+        className="intro-foundation-type"
+        style={
+          {
+            '--type-light': coreaiLightTheme.colorNeutralBackground1,
+            '--type-dark': coreaiDarkTheme.colorNeutralBackground1,
+            '--ink-light': coreaiLightTheme.colorNeutralForeground1,
+            '--ink-dark': coreaiDarkTheme.colorNeutralForeground1,
+          } as React.CSSProperties
+        }
+      >
+        <span className="intro-art-label">Typography</span>
+        <span className="intro-foundation-aa">Aa</span>
+        <span className="intro-foundation-type-footer">
+          Heading / Body
+          <span className="intro-foundation-theme">
+            <WeatherSunny16Regular />
+            <WeatherMoon16Regular />
           </span>
-          <Button size="small" appearance="primary" disabled={!name} data-demo-target="create">
-            Create
-          </Button>
+        </span>
+      </div>
+      <div className="intro-foundation-palette">
+        <span className="intro-art-label">Color</span>
+        <div className="intro-foundation-swatches">
+          {[40, 60, 90, 120, 150].map((step, index) => (
+            <span
+              key={step}
+              style={
+                {
+                  '--swatch-index': index - 2,
+                  background: coreaiBrandVariants[step as keyof typeof coreaiBrandVariants],
+                } as React.CSSProperties
+              }
+            >
+              <i />
+            </span>
+          ))}
         </div>
       </div>
-      <DemoCursor
-        target={beat >= 5 ? 'reset' : beat >= 3 ? 'create' : 'name'}
-        pressed={beat === 1 || beat === 4 || beat === 6}
-      />
+      <div className="intro-foundation-spacing">
+        <span className="intro-art-label">Spacing</span>
+        {[
+          ['8', 'var(--spacingHorizontalS)'],
+          ['16', 'var(--spacingHorizontalL)'],
+          ['24', 'var(--spacingHorizontalXXL)'],
+        ].map(([label, width], index) => (
+          <span className="intro-foundation-measure" key={label}>
+            <i style={{ width, '--measure-index': index } as React.CSSProperties} />
+            <span>{label}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ComponentsScene() {
+  return (
+    <>
+      <div className="intro-component-reference intro-component-reference--back">
+        Behavior &amp; states
+      </div>
+      <div className="intro-component-reference intro-component-reference--middle">
+        Best practices
+      </div>
+      <div className="intro-component-doc">
+        <div className="intro-art-heading">
+          <span>Button</span>
+          <span className="intro-art-label">Usage guidance</span>
+        </div>
+        <div className="intro-component-guidance">
+          <div className="intro-component-do">
+            <span className="intro-guidance-label">
+              <Checkmark16Regular /> Do
+            </span>
+            <Button appearance="primary" size="small">
+              Save
+            </Button>
+            <span>Use a verb</span>
+          </div>
+          <div className="intro-component-dont">
+            <span className="intro-guidance-label">
+              <Dismiss16Regular /> Don't
+            </span>
+            <Button size="small">Save!</Button>
+            <span>No punctuation</span>
+          </div>
+        </div>
+        <div className="intro-component-code">
+          <Code16Regular />
+          <code>
+            <span>&lt;Button&gt;</span>Save
+            <span className="intro-code-punctuation">!</span>
+            <span>&lt;/Button&gt;</span>
+          </code>
+        </div>
+      </div>
     </>
   );
 }
 
-function AgentsScene({ beat }: SceneProps) {
+function TemplatesScene() {
+  return (
+    <>
+      <div className="intro-template-stage">
+        <span>Preview</span>
+      </div>
+      <div className="intro-template-source">
+        <div className="intro-art-heading">
+          <span>
+            <Code16Regular /> template.tsx
+          </span>
+          <Copy16Regular />
+        </div>
+        <div className="intro-template-code">
+          {['<Card>', '  <Text>Overview</Text>', '  <Button>Open</Button>', '</Card>'].map(
+            (line, index) => (
+              <code key={line} style={{ '--line-index': index } as React.CSSProperties}>
+                {line}
+              </code>
+            ),
+          )}
+        </div>
+      </div>
+      <ArrowDown16Regular className="intro-template-transfer" />
+      <div className="intro-template-preview">
+        <span>Overview</span>
+        <Button appearance="primary" size="small">
+          Open
+        </Button>
+      </div>
+      <span className="intro-template-caption">
+        <Copy16Regular /> Copy + adapt
+      </span>
+    </>
+  );
+}
+
+function AgentsScene() {
   return (
     <>
       <div className="intro-agent-request">
-        <span>GET</span> /components/button.md <ArrowRight16Regular />
+        <span>GET</span> /components/button.md
+        <span className="intro-agent-response">200 OK</span>
       </div>
       <div className="intro-agent-track">
-        <span data-travelling={beat >= 1 && beat < 5} />
+        <span />
       </div>
-      <div className="intro-agent-document" data-loaded={beat >= 2 && beat < 5}>
-        <div className="intro-agent-file">
-          <DocumentText20Regular /> button.md
-          <Checkmark16Regular className="intro-agent-check" />
+      <div className="intro-agent-index">llms.txt</div>
+      <div className="intro-agent-document">
+        <div className="intro-art-heading">
+          <span>
+            <DocumentText20Regular /> button.md
+          </span>
+          <span className="intro-art-label">Markdown</span>
         </div>
         <div className="intro-agent-markdown">
           <span># Button</span>
           <span>## Best practices</span>
           <span>- Use buttons for actions.</span>
-          <span>## Behavior and states</span>
+          <code>&lt;Button&gt;Save&lt;/Button&gt;</code>
         </div>
       </div>
+      <span className="intro-agent-result">
+        <Checkmark16Regular /> Guidance + code
+      </span>
     </>
   );
 }
 
-const scenes = [ComponentsScene, TemplatesScene, SamplesScene, AgentsScene];
+const scenes = [
+  { kind: 'foundations', Scene: FoundationsScene },
+  { kind: 'components', Scene: ComponentsScene },
+  { kind: 'templates', Scene: TemplatesScene },
+  { kind: 'agents', Scene: AgentsScene },
+];
 
 export function IntroFeatureCards({ sourceHtml }: PageWidgetProps) {
   const items = React.useMemo(() => {
@@ -203,17 +215,13 @@ export function IntroFeatureCards({ sourceHtml }: PageWidgetProps) {
       description: heading.nextElementSibling?.textContent?.trim() ?? '',
     }));
   }, [sourceHtml]);
-  const grid = React.useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = React.useState<number[]>([]);
+  const [hovered, setHovered] = React.useState<number | null>(null);
+  const [focused, setFocused] = React.useState<number | null>(null);
   const [reducedMotion, setReducedMotion] = React.useState(
     () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
   );
-  const [playing, setPlaying] = React.useState(true);
   const [pageVisible, setPageVisible] = React.useState(!document.hidden);
-  const [active, setActive] = React.useState(0);
-  const [beat, setBeat] = React.useState(0);
-  const [replay, setReplay] = React.useState(0);
-  const running = playing && !reducedMotion && pageVisible && visible.includes(active);
+  const active = hovered ?? focused;
 
   React.useEffect(() => {
     const query = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -227,79 +235,34 @@ export function IntroFeatureCards({ sourceHtml }: PageWidgetProps) {
     };
   }, []);
 
-  React.useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) =>
-        setVisible((previous) => {
-          const next = new Set(previous);
-          for (const entry of entries) {
-            const index = Number((entry.target as HTMLElement).dataset.index);
-            if (entry.isIntersecting) next.add(index);
-            else next.delete(index);
-          }
-          return [...next].sort();
-        }),
-      { threshold: 0.5 },
-    );
-    grid.current?.querySelectorAll('[data-index]').forEach((card) => observer.observe(card));
-    return () => observer.disconnect();
-  }, []);
-
-  React.useEffect(() => {
-    if (visible.length && !visible.includes(active)) setActive(visible[0]);
-  }, [active, visible]);
-
-  React.useEffect(() => {
-    if (!running) return;
-    setBeat(0);
-    const timers = beats.map((delay, index) => window.setTimeout(() => setBeat(index), delay));
-    timers.push(
-      window.setTimeout(() => {
-        const index = visible.indexOf(active);
-        setActive(visible[(index + 1) % visible.length]);
-        setReplay((value) => value + 1);
-      }, duration),
-    );
-    return () => timers.forEach(window.clearTimeout);
-  }, [active, replay, running, visible]);
-
   return (
-    <div className="intro-features" data-playing={playing}>
-      <div className="intro-features-toolbar">
-        <Button
-          size="small"
-          appearance="subtle"
-          disabled={reducedMotion}
-          icon={playing && !reducedMotion ? <Pause16Regular /> : <Play16Regular />}
-          onClick={() => setPlaying((value) => !value)}
-        >
-          {reducedMotion ? 'Reduced motion' : playing ? 'Pause animations' : 'Play animations'}
-        </Button>
-      </div>
-      <div className="intro-features-grid" ref={grid}>
+    <div className="intro-features">
+      <div className="intro-features-grid">
         {items.map((item, index) => {
-          const Scene = scenes[index];
+          const { kind, Scene } = scenes[index];
           return (
             <article
-              className={`intro-feature intro-feature--${kinds[index]}`}
+              className={`intro-feature intro-feature--${kind}`}
               key={item.id}
-              data-index={index}
-              onMouseEnter={() => {
-                if (!playing || reducedMotion) return;
-                setActive(index);
-                setReplay((value) => value + 1);
+              tabIndex={0}
+              aria-labelledby={item.id}
+              onPointerEnter={(event) => {
+                if (event.pointerType !== 'touch') setHovered(index);
+              }}
+              onPointerLeave={() => setHovered(null)}
+              onFocus={() => setFocused(index)}
+              onBlur={() => setFocused(null)}
+              onPointerDown={(event) => {
+                if (event.pointerType === 'touch') event.currentTarget.focus();
               }}
             >
               <div
                 className="intro-feature-scene"
                 aria-hidden="true"
                 ref={makeInert}
-                data-running={running && index === active}
+                data-running={!reducedMotion && pageVisible && index === active}
               >
-                <Scene
-                  beat={reducedMotion ? 4 : index === active ? beat : 0}
-                  running={running && index === active}
-                />
+                <Scene />
               </div>
               <div className="intro-feature-copy">
                 <Text as="h3" id={item.id} preset="heading4" foreground={1}>

@@ -18,6 +18,10 @@ reference:
 
 <!-- view:includes -->
 
+### Foundations
+
+Color, typography, spacing, and themes provide a shared visual language.
+
 ### Components
 
 Components are reusable controls maintained in the npm package.
@@ -26,10 +30,6 @@ Components are reusable controls maintained in the npm package.
 
 Templates are larger starting points that you copy into your project and
 maintain yourself. They are not package imports.
-
-### Samples
-
-Samples show how components work together in a form, layout, or workflow.
 
 ### Documentation for agents
 

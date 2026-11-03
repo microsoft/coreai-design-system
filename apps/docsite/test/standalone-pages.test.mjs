@@ -552,9 +552,9 @@ test('Introduction feature cards preserve all four sections in HTML and agent Ma
   const markdown = pageMarkdown(introduction, metadata);
   assert.match(html, /data-page-widget="includes"/);
   for (const [heading, description] of [
+    ['Foundations', 'Color, typography, spacing, and themes provide a shared visual language.'],
     ['Components', 'Components are reusable controls maintained in the npm package.'],
     ['Templates', 'They are not package imports.'],
-    ['Samples', 'Samples show how components work together in a form, layout, or workflow.'],
     ['Documentation for agents', "this site's Markdown endpoints with ordinary HTTPS."],
   ]) {
     assert.ok(html.includes(`>${heading}</h3>`));
@@ -562,6 +562,8 @@ test('Introduction feature cards preserve all four sections in HTML and agent Ma
     assert.ok(html.includes(description));
     assert.ok(markdown.includes(description));
   }
+  assert.ok(html.indexOf('>Foundations</h3>') < html.indexOf('>Components</h3>'));
+  assert.doesNotMatch(markdown, /### Samples/);
   assert.doesNotMatch(markdown, /<!-- \/?view:includes -->/);
 });
 
