@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import type { PositioningImperativeRef } from '@fluentui/react-headless-components-preview/positioning';
-import { MenuFocusgroupConsumer } from './MenuFocusgroupConsumer.js';
+import { FocusgroupConsumer as MenuFocusgroupConsumer } from './FocusgroupConsumer.js';
 import { MenuComparison, menuExamples, type MenuExample } from './MenuComparison.js';
 import {
   captureMenuNativeContract,

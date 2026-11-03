@@ -22,7 +22,7 @@ import {
   type MenuProps,
 } from '@coreai-ds/react-headless-components';
 import { MenuFixtureGlyph } from './MenuComparison.js';
-import { MenuFocusgroupConsumer } from './MenuFocusgroupConsumer.js';
+import { FocusgroupConsumer as MenuFocusgroupConsumer } from './FocusgroupConsumer.js';
 import styles from './MenuComparison.module.css';
 
 const initialChecked = {

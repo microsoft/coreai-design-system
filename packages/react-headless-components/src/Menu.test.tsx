@@ -26,7 +26,7 @@ import {
   type MenuExample,
 } from '../../../apps/storybook/src/stories/experiments/MenuComparison.js';
 import { MenuComparisonWithReport } from '../../../apps/storybook/src/stories/experiments/MenuComparisonReport.js';
-import { MenuFocusgroupConsumer } from '../../../apps/storybook/src/stories/experiments/MenuFocusgroupConsumer.js';
+import { FocusgroupConsumer as MenuFocusgroupConsumer } from '../../../apps/storybook/src/stories/experiments/FocusgroupConsumer.js';
 import {
   MenuContextFlow,
   MenuFormFlow,

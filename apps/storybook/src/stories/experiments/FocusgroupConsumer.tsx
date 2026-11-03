@@ -9,7 +9,7 @@ import { polyfill } from '@microsoft/focusgroup-polyfill';
  * The documented polyfill(root) API initializes existing groups; our subtree observer
  * initializes newly mounted groups. The installed polyfill owns navigation and tab stops.
  */
-export function MenuFocusgroupConsumer({ children }: { children: React.ReactNode }) {
+export function FocusgroupConsumer({ children }: { children: React.ReactNode }) {
   const rootRef = React.useRef<HTMLDivElement>(null);
   const [ready, setReady] = React.useState(false);
   React.useLayoutEffect(() => {
@@ -23,7 +23,7 @@ export function MenuFocusgroupConsumer({ children }: { children: React.ReactNode
     return () => observer.disconnect();
   }, []);
   return (
-    <div ref={rootRef} data-menu-polyfill-consumer>
+    <div ref={rootRef} data-focusgroup-consumer>
       {ready && children}
     </div>
   );
