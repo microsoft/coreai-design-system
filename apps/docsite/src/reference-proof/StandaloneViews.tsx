@@ -191,36 +191,36 @@ function ResourcesView({ sourceHtml }: PageWidgetProps) {
             {group.items.map((resource) => {
               const titleId = `${group.id}-${resource.title.toLowerCase().replace(/\W+/g, '-')}`;
               return (
-                <Card
-                  as="a"
+                <Link
                   key={resource.href}
                   href={resource.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  focusMode="off"
-                  className="resource-card resource-card-link"
+                  className="resource-card-link"
                   aria-labelledby={`${titleId}-title`}
                   aria-describedby={`${titleId}-description`}
                 >
-                  <div className="resource-card__title">
-                    <Text
-                      as="h3"
-                      id={`${titleId}-title`}
-                      size={500}
-                      weight="regular"
-                      foreground={1}
-                    >
-                      {resource.title}
-                      <span className="sr-only"> (opens in a new tab)</span>
+                  <Card focusMode="off" className="resource-card">
+                    <div className="resource-card__title">
+                      <Text
+                        as="h3"
+                        id={`${titleId}-title`}
+                        size={500}
+                        weight="regular"
+                        foreground={1}
+                      >
+                        {resource.title}
+                        <span className="sr-only"> (opens in a new tab)</span>
+                      </Text>
+                      <span aria-hidden="true">
+                        <ExternalIcon />
+                      </span>
+                    </div>
+                    <Text as="p" id={`${titleId}-description`} size={300} foreground={2}>
+                      {resource.description}
                     </Text>
-                    <span aria-hidden="true">
-                      <ExternalIcon />
-                    </span>
-                  </div>
-                  <Text as="p" id={`${titleId}-description`} size={300} foreground={2}>
-                    {resource.description}
-                  </Text>
-                </Card>
+                  </Card>
+                </Link>
               );
             })}
           </div>

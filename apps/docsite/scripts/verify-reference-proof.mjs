@@ -424,7 +424,12 @@ try {
         await resourceSections
           .locator('.resource-card-link')
           .evaluateAll((cards) =>
-            cards.every((card) => card.tagName === 'A' && card.classList.contains('fui-Card')),
+            cards.every(
+              (card) =>
+                card.tagName === 'A' &&
+                card.classList.contains('fui-Link') &&
+                card.firstElementChild?.classList.contains('fui-Card'),
+            ),
           ),
       );
       assert.ok(

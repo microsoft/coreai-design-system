@@ -1787,13 +1787,11 @@ code:not(pre code) {
   transition: background-color var(--mf-duration-fast) var(--mf-ease);
 }
 
-.resource-card-link:hover .resource-card,
-.resource-card-link.resource-card:hover {
+.resource-card-link:hover .resource-card {
   background: var(--colorNeutralBackground3Hover);
 }
 
-.resource-card-link:active .resource-card,
-.resource-card-link.resource-card:active {
+.resource-card-link:active .resource-card {
   background: var(--colorNeutralBackground3Pressed);
 }
 
