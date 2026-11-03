@@ -536,6 +536,12 @@ function measureChangelogRails(list: HTMLDivElement): ChangelogRail[] {
   return rails;
 }
 
+const changelogLinkDescriptions: Partial<Record<string, string>> = {
+  'Full history': 'Complete package release history.',
+  'Keep a Changelog': 'The format used for these release notes.',
+  'Semantic Versioning': 'The versioning rules this package follows.',
+};
+
 function ChangelogView({ sourceHtml }: PageWidgetProps) {
   const model = React.useMemo(() => {
     const document = documentFrom(sourceHtml);
@@ -558,7 +564,7 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
           href: link.getAttribute('href') ?? '',
           label: link.getAttribute('href')?.endsWith('/CHANGELOG.md')
             ? 'Full history'
-            : link.textContent,
+            : (link.textContent?.trim() ?? ''),
         })),
       groups: [...groups],
     };
@@ -583,9 +589,14 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
     <div className="reference-changelog-view">
       <div className="changelog-actions">
         {model.links.map((link) => (
-          <Link href={link.href} key={link.href}>
-            {link.label}
-          </Link>
+          <div className="changelog-resource" key={link.href}>
+            <Link href={link.href}>{link.label}</Link>
+            {changelogLinkDescriptions[link.label] ? (
+              <Text as="p" size={200} foreground={3}>
+                {changelogLinkDescriptions[link.label]}
+              </Text>
+            ) : null}
+          </div>
         ))}
       </div>
       <div className="changelog-list" ref={listRef}>

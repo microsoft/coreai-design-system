@@ -351,10 +351,20 @@
 }
 
 .changelog-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 24px;
+}
+
+.changelog-resource {
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px 24px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.changelog-resource p {
+  margin: 0;
 }
 
 .reference-shell .changelog-actions a {
