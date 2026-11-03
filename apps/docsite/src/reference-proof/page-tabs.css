@@ -11,44 +11,62 @@
 .reference-page-panel {
   display: flex;
   flex-direction: column;
-  gap: var(--spacingVerticalXL);
+  gap: 48px;
   min-width: 0;
 }
 
 .reference-sample-section {
   display: flex;
   flex-direction: column;
-  gap: var(--spacingVerticalL);
+  gap: var(--spacingVerticalS);
   min-width: 0;
+}
+
+.reference-sample-section > * {
+  margin-block: 0;
 }
 
 .reference-page-panel[hidden] {
   display: none !important;
 }
 
+.reference-page-panel[data-page-panel='samples'] > .example {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacingVerticalS);
+}
+
 .reference-page-panel[data-page-panel='samples'] > :is(.example, .standalone-guidance) {
   margin-block: 0;
+}
+
+.reference-page-panel[data-page-panel='samples'] > .example > :is(h3, p) {
+  margin: 0;
+}
+
+.reference-page-panel[data-page-panel='samples'] pre {
+  margin: 0;
 }
 
 .reference-page-introduction
   .reference-page-panel[data-page-panel='samples']
   .standalone-guidance {
-  gap: var(--spacingVerticalXL);
+  gap: 48px;
 }
 
 .reference-page-introduction
   .reference-page-panel[data-page-panel='samples']
   .standalone-guidance
   > .guidance-section {
-  gap: var(--spacingVerticalL);
+  gap: var(--spacingVerticalS);
   margin: 0;
 }
 
 .reference-page-panel[data-page-panel='samples']
   .standalone-guidance
   > .guidance-section
-  > :is(h2, h3, h4, h5, h6) {
-  margin: 0;
+  > * {
+  margin-block: 0;
 }
 
 .reference-page-panel > .reference-basic-source {
@@ -60,7 +78,7 @@
   color: var(--colorNeutralForeground1);
 }
 
-.reference-page-panel > h2 {
+.reference-page-panel > :is(h3, h4, h5, h6) {
   color: var(--colorNeutralForeground1);
   font-size: var(--fontSizeBase600);
   line-height: var(--lineHeightBase600);

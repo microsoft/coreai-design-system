@@ -14,6 +14,23 @@ export interface PageTabTargets {
   prefix: string;
 }
 
+function sampleHeading(heading: HTMLElement, preserveIds = false) {
+  const level = Math.max(3, Number(heading.tagName.slice(1)));
+  const label = document.createElement(`h${level}`);
+  for (const { name, value } of [...heading.attributes]) {
+    if (preserveIds || name !== 'id') label.setAttribute(name, value);
+  }
+  label.innerHTML = heading.innerHTML;
+  if (!preserveIds) label.querySelectorAll('[id]').forEach((element) => element.removeAttribute('id'));
+  return label;
+}
+
+function normalizeSampleHeadings(samples: HTMLElement) {
+  for (const heading of [...samples.querySelectorAll<HTMLElement>('h1,h2')]) {
+    heading.replaceWith(sampleHeading(heading, true));
+  }
+}
+
 function extractSamples(source: HTMLElement, samples: HTMLElement) {
   const groups = new Map<Element, HTMLElement>();
   for (const section of [...source.querySelectorAll<HTMLElement>('.guidance-section')]) {
@@ -42,10 +59,7 @@ function extractSamples(source: HTMLElement, samples: HTMLElement) {
       group = document.createElement('section');
       group.className = 'reference-sample-section';
       if (heading) {
-        const label = heading.cloneNode(true) as HTMLElement;
-        label.removeAttribute('id');
-        label.querySelectorAll('[id]').forEach((element) => element.removeAttribute('id'));
-        group.append(label);
+        group.append(sampleHeading(heading));
       }
       samples.append(group);
       groups.set(context, group);
@@ -110,11 +124,8 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
   if (source) {
     const example = document.createElement('section');
     example.className = 'example reference-default-source';
-    const heading = basic?.querySelector('h2')?.cloneNode(true) as HTMLElement | undefined;
-    if (heading) {
-      heading.removeAttribute('id');
-      example.append(heading);
-    }
+    const heading = basic?.querySelector<HTMLElement>('h2,h3,h4,h5,h6');
+    if (heading) example.append(sampleHeading(heading));
     for (const paragraph of basic?.querySelectorAll(':scope > p') ?? []) {
       if (paragraph.textContent?.startsWith('Source: ')) example.append(paragraph);
     }
@@ -136,6 +147,7 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
       continue;
     samples.append(child);
   }
+  normalizeSampleHeadings(samples);
   if (!samples.childElementCount) {
     introduction.append(...usage.children);
     return null;

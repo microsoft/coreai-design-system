@@ -843,8 +843,8 @@
   margin-block: 0 12px;
 }
 
-.example > h2,
-.reference-template-source > h2 {
+.example > :is(h2, h3),
+.reference-template-source > :is(h2, h3) {
   color: var(--colorNeutralForeground1);
   font-size: var(--fontSizeBase500);
   line-height: var(--lineHeightBase500);
