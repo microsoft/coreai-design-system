@@ -138,6 +138,10 @@ not a claim that the whole application bundle is Griffel-free.
   and [TagPicker family in react-tag-picker 9.10.5](https://unpkg.com/@fluentui/react-tag-picker@9.10.5/lib/components/TagPickerControl/useTagPickerControlStyles.styles.raw.js).
   The installed headless facade also resolves a nested react-tag-picker 9.10.6; the local raw
   source links in each CSS Module identify the visual source independently of that behavior package.
+- The identity/message batch uses the installed snapshot at commit `ee9b499`:
+  [AvatarGroup in react-avatar 9.11.9](https://unpkg.com/@fluentui/react-avatar@9.11.9/lib/components/AvatarGroup/useAvatarGroupStyles.styles.raw.js)
+  and [MessageBar in react-message-bar 9.7.9](https://unpkg.com/@fluentui/react-message-bar@9.7.9/lib/components/MessageBar/useMessageBarStyles.styles.raw.js).
+  The current MessageBar facade publishes MessageBar, Actions, Body, and Title, not the legacy Group.
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -225,6 +229,14 @@ CSS hiding excludes closed content from focus and accessibility without a compat
 Avatar keeps current headless size-16 initials rather than truncating them to the legacy single
 character. Its reused PresenceBadge includes out-of-office information in the accessible label,
 as the current headless badge does. These differences remain explicit in comparisons.
+AvatarGroup reuses the completed Avatar and Popover visuals through current public slot renderers.
+Its neutral-avatar override bridge restores the original nested Fluent background6 rather than
+the standalone CoreAI Avatar background4; it stays separate from the Fluent-derived CSS.
+Native trigger tooltip content is styled through its public slot, without copying Tooltip behavior.
+Use explicit counts for fragment content and complete overflow content in pie layouts, as the
+current public composition requires; no legacy focus manager or child-count normalization is added.
+The pinned overflow trigger rejects render-function content through the same public Fragment guard
+as InfoButton; ordinary trigger content is supported and tested without a compatibility shim.
 SearchBox keeps its medium default rather than inheriting Field size. Its hook-controlled native
 input retains the installed form-reset behavior; no second value model or reset shim is added.
 
@@ -285,6 +297,14 @@ consumers explicitly pass these supported native props, as the examples demonstr
 regressions establish both boundaries without adding wrapper normalization. After ArrowRight from
 the last tag, backward Tab restores the last tag natively but the first tag with the current
 consumer polyfill; the examples/tests retain that distinction.
+MessageBar keeps the shared upstream announcement contract rather than adding a second announcer.
+In the pinned base hook used by both implementations, either explicit `politeness` string selects
+polite provider options, and updates that leave computed politeness unchanged do not reannounce.
+Use the semantically correct intent preset without explicit politeness, and give genuinely new
+notifications new React keys after managing any focused descendants. Application-owned announcing
+or suppression can use the current public AnnounceProvider/useAnnounce composition; `aria-live="off"`
+alone cannot cancel a native `document.ariaNotify` call. These are inherited boundaries, not fixes
+to recreate in this style port. Separate installed Button copies also need explicit action sizes.
 
 ## Conversion workflow
 
@@ -510,6 +530,10 @@ TagPicker adds query/filtering, single/multiple selection, removal, grouped opti
 selection/disabled accessibility, native forms/reset, and current slot/ref/callback contracts.
 Both families run with native focusgroup and the actual consumer polyfill, with strict live
 reports and trusted follow-ups at desktop and narrow viewport sizes.
+AvatarGroup adds layout/partition/overflow composition, current Avatar and native Popover reuse,
+named tooltip content, modal overflow, slot/ref rendering, and consumer priority. MessageBar adds
+intent/layout/action composition, native announcement options, dismissal/restoration, keyed updates,
+responsive reflow, and native forms, with raw-current regressions for inherited boundaries.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 

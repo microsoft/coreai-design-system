@@ -41,6 +41,38 @@ export {
   type AvatarSize,
   type AvatarSlots,
 } from './Avatar.js';
+export {
+  AvatarGroup,
+  avatarGroupClassNames,
+  AvatarGroupProvider,
+  partitionAvatarGroupItems,
+  useAvatarGroupContext,
+  useAvatarGroupContextValues,
+  type AvatarGroupContextValue,
+  type AvatarGroupContextValues,
+  type AvatarGroupProps,
+  type AvatarGroupSlots,
+  type AvatarGroupState,
+  type PartitionAvatarGroupItems,
+  type PartitionAvatarGroupItemsOptions,
+} from './AvatarGroup.js';
+export {
+  AvatarGroupItem,
+  avatarGroupItemClassNames,
+  type AvatarGroupItemAvatarProps,
+  type AvatarGroupItemColor,
+  type AvatarGroupItemProps,
+  type AvatarGroupItemSlots,
+  type AvatarGroupItemState,
+} from './AvatarGroupItem.js';
+export {
+  AvatarGroupPopover,
+  avatarGroupPopoverClassNames,
+  type AvatarGroupPopoverPopoverProps,
+  type AvatarGroupPopoverProps,
+  type AvatarGroupPopoverSlots,
+  type AvatarGroupPopoverState,
+} from './AvatarGroupPopover.js';
 export { Badge, badgeClassNames, type BadgeProps, type BadgeSlots } from './Badge.js';
 export {
   Breadcrumb,
@@ -416,6 +448,36 @@ export {
   type MenuTriggerProps,
   type MenuTriggerState,
 } from './MenuTrigger.js';
+export {
+  MessageBar,
+  messageBarClassNames,
+  useMessageBarContext,
+  type MessageBarContextValues,
+  type MessageBarIntent,
+  type MessageBarProps,
+  type MessageBarShape,
+  type MessageBarSlots,
+} from './MessageBar.js';
+export {
+  MessageBarActions,
+  messageBarActionsClassNames,
+  type MessageBarActionsContextValues,
+  type MessageBarActionsProps,
+  type MessageBarActionsSlots,
+} from './MessageBarActions.js';
+export {
+  MessageBarBody,
+  messageBarBodyClassNames,
+  type MessageBarBodyContextValues,
+  type MessageBarBodyProps,
+  type MessageBarBodySlots,
+} from './MessageBarBody.js';
+export {
+  MessageBarTitle,
+  messageBarTitleClassNames,
+  type MessageBarTitleProps,
+  type MessageBarTitleSlots,
+} from './MessageBarTitle.js';
 export { Option, optionClassNames, type OptionProps, type OptionSlots } from './Option.js';
 export {
   OptionGroup,

@@ -1,0 +1,71 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Handwritten experimental fixture and comparison layout; not an upstream style port.
+ */
+
+.comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+
+  @media (max-width: 700px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.cell {
+  min-width: 0;
+  padding: 8px;
+}
+
+.stage {
+  min-height: 340px;
+  padding-block-start: 16px;
+}
+
+.report {
+  display: block;
+  box-sizing: border-box;
+  block-size: 240px;
+  overflow: auto;
+  white-space: pre-wrap;
+  margin-block: 12px;
+  padding: 8px;
+  border: 1px solid var(--colorNeutralStroke2);
+}
+
+.pointerRest {
+  display: block;
+  inline-size: max-content;
+  margin-block: 8px;
+}
+
+.flow {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  padding: 8px;
+
+  & > label {
+    display: grid;
+    gap: 4px;
+  }
+}
+
+.consumerAvatar {
+  border-radius: 3px;
+
+  & > :global(.fui-Avatar__initials) {
+    background-color: rgb(195, 220, 245);
+    color: rgb(35, 95, 155);
+  }
+}
+
+.consumerTrigger {
+  border-radius: 3px;
+  border-color: rgb(35, 95, 155);
+}
+
+.consumerLabel {
+  color: rgb(130, 45, 80);
+}
