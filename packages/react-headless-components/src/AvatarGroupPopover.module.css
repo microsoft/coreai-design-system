@@ -3,11 +3,7 @@
  * Ported from @fluentui/react-avatar 9.11.9 at reference ee9b499.
  * Local source: [useAvatarGroupPopoverStyles.styles.raw.js](../../../node_modules/@fluentui/react-avatar/lib/components/AvatarGroupPopover/useAvatarGroupPopoverStyles.styles.raw.js).
  * Source: https://unpkg.com/@fluentui/react-avatar@9.11.9/lib/components/AvatarGroupPopover/useAvatarGroupPopoverStyles.styles.raw.js
- * Reused surface foundation: @fluentui/react-popover 9.14.10,
- * [usePopoverSurfaceStyles.styles.raw.js](../../../node_modules/@fluentui/react-popover/lib/components/PopoverSurface/usePopoverSurfaceStyles.styles.raw.js).
- * Default tooltip adjustments: @fluentui/react-tooltip 9.10.8,
- * [useTooltipStyles.styles.raw.js](../../../node_modules/@fluentui/react-tooltip/lib/components/Tooltip/useTooltipStyles.styles.raw.js).
- * Its 6px arrow: [constants.js](../../../node_modules/@fluentui/react-tooltip/lib/components/Tooltip/private/constants.js).
+ * Tooltip content reuses the completed TooltipStyles visual slot adapter and CSS foundation.
  * Glyph: @fluentui/react-icons 2.0.343,
  * [useIconStyles.styles.raw.js](../../../node_modules/@fluentui/react-icons/lib/utils/useIconStyles.styles.raw.js),
  * [createFluentIcon.styles.raw.js](../../../node_modules/@fluentui/react-icons/lib/utils/createFluentIcon.styles.raw.js).
@@ -185,27 +181,6 @@
     /* SVGs otherwise preserve internally defined colors in high-contrast mode. */
     @media (forced-colors: active) {
       forced-color-adjust: auto;
-    }
-  }
-
-  .AvatarGroupPopover__tooltip {
-    composes: PopoverSurface from './PopoverSurface.module.css';
-
-    &[data-avatar-group-tooltip] {
-      --fui-positioning-arrow-height: 8.484px;
-      --fui-positioning-arrow-offset: -4.242px;
-
-      box-sizing: border-box;
-      max-width: 240px;
-      cursor: default;
-      font-size: var(--fontSizeBase200);
-      line-height: var(--lineHeightBase200);
-      overflow-wrap: break-word;
-      padding: 4px 11px 6px;
-
-      /* TODO need versions of shadow8 tokens that work with filter. */
-      filter: drop-shadow(0 0 2px var(--colorNeutralShadowAmbient))
-        drop-shadow(0 4px 8px var(--colorNeutralShadowKey));
     }
   }
 }

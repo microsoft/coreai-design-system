@@ -142,6 +142,10 @@ not a claim that the whole application bundle is Griffel-free.
   [AvatarGroup in react-avatar 9.11.9](https://unpkg.com/@fluentui/react-avatar@9.11.9/lib/components/AvatarGroup/useAvatarGroupStyles.styles.raw.js)
   and [MessageBar in react-message-bar 9.7.9](https://unpkg.com/@fluentui/react-message-bar@9.7.9/lib/components/MessageBar/useMessageBarStyles.styles.raw.js).
   The current MessageBar facade publishes MessageBar, Actions, Body, and Title, not the legacy Group.
+- The notification/helper batch uses the installed snapshot at commit `e538eac`:
+  [Toast in react-toast 9.8.5](https://unpkg.com/@fluentui/react-toast@9.8.5/lib/components/Toast/useToastStyles.styles.raw.js)
+  and [Tooltip in react-tooltip 9.10.8](https://unpkg.com/@fluentui/react-tooltip@9.10.8/lib/components/Tooltip/useTooltipStyles.styles.raw.js).
+  Tooltip and AvatarGroupPopover share the same content-slot visual adapter and CSS foundation.
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -233,6 +237,7 @@ AvatarGroup reuses the completed Avatar and Popover visuals through current publ
 Its neutral-avatar override bridge restores the original nested Fluent background6 rather than
 the standalone CoreAI Avatar background4; it stays separate from the Fluent-derived CSS.
 Native trigger tooltip content is styled through its public slot, without copying Tooltip behavior.
+That styling reuses Tooltip's content foundation rather than retaining a separate tooltip style port.
 Use explicit counts for fragment content and complete overflow content in pie layouts, as the
 current public composition requires; no legacy focus manager or child-count normalization is added.
 The pinned overflow trigger rejects render-function content through the same public Fragment guard
@@ -266,6 +271,9 @@ Use RatingDisplay for read-only output; no wrapper-specific read-only behavior i
 InfoButton root render-function children hit the pinned public trigger's Fragment guard in both
 headless and this wrapper; use ordinary root content. Field's control-children render function and
 the other tested label/info/surface slot renderers remain supported. No trigger workaround is added.
+Tooltip exposes current trigger/content refs, not an invented component-root ref. Its native
+controlled-dismissal and placement-observer boundaries remain intact. The default positioning
+offset is zero; callers own any arrow gap rather than inheriting the old positioning pipeline.
 
 The current Dialog facade uses DialogHeader and a scrollable DialogBody. It has no DialogContent,
 Title action slot, backdrop slot, or legacy provider aliases. Surface CSS styles the native
@@ -305,6 +313,14 @@ notifications new React keys after managing any focused descendants. Application
 or suppression can use the current public AnnounceProvider/useAnnounce composition; `aria-live="off"`
 alone cannot cancel a native `document.ariaNotify` call. These are inherited boundaries, not fixes
 to recreate in this style port. Separate installed Button copies also need explicit action sizes.
+Toast keeps the current controller and native-container lifecycle. Initially invisible queued
+containers remove themselves in the pinned implementation; examples keep dispatch within the
+configured limit and publish later notifications after unmount. Full overflow-queue parity is not
+claimed, and no replacement queue is added. Built-in native announcing requests normal priority;
+the supported custom `announce` callback demonstrates one application announcer with normal/high
+priority, suppression, and resumption. In the tested native browser, arrow navigation retains focus
+where the consumer polyfill moves it; native Tab/Shift+Tab remains available. Toaster's Delete
+hotkey also bubbles from editors, so the editing example explicitly stops that key's propagation.
 
 ## Conversion workflow
 
@@ -534,6 +550,11 @@ AvatarGroup adds layout/partition/overflow composition, current Avatar and nativ
 named tooltip content, modal overflow, slot/ref rendering, and consumer priority. MessageBar adds
 intent/layout/action composition, native announcement options, dismissal/restoration, keyed updates,
 responsive reflow, and native forms, with raw-current regressions for inherited boundaries.
+Tooltip adds native hover/focus visibility, controlled changes, relationships, placement/arrow
+geometry, consumer priority, and public trigger/content composition. Shared-foundation checks rerun
+the existing AvatarGroup and Popover suites as well as their live reports.
+Toast adds current controller dispatch/update/dismissal, timer pause/resume, focus restoration,
+intent/media/title/body/footer visuals, native forms/navigation, and position/offset reports.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 

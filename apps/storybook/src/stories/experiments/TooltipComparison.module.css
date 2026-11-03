@@ -1,0 +1,108 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Handwritten shared-fixture layout and consumer examples; not a Fluent port.
+ */
+
+.comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacingHorizontalXL);
+}
+
+.cell {
+  display: grid;
+  gap: var(--spacingVerticalS);
+  min-width: 0;
+}
+
+.stage {
+  display: grid;
+  place-items: center;
+  justify-self: start;
+  width: round(down, 100%, 2px);
+  min-height: 260px;
+}
+
+.trigger {
+  width: 140px;
+}
+
+.compactTrigger {
+  height: 48px;
+}
+
+.content {
+  width: 200px;
+}
+
+.wideContent {
+  width: 240px;
+}
+
+.compactContent {
+  width: 80px;
+}
+
+.nearEqualContent {
+  width: 96px;
+}
+
+.consumerContent {
+  max-width: 192px;
+  padding: 9px;
+  border: 3px dashed rgb(98, 42, 139);
+  border-radius: 3px;
+  background-color: rgb(237, 232, 247);
+  color: rgb(80, 40, 120);
+}
+
+.consumerContent > [data-arrow]::before {
+  border: 3px dashed rgb(98, 42, 139);
+}
+
+.report {
+  display: block;
+  min-height: 24rem;
+  max-height: 24rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacingHorizontalS);
+  margin-block-end: var(--spacingVerticalM);
+
+  & > select,
+  & > button {
+    box-sizing: border-box;
+    height: 32px;
+    max-width: 100%;
+  }
+}
+
+.pointerRest {
+  display: inline-block;
+}
+
+.flow {
+  display: grid;
+  justify-items: start;
+  gap: var(--spacingVerticalM);
+}
+
+.flowStage {
+  display: grid;
+  place-items: center;
+  min-height: 180px;
+  width: min(100%, 320px);
+}
+
+@media (max-width: 720px) {
+  .comparison {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

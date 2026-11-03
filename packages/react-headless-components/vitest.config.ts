@@ -76,6 +76,7 @@ export default defineConfig({
       '@fluentui/react-headless-components-preview/message-bar',
       '@fluentui/react-headless-components-preview/persona',
       '@fluentui/react-headless-components-preview/popover',
+      '@fluentui/react-headless-components-preview/positioning',
       '@fluentui/react-headless-components-preview/progress-bar',
       '@fluentui/react-headless-components-preview/radio-group',
       '@fluentui/react-headless-components-preview/rating',
@@ -93,8 +94,10 @@ export default defineConfig({
       '@fluentui/react-headless-components-preview/tag-group',
       '@fluentui/react-headless-components-preview/tag-picker',
       '@fluentui/react-headless-components-preview/textarea',
+      '@fluentui/react-headless-components-preview/toast',
       '@fluentui/react-headless-components-preview/toggle-button',
       '@fluentui/react-headless-components-preview/toolbar',
+      '@fluentui/react-headless-components-preview/tooltip',
     ],
   },
   test: {

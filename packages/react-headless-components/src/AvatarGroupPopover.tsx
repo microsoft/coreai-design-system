@@ -22,8 +22,8 @@ import { useCoreAIDefaults } from '@coreai-ds/react-components';
 import type { PopoverProps } from './Popover.js';
 import { PopoverSurface, type PopoverSurfaceProps } from './PopoverSurface.js';
 import { PopoverVisualContext } from './PopoverVisualContext.js';
+import { applyTooltipContentStyles } from './TooltipStyles.js';
 import groupStyles from './AvatarGroup.module.css';
-import overlayOverrides from './PopoverSurface.overrides.module.css';
 import styles from './AvatarGroupPopover.module.css';
 
 export type {
@@ -142,13 +142,9 @@ export function AvatarGroupPopover(props: AvatarGroupPopoverProps): React.ReactE
   state.popoverSurface = resolveSurface(props.popoverSurface, state.popoverSurface);
 
   const tooltipContent = slot.always(state.tooltip.content, { elementType: 'div' });
+  applyTooltipContentStyles(tooltipContent, 'normal', defaultsEnabled);
   Object.assign(tooltipContent, { 'data-avatar-group-tooltip': '' });
-  tooltipContent.className = [
-    avatarGroupPopoverClassNames.tooltip,
-    styles.AvatarGroupPopover__tooltip,
-    defaultsEnabled && overlayOverrides.PopoverSurface,
-    tooltipContent.className,
-  ]
+  tooltipContent.className = [avatarGroupPopoverClassNames.tooltip, tooltipContent.className]
     .filter(Boolean)
     .join(' ');
   state.tooltip.content = tooltipContent;
