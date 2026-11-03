@@ -70,6 +70,33 @@ export async function standaloneSections({
   foundationData,
 }) {
   const data = foundationData ?? (await readFoundationData(appRoot));
+  const themingSource = await fs.readFile(
+    path.join(appRoot, 'content/foundations/theming.md'),
+    'utf8',
+  );
+  const themingTree = unified().use(remarkParse).use(remarkGfm).parse(themingSource);
+  function headingCode(title) {
+    let active = false;
+    const blocks = [];
+    for (const node of themingTree.children) {
+      if (node.type === 'heading' && node.depth <= 2) {
+        active = toString(node) === title;
+      } else if (active && node.type === 'code') {
+        blocks.push(node);
+      }
+    }
+    if (!blocks.length) throw new Error(`Missing code under Theming heading: ${title}`);
+    return blocks;
+  }
+  const basicThemeCode = headingCode('Basic usage');
+  const coreaiThemeCode = basicThemeCode.find((block) => block.lang === 'tsx');
+  const interFontCode = basicThemeCode.find((block) => block.lang === 'css');
+  const azureThemeCode = headingCode('Azure theme').find((block) => block.lang === 'tsx');
+  const aptosFontImport = coreaiThemeCode?.value
+    .split('\n')
+    .find((line) => line.includes('@coreai-ds/react-components/fonts/fonts.css'));
+  if (!coreaiThemeCode || !azureThemeCode || !interFontCode || !aptosFontImport)
+    throw new Error('Theming code samples are incomplete.');
   const themes = await import('@coreai-ds/react-components');
   const roles = data.colors;
   const themeNames = ['coreaiLightTheme', 'coreaiDarkTheme', 'azureLightTheme', 'azureDarkTheme'];
@@ -98,9 +125,16 @@ export async function standaloneSections({
       ]),
     ),
   ].join('\n\n');
-  const history = JSON.parse(await fs.readFile(path.join(appRoot, 'changelog.json'), 'utf8'));
+  const [history, colorsSource, typographySource] = await Promise.all([
+    fs.readFile(path.join(appRoot, 'changelog.json'), 'utf8').then(JSON.parse),
+    fs.readFile(path.join(appRoot, 'src/pages/Colors.tsx'), 'utf8'),
+    fs.readFile(path.join(appRoot, 'src/pages/Typography.tsx'), 'utf8'),
+  ]);
   return {
     colors,
+    'coreai-theme-code': fence(coreaiThemeCode.value, coreaiThemeCode.lang),
+    'azure-theme-code': fence(azureThemeCode.value, azureThemeCode.lang),
+    'colors-code': fence(colorsSource),
     typography: markdownTable(
       [
         'Strong preset',
@@ -119,6 +153,9 @@ export async function standaloneSections({
         row.usage,
       ]),
     ),
+    'aptos-font-code': fence(aptosFontImport, 'tsx'),
+    'inter-font-code': fence(interFontCode.value, interFontCode.lang),
+    'typography-code': fence(typographySource),
     'font-families': markdownTable(
       ['Font', 'Token', 'Usage', 'Download'],
       data.fonts.map((font) => [

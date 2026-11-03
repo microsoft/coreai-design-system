@@ -30,3 +30,15 @@ Aptos and Aptos Mono are the preferred CoreAI typefaces. This site uses them whe
 ## Live Text presets
 
 <!-- example: components-text--presets -->
+
+## Register installed Aptos fonts
+
+<!-- generated: aptos-font-code -->
+
+## Load the Inter fallback
+
+<!-- generated: inter-font-code -->
+
+## Page source
+
+<!-- generated: typography-code -->

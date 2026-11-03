@@ -622,11 +622,15 @@ try {
     'Settings popover does not overflow horizontally',
   );
   assert.equal(
-    Math.round(
+    await appearanceSettings.evaluate((element) => getComputedStyle(element).rowGap),
+    '16px',
+  );
+  assert.ok(
+    Math.abs(
       (await productThemeLabel.boundingBox()).y -
-        ((await colorMode.boundingBox()).y + (await colorMode.boundingBox()).height),
-    ),
-    16,
+        ((await colorMode.boundingBox()).y + (await colorMode.boundingBox()).height) -
+        16,
+    ) <= 1,
     'Product color palette has the intended gap below color mode',
   );
   assert.equal(
@@ -672,7 +676,15 @@ try {
     await page.locator('.site-main').evaluate((element) => getComputedStyle(element).paddingTop),
     '80px',
   );
-  const colorSections = page.locator('.standalone-guidance .page-section');
+  const colorTabs = page.locator('.reference-page-tabs');
+  assert.equal(await colorTabs.count(), 1);
+  assert.equal(
+    await colorTabs.getByRole('tab', { name: 'Usage', exact: true }).getAttribute('aria-selected'),
+    'true',
+  );
+  const colorSections = page.locator(
+    '[data-page-panel="usage"] .standalone-guidance .page-section',
+  );
   assert.deepEqual(
     await colorSections.locator('> h2').allTextContents(),
     [
@@ -730,6 +742,18 @@ try {
     await page.evaluate(() => navigator.clipboard.readText()),
     'colorNeutralBackground1',
   );
+  await colorTabs.getByRole('tab', { name: 'Samples', exact: true }).click();
+  assert.ok(await page.locator('[data-page-panel="samples"]').isVisible());
+  assert.equal(
+    await page
+      .locator('[data-page-panel="samples"] pre')
+      .filter({ hasText: 'export function Colors()' })
+      .count(),
+    1,
+  );
+  await page.getByRole('heading', { name: 'Apply the CoreAI theme', exact: true }).waitFor();
+  await page.getByRole('heading', { name: 'Apply the Azure theme', exact: true }).waitFor();
+  await colorTabs.getByRole('tab', { name: 'Usage', exact: true }).click();
   await setTheme('light');
   const foundationOrigin = await page.evaluate(() => globalThis.performance.timeOrigin);
   await page
@@ -739,7 +763,8 @@ try {
   await page.getByRole('heading', { name: 'Typography', exact: true }).waitFor();
   await page.locator('[data-reference-ready="true"]').waitFor();
   await page.locator('[data-example-id="components-text--presets"] .fui-Text').first().waitFor();
-  assert.equal(await page.locator('.reference-page-tabs').count(), 0);
+  const typographyTabs = page.locator('.reference-page-tabs');
+  assert.equal(await typographyTabs.count(), 1);
   assert.equal(
     await page.locator('.page-summary').innerText(),
     'Type scale, weight system, and readability rules.',
@@ -750,7 +775,9 @@ try {
   );
   assert.equal(await page.locator('.font-card').count(), 2);
   assert.deepEqual(
-    await page.locator('.standalone-guidance .page-section > h2').allTextContents(),
+    await page
+      .locator('[data-page-panel="usage"] .standalone-guidance .page-section > h2')
+      .allTextContents(),
     ['Font families', 'Type scale'],
   );
   assert.deepEqual(
@@ -785,6 +812,18 @@ try {
     typeSizes[0] > typeSizes[1] && typeSizes[1] > typeSizes[4],
     'Type samples use real text presets',
   );
+  await typographyTabs.getByRole('tab', { name: 'Samples', exact: true }).click();
+  assert.ok(await page.locator('[data-page-panel="samples"]').isVisible());
+  assert.equal(
+    await page
+      .locator('[data-page-panel="samples"] pre')
+      .filter({ hasText: 'export function Typography()' })
+      .count(),
+    1,
+  );
+  await page.getByRole('heading', { name: 'Register installed Aptos fonts', exact: true }).waitFor();
+  await page.getByRole('heading', { name: 'Load the Inter fallback', exact: true }).waitFor();
+  await typographyTabs.getByRole('tab', { name: 'Usage', exact: true }).click();
   await page.locator('.reference-type-table .type-table__row').first().click();
   await page
     .locator('.copy-toast')

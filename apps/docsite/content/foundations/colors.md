@@ -40,3 +40,15 @@ See [Theming](./theming.md) for providers and custom brand colors.
 
 <!-- generated: data-visualization -->
 <!-- /view:data-visualization -->
+
+## Apply the CoreAI theme
+
+<!-- generated: coreai-theme-code -->
+
+## Apply the Azure theme
+
+<!-- generated: azure-theme-code -->
+
+## Page source
+
+<!-- generated: colors-code -->

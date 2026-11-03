@@ -602,6 +602,18 @@ test('custom foundation views and published Markdown share authored tokens, pres
   }
   for (const row of data.dataViz) assert.ok(sections['data-visualization'].includes(row.value));
   for (const row of data.typography) assert.ok(sections.typography.includes(row.strongPreset));
+  assert.match(sections['coreai-theme-code'], /coreaiLightTheme/);
+  assert.match(sections['azure-theme-code'], /azureLightTheme/);
+  assert.match(sections['aptos-font-code'], /fonts\/fonts\.css/);
+  assert.match(sections['inter-font-code'], /family=Inter/);
+  assert.equal(
+    sections['colors-code'],
+    codeFence(await fs.readFile(path.join(appRoot, 'src/pages/Colors.tsx'), 'utf8')),
+  );
+  assert.equal(
+    sections['typography-code'],
+    codeFence(await fs.readFile(path.join(appRoot, 'src/pages/Typography.tsx'), 'utf8')),
+  );
   assert.equal(data.fonts.length, 2);
   for (const font of data.fonts) {
     assert.ok(sections['font-families'].includes(font.name));
