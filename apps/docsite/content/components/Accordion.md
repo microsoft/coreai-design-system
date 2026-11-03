@@ -22,7 +22,7 @@ reference:
   component: components-accordion
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

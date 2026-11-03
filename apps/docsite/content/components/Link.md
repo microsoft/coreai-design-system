@@ -21,7 +21,7 @@ reference:
   component: components-link
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

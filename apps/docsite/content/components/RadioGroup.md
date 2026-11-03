@@ -24,7 +24,7 @@ reference:
   aliases: [/radio/]
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

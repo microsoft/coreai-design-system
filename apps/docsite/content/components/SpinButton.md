@@ -22,7 +22,7 @@ reference:
   component: components-spinbutton
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

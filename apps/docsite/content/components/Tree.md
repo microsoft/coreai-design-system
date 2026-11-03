@@ -22,7 +22,7 @@ storybookTitles:
   - Components/Tree
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

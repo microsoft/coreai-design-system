@@ -22,7 +22,7 @@ reference:
   aliases: [/menu-item/, /menu-section/, /menu-split-item/]
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

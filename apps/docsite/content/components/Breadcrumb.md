@@ -22,7 +22,7 @@ reference:
   component: components-breadcrumb
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

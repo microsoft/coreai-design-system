@@ -22,7 +22,7 @@ storybookTitles:
   - Components/Dropdown
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

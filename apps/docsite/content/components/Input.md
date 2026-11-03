@@ -21,7 +21,7 @@ reference:
   component: components-input
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

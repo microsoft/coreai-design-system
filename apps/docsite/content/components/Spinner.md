@@ -21,7 +21,7 @@ reference:
   component: components-spinner
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

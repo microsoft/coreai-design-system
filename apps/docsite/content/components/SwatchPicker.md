@@ -23,7 +23,7 @@ reference:
   aliases: [/swatch/]
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

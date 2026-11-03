@@ -23,7 +23,7 @@ reference:
   singlePreview: List examples reuse selection values as DOM IDs. Run one example at a time to keep IDs unique.
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

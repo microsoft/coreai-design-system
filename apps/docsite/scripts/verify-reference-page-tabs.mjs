@@ -47,6 +47,14 @@ try {
     );
     assert.ok(await usage.isVisible());
     assert.ok(!(await samples.isVisible()));
+    const bestPractices = usage.locator('#guidance-best-practices');
+    if (await bestPractices.count()) {
+      assert.equal(
+        await bestPractices.evaluate((heading) => heading.tagName),
+        'H3',
+        `${record.id}: Best practices is an h3`,
+      );
+    }
     const hasShowcase = Boolean(record.defaultExampleId);
     const hasShowcaseOptions = Boolean(record.defaultExampleId) && record.examples.length > 1;
     const showcaseResources = record.resources.filter(isShowcaseResource);

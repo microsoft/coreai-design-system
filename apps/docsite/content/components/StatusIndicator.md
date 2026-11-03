@@ -22,7 +22,7 @@ reference:
   route: components/status-indicator
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

@@ -26,7 +26,7 @@ reference:
   route: templates/shell-and-navigation
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

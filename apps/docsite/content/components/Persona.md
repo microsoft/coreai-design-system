@@ -21,7 +21,7 @@ reference:
   component: components-persona
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

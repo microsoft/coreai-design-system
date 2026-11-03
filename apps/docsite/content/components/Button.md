@@ -23,7 +23,7 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/button/usage'
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

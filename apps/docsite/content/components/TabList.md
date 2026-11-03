@@ -22,7 +22,7 @@ reference:
   aliases: [/horizontal-tab/, /vertical-tab/, /vertical-tab-list/]
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

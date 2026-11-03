@@ -19,7 +19,7 @@ storybookTitles:
   - Components/Dialog
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 

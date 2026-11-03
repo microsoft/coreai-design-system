@@ -22,7 +22,7 @@ reference:
   component: components-tag-tag
 ---
 
-## Best practices
+### Best practices
 
 ### Do
 
