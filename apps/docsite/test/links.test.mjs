@@ -113,8 +113,8 @@ test('docsite destinations follow the repository README', async () => {
   );
 });
 
-test('MCP documentation explains capabilities, safety, data handling, and reporting', async () => {
-  const setup = await read('apps/docsite/content/guides/mcp-setup.md');
+test('Storybook MCP documentation explains capabilities, safety, data handling, and reporting', async () => {
+  const setup = await read('apps/storybook/README.md');
   assert.match(setup, /Authentication: none/);
   for (const name of ['docs-list', 'docs-show', 'docs-show-story']) {
     assert.ok(setup.includes(`\`${name}\``));
@@ -122,7 +122,7 @@ test('MCP documentation explains capabilities, safety, data handling, and report
   assert.match(setup, /All three tools return design-system documentation/);
   assert.match(
     setup,
-    /does not\s+read your project files, access customer resources, execute examples, or change data/,
+    /does not\s+read your\s+project files, access customer resources, execute examples, or change data/,
   );
   assert.match(setup, /not every\s+upstream story or API/);
   assert.match(setup, /Do not include secrets, access tokens/);
@@ -134,7 +134,7 @@ test('MCP documentation explains capabilities, safety, data handling, and report
   assert.match(setup, /https:\/\/privacy\.microsoft\.com\/privacystatement/);
   assert.match(setup, /security_best_practices/);
   assert.match(setup, /https:\/\/github\.com\/microsoft\/coreai-design-system#legal/);
-  assert.match(setup, /Report security vulnerabilities privately/);
+  assert.match(setup, /Report security vulnerabilities\s+privately/);
   assert.match(setup, /blob\/main\/SECURITY\.md/);
 });
 

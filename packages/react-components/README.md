@@ -116,9 +116,11 @@ for a starter prompt.
 For repeated work, optionally install [agent/SKILL.md](agent/SKILL.md) as a
 reviewable file in the consuming repository, such as
 `.github/skills/coreai-ds-fluentui-react/SKILL.md`. Other clients can use their
-supported skills directory. Before writing it, an agent must show the destination
-and proposed changes and obtain approval. Preserve existing repository-specific
-instructions rather than overwriting them.
+supported skills directory, such as
+`.agents/skills/coreai-ds-fluentui-react/SKILL.md` or
+`.claude/skills/coreai-ds-fluentui-react/SKILL.md`. Before writing it, an agent
+must show the destination and proposed changes and obtain approval. Preserve
+existing repository-specific instructions rather than overwriting them.
 
 The skill defines targeted retrieval, version checks, import rules, and safeguards.
 It does not duplicate component documentation or run downloaded code. Published

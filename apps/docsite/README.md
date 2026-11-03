@@ -124,7 +124,7 @@ Each page has a physical HTML file and a Markdown counterpart, for example
 expanded source and live React previews. Markdown includes the same guidance
 and source without requiring JavaScript. Other outputs include:
 
-- `guides/setup/` and `guides/setup.md`: provider, packages, and copy instructions.
+- `guides/package/` and `guides/package.md`: provider, packages, and copy instructions.
 - `source/examples/{story-id}.tsx`: complete, default-exported example modules.
 - `source/templates/empty-state/EmptyState.tsx`: the template source, not an npm export.
 - `llms.txt`: discovery links and exact package versions.

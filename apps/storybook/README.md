@@ -95,7 +95,7 @@ CoreAI-specific component knowledge (props, example stories, templates) instead 
 names or pulling raw upstream Fluent APIs. This section documents how the MCP **content** is
 authored. For how the hosted server is **deployed**, see
 [docs/CI-CD-SETUP.md](../../docs/CI-CD-SETUP.md#app--mcp-hosting-public-storybook-authenticated-docsite). For
-**connection setup** (`mcp.json`, server URLs), see [MCP setup](../docsite/content/guides/mcp-setup.md).
+**connection setup** (`mcp.json`, server URLs), see [Client setup](#client-setup).
 For the **behavioral rules** an agent should follow (which server to prefer, component-ID quirks,
 offline fallback), see the distributable
 [`agent/SKILL.md`](../../packages/react-components/agent/SKILL.md), mirrored to the hosted
@@ -121,15 +121,77 @@ against the local server; the hosted one picks up changes on the next deploy.
 The Storybook runtime, local addon, and standalone host are pinned to the same `10.6.1` release so
 both MCP surfaces use Storybook's shared docs toolset and manifest schema.
 
-Both servers return read-only design-system content, including selected upstream stories. See
-[MCP scope, safety, and data handling](../docsite/content/guides/mcp-setup.md#scope-safety-and-data-handling)
-for capabilities, limitations, client precautions, privacy, and licensing information.
-
 **Toolsets:**
 
 - `docs-list` — enumerate every component and standalone docs entry, optionally with story IDs.
 - `docs-show` — full docs for one component: prop types, initial examples, and its story index.
 - `docs-show-story` — complete docs for a single named story variant.
+
+### Client setup
+
+Connect using an `http`-type MCP client. Authentication: none.
+Add it to your MCP client configuration. VS Code uses `.vscode/mcp.json`; Copilot CLI
+uses `~/.copilot/mcp-config.json`.
+
+```json
+{
+  "servers": {
+    "coreai-ds-docs": {
+      "type": "http",
+      "url": "https://coreai-ds-storybook.azurewebsites.net/mcp"
+    }
+  },
+  "inputs": []
+}
+```
+
+Use only the URL. Do not add headers, API keys, bearer tokens, or other secrets.
+
+- **VS Code:** create or update `.vscode/mcp.json`, start the configured server, and confirm the
+  documentation tools are available.
+- **Copilot CLI:** run `/mcp add`, choose HTTP, and enter the server name and URL. Run `/mcp show`
+  to confirm the connection.
+- **Copilot App:** open **Customize > Add > MCP Server**, choose HTTP, enter the server name and
+  URL, and select **Add Server**. Start an agent session and confirm the documentation tools are
+  available.
+
+Review the configuration and its destination before asking an agent to change client settings.
+
+### Scope, safety, and data handling
+
+All three tools return design-system documentation and examples. The server does not read your
+project files, access customer resources, execute examples, or change data. It does not host an AI
+model. The MCP client, agent, or model decides how to use the responses and may have capabilities
+beyond this server.
+
+The catalog covers selected Fluent stories, CoreAI overrides, and local examples, not every
+upstream story or API. Documentation and generated examples can be incomplete or incorrect.
+Review and test returned code for correctness, accessibility, security, and applicable licenses
+before using it. Report missing or incorrect documentation through
+[GitHub issues](https://github.com/microsoft/coreai-design-system/issues).
+
+The hosted endpoint uses HTTPS and accepts MCP requests without credentials. Requests contain
+tool names and arguments, such as component or story IDs. Do not include secrets, access tokens,
+personal information, or confidential project content in those arguments.
+
+The application does not collect product-usage telemetry or intentionally log request bodies. The
+host logs server failures. Azure hosting and the selected MCP client or model may process connection
+metadata or use their own logging and data-handling policies. No application telemetry does not mean
+that no data reaches the hosting platform. See the
+[Microsoft Privacy Statement](https://privacy.microsoft.com/privacystatement) and the client's
+privacy documentation. Do not assume processing stays in your region.
+
+Review the security and permissions of the MCP client, agent, and model before connecting. Use only
+the capabilities the workflow needs, review proposed code changes, and follow organizational
+security and data-handling requirements. See
+[MCP security best practices](https://modelcontextprotocol.io/specification/draft/basic/security_best_practices).
+
+See [Legal](https://github.com/microsoft/coreai-design-system#legal) for the source-code license,
+hosted MCP terms of use, privacy statement, and third-party notices. The client integration must
+meet the consuming organization's compliance requirements. Report security vulnerabilities
+privately using
+[SECURITY.md](https://github.com/microsoft/coreai-design-system/blob/main/SECURITY.md), not through
+public issues.
 
 ### How accurate props are produced (React Component Meta)
 

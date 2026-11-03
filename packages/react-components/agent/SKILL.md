@@ -11,7 +11,7 @@ Base URL: https://microsoft.github.io/coreai-design-system/
 
 - Start here: https://microsoft.github.io/coreai-design-system/llms.txt
 - Agent workflow: https://microsoft.github.io/coreai-design-system/guides/agent-workflow.md
-- Setup: https://microsoft.github.io/coreai-design-system/guides/setup.md
+- Package setup: https://microsoft.github.io/coreai-design-system/guides/package.md
 - Exact routes, examples, source downloads, API membership, and versions:
   https://microsoft.github.io/coreai-design-system/llms/index.json
 
