@@ -1,13 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-/**
- * `Illicon` — turns a filled Fluent icon or SVG element into a dotted illustration.
- *
- * Original vector paths are sampled at the requested output size. Dots have
- * a fixed 2px diameter and 3px gap. Rasterized occupancy is cached per icon and size.
- * Output uses CSS-pixel coordinates and preserves the source aspect ratio.
- */
 import * as React from 'react';
 import {
   makeStyles,
@@ -15,99 +8,78 @@ import {
   tokens,
   type ForwardRefComponent,
 } from '@fluentui/react-components';
-import type { FluentIcon } from '@fluentui/react-icons';
 import {
-  buildDottedPath,
-  getDotSettings,
-  peekRasterizedIcon,
-  rasterizeIcon,
-} from './illiconRasterize.js';
+  getDotGridCircles,
+  getDotGridLayout,
+  type DotGridData,
+  type DotGridRenderOptions,
+} from '../illicons/dotGridGeometry.js';
 
-export type IlliconSize = number;
-export type IlliconIcon = FluentIcon | React.ReactElement<React.SVGProps<SVGSVGElement>>;
+export type IlliconProps = Omit<React.HTMLAttributes<HTMLSpanElement>, 'children'> &
+  (
+    | (DotGridRenderOptions & { data: DotGridData; children?: never; size?: never })
+    | {
+        data?: never;
+        radius?: never;
+        pitch?: never;
+        /** Display width for custom SVG artwork only. Grids use cells times pitch. */
+        size?: number;
+        /** Trusted inline SVG. Use currentColor for theme-aware paint; geometry is not rewritten. */
+        children: React.ReactElement<React.SVGProps<SVGSVGElement>>;
+      }
+  );
 
-export type IlliconProps = Omit<React.HTMLAttributes<HTMLSpanElement>, 'children'> & {
-  /**
-   * Fluent icon component or SVG element; Fluent Filled icons are recommended.
-   * Custom SVGs require static, flattened filled paths without strokes, transforms,
-   * effects, or external CSS. Use omitted fill, currentColor, or opaque named/3-/6-digit
-   * hex colors via SVG attributes. Paths merge into one color; viewBox sets the aspect ratio.
-   * Results are cached by icon identity and size. Reuse SVG elements for caching;
-   * provide a new element when geometry changes.
-   */
-  icon: IlliconIcon;
-  /**
-   * Output SVG viewport width in CSS pixels. Must be a positive, finite whole number.
-   * The height follows the source viewBox aspect ratio, preserving its internal whitespace
-   * and path positioning. A minimum of 100px is recommended for visual clarity but not
-   * enforced; smaller sizes remain supported but may lose recognizable details depending
-   * on icon complexity. Dots retain their fixed 2px diameter and 3px gap at every size.
-   *
-   * @default 100
-   */
-  size?: IlliconSize;
-};
-
-// Layout effects don't run during SSR, so this only matters for the warning
-// React logs when `useLayoutEffect` is referenced in a server render; fall
-// back to `useEffect` there instead.
-const useIsomorphicLayoutEffect =
-  typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
-
-const useIlliconStyles = makeStyles({
+const useStyles = makeStyles({
   root: {
     display: 'inline-flex',
     flexShrink: 0,
-    color: tokens.colorNeutralForegroundOnBrand,
+    color: tokens.colorNeutralForeground1,
   },
   svg: {
     display: 'block',
+    flexShrink: 0,
+  },
+  customSvg: {
+    width: '100%',
+    height: 'auto',
   },
 });
 
 /**
- * Turns a filled Fluent icon or SVG element into a dotted illustration. Pass
- * an accessible name via `aria-label` or `aria-labelledby` for a meaningful
- * image; omit both to treat the icon as decorative.
+ * Renders saved occupancy as SVG circles, or preserves custom inline SVG artwork.
+ * Supply aria-label/aria-labelledby for meaningful images; otherwise it is decorative.
+ * Convert source icons separately with iconToDotGrid before rendering.
  */
 export const Illicon: ForwardRefComponent<IlliconProps> = React.forwardRef<
   HTMLSpanElement,
   IlliconProps
 >((props, ref) => {
   const {
-    icon,
-    size = 100,
+    data,
+    children,
+    radius,
+    pitch,
+    size,
     className,
     style,
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     ...rest
   } = props;
-  const styles = useIlliconStyles();
-  const sourceRef = React.useRef<HTMLSpanElement>(null);
-  const [, forceRerender] = React.useReducer((n: number) => n + 1, 0);
-
-  getDotSettings(size);
-  const rasterizedIcon = peekRasterizedIcon(icon, size);
-
-  // A new icon/size pair samples the original paths before paint.
-  useIsomorphicLayoutEffect(() => {
-    if (rasterizedIcon) return;
-    const svg = sourceRef.current?.querySelector('svg');
-    if (svg) {
-      rasterizeIcon(icon, svg, size);
-      forceRerender();
-    }
-  }, [icon, rasterizedIcon, size]);
-
-  const renderedHeight = rasterizedIcon ? rasterizedIcon.height : size;
-  const dottedPath = React.useMemo(
-    () => (rasterizedIcon ? buildDottedPath(rasterizedIcon) : ''),
-    [rasterizedIcon],
-  );
-
+  const styles = useStyles();
+  if (data !== undefined && size !== undefined) {
+    throw new Error(
+      'Illicon: size applies only to custom SVG artwork; grids use cells times pitch.',
+    );
+  }
+  if (size !== undefined && (!Number.isFinite(size) || size <= 0)) {
+    throw new Error('Illicon: size must be positive and finite.');
+  }
+  if ((data !== undefined) === (children !== undefined)) {
+    throw new Error('Illicon: provide either grid data or one inline SVG, not both.');
+  }
+  const layout = data === undefined ? undefined : getDotGridLayout(data, { radius, pitch });
   const labelled = Boolean(ariaLabel || ariaLabelledBy);
-
   return (
     <span
       ref={ref}
@@ -116,26 +88,30 @@ export const Illicon: ForwardRefComponent<IlliconProps> = React.forwardRef<
       aria-labelledby={ariaLabelledBy}
       aria-hidden={labelled ? undefined : true}
       className={mergeClasses('fui-Illicon', styles.root, className)}
-      style={{ width: size, height: renderedHeight, ...style }}
+      style={{ width: size ?? layout?.width, ...style }}
       {...rest}
     >
-      {rasterizedIcon ? (
+      {data !== undefined && layout ? (
         <svg
           className={styles.svg}
-          width={size}
-          height={renderedHeight}
-          viewBox={`0 0 ${size} ${renderedHeight}`}
+          width={layout.width}
+          height={layout.height}
+          viewBox={`0 0 ${layout.width} ${layout.height}`}
+          fill="currentColor"
           focusable="false"
           aria-hidden="true"
         >
-          <path d={dottedPath} fill="currentColor" />
+          {Array.from(getDotGridCircles(data, layout.pitch, layout.radius), ({ cx, cy }) => (
+            <circle key={`${cx},${cy}`} cx={cx} cy={cy} r={layout.radius} />
+          ))}
         </svg>
-      ) : (
-        // Rendered only until the icon is sampled; never visible.
-        <span ref={sourceRef} hidden>
-          {React.isValidElement(icon) ? icon : React.createElement(icon)}
-        </span>
-      )}
+      ) : children ? (
+        React.cloneElement(children, {
+          className: mergeClasses(styles.svg, styles.customSvg, children.props.className),
+          focusable: 'false',
+          'aria-hidden': true,
+        })
+      ) : null}
     </span>
   );
 }) as ForwardRefComponent<IlliconProps>;

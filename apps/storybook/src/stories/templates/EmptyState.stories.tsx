@@ -31,21 +31,132 @@ import {
   CardFooter,
   CardHeader,
   Divider,
+  Illicon,
   Link,
   Radio,
   RadioGroup,
   Text,
   tokens,
   useId,
+  type DotGridData,
 } from '@coreai-ds/react-components';
-import {
-  ArrowUpRegular,
-  CodeRegular,
-  ErrorCircleRegular,
-  LockClosedRegular,
-  SearchRegular,
-  SparkleRegular,
-} from '@fluentui/react-icons';
+import { ArrowUpRegular, CodeRegular } from '@fluentui/react-icons';
+
+// Generated once with iconToDotGrid at each source icon's native 24 x 24 resolution.
+const illustrations = {
+  agents: {
+    rows: [
+      '000000000000000000000000',
+      '000000000000000000000000',
+      '000000000000000000000000',
+      '000000011111001110000000',
+      '000000111111011111000000',
+      '000001111111011011100000',
+      '000001111110010011100000',
+      '000011111110010011110000',
+      '000011111110110111110000',
+      '000111111100100111111000',
+      '001111111100100111111000',
+      '001111111101101111111100',
+      '001111111001001111111100',
+      '001111111001001111111100',
+      '000111111011011111111000',
+      '000011110011011111110000',
+      '000011110010011111110000',
+      '000001110110111111100000',
+      '000001100110111111100000',
+      '000000111100111111000000',
+      '000000011001111110000000',
+      '000000000000000000000000',
+      '000000000000000000000000',
+      '000000000000000000000000',
+    ],
+  },
+  search: {
+    rows: [
+      '000000000000000000000000',
+      '000000000000000000000000',
+      '000000000000000000000000',
+      '000000001111110000000000',
+      '000000111111111100000000',
+      '000001110000001110000000',
+      '000011000000000011000000',
+      '000011000000000011000000',
+      '000110000000000001100000',
+      '000110000000000001100000',
+      '000110000000000001100000',
+      '000110000000000001100000',
+      '000110000000000001100000',
+      '000110000000000001100000',
+      '000011000000000011000000',
+      '000011000000000011000000',
+      '000001110000001111000000',
+      '000000111111111111100000',
+      '000000001111110001110000',
+      '000000000000000000111000',
+      '000000000000000000011100',
+      '000000000000000000001100',
+      '000000000000000000000000',
+      '000000000000000000000000',
+    ],
+  },
+  lock: {
+    rows: [
+      '000000000000000000000000',
+      '000000000011110000000000',
+      '000000001111111100000000',
+      '000000001100001100000000',
+      '000000011000000110000000',
+      '000000011000000110000000',
+      '000000011000000110000000',
+      '000000011000000110000000',
+      '000001111111111111000000',
+      '000001111111111111100000',
+      '000011000000000000110000',
+      '000011000000000000110000',
+      '000011000000000000110000',
+      '000011000000000000110000',
+      '000011000001100000110000',
+      '000011000001100000110000',
+      '000011000000000000110000',
+      '000011000000000000110000',
+      '000011000000000000110000',
+      '000011000000000000110000',
+      '000001111111111111100000',
+      '000000111111111111000000',
+      '000000000000000000000000',
+      '000000000000000000000000',
+    ],
+  },
+  error: {
+    rows: [
+      '000000000000000000000000',
+      '000000000000000000000000',
+      '000000000111111000000000',
+      '000000011111111110000000',
+      '000001110000000011100000',
+      '000011100000000001110000',
+      '000011000000000000110000',
+      '000110000001100000011000',
+      '000100000001100000001000',
+      '001100000001100000001100',
+      '001100000001100000001100',
+      '001100000001100000001100',
+      '001100000001100000001100',
+      '001100000000000000001100',
+      '001100000000000000001100',
+      '000100000001100000001000',
+      '000110000000000000011000',
+      '000011000000000000110000',
+      '000011100000000001110000',
+      '000001110000000011100000',
+      '000000011111111110000000',
+      '000000000111111000000000',
+      '000000000000000000000000',
+      '000000000000000000000000',
+    ],
+  },
+} satisfies Record<string, DotGridData>;
 
 /**
  * A compact empty state with a heading, two actions, and a supporting link.
@@ -69,39 +180,27 @@ export const Default: StoryObj = {
 };
 
 /**
- * Adds an illustration and supporting description to the standard empty-state
- * actions and link.
+ * Adds a saved-data Illicon and supporting description to the standard empty-state
+ * actions and link. The 24-cell grid renders at 120px with the default 5px pitch.
  *
  * @summary Empty state with an illustration and supporting description.
  */
 export const WithIllustration: StoryObj = {
   name: 'Empty State with Illustration',
-  render: () => {
-    const styles = /* css */ `
-      .empty-state-illustration-example__image {
-        width: 64px;
-        height: 64px;
+  render: () => (
+    <EmptyState
+      illustration={<Illicon data={illustrations.agents} />}
+      header="Benefit from Action Artifact"
+      description="Disambiguate with text or exclude entirely."
+      actions={
+        <>
+          <Button appearance="primary">Create agent</Button>
+          <Button icon={<CodeRegular />}>Code</Button>
+        </>
       }
-    `;
-
-    return (
-      <>
-        <style>{styles}</style>
-        <EmptyState
-          illustration={<SparkleRegular className="empty-state-illustration-example__image" />}
-          header="Benefit from Action Artifact"
-          description="Disambiguate with text or exclude entirely."
-          actions={
-            <>
-              <Button appearance="primary">Create agent</Button>
-              <Button icon={<CodeRegular />}>Code</Button>
-            </>
-          }
-          links={<Link href="#">How to make the coolest artifact ever</Link>}
-        />
-      </>
-    );
-  },
+      links={<Link href="#">How to make the coolest artifact ever</Link>}
+    />
+  ),
 };
 
 /**
@@ -560,7 +659,7 @@ export const WithDetailCards: StoryObj = {
 export const NoResults: StoryObj = {
   render: () => (
     <EmptyState
-      illustration={<SearchRegular />}
+      illustration={<Illicon data={illustrations.search} />}
       header="No results found"
       description="Try adjusting your search or filters to find what you're looking for."
     />
@@ -576,7 +675,7 @@ export const NoResults: StoryObj = {
 export const NoPermissions: StoryObj = {
   render: () => (
     <EmptyState
-      illustration={<LockClosedRegular />}
+      illustration={<Illicon data={illustrations.lock} />}
       header="Access required"
       description="You don't have permission to view this content."
       actions={<Button appearance="secondary">Request access</Button>}
@@ -593,7 +692,7 @@ export const NoPermissions: StoryObj = {
 export const ErrorState: StoryObj = {
   render: () => (
     <EmptyState
-      illustration={<ErrorCircleRegular />}
+      illustration={<Illicon data={illustrations.error} />}
       header="Something went wrong"
       description="An error occurred while loading this content."
       actions={<Button appearance="primary">Try again</Button>}
@@ -606,7 +705,8 @@ export const ErrorState: StoryObj = {
  * the `templates-empty-state--source-code` docs entry.
  *
  * Composable empty-state layout with optional illustration, description,
- * metrics, cards, actions, and links.
+ * metrics, cards, actions, and links. Illustrated variants use saved Illicon
+ * grids; no browser canvas conversion runs during rendering.
  *
  * @summary Slot-based empty-state layout with 9 composition examples.
  */

@@ -25,7 +25,8 @@ headings in this changelog.
 
 ### Added
 
-- Added `Illicon`, which converts filled Fluent icons or plain SVG elements into illustrations with fixed 2px dots and 3px gaps while preserving aspect ratio and inheriting `currentColor`.
+- `Illicon` renders occupancy-only `DotGridData` as theme-aware SVG circles at cells-times-pitch pixel dimensions, with diameter-aware pixel alignment and separate custom inline SVG sizing.
+- `iconToDotGrid` converts static SVG and Fluent icons through browser canvas sampling; `dotGridToSvg` exports editable circle-based SVG for Figma. Both are exported from the main package.
 
 ## [0.12.0] - 2026-10-16
 
