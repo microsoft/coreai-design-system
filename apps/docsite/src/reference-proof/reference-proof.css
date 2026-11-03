@@ -203,6 +203,112 @@
   gap: 48px;
 }
 
+.reference-changelog-view .changelog-list {
+  gap: 0;
+}
+
+.reference-changelog-view .changelog-month {
+  position: relative;
+  padding-inline-start: 32px;
+  padding-block-end: 56px;
+}
+
+.reference-changelog-view .changelog-month::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 3px;
+  inset-block: 12px -12px;
+  width: 1px;
+  background: var(--colorNeutralStroke2);
+}
+
+.reference-changelog-view .changelog-month:last-child {
+  padding-block-end: 0;
+}
+
+.reference-changelog-view .changelog-month:last-child::before {
+  inset-block-end: 0;
+}
+
+.reference-changelog-view .changelog-month__header {
+  position: relative;
+}
+
+.reference-changelog-view .changelog-month__header::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -32px;
+  inset-block-start: 9px;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--borderRadiusCircular);
+  background: var(--colorNeutralForeground1);
+  box-shadow: 0 0 0 4px var(--colorNeutralBackground1);
+}
+
+.reference-changelog-view .changelog-month__entries {
+  gap: 40px;
+  margin-block-start: 24px;
+}
+
+.reference-changelog-view .changelog-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reference-changelog-view .changelog-entry__version {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.reference-changelog-view .changelog-entry__version time {
+  color: var(--colorNeutralForeground3);
+}
+
+.reference-changelog-view .changelog-entry__content {
+  width: 100%;
+  gap: 24px;
+}
+
+.reference-changelog-view .changelog-entry__sections {
+  gap: 28px;
+  border-block-start: 1px solid var(--colorNeutralStroke2);
+  padding-block-start: 24px;
+}
+
+.reference-changelog-view .changelog-entry__section {
+  gap: 12px;
+}
+
+.reference-changelog-view .changelog-entry__section > ul {
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+.reference-changelog-view .changelog-entry__section > ul > li {
+  position: relative;
+  padding-inline-start: 0;
+}
+
+.reference-changelog-view .changelog-entry__section > ul > li::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -31px;
+  inset-block-start: calc(var(--lineHeightBase300) / 2 - 2.5px);
+  width: 5px;
+  height: 5px;
+  border-radius: var(--borderRadiusCircular);
+  background: var(--colorBrandForegroundLink);
+  box-shadow: 0 0 0 4px var(--colorNeutralBackground1);
+}
+
+.reference-changelog-view .changelog-entry__section > ul > li + li {
+  margin-block-start: 16px;
+}
+
 .changelog-intro {
   display: block;
   max-width: 760px;
