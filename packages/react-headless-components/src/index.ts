@@ -188,6 +188,53 @@ export {
   type DividerProps,
 } from './Divider.js';
 export {
+  Drawer,
+  drawerClassNames,
+  DrawerProvider,
+  useDrawerContext,
+  useDrawerContextValue,
+  type DrawerContextValue,
+  type DrawerProps,
+  type DrawerSize,
+  type DrawerSlots,
+  type DrawerState,
+} from './Drawer.js';
+export {
+  DrawerBody,
+  drawerBodyClassNames,
+  type DrawerBodyProps,
+  type DrawerBodySlots,
+  type DrawerBodyState,
+} from './DrawerBody.js';
+export {
+  DrawerFooter,
+  drawerFooterClassNames,
+  type DrawerFooterProps,
+  type DrawerFooterSlots,
+  type DrawerFooterState,
+} from './DrawerFooter.js';
+export {
+  DrawerHeader,
+  drawerHeaderClassNames,
+  type DrawerHeaderProps,
+  type DrawerHeaderSlots,
+  type DrawerHeaderState,
+} from './DrawerHeader.js';
+export {
+  DrawerHeaderNavigation,
+  drawerHeaderNavigationClassNames,
+  type DrawerHeaderNavigationProps,
+  type DrawerHeaderNavigationSlots,
+  type DrawerHeaderNavigationState,
+} from './DrawerHeaderNavigation.js';
+export {
+  DrawerHeaderTitle,
+  drawerHeaderTitleClassNames,
+  type DrawerHeaderTitleProps,
+  type DrawerHeaderTitleSlots,
+  type DrawerHeaderTitleState,
+} from './DrawerHeaderTitle.js';
+export {
   Dropdown,
   dropdownClassNames,
   type DropdownActiveOptionChangeData,
@@ -212,6 +259,13 @@ export {
 } from './Field.js';
 export { Image, imageClassNames, type ImageProps } from './Image.js';
 export {
+  InlineDrawer,
+  inlineDrawerClassNames,
+  type InlineDrawerProps,
+  type InlineDrawerSlots,
+  type InlineDrawerState,
+} from './InlineDrawer.js';
+export {
   InfoButton,
   infoButtonClassNames,
   type InfoButtonProps,
@@ -235,11 +289,108 @@ export {
   type OptionSelectionEvent,
 } from './Listbox.js';
 export {
+  Menu,
+  useMenuContext,
+  useMenuContextValues,
+  type MenuContextValue,
+  type MenuContextValues,
+  type MenuOpenChangeData,
+  type MenuOpenEvent,
+  type MenuProps,
+  type MenuState,
+} from './Menu.js';
+export {
   MenuButton,
   menuButtonClassNames,
   type MenuButtonProps,
   type MenuButtonSlots,
 } from './MenuButton.js';
+export {
+  MenuDivider,
+  menuDividerClassNames,
+  type MenuDividerProps,
+  type MenuDividerSlots,
+  type MenuDividerState,
+} from './MenuDivider.js';
+export {
+  MenuGroup,
+  menuGroupClassNames,
+  useMenuGroupContextValues,
+  type MenuGroupContextValues,
+  type MenuGroupProps,
+  type MenuGroupSlots,
+  type MenuGroupState,
+} from './MenuGroup.js';
+export {
+  MenuGroupHeader,
+  menuGroupHeaderClassNames,
+  type MenuGroupHeaderProps,
+  type MenuGroupHeaderSlots,
+  type MenuGroupHeaderState,
+} from './MenuGroupHeader.js';
+export {
+  MenuItem,
+  menuItemClassNames,
+  type MenuItemProps,
+  type MenuItemSlots,
+  type MenuItemState,
+} from './MenuItem.js';
+export {
+  MenuItemCheckbox,
+  menuItemCheckboxClassNames,
+  type MenuItemCheckboxProps,
+  type MenuItemCheckboxState,
+} from './MenuItemCheckbox.js';
+export {
+  MenuItemLink,
+  menuItemLinkClassNames,
+  type MenuItemLinkProps,
+  type MenuItemLinkSlots,
+  type MenuItemLinkState,
+} from './MenuItemLink.js';
+export {
+  MenuItemRadio,
+  menuItemRadioClassNames,
+  type MenuItemRadioProps,
+  type MenuItemRadioState,
+} from './MenuItemRadio.js';
+export {
+  MenuItemSwitch,
+  menuItemSwitchClassNames,
+  type MenuItemSwitchProps,
+  type MenuItemSwitchSlots,
+  type MenuItemSwitchState,
+} from './MenuItemSwitch.js';
+export {
+  MenuList,
+  menuListClassNames,
+  useMenuListContextValues,
+  type MenuListProps,
+  type MenuListSlots,
+  type MenuListState,
+} from './MenuList.js';
+export {
+  MenuPopover,
+  menuPopoverClassNames,
+  type MenuPopoverProps,
+  type MenuPopoverSlots,
+  type MenuPopoverState,
+} from './MenuPopover.js';
+export {
+  MenuSplitGroup,
+  menuSplitGroupClassNames,
+  useMenuSplitGroupContextValues,
+  type MenuSplitGroupContextValues,
+  type MenuSplitGroupProps,
+  type MenuSplitGroupSlots,
+  type MenuSplitGroupState,
+} from './MenuSplitGroup.js';
+export {
+  MenuTrigger,
+  type MenuTriggerChildProps,
+  type MenuTriggerProps,
+  type MenuTriggerState,
+} from './MenuTrigger.js';
 export { Option, optionClassNames, type OptionProps, type OptionSlots } from './Option.js';
 export {
   OptionGroup,
@@ -247,6 +398,13 @@ export {
   type OptionGroupProps,
   type OptionGroupSlots,
 } from './OptionGroup.js';
+export {
+  OverlayDrawer,
+  overlayDrawerClassNames,
+  type OverlayDrawerProps,
+  type OverlayDrawerSlots,
+  type OverlayDrawerState,
+} from './OverlayDrawer.js';
 export {
   Persona,
   personaClassNames,

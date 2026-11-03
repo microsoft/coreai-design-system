@@ -1,0 +1,17 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * CoreAI source: [Overlay.styles.ts](../../react-components/src/components/Overlay.styles.ts),
+ * reference commit ebb5a9e. The defaults-gated surface border is the only Menu override.
+ * Fluent baseline: @fluentui/react-menu 9.25.8,
+ * [useMenuPopoverStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuPopover/useMenuPopoverStyles.styles.raw.js).
+ * There are no CoreAI Menu prop defaults. The old first-div beak selector is inapplicable:
+ * the current public MenuPopover has no arrow slot or beak.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .MenuPopover {
+    border: var(--strokeWidthThin) solid var(--colorNeutralStroke3);
+  }
+}

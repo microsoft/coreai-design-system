@@ -20,6 +20,7 @@ export default defineConfig({
   optimizeDeps: {
     include: [
       'react/jsx-dev-runtime',
+      '@microsoft/focusgroup-polyfill',
       '@fluentui/react-utilities',
       '@fluentui/react-shared-contexts',
       '@fluentui/react-icons/headless/svg/add',
@@ -61,6 +62,7 @@ export default defineConfig({
       '@fluentui/react-headless-components-preview/dialog',
       '@fluentui/react-headless-components-preview/divider',
       '@fluentui/react-headless-components-preview/dropdown',
+      '@fluentui/react-headless-components-preview/drawer',
       '@fluentui/react-headless-components-preview/field',
       '@fluentui/react-headless-components-preview/image',
       '@fluentui/react-headless-components-preview/info-label',

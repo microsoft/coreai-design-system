@@ -126,6 +126,9 @@ not a claim that the whole application bundle is Griffel-free.
 - The native-picker/dialog batch uses the installed snapshot at commit `1cabc6b`:
   the [Combobox family in react-combobox 9.17.7](https://unpkg.com/@fluentui/react-combobox@9.17.7/lib/components/Combobox/useComboboxStyles.styles.raw.js)
   and [Dialog family in react-dialog 9.18.6](https://unpkg.com/@fluentui/react-dialog@9.18.6/lib/components/DialogSurface/useDialogSurfaceStyles.styles.raw.js).
+- The native-menu/drawer batch uses the installed snapshot at commit `ebb5a9e`:
+  the [Menu family in react-menu 9.25.8](https://unpkg.com/@fluentui/react-menu@9.25.8/lib/components/MenuPopover/useMenuPopoverStyles.styles.raw.js)
+  and [Drawer family in react-drawer 9.13.5](https://unpkg.com/@fluentui/react-drawer@9.13.5/lib/components/OverlayDrawer/useOverlayDrawerStyles.styles.raw.js).
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -257,6 +260,9 @@ comparison reports instead of being normalized to the old positioning pipeline.
 Combobox/Dropdown retain their current positioning, joined multiselect text, and native form/reset
 contracts. DropdownButton keeps its separate Button-style surface. Dialog form examples use
 controlled submission; bare `method="dialog"` retains the upstream native-close/context-state boundary.
+OverlayDrawer is controlled-only in the pinned facade. Drawer dispatches to the supported overlay
+or inline variant, with the current DrawerProvider/context; no defaultOpen, legacy motion, or
+backdrop-slot aliases are added. DrawerHeaderTitle reuses the completed DialogTitle CSS foundation.
 
 ## Conversion workflow
 
@@ -390,8 +396,14 @@ headless hooks, without introducing live-region behavior.
 Button needs no overlay or focusgroup polyfill. Every conversion must follow the headless
 [browser-support](https://storybooks.fluentui.dev/headless/llms/overview-browser-support.txt) and
 [polyfill](https://storybooks.fluentui.dev/headless/llms/overview-polyfills-fallbacks.txt) contracts.
-In particular, native dialog/popover/anchor positioning replace parts of the old overlay pipeline,
-but arrow-key `focusgroup` navigation still requires a consumer-supplied polyfill today.
+In particular, native dialog/popover/anchor positioning replace parts of the old overlay pipeline.
+Arrow-key `focusgroup` navigation requires a consumer-supplied polyfill where native support is absent;
+detect the actual browser capability rather than relying on a version list.
+Menu's experimental consumers initialize the documented `polyfill(root)` API and newly mounted
+subtree groups. The exact polyfill is a development dependency of the test/Storybook consumers,
+not an import or runtime dependency of the component library.
+Menu checks exercise both native focusgroup and a feature-disabled Chromium mode that executes
+the actual consumer polyfill, including cold opening, reopening, nested groups, and Tab behavior.
 
 ## Practical parity coverage
 
@@ -462,6 +474,10 @@ Native pickers add grouped/freeform/multiselect options, exact selection payload
 keyboard/forms/reset, popup hiding, collision/relocation, and custom trigger surfaces. Dialog adds
 modal/alert/non-modal focus/inertness/restoration, cancellation/veto, forms and nesting. Its default
 width is tested exactly as `min(600px, document width)` across the threshold and both modal modes.
+Menu covers current native/popover and checked-item composition, first-open/reopen focus,
+focusgroup navigation, submenus/split actions, links/forms, and both native/polyfill execution.
+Drawer covers overlay/inline geometry, modal/non-modal focus and dismissal, viewport/RTL edges,
+headers/footers/separators, native forms and nested top layers.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 

@@ -305,6 +305,7 @@ const config: StorybookConfig = {
       optimizeDeps: {
         include: [
           '@coreai-ds/react-components',
+          '@microsoft/focusgroup-polyfill',
           '@fluentui/react-utilities',
           '@fluentui/react-shared-contexts',
           '@fluentui/react-icons/headless/svg/add',
@@ -346,6 +347,7 @@ const config: StorybookConfig = {
           '@fluentui/react-headless-components-preview/dialog',
           '@fluentui/react-headless-components-preview/divider',
           '@fluentui/react-headless-components-preview/dropdown',
+          '@fluentui/react-headless-components-preview/drawer',
           '@fluentui/react-headless-components-preview/field',
           '@fluentui/react-headless-components-preview/image',
           '@fluentui/react-headless-components-preview/info-label',

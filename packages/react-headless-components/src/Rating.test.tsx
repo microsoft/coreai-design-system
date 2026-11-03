@@ -433,6 +433,7 @@ test('keeps custom glyphs caller-owned and applies no private glyph classes to t
   }
   const screen = await render(
     <CoreAIFluentProvider>
+      <div>Pointer parking</div>
       <Rating
         aria-label="Custom symbols"
         value={1.5}
@@ -442,6 +443,15 @@ test('keeps custom glyphs caller-owned and applies no private glyph classes to t
       />
     </CoreAIFluentProvider>,
   );
+  const root = screen.getByRole('radiogroup', { name: 'Custom symbols' }).element();
+  if (!(root instanceof HTMLElement)) throw new Error('Expected a native Rating root');
+  await userEvent.hover(radio(root, 1));
+  await settleRatingStyles(root);
+  expect(root.querySelector('[data-appearance="filled-half"]')).toBeNull();
+  await userEvent.hover(screen.getByText('Pointer parking', { exact: true }));
+  expect(root.matches(':hover')).toBe(false);
+  await settleRatingStyles(root);
+  expect(root.querySelector('[data-appearance="filled-half"]')).not.toBeNull();
   const glyphs = [...screen.container.querySelectorAll<SVGElement>('[data-consumer-glyph]')];
   expect(glyphs.length).toBe(6);
   expect(glyphs.every((glyph) => glyph.getAttribute('class') === 'consumer-glyph')).toBe(true);
