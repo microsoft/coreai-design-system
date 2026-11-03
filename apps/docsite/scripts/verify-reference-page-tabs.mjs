@@ -105,6 +105,9 @@ try {
     }
     const hasShowcase = Boolean(record.defaultExampleId);
     const hasShowcaseOptions = Boolean(record.defaultExampleId) && record.examples.length > 1;
+    const expandedFoundationCode =
+      (await page.locator('[data-page-widget="colors"], [data-page-widget="typography"]').count()) >
+      0;
     const showcaseResources = record.resources.filter(isShowcaseResource);
     assert.equal(
       await usage.locator('.reference-showcase-frame').count(),
@@ -201,11 +204,6 @@ try {
         `${record.id}: the default sample shows its live preview`,
       );
     }
-    assert.equal(
-      await samples.locator(':scope > .reference-sample-section').count(),
-      0,
-      `${record.id}: Samples sections are consolidated into compact groups`,
-    );
     const sampleGroups = await samples.locator('.reference-sample-group').evaluateAll((groups) =>
       groups.map((group) => ({
         options: group.querySelectorAll('.reference-sample-section').length,
@@ -215,14 +213,32 @@ try {
         menus: group.querySelectorAll('.reference-sample-menu__trigger').length,
       })),
     );
-    assert.ok(sampleGroups.length > 0 && sampleGroups.length <= 2);
-    for (const group of sampleGroups) {
-      assert.equal(group.visible, 1, `${record.id}: each Samples group shows one option`);
+    if (expandedFoundationCode) {
+      assert.equal(sampleGroups.length, 0, `${record.id}: Code blocks stay expanded`);
       assert.equal(
-        group.menus,
-        group.options > 1 ? 1 : 0,
-        `${record.id}: Samples groups use a menu only when needed`,
+        await samples.locator('.reference-sample-section[hidden]').count(),
+        0,
+        `${record.id}: every Code section stays visible`,
       );
+      assert.ok(
+        !(await tabs.evaluate((element) => Boolean(element.closest('.reference-sample-group')))),
+        `${record.id}: the Usage/Code switch stays outside Code cards`,
+      );
+    } else {
+      assert.equal(
+        await samples.locator(':scope > .reference-sample-section').count(),
+        0,
+        `${record.id}: Code sections are consolidated into compact groups`,
+      );
+      assert.ok(sampleGroups.length > 0 && sampleGroups.length <= 2);
+      for (const group of sampleGroups) {
+        assert.equal(group.visible, 1, `${record.id}: each Code group shows one option`);
+        assert.equal(
+          group.menus,
+          group.options > 1 ? 1 : 0,
+          `${record.id}: Code groups use a menu only when needed`,
+        );
+      }
     }
     assert.equal(
       await samples.locator('.reference-page-code-block').count(),

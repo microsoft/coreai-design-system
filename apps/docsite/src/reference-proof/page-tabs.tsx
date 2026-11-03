@@ -281,6 +281,9 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
   if (!introduction || !header || header.hidden) return null;
   const article = introduction.querySelector<HTMLElement>('.standalone-guidance');
   const basic = introduction.querySelector<HTMLElement>('[data-basic-example]');
+  const compactSamples = !root.querySelector(
+    '[data-page-widget="colors"], [data-page-widget="typography"]',
+  );
   const showcaseOptions = [...root.querySelectorAll<HTMLElement>('.example')].flatMap((example) => {
     const preview = example.querySelector<HTMLElement>(':scope > .preview[data-example-id]');
     const heading = example.querySelector<HTMLElement>(
@@ -365,7 +368,9 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
     child.remove();
   }
   removeEmptyGuidanceSections(usage);
-  const sampleGroups = consolidateSamples(samples, sampleOptions);
+  const sampleGroups: PageTabTargets['sampleGroups'] = compactSamples
+    ? consolidateSamples(samples, sampleOptions)
+    : {};
   if (!samples.childElementCount) {
     introduction.append(...usage.children);
     return null;
