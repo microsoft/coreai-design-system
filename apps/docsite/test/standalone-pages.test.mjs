@@ -489,6 +489,7 @@ test('standalone renderers stay bounded and whole-page views are explicit', () =
     'typography',
     'materials',
     'resources',
+    'includes',
     'faqs',
     'package',
     'changelog',
@@ -533,6 +534,35 @@ test('overview pages opt into their Markdown-backed rich views', async () => {
     undefined,
   );
   assert.equal(pages.find((page) => page.route === 'overview/faq')?.renderer, 'faqs');
+});
+
+test('Introduction feature cards preserve all four sections in HTML and agent Markdown', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  const page = pages.find((candidate) => candidate.route === 'overview/introduction');
+  const source = matter(await fs.readFile(path.join(appRoot, 'content', page.guidance), 'utf8'));
+  const introduction = {
+    ...page,
+    ...source.data,
+    standalone: true,
+    guidance: guidanceMarkdown({ ...source.data, body: source.content.trim() }),
+    examples: [],
+  };
+  const metadata = { basePath: '/', pages };
+  const html = standalonePageHtml(introduction, metadata);
+  const markdown = pageMarkdown(introduction, metadata);
+  assert.match(html, /data-page-widget="includes"/);
+  for (const [heading, description] of [
+    ['Components', 'Components are reusable controls maintained in the npm package.'],
+    ['Templates', 'They are not package imports.'],
+    ['Samples', 'Samples show how components work together in a form, layout, or workflow.'],
+    ['Documentation for agents', "this site's Markdown endpoints with ordinary HTTPS."],
+  ]) {
+    assert.ok(html.includes(`>${heading}</h3>`));
+    assert.ok(markdown.includes(`### ${heading}`));
+    assert.ok(html.includes(description));
+    assert.ok(markdown.includes(description));
+  }
+  assert.doesNotMatch(markdown, /<!-- \/?view:includes -->/);
 });
 
 test('package guidance opts into its Markdown-backed setup view', async () => {

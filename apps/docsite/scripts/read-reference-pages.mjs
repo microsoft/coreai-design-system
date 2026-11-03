@@ -11,6 +11,7 @@ export const standaloneRendererNames = [
   'typography',
   'materials',
   'resources',
+  'includes',
   'faqs',
   'package',
   'changelog',

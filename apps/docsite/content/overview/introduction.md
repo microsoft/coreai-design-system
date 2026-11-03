@@ -16,6 +16,8 @@ reference:
 
 ## What CoreAI includes
 
+<!-- view:includes -->
+
 ### Components
 
 Components are reusable controls maintained in the npm package.
@@ -33,6 +35,8 @@ Samples show how components work together in a form, layout, or workflow.
 
 Agents can read the same UX guidance and complete examples as people through
 this site's Markdown endpoints with ordinary HTTPS.
+
+<!-- /view:includes -->
 
 ## Resources
 

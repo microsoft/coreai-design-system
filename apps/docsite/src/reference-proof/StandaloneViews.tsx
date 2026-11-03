@@ -26,6 +26,7 @@ import { ArrowDownload20Regular } from '@fluentui/react-icons';
 import { ChevronRight, ExternalIcon } from '../components/Icons';
 import { WorkInProgress } from '../components/work-in-progress';
 import type { PageWidgetProps } from './FoundationViews';
+import { IntroFeatureCards } from './intro-feature-cards';
 
 interface ResourceItem {
   title: string;
@@ -1136,6 +1137,7 @@ function WorkInProgressView({ model }: PageWidgetProps) {
 export const standaloneViews: Record<string, React.ComponentType<PageWidgetProps>> = {
   'work-in-progress': WorkInProgressView,
   resources: ResourcesView,
+  includes: IntroFeatureCards,
   faqs: FaqsView,
   package: PackageView,
   changelog: ChangelogView,
