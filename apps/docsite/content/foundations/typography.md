@@ -1,7 +1,7 @@
 ---
 id: typography
 title: Typography
-summary: 'Type scale, preferred fonts, text presets, and readability.'
+summary: 'Type scale, weight system, and readability rules.'
 resources: []
 reference:
   renderer: typography
@@ -13,17 +13,19 @@ reference:
     - apps/docsite/src/data/content.ts
 ---
 
+<!-- view:font-families -->
 ## Font families
 
-Aptos and Aptos Mono are the preferred CoreAI typefaces. The site uses them when installed on your device and otherwise uses fallback fonts. Font files are not included in this repository or the npm package.
+Aptos and Aptos Mono are the preferred CoreAI typefaces. This site uses them when installed on your device and otherwise uses system fonts. Font files are not included in this repository or the npm package.
 
 <!-- generated: font-families -->
+<!-- /view:font-families -->
 
-[Download Aptos from Microsoft](https://www.microsoft.com/en-us/download/details.aspx?id=106087). Review [font setup and licensing](./theming.md#set-up-aptos) before hosting fonts.
-
+<!-- view:typography -->
 ## Type scale
 
 <!-- generated: typography -->
+<!-- /view:typography -->
 
 ## Live Text presets
 

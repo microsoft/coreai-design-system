@@ -1,7 +1,7 @@
 ---
 id: colors
 title: Colors
-summary: 'Palette, semantic roles, token naming, and accessible color use.'
+summary: 'Palette, semantic roles, and token naming conventions.'
 resources: []
 reference:
   renderer: colors
@@ -14,21 +14,12 @@ reference:
     - apps/docsite/src/data/content.ts
 ---
 
-## Brand color
-
-CoreAI and Azure themes share a neutral palette and use different brand ramps. Prefer semantic tokens over hard-coded colors.
-
+<!-- view:colors -->
 <!-- generated: colors -->
+<!-- /view:colors -->
 
-## Data visualization
-
-<!-- generated: data-visualization -->
-
-## Color usage balance
-
-Use approximately **95% neutral** and **5% brand** color. Neutral colors support backgrounds, controls, and containers. They provide clarity, accessibility, and reduce visual fatigue. Brand colors emphasize primary actions, key highlights, links, and visual anchors. They create recognition and reinforce the brand voice.
-
-## Accessibility
+<!-- view:color-accessibility -->
+## Accessibility requirements
 
 Normal text needs a contrast ratio of **4.5:1**. Large text and UI need **3:1**.
 
@@ -42,3 +33,10 @@ Normal text needs a contrast ratio of **4.5:1**. Large text and UI need **3:1**.
 Do not rely on color alone. Include labels and redundant status cues. Test the actual foreground/background pair in both themes.
 
 See [Theming](./theming.md) for providers and custom brand colors.
+<!-- /view:color-accessibility -->
+
+<!-- view:data-visualization -->
+## Data Visualization
+
+<!-- generated: data-visualization -->
+<!-- /view:data-visualization -->

@@ -378,13 +378,7 @@ export async function resolveStandalonePage(page, { pages, basePath, generated, 
     pages,
     basePath,
     generated: Object.fromEntries(
-      Object.entries(generated).map(([key, content]) => [
-        key,
-        (page.renderer === 'colors' && ['colors', 'data-visualization'].includes(key)) ||
-        (page.renderer === 'typography' && ['font-families', 'typography'].includes(key))
-          ? `<!-- view:${key} -->\n\n${content}\n\n<!-- /view:${key} -->`
-          : content,
-      ]),
+      Object.entries(generated).map(([key, content]) => [key, content]),
     ),
     fence: codeFence,
     sourceFile: `apps/docsite/${page.guidanceSource}`,
@@ -420,6 +414,7 @@ export function standalonePageHtml(page, metadata) {
     views: Object.fromEntries([
       ...standaloneRendererNames.map((name) => [name, true]),
       ['data-visualization', true],
+      ['color-accessibility', true],
       ['font-families', true],
     ]),
   }).html;
