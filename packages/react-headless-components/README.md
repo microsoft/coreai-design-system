@@ -123,6 +123,9 @@ not a claim that the whole application bundle is Griffel-free.
   Public InfoButton preserves CoreAI's required accessible-name contract; InfoLabel uses a private
   current-base adapter. Both reuse the completed Label/Popover foundations without legacy behavior.
   Rating and RatingDisplay share one RatingItem implementation and a visual-only color/size context.
+- The native-picker/dialog batch uses the installed snapshot at commit `1cabc6b`:
+  the [Combobox family in react-combobox 9.17.7](https://unpkg.com/@fluentui/react-combobox@9.17.7/lib/components/Combobox/useComboboxStyles.styles.raw.js)
+  and [Dialog family in react-dialog 9.18.6](https://unpkg.com/@fluentui/react-dialog@9.18.6/lib/components/DialogSurface/useDialogSurfaceStyles.styles.raw.js).
 - CoreAI source: [Button defaults](../react-components/src/components/Button.ts) and
   [minimum-width override](../react-components/src/components/Button.styles.ts).
   Visual overrides live in `src/Button.overrides.module.css`; prop defaults remain in the component.
@@ -239,6 +242,21 @@ Use RatingDisplay for read-only output; no wrapper-specific read-only behavior i
 InfoButton root render-function children hit the pinned public trigger's Fragment guard in both
 headless and this wrapper; use ordinary root content. Field's control-children render function and
 the other tested label/info/surface slot renderers remain supported. No trigger workaround is added.
+
+The current Dialog facade uses DialogHeader and a scrollable DialogBody. It has no DialogContent,
+Title action slot, backdrop slot, or legacy provider aliases. Surface CSS styles the native
+`::backdrop`; native dialogs/popovers own focus, inertness, dismissal, and restoration.
+Dialog reports distinguish native viewport-fit/scrollbar-gutter behavior from the legacy
+non-modal divider collision with Overlay's historical beak selector. That accidental selector
+collision is not copied into the native surface.
+
+Standalone Listbox keeps the native-popover contract. Its published props omit a `popover`
+override, so standalone examples use the public DOM ref and native `showPopover()` rather than
+adding an unsupported prop or removing attributes. Native viewport sizing remains visible in
+comparison reports instead of being normalized to the old positioning pipeline.
+Combobox/Dropdown retain their current positioning, joined multiselect text, and native form/reset
+contracts. DropdownButton keeps its separate Button-style surface. Dialog form examples use
+controlled submission; bare `method="dialog"` retains the upstream native-close/context-state boundary.
 
 ## Conversion workflow
 
@@ -440,6 +458,10 @@ Field and information controls cover generated associations, validation/hint gly
 controls, required labels, accessible naming, and native help overlays. Rating and RatingDisplay
 cover shared item styling, native radio input, fractional/read-only summaries, default owned items,
 glyph geometry, form/callback behavior, and native accessible names including generated separators.
+Native pickers add grouped/freeform/multiselect options, exact selection payloads, Field naming,
+keyboard/forms/reset, popup hiding, collision/relocation, and custom trigger surfaces. Dialog adds
+modal/alert/non-modal focus/inertness/restoration, cancellation/veto, forms and nesting. Its default
+width is tested exactly as `min(600px, document width)` across the threshold and both modal modes.
 RTL cases still emit an unsuppressed Griffel mixed-direction warning from the legacy provider;
 the selected RTL style assertions pass.
 

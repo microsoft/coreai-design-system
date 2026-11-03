@@ -1,0 +1,62 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Fluent baseline: @fluentui/react-combobox 9.17.7,
+ * [useDropdownStyles.styles.raw.js](../../../node_modules/@fluentui/react-combobox/lib/components/Dropdown/useDropdownStyles.styles.raw.js).
+ * Inherited provider baseline: @fluentui/react-provider 9.22.23,
+ * [useFluentProviderStyles.styles.raw.js](../../../node_modules/@fluentui/react-provider/lib/components/FluentProvider/useFluentProviderStyles.styles.raw.js).
+ * CoreAI provenance: [Dropdown.tsx](../../react-components/src/components/Dropdown.tsx) at 1cabc6b.
+ * Provider foreground: [globalStyles.ts](../../react-components/src/theme/globalStyles.ts) at 1cabc6b.
+ * Supported slot render functions and live facade value replace the old slot/Griffel workaround.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .Dropdown {
+    &[data-inline-label-layout] {
+      & > :global(.fui-Dropdown__button) {
+        grid-template-columns: [label] auto [content] 1fr [icon] auto [end];
+        gap: 0.5em;
+
+        & span {
+          margin: 0;
+        }
+      }
+
+      &:has(:global(.fui-Dropdown__clearButton[tabindex])) > :global(.fui-Dropdown__button) {
+        padding-inline-end: 0.5em;
+      }
+    }
+
+    &[data-disabled] .Dropdown__label {
+      color: var(--colorNeutralForegroundDisabled);
+    }
+
+    &[data-has-value] .Dropdown__label::after {
+      content: ':';
+    }
+
+    &[data-dynamic-width] {
+      min-width: 0;
+    }
+  }
+
+  .Dropdown__text {
+    min-width: 0;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .Dropdown__label {
+    font-size: inherit;
+    font-weight: 600;
+    line-height: inherit;
+    color: var(--colorNeutralForeground1);
+  }
+
+  .Dropdown__listbox[popover] {
+    color: var(--colorNeutralForeground2);
+  }
+}

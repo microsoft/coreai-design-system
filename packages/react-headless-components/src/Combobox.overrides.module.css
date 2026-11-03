@@ -1,0 +1,73 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Fluent baseline: @fluentui/react-combobox 9.17.7,
+ * [useComboboxStyles.styles.raw.js](../../../node_modules/@fluentui/react-combobox/lib/components/Combobox/useComboboxStyles.styles.raw.js).
+ * Inherited inline label: @fluentui/react-label 9.4.6,
+ * [useLabelStyles.styles.raw.js](../../../node_modules/@fluentui/react-label/lib/components/Label/useLabelStyles.styles.raw.js).
+ * CoreAI provenance: [Combobox.tsx](../../react-components/src/components/Combobox.tsx) at 1cabc6b.
+ * Native root-slot label composition replaces the unsupported void-input children workaround.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .Combobox {
+    /* Re-flow the root grid so the inline label sits before the input. */
+    &[data-inline-label-layout] {
+      grid-template-columns: auto 1fr auto;
+      gap: 0;
+    }
+
+    &[data-dynamic-width] {
+      min-width: 0;
+    }
+
+    &[data-has-value] .Combobox__label::after {
+      content: ':';
+    }
+
+    &[data-disabled] .Combobox__label {
+      color: var(--colorNeutralForegroundDisabled);
+    }
+
+    &[data-has-label] .Combobox__input {
+      padding: 0;
+      padding-inline-end: 0.5em;
+    }
+
+    &[data-has-label][data-dynamic-width] .Combobox__input {
+      /* Progressive enhancement; ordinary inputs remain functional without field-sizing. */
+      field-sizing: content;
+      max-width: 200px;
+
+      &:focus {
+        min-width: 9ch;
+      }
+
+      &[value='']:not(:focus) {
+        padding-inline: 0;
+        width: 0;
+      }
+    }
+
+    &[data-truncate-text-overflow] .Combobox__input {
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .Combobox__label {
+    align-self: stretch;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding-inline-end: 0.5em;
+    padding-inline-start: var(--spacingHorizontalS);
+    font-size: inherit;
+    font-weight: 600;
+    line-height: inherit;
+    color: var(--colorNeutralForeground1);
+  }
+}

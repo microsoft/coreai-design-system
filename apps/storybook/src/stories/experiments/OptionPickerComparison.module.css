@@ -1,0 +1,115 @@
+/* Handwritten layout for the private option-picker migration fixtures; not an upstream port. */
+
+.comparison {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding-block: 8px;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  align-items: start;
+  gap: 32px;
+}
+
+.cell {
+  min-width: 0;
+  padding: 8px;
+}
+
+.fixedControl,
+.standalone {
+  width: 280px;
+}
+
+.standaloneStage {
+  anchor-name: var(--option-picker-anchor);
+  min-height: 280px;
+  width: 280px;
+}
+
+.standalonePopover {
+  position: fixed;
+  position-anchor: var(--option-picker-anchor);
+  inset: auto;
+  top: anchor(top);
+  left: anchor(left);
+  margin: 0;
+}
+
+.popupStage {
+  min-height: 100vh;
+}
+
+@media (width < 720px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .heading {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    font-size: 12px;
+    line-height: 16px;
+  }
+}
+
+.report {
+  display: block;
+  box-sizing: border-box;
+  height: 220px;
+  overflow: auto;
+  white-space: pre-wrap;
+  margin-block: 12px;
+  padding: 12px;
+  border: 1px solid var(--colorNeutralStroke2);
+}
+
+.flow {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  max-width: 440px;
+  padding-block-end: 280px;
+}
+
+.complexText {
+  display: grid;
+  gap: 2px;
+}
+
+.secondaryText {
+  font-size: var(--fontSizeBase200);
+  color: var(--colorNeutralForeground3);
+}
+
+.consumerRoot {
+  min-width: 300px;
+  border-radius: 3px;
+  background-color: rgb(232 240 255);
+}
+
+.consumerTrigger {
+  color: rgb(32 48 96);
+  padding-inline-start: 18px;
+}
+
+.consumerPopup {
+  padding: 8px;
+  background-color: rgb(250 246 235);
+}
+
+.consumerOption {
+  padding-block: 9px;
+  border-radius: 1px;
+}
+
+.consumerCheck {
+  color: rgb(128 48 32);
+}
+
+.consumerGroup {
+  color: rgb(72 32 128);
+}

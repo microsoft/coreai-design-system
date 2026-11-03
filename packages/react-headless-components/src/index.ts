@@ -105,12 +105,78 @@ export {
   type CheckboxSlots,
 } from './Checkbox.js';
 export {
+  Combobox,
+  comboboxClassNames,
+  useComboboxFilter,
+  type ComboboxActiveOptionChangeData,
+  type ComboboxOpenChangeData,
+  type ComboboxOpenEvent,
+  type ComboboxProps,
+  type ComboboxSlots,
+} from './Combobox.js';
+export {
   CompoundButton,
   compoundButtonClassNames,
   type CompoundButtonProps,
   type CompoundButtonSlots,
 } from './CompoundButton.js';
 export { CounterBadge, counterBadgeClassNames, type CounterBadgeProps } from './CounterBadge.js';
+export {
+  Dialog,
+  useDialogContext,
+  useDialogContextValues,
+  useDialogSurfaceContext,
+  type DialogContextValue,
+  type DialogContextValues,
+  type DialogModalType,
+  type DialogOpenChangeData,
+  type DialogOpenChangeEvent,
+  type DialogOpenChangeEventHandler,
+  type DialogProps,
+  type DialogState,
+  type DialogSurfaceContextValue,
+} from './Dialog.js';
+export {
+  DialogActions,
+  dialogActionsClassNames,
+  type DialogActionsProps,
+  type DialogActionsSlots,
+  type DialogActionsState,
+} from './DialogActions.js';
+export {
+  DialogBody,
+  dialogBodyClassNames,
+  type DialogBodyProps,
+  type DialogBodySlots,
+  type DialogBodyState,
+} from './DialogBody.js';
+export {
+  DialogHeader,
+  dialogHeaderClassNames,
+  type DialogHeaderProps,
+  type DialogHeaderSlots,
+  type DialogHeaderState,
+} from './DialogHeader.js';
+export {
+  DialogSurface,
+  dialogSurfaceClassNames,
+  type DialogSurfaceProps,
+  type DialogSurfaceSlots,
+  type DialogSurfaceState,
+} from './DialogSurface.js';
+export {
+  DialogTitle,
+  dialogTitleClassNames,
+  type DialogTitleProps,
+  type DialogTitleSlots,
+  type DialogTitleState,
+} from './DialogTitle.js';
+export {
+  DialogTrigger,
+  type DialogTriggerAction,
+  type DialogTriggerProps,
+  type DialogTriggerState,
+} from './DialogTrigger.js';
 export {
   Divider,
   DividerLabeled,
@@ -121,6 +187,20 @@ export {
   type DividerLabeledSlots,
   type DividerProps,
 } from './Divider.js';
+export {
+  Dropdown,
+  dropdownClassNames,
+  type DropdownActiveOptionChangeData,
+  type DropdownOpenChangeData,
+  type DropdownOpenEvent,
+  type DropdownProps,
+  type DropdownSlots,
+} from './Dropdown.js';
+export {
+  DropdownButton,
+  dropdownButtonClassNames,
+  type DropdownButtonProps,
+} from './DropdownButton.js';
 export {
   Field,
   fieldClassNames,
@@ -147,11 +227,26 @@ export { Input, inputClassNames, type InputOnChangeData, type InputProps } from 
 export { Label, labelClassNames, type LabelProps, type LabelSlots } from './Label.js';
 export { Link, linkClassNames, type LinkProps, type LinkSlots } from './Link.js';
 export {
+  Listbox,
+  listboxClassNames,
+  type ListboxProps,
+  type ListboxSlots,
+  type OptionOnSelectData,
+  type OptionSelectionEvent,
+} from './Listbox.js';
+export {
   MenuButton,
   menuButtonClassNames,
   type MenuButtonProps,
   type MenuButtonSlots,
 } from './MenuButton.js';
+export { Option, optionClassNames, type OptionProps, type OptionSlots } from './Option.js';
+export {
+  OptionGroup,
+  optionGroupClassNames,
+  type OptionGroupProps,
+  type OptionGroupSlots,
+} from './OptionGroup.js';
 export {
   Persona,
   personaClassNames,

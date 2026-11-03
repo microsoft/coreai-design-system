@@ -1,0 +1,250 @@
+/* Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ * Ported from @fluentui/react-combobox 9.17.7.
+ * Local source: [useComboboxStyles.styles.raw.js](../../../node_modules/@fluentui/react-combobox/lib/components/Combobox/useComboboxStyles.styles.raw.js).
+ * Popup foundation: [useListboxStyles.styles.raw.js](../../../node_modules/@fluentui/react-combobox/lib/components/Listbox/useListboxStyles.styles.raw.js),
+ * reused through the completed family Listbox adapter rather than duplicated.
+ * CoreAI deviations are in Combobox.overrides.module.css. Public headless 0.3.2 owns native
+ * hiding, top-layer placement, active descendants, and dismissal; no Portal styles are retained.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Combobox {
+    --fui-combobox-end-padding: var(--spacingHorizontalMNudge);
+    --fui-combobox-icon-margin: var(--spacingHorizontalXXS);
+    --fui-combobox-icon-size: 20px;
+
+    align-items: center;
+    border-radius: var(--borderRadiusMedium);
+    box-sizing: border-box;
+    column-gap: var(--spacingHorizontalXXS);
+    display: inline-grid;
+    grid-template-columns: 1fr auto;
+    justify-content: space-between;
+    min-width: 250px;
+    position: relative;
+    vertical-align: middle;
+    /* Matches internal heights for Select and Input; there are no theme variables for these. */
+    height: 32px;
+    padding-inline-end: var(--fui-combobox-end-padding);
+
+    /* Windows high contrast mode focus indicator. */
+    &:focus-within {
+      outline: 2px solid transparent;
+    }
+
+    /* Bottom focus border, shared with Input, Select, and SpinButton. */
+    &::after {
+      box-sizing: border-box;
+      content: '';
+      position: absolute;
+      inset-inline: -1px;
+      bottom: -1px;
+      height: max(2px, var(--borderRadiusMedium));
+      border-bottom-left-radius: var(--borderRadiusMedium);
+      border-bottom-right-radius: var(--borderRadiusMedium);
+      border-bottom: var(--strokeWidthThick) solid var(--colorCompoundBrandStroke);
+      clip-path: inset(calc(100% - 2px) 0 0 0);
+      transform: scaleX(0);
+      transition-property: transform;
+      transition-duration: var(--durationUltraFast);
+      transition-delay: var(--curveAccelerateMid);
+    }
+
+    &:focus-within::after {
+      transform: scaleX(1);
+      transition-duration: var(--durationNormal);
+      transition-delay: var(--curveDecelerateMid);
+    }
+
+    &:focus-within:active::after {
+      border-bottom-color: var(--colorCompoundBrandStrokePressed);
+    }
+
+    &[data-size='small'] {
+      --fui-combobox-end-padding: var(--spacingHorizontalSNudge);
+      --fui-combobox-icon-size: 16px;
+
+      height: 24px;
+    }
+
+    &[data-size='large'] {
+      --fui-combobox-end-padding: var(--spacingHorizontalM);
+      --fui-combobox-icon-margin: var(--spacingHorizontalSNudge);
+      --fui-combobox-icon-size: 24px;
+
+      column-gap: var(--spacingHorizontalSNudge);
+      height: 40px;
+    }
+
+    &[data-appearance='outline'] {
+      background-color: var(--colorNeutralBackground1);
+      border: var(--strokeWidthThin) solid var(--colorNeutralStroke1);
+      border-bottom-color: var(--colorNeutralStrokeAccessible);
+
+      &:not([data-disabled]) {
+        &:hover {
+          border-color: var(--colorNeutralStroke1Hover);
+          border-bottom-color: var(--colorNeutralStrokeAccessibleHover);
+        }
+
+        &:active,
+        &:focus-within {
+          border-color: var(--colorNeutralStroke1Pressed);
+          border-bottom-color: var(--colorNeutralStrokeAccessiblePressed);
+        }
+      }
+    }
+
+    &[data-appearance='underline'] {
+      background-color: var(--colorTransparentBackground);
+      border-bottom: var(--strokeWidthThin) solid var(--colorNeutralStrokeAccessible);
+      border-radius: 0;
+    }
+
+    &[data-appearance='filled-lighter'] {
+      background-color: var(--colorNeutralBackground1);
+      border: var(--strokeWidthThin) solid var(--colorTransparentStroke);
+    }
+
+    &[data-appearance='filled-darker'] {
+      background-color: var(--colorNeutralBackground3);
+      border: var(--strokeWidthThin) solid var(--colorTransparentStroke);
+    }
+
+    &[data-invalid]:not(
+        [data-invalid='false'],
+        [data-invalid='grammar'],
+        [data-invalid='spelling']
+      ) {
+      &:not(:focus-within),
+      &:hover:not(:focus-within) {
+        border-color: var(--colorPaletteRedBorder2);
+      }
+
+      &[data-appearance='underline'] {
+        &:not(:focus-within),
+        &:hover:not(:focus-within) {
+          border-color: initial;
+          border-bottom-color: var(--colorPaletteRedBorder2);
+        }
+      }
+    }
+
+    &[data-disabled][data-appearance] {
+      cursor: not-allowed;
+      background-color: var(--colorTransparentBackground);
+      border-color: var(--colorNeutralStrokeDisabled);
+
+      @media (forced-colors: active) {
+        border-color: GrayText;
+      }
+    }
+
+    @media screen and (prefers-reduced-motion: reduce) {
+      &::after,
+      &:focus-within::after {
+        transition-duration: 0.01ms;
+        transition-delay: 0.01ms;
+      }
+    }
+  }
+
+  .Combobox__input {
+    align-self: stretch;
+    background-color: var(--colorTransparentBackground);
+    border: none;
+    color: var(--colorNeutralForeground1);
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+    padding-block: 0;
+    padding-inline: calc(var(--spacingHorizontalMNudge) + var(--spacingHorizontalXXS)) 0;
+
+    &:focus {
+      outline-style: none;
+    }
+
+    &::placeholder {
+      color: var(--colorNeutralForeground4);
+      opacity: 1;
+    }
+
+    &[data-size='small'] {
+      font-size: var(--fontSizeBase200);
+      line-height: var(--lineHeightBase200);
+      padding-inline: calc(var(--spacingHorizontalSNudge) + var(--spacingHorizontalXXS)) 0;
+    }
+
+    &[data-size='large'] {
+      font-size: var(--fontSizeBase400);
+      line-height: var(--lineHeightBase400);
+      padding-inline: calc(var(--spacingHorizontalM) + var(--spacingHorizontalSNudge)) 0;
+    }
+
+    &:disabled {
+      color: var(--colorNeutralForegroundDisabled);
+      background-color: var(--colorTransparentBackground);
+      cursor: not-allowed;
+
+      &::placeholder {
+        color: var(--colorNeutralForegroundDisabled);
+      }
+    }
+  }
+
+  .Combobox__expandIcon,
+  .Combobox__clearIcon {
+    box-sizing: border-box;
+    color: var(--colorNeutralStrokeAccessible);
+    cursor: pointer;
+    display: block;
+    font-size: var(--fui-combobox-icon-size);
+    margin-inline-start: var(--fui-combobox-icon-margin);
+    /* Containing block for the clickable-area extension below. */
+    position: relative;
+
+    /* SVG display:block avoids the extra inline space after the glyph. */
+    & svg {
+      display: block;
+    }
+
+    /* Extend the clickable area across the root's end-padding dead zone. */
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      inset-inline-end: calc(-1 * var(--fui-combobox-end-padding));
+    }
+
+    &[data-disabled] {
+      color: var(--colorNeutralForegroundDisabled);
+      cursor: not-allowed;
+    }
+  }
+
+  .Combobox__expandIcon[data-clearable] {
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    width: 1px;
+    position: absolute;
+  }
+
+  .Combobox__clearIcon:not([data-clearable]) {
+    display: none;
+  }
+
+  .Combobox__listbox {
+    box-shadow: var(--shadow16);
+    border-radius: var(--borderRadiusMedium);
+    max-height: 80vh;
+    box-sizing: border-box;
+  }
+}
