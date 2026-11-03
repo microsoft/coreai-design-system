@@ -367,7 +367,9 @@ try {
   async function setBrand(brand) {
     await page.getByRole('button', { name: 'Settings', exact: true }).click();
     const settings = page.locator('.docsite-settings');
-    await settings.getByRole('combobox', { name: 'Product theme', exact: true }).click();
+    await settings
+      .getByRole('combobox', { name: 'Product color palette', exact: true })
+      .click();
     await page
       .getByRole('option', {
         name: brand === 'azure' ? 'Azure blue' : 'CoreAI purple',
@@ -608,23 +610,51 @@ try {
   await page.getByRole('button', { name: 'Settings', exact: true }).click();
   const settings = page.locator('.docsite-settings');
   const colorMode = settings.getByRole('tablist', { name: 'Color mode', exact: true });
-  const productThemeLabel = settings.getByText('Product theme', { exact: true });
-  const productTheme = settings.getByRole('combobox', { name: 'Product theme', exact: true });
+  const appearanceSettings = settings.locator('.docsite-settings__appearance');
+  const productThemeLabel = settings.getByText('Product color palette', { exact: true });
+  const productTheme = settings.getByRole('combobox', {
+    name: 'Product color palette',
+    exact: true,
+  });
   assert.equal(
     await settings.evaluate((element) => element.scrollWidth),
     await settings.evaluate((element) => element.clientWidth),
     'Settings popover does not overflow horizontally',
   );
-  assert.ok(
-    (await productThemeLabel.boundingBox()).y >=
-      (await colorMode.boundingBox()).y + (await colorMode.boundingBox()).height,
-    'Product theme appears below the color mode switch',
+  assert.equal(
+    Math.round(
+      (await productThemeLabel.boundingBox()).y -
+        ((await colorMode.boundingBox()).y + (await colorMode.boundingBox()).height),
+    ),
+    16,
+    'Product color palette has the intended gap below color mode',
   );
+  assert.equal(
+    await appearanceSettings.evaluate((element) => getComputedStyle(element).paddingBottom),
+    '4px',
+  );
+  assert.equal(Math.round((await productTheme.boundingBox()).height), 30);
   assert.equal(await productTheme.textContent(), 'CoreAI purple');
+  const shortcuts = settings.locator('.docsite-settings__shortcuts');
   const shortcutsToggle = settings.getByRole('button', {
     name: 'Keyboard shortcuts',
     exact: true,
   });
+  const settingsPopoverBounds = await settings.boundingBox();
+  const shortcutsSectionBounds = await shortcuts.boundingBox();
+  assert.equal(Math.round(shortcutsSectionBounds.x - settingsPopoverBounds.x), 1);
+  assert.equal(
+    Math.round(
+      settingsPopoverBounds.x +
+        settingsPopoverBounds.width -
+        (shortcutsSectionBounds.x + shortcutsSectionBounds.width),
+    ),
+    1,
+  );
+  assert.equal(
+    await shortcutsToggle.evaluate((element) => getComputedStyle(element).paddingBottom),
+    '4px',
+  );
   const firstShortcut = settings.getByText('Show/hide navigation', { exact: true });
   assert.equal(await shortcutsToggle.getAttribute('aria-expanded'), 'false');
   assert.equal(await firstShortcut.isVisible(), false);

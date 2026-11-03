@@ -311,7 +311,7 @@ code:not(pre code) {
   background: var(--colorNeutralBackground3Hover);
 }
 
-.docsite-settings {
+.fui-PopoverSurface.docsite-settings {
   width: 256px;
   box-sizing: border-box;
   padding: var(--spacingHorizontalM);
@@ -333,7 +333,8 @@ code:not(pre code) {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: var(--spacingVerticalS);
+  gap: var(--spacingVerticalL);
+  padding-bottom: 4px;
 }
 
 .docsite-settings__brand-field {
@@ -347,6 +348,8 @@ code:not(pre code) {
 }
 
 .docsite-settings__shortcuts {
+  box-sizing: border-box;
+  width: calc(100% + 2 * var(--spacingHorizontalM));
   margin-inline: calc(-1 * var(--spacingHorizontalM));
   padding-inline: var(--spacingHorizontalM);
   border-top: var(--strokeWidthThin) solid;
@@ -354,8 +357,9 @@ code:not(pre code) {
   padding-top: var(--spacingVerticalM);
 }
 
-.docsite-settings__shortcuts .fui-AccordionHeader__button {
+.fui-Accordion.docsite-settings__shortcuts .fui-AccordionHeader__button {
   padding-inline: 0;
+  padding-bottom: 4px;
 }
 
 .docsite-settings__shortcuts .fui-AccordionPanel {

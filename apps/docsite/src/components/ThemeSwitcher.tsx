@@ -81,11 +81,11 @@ export function ThemeSwitcher({ isApplePlatform }: { isApplePlatform: boolean })
             <Tab value="dark">Dark</Tab>
             <Tab value="light">Light</Tab>
           </TabList>
-          <Field className="docsite-settings__brand-field" label="Product theme">
+          <Field className="docsite-settings__brand-field" label="Product color palette">
             <Dropdown
-              id="docsite-product-theme"
+              id="docsite-product-color-palette"
               className="docsite-settings__brand"
-              size="small"
+              size="medium"
               style={{ width: '100%', minWidth: 0, maxWidth: '100%' }}
               selectedOptions={[brand]}
               value={brand === 'coreai' ? 'CoreAI purple' : 'Azure blue'}

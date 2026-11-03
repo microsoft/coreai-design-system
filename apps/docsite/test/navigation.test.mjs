@@ -650,7 +650,11 @@ test('settings uses compact Fluent controls with expandable shortcuts', async ()
   assert.match(settings, /<TabList\s+aria-label="Color mode"[\s\S]*Keyboard shortcuts/);
   assert.match(settings, /appearance="elevated"/);
   assert.match(settings, /<Tab value="dark">Dark<\/Tab>\s*<Tab value="light">Light<\/Tab>/);
-  assert.match(settings, /<Field className="docsite-settings__brand-field" label="Product theme">/);
+  assert.match(
+    settings,
+    /<Field className="docsite-settings__brand-field" label="Product color palette">/,
+  );
+  assert.match(settings, /className="docsite-settings__brand"\s+size="medium"/);
   assert.match(settings, /<Option value="coreai">CoreAI purple<\/Option>/);
   assert.match(settings, /<Option value="azure">Azure blue<\/Option>/);
   assert.match(settings, /<Text size=\{200\} foreground=\{2\}>\s*\{label\}\s*<\/Text>/);
@@ -663,7 +667,7 @@ test('settings uses compact Fluent controls with expandable shortcuts', async ()
   assert.match(settings, /className="docsite-settings__keys" aria-hidden="true"/);
   assert.match(settings, /<span className="sr-only">\{accessibleKeys\}<\/span>/);
   assert.doesNotMatch(settings, /<Select/);
-  assert.match(styles, /\.docsite-settings \{\s*width: 256px;/);
+  assert.match(styles, /\.fui-PopoverSurface\.docsite-settings \{\s*width: 256px;/);
   assert.match(
     settings,
     /<Accordion className="docsite-settings__shortcuts" collapsible>/,
