@@ -103,11 +103,28 @@ test('unfinished status restores standalone states without replacing explicit vi
   );
 });
 
+test('component and template Markdown cannot silently fall out of the catalog', async (t) => {
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'coreai-reference-required-'));
+  t.after(() => fs.rm(directory, { recursive: true, force: true }));
+  const components = path.join(directory, 'components');
+  await fs.mkdir(components);
+  await fs.writeFile(
+    path.join(components, 'MissingReference.md'),
+    matter.stringify('Guidance.', {
+      id: 'missing-reference',
+      title: 'Missing reference',
+      summary: 'A page summary.',
+      status: 'complete',
+    }),
+  );
+  await assert.rejects(readReferencePages(directory), /require reference metadata/);
+});
+
 test('unfinished standalone pages retain agent content and native fallback without a duplicate visible title', async () => {
   const pages = await readReferencePages(path.join(appRoot, 'content'));
   assert.deepEqual(
     pages.filter(({ renderer }) => renderer === 'work-in-progress').map(({ route }) => route),
-    ['foundations/layout', 'foundations/spacing'],
+    ['foundations/layout', 'foundations/spacing', 'templates/page-header', 'templates/top-nav'],
   );
   const page = {
     id: 'spacing',
@@ -159,6 +176,70 @@ test('unfinished component guidance restores the original inline state without l
   assert.match(html, /Keep authored guidance/);
   const finished = componentPageGuidanceHtml({ ...page, status: 'complete' }, { basePath: '/' });
   assert.doesNotMatch(finished, /data-page-widget="work-in-progress"/);
+});
+
+test('restored component and template pages retain reviewed guidance and legacy routes', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  const byId = new Map(pages.map((page) => [page.id, page]));
+  assert.equal(byId.get('page-header').route, 'templates/page-header');
+  assert.equal(byId.get('page-header').kind, 'templates');
+  assert.equal(byId.get('top-nav').route, 'templates/top-nav');
+  assert.equal(byId.get('top-nav').kind, 'templates');
+  assert.equal(byId.get('status-indicator').route, 'components/status-indicator');
+  assert.equal(byId.get('status-indicator').status, 'complete');
+
+  for (const id of [
+    'avatar-group',
+    'compound-button',
+    'info-button',
+    'interaction-tag',
+    'presence-badge',
+    'split-button',
+    'to-mount-node-props',
+  ]) {
+    assert.equal(byId.get(id).status, 'complete', `${id} should use reviewed guidance`);
+  }
+
+  const routes = new Set(pages.flatMap((page) => [`/${page.route}/`, ...(page.aliases ?? [])]));
+  for (const route of [
+    '/avatar-pie/',
+    '/data-grid-cell-action-header/',
+    '/data-grid-cell-large/',
+    '/data-grid-cell-small/',
+    '/data-grid-cell-smaller/',
+    '/data-grid-content-header/',
+    '/empty-states/',
+    '/left-nav/',
+    '/list-content/',
+    '/menu-item/',
+    '/menu-section/',
+    '/menu-split-item/',
+    '/radio/',
+    '/static-progress-bar/',
+    '/swatch/',
+    '/horizontal-tab/',
+    '/vertical-tab/',
+    '/vertical-tab-list/',
+    '/tag-picker-dropdown/',
+    '/tag-picker-item/',
+    '/tag-picker-secondary-action/',
+  ]) {
+    assert.ok(routes.has(route), `Missing legacy route ${route}`);
+  }
+  for (const page of pages.filter(({ kind }) => ['components', 'templates'].includes(kind))) {
+    assert.ok(
+      routes.has(`/${page.id}/`),
+      `Missing root alias /${page.id}/ for ${page.guidanceSource}`,
+    );
+  }
+
+  const utility = await fs.readFile(
+    path.join(appRoot, 'content/components/to-mount-node-props.md'),
+    'utf8',
+  );
+  assert.match(utility, /Utility function that normalizes/);
+  assert.match(utility, /from '@coreai-ds\/react-components'/);
+  assert.doesNotMatch(utility, /from '@fluentui\/react-components'/);
 });
 
 test('deleted pages are absent from canonical routes, aliases and legacy document IDs', async () => {

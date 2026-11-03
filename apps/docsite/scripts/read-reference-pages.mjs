@@ -40,7 +40,16 @@ export async function readReferencePages(contentDirectory) {
         await walk(filename);
       } else if (entry.name.endsWith('.md')) {
         const { data } = matter(await fs.readFile(filename, 'utf8'));
-        if (data.reference === undefined) continue;
+        const guidance = path.relative(contentDirectory, filename).replaceAll('\\', '/');
+        const sourceKind = guidance.split('/')[0];
+        if (data.reference === undefined) {
+          if (['components', 'templates'].includes(sourceKind)) {
+            throw new Error(
+              `${filename}: component and template pages require reference metadata.`,
+            );
+          }
+          continue;
+        }
         const fail = (message) => {
           throw new Error(`${filename}: ${message}`);
         };
@@ -124,7 +133,6 @@ export async function readReferencePages(contentDirectory) {
             fail(`reference.${key} must be a nonempty list of unique strings.`);
           }
         }
-        const guidance = path.relative(contentDirectory, filename).replaceAll('\\', '/');
         const route = reference.route ?? guidance.replace(/\.md$/, '').toLowerCase();
         if (
           route !== 'index' &&
@@ -199,6 +207,7 @@ export async function readReferencePages(contentDirectory) {
         }
         pages.push({
           ...reference,
+          aliases: [...(reference.aliases ?? [])],
           status: data.status,
           renderer:
             reference.renderer ??
@@ -218,12 +227,24 @@ export async function readReferencePages(contentDirectory) {
     `${first.kind}/${first.id}`.localeCompare(`${second.kind}/${second.id}`),
   );
   if (!pages.length) throw new Error('No Markdown pages declare reference metadata.');
-  const routes = pages.flatMap((page) => [
+  const declaredRoutes = pages.flatMap((page) => [
     `/${page.route}${page.route ? '/' : ''}`,
     ...(page.aliases ?? []),
   ]);
-  if (new Set(routes).size !== routes.length)
+  if (new Set(declaredRoutes).size !== declaredRoutes.length)
     throw new Error('Duplicate reference page route or alias.');
+  const routes = new Set(declaredRoutes);
+  for (const page of pages) {
+    const rootAlias = `/${page.id}/`;
+    if (
+      ['components', 'templates'].includes(page.kind) &&
+      rootAlias !== `/${page.route}/` &&
+      !routes.has(rootAlias)
+    ) {
+      page.aliases.push(rootAlias);
+      routes.add(rootAlias);
+    }
+  }
   const components = pages.map((page) => page.component).filter(Boolean);
   if (new Set(components).size !== components.length)
     throw new Error('Duplicate reference component ownership.');
