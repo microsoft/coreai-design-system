@@ -670,7 +670,7 @@ try {
   );
   assert.equal(
     await page.locator('.site-main').evaluate((element) => getComputedStyle(element).paddingTop),
-    '64px',
+    '80px',
   );
   const colorSections = page.locator('.standalone-guidance .page-section');
   assert.deepEqual(
@@ -746,7 +746,7 @@ try {
   );
   assert.equal(
     await page.locator('.site-main').evaluate((element) => getComputedStyle(element).paddingTop),
-    '64px',
+    '80px',
   );
   assert.equal(await page.locator('.font-card').count(), 2);
   assert.deepEqual(

@@ -637,13 +637,6 @@
 }
 
 :is(
-  .reference-shell .site-main:has([data-page-widget='typography']),
-  .reference-shell .site-main:has([data-page-widget='colors'])
-) {
-  padding-block-start: 64px;
-}
-
-:is(
     .reference-page-introduction:has([data-page-widget='typography']),
     .reference-page-introduction:has([data-page-widget='colors'])
   )
