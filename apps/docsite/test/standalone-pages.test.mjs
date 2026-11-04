@@ -589,6 +589,8 @@ test('Introduction keeps feature cards, agent guidance and resources in order', 
   assert.match(html, /id="guidance-working-with-agents"/);
   assert.match(html, /data-page-widget="agent-cards"/);
   assert.match(html, /Copy starter prompt/);
+  assert.match(html, /href="\/llms\.txt"/);
+  assert.match(markdown, /\]\(\/llms\.txt\)/);
 });
 
 test('React Router templates share setup notes and retain the helper source', async () => {

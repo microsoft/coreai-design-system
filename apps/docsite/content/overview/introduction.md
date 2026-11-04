@@ -44,26 +44,26 @@ endpoints over ordinary HTTPS.
 
 <!-- view:agent-cards -->
 
-### Start with a prompt
+### Starter prompt
 
-Paste the prompt into your coding agent and add your task. Your agent needs a
-web-fetch or HTTP tool. No site setup or login is needed.
+Copy the prompt into your coding agent and fill in the **My task** line. It points
+the agent to CoreAI guidance and example code.
 
 [Copy starter prompt](/agent-prompt.txt)
 
 <!-- include: agent-prompt -->
 
-### Read what you need
+### Markdown docs
 
-Start with the documentation index, check your installed package versions, and
-fetch only the guidance and examples your task needs.
+Share a component's **View .md** link with your agent to give it that page's
+guidance and example code. The index lists all pages and package versions.
 
-[Read the workflow](../guides/agent-workflow.md)
+[View docs index](/llms.txt)
 
-### Make it reusable
+### Repository skill
 
-Add the optional skill for repeated CoreAI work. Review it before installing,
-keep local instructions, and approve any changes your agent proposes.
+Save **SKILL.md** in your project's skill folder so your agent can find CoreAI
+docs on future tasks. Keep any existing project instructions.
 
 [Download skill](/source/package/SKILL.md)
 
