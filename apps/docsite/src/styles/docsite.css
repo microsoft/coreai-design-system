@@ -1368,10 +1368,12 @@ code:not(pre code) {
   width: 64px;
   height: 64px;
   color: var(--colorNeutralForeground1);
+  opacity: 1;
+  transition: opacity 400ms ease-out;
 }
 
 .work-in-progress__logo:has([data-ready='true']) .work-in-progress__fallback {
-  visibility: hidden;
+  opacity: 0;
 }
 
 .coreai-logo-cube.coreai-logo-cube--mini {
