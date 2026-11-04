@@ -46,8 +46,7 @@ endpoints over ordinary HTTPS.
 
 ### Starter prompt
 
-Copy the prompt into your coding agent and fill in the **My task** line. It points
-the agent to CoreAI guidance and example code.
+Paste the prompt into your agent and fill in **My task**.
 
 [Copy starter prompt](/agent-prompt.txt)
 
@@ -55,15 +54,13 @@ the agent to CoreAI guidance and example code.
 
 ### Markdown docs
 
-Share a component's **View .md** link with your agent to give it that page's
-guidance and example code. The index lists all pages and package versions.
+Share a page's **View .md** link for guidance and example code.
 
 [View docs index](/llms.txt)
 
 ### Repository skill
 
-Save **SKILL.md** in your project's skill folder so your agent can find CoreAI
-docs on future tasks. Keep any existing project instructions.
+Add **SKILL.md** to your project's skill folder for future CoreAI tasks.
 
 [Download skill](/source/package/SKILL.md)
 
