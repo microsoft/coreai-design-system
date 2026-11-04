@@ -20,63 +20,17 @@
 }
 
 .intro-feature {
-  --scene-glow-x: 15%;
-  --scene-glow-y: 0%;
-  --scene-glow-strength: 18%;
-  --scene-gradient-angle: 145deg;
-  --scene-wash: var(--colorBrandBackground2);
-  --scene-accent: var(--colorBrandBackground);
-  --scene-highlight: var(--colorBrandForeground1);
-  --scene-wash-strength: 65%;
-  --scene-edge-strength: 14%;
-  --scene-surface: color-mix(in srgb, var(--colorNeutralBackground1) 70%, transparent);
   container-type: inline-size;
   min-width: 0;
   overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--colorNeutralStroke2) 50%, transparent);
   border-radius: var(--borderRadiusLarge);
-  background:
-    linear-gradient(var(--scene-surface), var(--scene-surface)),
-    radial-gradient(
-      ellipse 160% 150% at var(--scene-glow-x) var(--scene-glow-y),
-      color-mix(in srgb, var(--scene-highlight) var(--scene-glow-strength), transparent),
-      transparent 100%
-    ),
-    linear-gradient(
-      var(--scene-gradient-angle),
-      var(--colorNeutralBackground1) -100%,
-      color-mix(
-          in srgb,
-          var(--scene-wash) var(--scene-wash-strength),
-          var(--colorNeutralBackground3)
-        )
-        50%,
-      color-mix(
-          in srgb,
-          var(--scene-accent) var(--scene-edge-strength),
-          var(--colorNeutralBackground3)
-        )
-        200%
-    );
+  background: var(--colorNeutralBackground3);
 }
 
 .intro-feature:focus-visible {
   outline: 2px solid var(--colorStrokeFocus2);
   outline-offset: 3px;
-}
-
-[data-theme='dark'] .intro-feature {
-  background:
-    radial-gradient(
-      ellipse 160% 150% at var(--scene-glow-x) var(--scene-glow-y),
-      color-mix(in srgb, var(--scene-highlight) 8%, transparent),
-      transparent 100%
-    ),
-    linear-gradient(
-      var(--scene-gradient-angle),
-      transparent -100%,
-      color-mix(in srgb, var(--scene-accent) 3%, transparent) 200%
-    ),
-    var(--colorNeutralBackground3);
 }
 
 .reference-shell .intro-feature-copy {
@@ -114,6 +68,11 @@
 
 .intro-feature-scene svg {
   flex-shrink: 0;
+}
+
+.intro-feature--components .intro-feature-scene,
+.intro-feature--templates .intro-feature-scene {
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent);
 }
 
 .intro-scene-cursor {
@@ -327,13 +286,6 @@
   padding: 10px 12px;
   border-bottom: 1px solid var(--colorNeutralStroke2);
   font-weight: var(--fontWeightSemibold);
-}
-
-.intro-feature--foundations {
-  --scene-glow-x: 5%;
-  --scene-glow-y: 12%;
-  --scene-glow-strength: 20%;
-  --scene-gradient-angle: 135deg;
 }
 
 .intro-feature--foundations .intro-feature-scene::before {
@@ -661,23 +613,9 @@
   }
 }
 
-.intro-feature--components {
-  --scene-wash: color-mix(
-    in srgb,
-    var(--colorPaletteBerryBackground2) 65%,
-    var(--colorBrandBackground2)
-  );
-  --scene-accent: var(--colorPaletteBerryForeground2);
-  --scene-highlight: var(--colorPaletteBerryForeground2);
-  --scene-glow-x: 90%;
-  --scene-glow-y: 8%;
-  --scene-glow-strength: 14%;
-  --scene-gradient-angle: 220deg;
-}
-
 .intro-component-doc {
   position: absolute;
-  inset: 64px 16px -16px 36px;
+  inset: 48px 16px -16px 36px;
   rotate: -4deg;
   overflow: hidden;
   border: 1px solid var(--colorNeutralStroke2);
@@ -869,20 +807,6 @@
   margin-inline-start: 12px;
 }
 
-.intro-feature--templates {
-  --scene-wash: color-mix(
-    in srgb,
-    var(--colorPaletteBlueBackground2) 70%,
-    var(--colorBrandBackground2)
-  );
-  --scene-accent: var(--colorPaletteBlueForeground2);
-  --scene-highlight: var(--colorPaletteBlueForeground2);
-  --scene-glow-x: 90%;
-  --scene-glow-y: 100%;
-  --scene-glow-strength: 16%;
-  --scene-gradient-angle: 35deg;
-}
-
 .intro-grid-product {
   position: absolute;
   top: 48px;
@@ -960,16 +884,6 @@
   to {
     transform: translateY(0);
   }
-}
-
-.intro-feature--agents {
-  --scene-wash-strength: 80%;
-  --scene-edge-strength: 22%;
-  --scene-accent: var(--colorBrandForeground1);
-  --scene-glow-x: 25%;
-  --scene-glow-y: 5%;
-  --scene-glow-strength: 24%;
-  --scene-gradient-angle: 170deg;
 }
 
 .intro-agent-request {
