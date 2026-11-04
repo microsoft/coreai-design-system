@@ -68,6 +68,14 @@ class ExampleBoundary extends React.Component<
   }
 }
 
+function PageWidgetSlot({ target, children }: { target: HTMLElement; children: React.ReactNode }) {
+  React.useLayoutEffect(() => {
+    target.classList.add('page-widget-ready');
+    return () => target.classList.remove('page-widget-ready');
+  }, [target]);
+  return createPortal(children, target);
+}
+
 function HomeWidgetSlot({ target, children }: { target: HTMLElement; children: React.ReactNode }) {
   const liveRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
@@ -269,8 +277,10 @@ export function PageContent({
       })
       .catch((error: unknown) => {
         console.error('Could not load documentation examples.', error);
-        if (active)
+        if (active) {
+          for (const widget of pageWidgets) widget.element.classList.add('page-widget-ready');
           setLoadError('Could not load examples. Reload this page or use the source downloads.');
+        }
       });
     return () => {
       active = false;
@@ -371,7 +381,11 @@ export function PageContent({
                   {view}
                 </HomeWidgetSlot>
               );
-            return createPortal(view, widget.element, `page-view-${index}`);
+            return (
+              <PageWidgetSlot key={`page-view-${index}`} target={widget.element}>
+                {view}
+              </PageWidgetSlot>
+            );
           })
         : null}
       {targets?.map((container) => {

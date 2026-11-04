@@ -5,8 +5,43 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import test from 'node:test';
 import { URL } from 'node:url';
+import vm from 'node:vm';
 
 const repoRoot = new URL('../../../', import.meta.url);
+
+test('failed application scripts restore the static documentation fallback', async () => {
+  const source = await fs.readFile(
+    new URL('apps/docsite/scripts/build-reference-proof.mjs', repoRoot),
+    'utf8',
+  );
+  const script = source.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1];
+  assert.ok(script);
+  const root = { dataset: {} };
+  const handlers = new Map();
+  let initialShell = {};
+  class ErrorEvent {}
+  class HTMLScriptElement {}
+  vm.runInNewContext(script, {
+    document: { documentElement: root, getElementById: () => initialShell },
+    window: { addEventListener: (type, handler) => handlers.set(type, handler) },
+    localStorage: { getItem: () => null },
+    matchMedia: () => ({ matches: false }),
+    ErrorEvent,
+    HTMLScriptElement,
+  });
+  assert.equal(root.dataset.referenceEnhanced, 'true');
+  handlers.get('error')({ target: {} });
+  assert.equal(root.dataset.referenceEnhanced, 'true');
+  handlers.get('error')({ target: new HTMLScriptElement() });
+  assert.equal(root.dataset.referenceEnhanced, undefined);
+  root.dataset.referenceEnhanced = 'true';
+  handlers.get('error')(new ErrorEvent());
+  assert.equal(root.dataset.referenceEnhanced, undefined);
+  root.dataset.referenceEnhanced = 'true';
+  initialShell = null;
+  handlers.get('error')(new ErrorEvent());
+  assert.equal(root.dataset.referenceEnhanced, 'true');
+});
 
 test('navigation footer casts a shell-colored upward shadow inside the sidebar', async () => {
   const styles = await fs.readFile(

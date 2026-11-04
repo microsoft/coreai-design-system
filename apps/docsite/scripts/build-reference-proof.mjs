@@ -485,6 +485,12 @@ function shell(title, body, metadata, assets, navigation, currentPath = '') {
 <script>
 (() => {
   const root = document.documentElement;
+  root.dataset.referenceEnhanced = 'true';
+  window.addEventListener('error', (event) => {
+    if (!document.getElementById('reference-content')) return;
+    if (event instanceof ErrorEvent || event.target instanceof HTMLScriptElement)
+      delete root.dataset.referenceEnhanced;
+  }, true);
   let stored;
   let brand;
   try {

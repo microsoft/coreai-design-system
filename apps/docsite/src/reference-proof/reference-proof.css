@@ -9,6 +9,12 @@
   line-height: var(--lineHeightBase300);
 }
 
+:root[data-reference-enhanced] #reference-content .app-content:not(.app-content--home) #main,
+:root[data-reference-enhanced]
+  [data-page-widget]:not([data-page-widget='home'], .page-widget-ready) {
+  visibility: hidden;
+}
+
 .reference-shell {
   --mf-font-ui: var(--fontFamilyBase);
   --mf-font-code: var(--fontFamilyMonospace);
