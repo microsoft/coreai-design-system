@@ -1641,7 +1641,25 @@ code:not(pre code) {
 }
 
 .content-principle {
+  position: relative;
   border-top: 1px solid var(--colorNeutralStrokeAlpha);
+}
+
+.content-principle-connector {
+  position: absolute;
+  inset: 0;
+  display: none;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  fill: none;
+  stroke: var(--colorNeutralStrokeAlpha);
+  stroke-width: 1px;
+}
+
+.content-principle:has(.fui-AccordionHeader__button[aria-expanded='true'])
+  > .content-principle-connector {
+  display: block;
 }
 
 .content-principle:last-child {
@@ -1723,6 +1741,7 @@ code:not(pre code) {
 .content-example__body {
   position: relative;
   width: 100%;
+  padding-inline-start: 7px;
 }
 
 .content-example--avoid {

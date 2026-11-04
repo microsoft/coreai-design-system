@@ -28,6 +28,7 @@ import { WorkInProgress } from '../components/work-in-progress';
 import type { PageWidgetProps } from './FoundationViews';
 import { IntroFeatureCards } from './intro-feature-cards';
 import { ContentHelpCards } from '../components/content-help-cards';
+import { ContentPrincipleConnector } from '../components/content-principle-connector';
 
 interface ResourceItem {
   title: string;
@@ -945,6 +946,7 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
         <Accordion className="content-principle-list" multiple collapsible>
           {model.principles.map((principle, index) => (
             <AccordionItem className="content-principle" key={principle.id} value={principle.id}>
+              <ContentPrincipleConnector />
               <AccordionHeader expandIconPosition="end" size="large">
                 <span className="content-principle__trigger">
                   <span className="content-principle__number">{index + 1}</span>

@@ -12,6 +12,7 @@ import {
 } from '@coreai-ds/react-components';
 import { PageLayout } from '../components/PageLayout';
 import { ContentHelpCards } from '../components/content-help-cards';
+import { ContentPrincipleConnector } from '../components/content-principle-connector';
 
 interface ContentStep {
   title: string;
@@ -212,6 +213,7 @@ function PrincipleList() {
     <Accordion className="content-principle-list" multiple collapsible>
       {principles.map((principle, index) => (
         <AccordionItem className="content-principle" key={principle.title} value={principle.title}>
+          <ContentPrincipleConnector />
           <AccordionHeader expandIconPosition="end" size="large" role="heading" aria-level={3}>
             <span className="content-principle__trigger">
               <span className="content-principle__number">{index + 1}</span>
