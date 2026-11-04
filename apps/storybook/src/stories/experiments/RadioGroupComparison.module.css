@@ -1,0 +1,87 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten experiment layout and unlayered consumer overrides; not an upstream style port.
+ */
+
+.examples {
+  display: grid;
+  gap: 16px;
+  max-width: 1200px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) repeat(2, minmax(280px, 1fr));
+  align-items: center;
+  gap: 16px;
+}
+
+.cell {
+  min-width: 0;
+}
+
+.customDot {
+  width: 8px;
+  height: 8px;
+  background-color: currentColor;
+  border-radius: 50%;
+}
+
+.consumerGroup {
+  flex-direction: row;
+  gap: 12px;
+}
+
+.consumerRadio {
+  align-items: center;
+}
+
+.consumerInput {
+  width: 44px;
+  cursor: crosshair;
+}
+
+.consumerIndicator {
+  width: 24px;
+  height: 24px;
+  color: rgb(20, 90, 160);
+  border-color: rgb(40, 110, 60);
+  border-width: 2px;
+  border-radius: 3px;
+}
+
+.consumerLabel {
+  color: rgb(20, 90, 160);
+  font-size: 18px;
+  line-height: 26px;
+  padding-inline-start: 12px;
+}
+
+.consumerRequired {
+  color: rgb(40, 110, 60);
+  padding-inline-start: 10px;
+}
+
+.report {
+  display: block;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+  margin-block: 16px;
+}
+
+.playground {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  max-width: 560px;
+}
+
+.pointerParking {
+  display: block;
+  width: 24px;
+  height: 24px;
+}

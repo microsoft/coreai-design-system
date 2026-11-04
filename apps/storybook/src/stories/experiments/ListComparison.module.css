@@ -1,0 +1,105 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten shared comparison/consumer layout; not an upstream component style port.
+ */
+
+.comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+
+  & > section {
+    min-width: 0;
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.fixtureList {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.fixtureItem {
+  min-height: 32px;
+  gap: 8px;
+  align-items: center;
+}
+
+.content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.description {
+  display: block;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.actions {
+  margin-inline-start: auto;
+  flex-shrink: 0;
+}
+
+.consumerList {
+  padding: 7px;
+  border-radius: 3px;
+}
+
+.consumerItem {
+  padding: 5px 9px;
+  border-radius: 3px;
+  background-color: rgb(230, 240, 250);
+  color: rgb(20, 40, 60);
+}
+
+.consumerCheckmark {
+  border-radius: 3px;
+  border-width: 2px;
+}
+
+.pointerRest {
+  padding-block: 10px;
+}
+
+.report {
+  max-height: 420px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.flow {
+  display: grid;
+  gap: 12px;
+  max-width: 760px;
+}
+
+.flowList {
+  border: 1px solid var(--colorNeutralStroke2);
+}
+
+.flowItem {
+  min-height: 40px;
+  padding: 4px 8px;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+
+  &[aria-selected='true'] {
+    background-color: var(--colorSubtleBackgroundSelected);
+  }
+}
+
+.flowControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

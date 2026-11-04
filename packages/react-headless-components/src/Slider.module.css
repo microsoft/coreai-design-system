@@ -1,0 +1,269 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-slider 9.6.8, useSliderStyles.styles.ts.
+ * Local source: [useSliderStyles.styles.raw.js](../../../node_modules/@fluentui/react-slider/lib/components/Slider/useSliderStyles.styles.raw.js).
+ * Focus dependency: [createFocusOutlineStyle.js](../../../node_modules/@fluentui/react-tabster/lib/focus/createFocusOutlineStyle.js).
+ * The public headless hook already supplies resolved --fui-Slider--progress,
+ * --fui-Slider--steps-percent, and --fui-Slider--direction. Do not normalize them again.
+ * Native input :focus-visible replaces the legacy focus-within attribute selector.
+ * Logical thumb positioning and :dir(rtl) replace Griffel's automatic RTL flipping.
+ * Modern vertical range inputs use writing-mode directly; the legacy sideways-lr
+ * feature probe and -webkit-appearance: slider-vertical fallback are not needed.
+ * Vertical input direction deliberately stays rtl in both text directions. Griffel
+ * mirrors the source's explicit direction to ltr in RTL, reversing native input
+ * behavior relative to its unchanged bottom-to-top visual rail and thumb.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot */
+  .Slider {
+    --fui-Slider__thumb--size: 20px;
+    --fui-Slider__inner-thumb--radius: 6px;
+    --fui-Slider__rail--size: 4px;
+
+    position: relative;
+    display: inline-grid;
+    touch-action: none;
+    align-items: center;
+    justify-items: center;
+    min-height: 32px;
+
+    &:focus,
+    &:focus-visible {
+      outline-style: none;
+    }
+
+    &[data-size='small'] {
+      --fui-Slider__thumb--size: 16px;
+      --fui-Slider__inner-thumb--radius: 5px;
+      --fui-Slider__rail--size: 2px;
+
+      min-height: 24px;
+    }
+
+    &:not([data-vertical]) {
+      min-width: 120px;
+      /* 3x3 grid with the rail and thumb in the center cell [2,2]
+         and the hidden input stretching across all cells. */
+      grid-template-rows: 1fr var(--fui-Slider__thumb--size) 1fr;
+      grid-template-columns: 1fr calc(100% - var(--fui-Slider__thumb--size)) 1fr;
+    }
+
+    &[data-vertical] {
+      min-height: 120px;
+      /* 3x3 grid with the rail and thumb in the center cell [2,2]
+         and the hidden input stretching across all cells. */
+      grid-template-rows: 1fr calc(100% - var(--fui-Slider__thumb--size)) 1fr;
+      grid-template-columns: 1fr var(--fui-Slider__thumb--size) 1fr;
+    }
+
+    &:not([data-disabled]) {
+      --fui-Slider__rail--color: var(--colorNeutralStrokeAccessible);
+      --fui-Slider__progress--color: var(--colorCompoundBrandBackground);
+      --fui-Slider__thumb--color: var(--colorCompoundBrandBackground);
+
+      &:hover {
+        --fui-Slider__thumb--color: var(--colorCompoundBrandBackgroundHover);
+        --fui-Slider__progress--color: var(--colorCompoundBrandBackgroundHover);
+      }
+
+      &:active {
+        --fui-Slider__thumb--color: var(--colorCompoundBrandBackgroundPressed);
+        --fui-Slider__progress--color: var(--colorCompoundBrandBackgroundPressed);
+      }
+
+      @media (forced-colors: active) {
+        --fui-Slider__rail--color: CanvasText;
+        --fui-Slider__thumb--color: Highlight;
+        --fui-Slider__progress--color: Highlight;
+
+        &:hover {
+          --fui-Slider__thumb--color: Highlight;
+          --fui-Slider__progress--color: Highlight;
+        }
+      }
+    }
+
+    &[data-disabled] {
+      --fui-Slider__thumb--color: var(--colorNeutralForegroundDisabled);
+      --fui-Slider__rail--color: var(--colorNeutralBackgroundDisabled);
+      --fui-Slider__progress--color: var(--colorNeutralForegroundDisabled);
+
+      @media (forced-colors: active) {
+        --fui-Slider__rail--color: GrayText;
+        --fui-Slider__thumb--color: GrayText;
+        --fui-Slider__progress--color: GrayText;
+      }
+
+      > .Slider__thumb::before {
+        border-color: var(--colorNeutralForegroundDisabled);
+      }
+    }
+
+    /* The element with the focus outline needs position: relative so the
+       pseudo-element can be properly positioned. The actual input owns focus. */
+    &:has(> .Slider__input:focus-visible) {
+      border-color: transparent;
+
+      &::after {
+        content: '';
+        position: absolute;
+        pointer-events: none;
+        z-index: 1;
+        border: 2px solid var(--colorStrokeFocus2);
+        border-radius: var(--borderRadiusMedium);
+        inset-block: 0;
+        inset-inline: 2px;
+      }
+
+      &[data-vertical]::after {
+        inset-inline: -6px;
+      }
+
+      @media (forced-colors: active) {
+        &::after {
+          border-color: Highlight;
+        }
+      }
+    }
+
+    &:not([data-vertical]):dir(rtl) > .Slider__thumb {
+      transform: translateX(50%);
+    }
+  }
+
+  /* Styles for the rail slot */
+  .Slider__rail {
+    border-radius: var(--borderRadiusXLarge);
+    pointer-events: none;
+    grid-area: 2 / 2 / 2 / 2;
+    position: relative;
+    forced-color-adjust: none;
+    /* Background gradient represents the progress of the slider. */
+    background-image: linear-gradient(
+      var(--fui-Slider--direction),
+      var(--fui-Slider__progress--color) 0%,
+      var(--fui-Slider__progress--color) var(--fui-Slider--progress),
+      var(--fui-Slider__rail--color) var(--fui-Slider--progress)
+    );
+    outline: 1px solid var(--colorTransparentStroke);
+
+    &::before {
+      content: '';
+      position: absolute;
+      /* Repeating gradient represents the steps if provided. */
+      background-image: repeating-linear-gradient(
+        var(--fui-Slider--direction),
+        #0000 0%,
+        #0000 calc(var(--fui-Slider--steps-percent) - 1px),
+        var(--colorNeutralBackground1) calc(var(--fui-Slider--steps-percent) - 1px),
+        var(--colorNeutralBackground1) var(--fui-Slider--steps-percent)
+      );
+
+      /* Force steps to use HighlightText for high contrast mode. */
+      @media (forced-colors: active) {
+        background-image: repeating-linear-gradient(
+          var(--fui-Slider--direction),
+          #0000 0%,
+          #0000 calc(var(--fui-Slider--steps-percent) - 1px),
+          HighlightText calc(var(--fui-Slider--steps-percent) - 1px),
+          HighlightText var(--fui-Slider--steps-percent)
+        );
+      }
+    }
+
+    .Slider:not([data-vertical]) > & {
+      width: 100%;
+      height: var(--fui-Slider__rail--size);
+
+      &::before {
+        inset-inline: -1px;
+        height: var(--fui-Slider__rail--size);
+      }
+    }
+
+    .Slider[data-vertical] > & {
+      width: var(--fui-Slider__rail--size);
+      height: 100%;
+
+      &::before {
+        width: var(--fui-Slider__rail--size);
+        inset-block: -1px;
+      }
+    }
+  }
+
+  /* Styles for the thumb slot */
+  .Slider__thumb {
+    /* Ensure the thumb stays within the track boundaries.
+       When the value is at 0% or 100%, the distance from the track edge
+       to the thumb center equals the inner thumb radius. */
+    --fui-Slider__thumb--position: clamp(
+      var(--fui-Slider__inner-thumb--radius),
+      var(--fui-Slider--progress),
+      calc(100% - var(--fui-Slider__inner-thumb--radius))
+    );
+
+    grid-area: 2 / 2 / 2 / 2;
+    position: absolute;
+    width: var(--fui-Slider__thumb--size);
+    height: var(--fui-Slider__thumb--size);
+    pointer-events: none;
+    outline-style: none;
+    forced-color-adjust: none;
+    border-radius: var(--borderRadiusCircular);
+    box-shadow: 0 0 0 calc(var(--fui-Slider__thumb--size) * 0.2) var(--colorNeutralBackground1)
+      inset;
+    background-color: var(--fui-Slider__thumb--color);
+
+    &::before {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--borderRadiusCircular);
+      box-sizing: border-box;
+      content: '';
+      border: calc(var(--fui-Slider__thumb--size) * 0.05) solid var(--colorNeutralStroke1);
+    }
+
+    .Slider:not([data-vertical]) > & {
+      transform: translateX(-50%);
+      inset-inline-start: var(--fui-Slider__thumb--position);
+    }
+
+    .Slider[data-vertical] > & {
+      transform: translateY(50%);
+      bottom: var(--fui-Slider__thumb--position);
+    }
+  }
+
+  /* Styles for the input slot */
+  .Slider__input {
+    cursor: pointer;
+    opacity: 0;
+    grid-area: 1 / 1 / -1 / -1;
+    padding: 0;
+    margin: 0;
+
+    &:disabled {
+      cursor: default;
+    }
+
+    .Slider:not([data-vertical]) > & {
+      height: var(--fui-Slider__thumb--size);
+      width: 100%;
+    }
+
+    .Slider[data-vertical] > & {
+      height: 100%;
+      width: var(--fui-Slider__thumb--size);
+      writing-mode: vertical-lr;
+      direction: rtl;
+    }
+  }
+}

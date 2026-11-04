@@ -1,0 +1,24 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-menu 9.25.8, useMenuGroupHeaderStyles.styles.ts.
+ * Local source: [useMenuGroupHeaderStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuGroupHeader/useMenuGroupHeaderStyles.styles.raw.js).
+ * There are no CoreAI MenuGroupHeader overrides or defaults.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .MenuGroupHeader {
+    font-size: var(--fontSizeBase200);
+    color: var(--colorNeutralForeground3);
+    padding-inline: 8px;
+    font-weight: var(--fontWeightSemibold);
+    height: 32px;
+    display: flex;
+    align-items: center;
+  }
+}

@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-swatch-picker 9.6.3, useSwatchPickerStyles.styles.ts.
+ * Local source: [useSwatchPickerStyles.styles.raw.js](../../../node_modules/@fluentui/react-swatch-picker/lib/components/SwatchPicker/useSwatchPickerStyles.styles.raw.js).
+ * CoreAI's only deviation is the rounded prop default in
+ * [SwatchPicker.ts](../../react-components/src/components/SwatchPicker.ts).
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot */
+  .SwatchPicker {
+    padding: var(--spacingHorizontalNone) var(--spacingVerticalNone);
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+
+    &[data-layout='grid'] {
+      flex-direction: column;
+    }
+
+    &[data-spacing='small'] {
+      gap: 2px;
+    }
+  }
+}

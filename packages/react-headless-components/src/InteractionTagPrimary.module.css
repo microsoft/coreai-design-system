@@ -1,0 +1,252 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported directly from @fluentui/react-tags 9.9.8.
+ * Local source: [useInteractionTagPrimaryStyles.styles.raw.js](../../../node_modules/@fluentui/react-tags/lib/components/InteractionTagPrimary/useInteractionTagPrimaryStyles.styles.raw.js).
+ * Source: https://unpkg.com/@fluentui/react-tags@9.9.8/lib/components/InteractionTagPrimary/useInteractionTagPrimaryStyles.styles.raw.js
+ * Delegated media/icon/text foundation:
+ * [useTagStyles.styles.raw.js](../../../node_modules/@fluentui/react-tags/lib/components/Tag/useTagStyles.styles.raw.js).
+ * CoreAI source: [Tag.styles.ts](../../react-components/src/components/Tag.styles.ts);
+ * its defaults-gated text override is shared in TagVisual.overrides.module.css.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ * Native :focus-visible replaces legacy focus attributes. No motion is defined upstream.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .InteractionTagPrimary {
+    composes: TagVisual from './TagVisual.module.css';
+
+    /* Reset default button style. */
+    color: var(--colorNeutralForeground2);
+    font-family: inherit;
+    padding: 0;
+    appearance: button;
+    text-align: unset;
+    background-color: var(--colorNeutralBackground3);
+    display: inline-grid;
+    height: 100%;
+    align-items: center;
+    grid-template-areas:
+      'media primary'
+      'media secondary';
+    border: var(--strokeWidthThin) solid var(--colorTransparentStroke);
+    border-radius: var(--borderRadiusMedium);
+    padding-inline-end: var(--fui-tag-spacing);
+
+    &:focus-visible {
+      outline: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+      z-index: 1;
+    }
+
+    &[data-shape='circular'] {
+      border-radius: var(--borderRadiusCircular);
+    }
+
+    &:not([data-has-media]) {
+      padding-inline-start: var(--fui-tag-spacing);
+    }
+
+    &[data-size='extra-small'] {
+      position: relative;
+
+      /* Increase clickable area to meet WCAG 2.2 AA.
+       * https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html
+       */
+      @media (forced-colors: none) {
+        &::before,
+        &::after {
+          content: '';
+          position: absolute;
+          height: 2px;
+          inset-inline-start: 0;
+          width: 100%;
+        }
+
+        &::before {
+          bottom: 100%;
+        }
+
+        &::after {
+          top: 100%;
+        }
+      }
+    }
+
+    &[data-appearance='outline'] {
+      background-color: var(--colorSubtleBackground);
+      border-color: var(--colorNeutralStroke1);
+    }
+
+    &[data-appearance='brand'] {
+      background-color: var(--colorBrandBackground2);
+      color: var(--colorBrandForeground2);
+    }
+
+    &:not([data-disabled]) {
+      &:hover {
+        cursor: pointer;
+        background-color: var(--colorNeutralBackground3Hover);
+        color: var(--colorNeutralForeground2Hover);
+      }
+
+      &:active {
+        background-color: var(--colorNeutralBackground3Pressed);
+        color: var(--colorNeutralForeground2Pressed);
+      }
+
+      &[data-appearance='outline'] {
+        &:hover {
+          background-color: var(--colorSubtleBackgroundHover);
+          color: var(--colorNeutralForeground2Hover);
+        }
+
+        &:active {
+          background-color: var(--colorSubtleBackgroundPressed);
+          color: var(--colorNeutralForeground2Pressed);
+        }
+      }
+
+      &[data-appearance='brand'] {
+        &:hover {
+          background-color: var(--colorBrandBackground2Hover);
+          color: var(--colorCompoundBrandForeground1Hover);
+        }
+
+        &:active {
+          background-color: var(--colorBrandBackground2Pressed);
+          color: var(--colorCompoundBrandForeground1Pressed);
+        }
+      }
+
+      &[data-selected] {
+        background: var(--colorBrandBackground);
+        color: var(--colorNeutralForegroundOnBrand);
+        border-color: var(--colorBrandStroke1);
+
+        &:hover {
+          background-color: var(--colorBrandBackgroundHover);
+          color: var(--colorNeutralForegroundOnBrand);
+        }
+
+        &:active {
+          background-color: var(--colorBrandBackgroundPressed);
+          color: var(--colorNeutralForegroundOnBrand);
+        }
+      }
+    }
+
+    &[data-disabled] {
+      cursor: not-allowed;
+      background-color: var(--colorNeutralBackgroundDisabled);
+      color: var(--colorNeutralForegroundDisabled);
+      border-color: var(--colorTransparentStrokeDisabled);
+
+      &[data-appearance='outline'] {
+        background-color: var(--colorSubtleBackground);
+        border-color: var(--colorNeutralStrokeDisabled);
+      }
+    }
+
+    /* Pseudo element to draw the border for Windows high contrast mode:
+     * with secondary text, primary text has a negative margin that covers the border.
+     */
+    @media (forced-colors: active) {
+      position: relative;
+
+      &::before {
+        content: '';
+        border-top: var(--strokeWidthThin) solid;
+        position: absolute;
+        inset: -1px;
+        border-start-start-radius: var(--borderRadiusMedium);
+        border-start-end-radius: var(--borderRadiusMedium);
+      }
+
+      &[data-shape='circular']::before {
+        border-inline-start: var(--strokeWidthThin) solid;
+        border-start-start-radius: var(--borderRadiusCircular);
+        border-end-start-radius: var(--borderRadiusCircular);
+        border-start-end-radius: 0;
+      }
+
+      /* Circular primary actions without a secondary action keep a complete border. */
+      &[data-shape='circular']:not([data-has-secondary-action])::before {
+        border-inline-end: var(--strokeWidthThin) solid transparent;
+        border-start-end-radius: var(--borderRadiusCircular);
+        border-end-end-radius: var(--borderRadiusCircular);
+      }
+
+      &[data-appearance]:not([data-disabled]):is(:hover, :active) {
+        background-color: HighlightText;
+      }
+
+      &[data-selected]:not([data-disabled]) {
+        forced-color-adjust: none;
+        background-color: Highlight;
+        color: HighlightText;
+
+        &:is(:hover, :active) {
+          background-color: Highlight;
+          color: HighlightText;
+        }
+      }
+    }
+
+    /* Styles when InteractionTag has a secondary button. */
+    &[data-has-secondary-action] {
+      border-start-end-radius: var(--borderRadiusNone);
+      border-end-end-radius: var(--borderRadiusNone);
+      border-inline-end-style: none;
+      padding-inline-end: var(--fui-tag-media-spacing);
+
+      @media (forced-colors: active) {
+        &::before {
+          border-start-end-radius: 0;
+        }
+      }
+    }
+  }
+
+  .InteractionTagPrimary__media {
+    composes: Tag__media from './Tag.module.css';
+  }
+
+  .InteractionTagPrimary__icon {
+    composes: Tag__icon from './Tag.module.css';
+  }
+
+  .InteractionTagPrimary__primaryText {
+    composes: Tag__primaryText from './Tag.module.css';
+  }
+
+  .InteractionTagPrimary__secondaryText {
+    composes: Tag__secondaryText from './Tag.module.css';
+  }
+}
+
+/* Bundled legacy icons ship unlayered visibility rules. Adapt only glyphs inside our owned
+ * icon slot; other caller glyphs and classes are unchanged.
+ */
+.InteractionTagPrimary:not([data-disabled])[data-appearance='outline'] {
+  &:is(:hover, :active) .InteractionTagPrimary__icon :global(.fui-Icon-filled) {
+    display: inline;
+    color: var(--colorNeutralForeground2BrandHover);
+  }
+
+  &:active .InteractionTagPrimary__icon :global(.fui-Icon-filled) {
+    color: var(--colorNeutralForeground2BrandPressed);
+  }
+
+  &:is(:hover, :active) .InteractionTagPrimary__icon :global(.fui-Icon-regular) {
+    display: none;
+  }
+
+  &[data-selected]:is(:hover, :active) .InteractionTagPrimary__icon :global(.fui-Icon-filled) {
+    color: var(--colorNeutralForegroundOnBrand);
+  }
+}

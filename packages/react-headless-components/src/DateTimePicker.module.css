@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI native-control source: [DateTimePicker.tsx](../../react-components/src/components/DateTimePicker.tsx), baseline c3af1b8.
+ * No Fluent DateTimePicker style source exists: local Input and Button supply their own foundations.
+ * Icon defaults: @fluentui/react-icons 2.0.343
+ * [headless/styles.css](../../../node_modules/@fluentui/react-icons/lib/headless/styles.css).
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .DateTimePicker .DateTimePicker__icon {
+    display: inline;
+    line-height: 0;
+
+    &[data-fui-icon-hidden] {
+      display: none;
+    }
+
+    @media (forced-colors: active) {
+      forced-color-adjust: auto;
+    }
+  }
+}
+
+@layer coreai-overrides {
+  .DateTimePicker__input {
+    /* The OS-rendered indicator does not adapt to CoreAI's dark theme.
+     * Keep the native picker, but use the themed contentAfter action.
+     */
+    &::-webkit-calendar-picker-indicator {
+      display: none;
+    }
+  }
+}

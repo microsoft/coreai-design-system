@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-breadcrumb 9.4.8, useBreadcrumbItemStyles.styles.raw.js.
+ * Local source: [useBreadcrumbItemStyles.styles.raw.js](../../../node_modules/@fluentui/react-breadcrumb/lib/components/BreadcrumbItem/useBreadcrumbItemStyles.styles.raw.js).
+ * CoreAI has no BreadcrumbItem overrides or defaults.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .BreadcrumbItem {
+    display: flex;
+    align-items: center;
+    color: var(--colorNeutralForeground2);
+    box-sizing: border-box;
+    text-wrap: nowrap;
+  }
+}

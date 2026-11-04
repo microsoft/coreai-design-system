@@ -1,0 +1,59 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI source: [Text.tsx](../../react-components/src/components/Text.tsx).
+ * Fluent baseline: [useTextStyles.styles.raw.js](../../../node_modules/@fluentui/react-text/lib/components/Text/useTextStyles.styles.raw.js), @fluentui/react-text 9.6.21.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .Text {
+    color: inherit;
+    margin: 0; /* reset browser default margin for h1-h6 & p tags */
+
+    &:not([data-font]) {
+      font-family: inherit;
+    }
+
+    &:not([data-size]) {
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+    &:not([data-weight]) {
+      font-weight: inherit;
+    }
+
+    &[data-foreground='1'] {
+      color: var(--colorNeutralForeground1);
+    }
+
+    &[data-foreground='2'] {
+      color: var(--colorNeutralForeground2);
+    }
+
+    &[data-foreground='3'] {
+      color: var(--colorNeutralForeground3);
+    }
+
+    &[data-foreground='4'] {
+      color: var(--colorNeutralForeground4);
+    }
+
+    &[data-foreground='disabled'] {
+      color: var(--colorNeutralForegroundDisabled);
+    }
+
+    /* Responsive letter spacing is applied by the provider.
+     * An explicit uppercase choice takes precedence over that inherited tracking.
+     */
+    &[data-uppercase] {
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+  }
+}

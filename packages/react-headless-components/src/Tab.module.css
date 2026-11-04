@@ -1,0 +1,486 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-tabs 9.12.6, useTabStyles.styles.ts and
+ * useTabAnimatedIndicator.styles.ts (CSS only; no private animation/registration hook).
+ * Local sources: [useTabStyles.styles.raw.js](../../../node_modules/@fluentui/react-tabs/lib/components/Tab/useTabStyles.styles.raw.js)
+ * and [useTabAnimatedIndicator.styles.raw.js](../../../node_modules/@fluentui/react-tabs/lib/components/Tab/useTabAnimatedIndicator.styles.raw.js).
+ * Headless behavior: @fluentui/react-headless-components-preview 0.3.2 /tab-list.
+ * Native :focus-visible replaces legacy focus attributes. The selected indicator is local to
+ * its tab; the old JavaScript slide between registered tabs is intentionally not recreated.
+ * See README.md and the repository MIT license (LICENSE-CODE).
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot. */
+  .Tab {
+    --fui-Tab__indicator-inline-inset: var(--spacingHorizontalM);
+    --fui-Tab__indicator-block-inset: var(--spacingVerticalS);
+    --fui-Tab__indicator-thickness: var(--strokeWidthThicker);
+
+    align-items: center;
+    border: none;
+    border-radius: var(--borderRadiusMedium);
+    cursor: pointer;
+    display: grid;
+    flex-shrink: 0;
+    grid-auto-flow: column;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+    font-family: var(--fontFamilyBase);
+    line-height: var(--lineHeightBase300);
+    outline-style: none;
+    position: relative;
+    overflow: hidden;
+    text-transform: none;
+    justify-content: center;
+    column-gap: var(--spacingHorizontalSNudge);
+    padding: var(--spacingVerticalM) var(--spacingHorizontalMNudge);
+
+    &[data-size='small'] {
+      --fui-Tab__indicator-inline-inset: var(--spacingHorizontalSNudge);
+      --fui-Tab__indicator-block-inset: var(--spacingVerticalXS);
+      --fui-Tab__indicator-thickness: var(--strokeWidthThick);
+
+      column-gap: var(--spacingHorizontalXXS);
+      padding: var(--spacingVerticalSNudge) var(--spacingHorizontalSNudge);
+    }
+
+    &[data-size='large'] {
+      --fui-Tab__indicator-block-inset: var(--spacingVerticalMNudge);
+
+      padding-block: var(--spacingVerticalL);
+    }
+
+    &[data-orientation='vertical'] {
+      justify-content: start;
+      padding-block: var(--spacingVerticalSNudge);
+
+      &[data-size='small'] {
+        padding-block: var(--spacingVerticalXXS);
+      }
+
+      &[data-size='large'] {
+        padding-block: var(--spacingVerticalS);
+      }
+    }
+
+    /* Tab needs a custom focus indicator because selection uses ::after. */
+    &:focus-visible {
+      border-color: transparent;
+      outline: var(--strokeWidthThick) solid transparent;
+      box-shadow:
+        var(--shadow4),
+        0 0 0 var(--strokeWidthThick) var(--colorStrokeFocus2);
+      z-index: 1;
+    }
+
+    &[data-disabled] {
+      cursor: not-allowed;
+    }
+
+    /* Overflow lets the selection indicator extend outside the tab area. */
+    &[data-selected]:not([data-disabled]) {
+      overflow: visible;
+
+      &::after {
+        transform-origin: left;
+        transform: translateX(var(--fui-Tab__indicator--offset, 0px))
+          scaleX(var(--fui-Tab__indicator--scale, 1));
+        transition-property: transform;
+        transition-duration: var(--durationSlow);
+        transition-timing-function: var(--curveDecelerateMax);
+      }
+
+      &:dir(rtl)::after {
+        transform-origin: right;
+      }
+
+      &[data-orientation='vertical']::after {
+        transform-origin: top;
+        transform: translateY(var(--fui-Tab__indicator--offset, 0px))
+          scaleY(var(--fui-Tab__indicator--scale, 1));
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        &::after {
+          transition-property: none;
+          transition-duration: 0.01ms;
+        }
+      }
+    }
+
+    &:is([data-appearance='transparent'], [data-appearance='subtle']) {
+      background-color: var(--colorTransparentBackground);
+
+      & > .Tab__icon,
+      & > .Tab__content {
+        color: var(--colorNeutralForeground2);
+      }
+
+      &:not([data-disabled]) {
+        &[data-appearance='subtle'] {
+          background-color: var(--colorSubtleBackground);
+        }
+
+        &:hover {
+          background-color: var(--colorTransparentBackgroundHover);
+
+          & > .Tab__icon,
+          & > .Tab__content {
+            color: var(--colorNeutralForeground2Hover);
+          }
+        }
+
+        &:active {
+          background-color: var(--colorTransparentBackgroundPressed);
+
+          & > .Tab__icon,
+          & > .Tab__content {
+            color: var(--colorNeutralForeground2Pressed);
+          }
+        }
+
+        &[data-appearance='subtle']:hover {
+          background-color: var(--colorSubtleBackgroundHover);
+        }
+
+        &[data-appearance='subtle']:active {
+          background-color: var(--colorSubtleBackgroundPressed);
+        }
+
+        &[data-selected] {
+          & > .Tab__icon {
+            color: var(--colorCompoundBrandForeground1);
+          }
+
+          & > .Tab__content {
+            color: var(--colorNeutralForeground1);
+          }
+
+          &:hover {
+            & > .Tab__icon {
+              color: var(--colorCompoundBrandForeground1Hover);
+            }
+
+            & > .Tab__content {
+              color: var(--colorNeutralForeground1Hover);
+            }
+          }
+
+          &:active {
+            & > .Tab__icon {
+              color: var(--colorCompoundBrandForeground1Pressed);
+            }
+
+            & > .Tab__content {
+              color: var(--colorNeutralForeground1Pressed);
+            }
+          }
+        }
+      }
+
+      &[data-disabled] {
+        & > .Tab__icon,
+        & > .Tab__content {
+          color: var(--colorNeutralForegroundDisabled);
+        }
+      }
+
+      /** Indicator styles for pending selection. */
+      &::before,
+      &[data-selected]::after {
+        inset-block-end: 0;
+        inset-inline: var(--fui-Tab__indicator-inline-inset);
+        height: var(--fui-Tab__indicator-thickness);
+      }
+
+      &[data-orientation='vertical']::before,
+      &[data-orientation='vertical'][data-selected]::after {
+        inset-block: var(--fui-Tab__indicator-block-inset);
+        inset-inline-start: 0;
+        inset-inline-end: auto;
+        height: auto;
+        width: var(--strokeWidthThicker);
+      }
+
+      &:hover::before,
+      &:active::before {
+        background-color: var(--colorNeutralStroke1Hover);
+        border-radius: var(--borderRadiusCircular);
+        content: '';
+        position: absolute;
+      }
+
+      &:active::before {
+        background-color: var(--colorNeutralStroke1Pressed);
+      }
+
+      &[data-disabled]:hover::before,
+      &[data-disabled]:active::before {
+        background-color: var(--colorTransparentStroke);
+      }
+
+      &[data-selected]::after {
+        background-color: var(--colorCompoundBrandStroke);
+        border-radius: var(--borderRadiusCircular);
+        content: '';
+        position: absolute;
+      }
+
+      &[data-selected]:not([data-disabled]):hover::after {
+        background-color: var(--colorCompoundBrandStrokeHover);
+      }
+
+      &[data-selected]:not([data-disabled]):active::after {
+        background-color: var(--colorCompoundBrandStrokePressed);
+      }
+
+      &[data-selected][data-disabled]::after {
+        background-color: var(--colorNeutralForegroundDisabled);
+      }
+
+      @media (forced-colors: active) {
+        &:hover::before,
+        &:active::before {
+          background-color: Highlight;
+        }
+
+        &[data-disabled]:hover::before,
+        &[data-disabled]:active::before {
+          background-color: transparent;
+        }
+
+        &[data-selected]:not([data-disabled])::after,
+        &[data-selected]:not([data-disabled]):hover::after,
+        &[data-selected]:not([data-disabled]):active::after {
+          background-color: ButtonText;
+        }
+      }
+    }
+
+    &:is([data-appearance='subtle-circular'], [data-appearance='filled-circular']) {
+      border-radius: var(--borderRadiusCircular);
+      border: solid var(--strokeWidthThin) var(--colorTransparentStroke);
+      padding-block: calc(var(--spacingVerticalSNudge) - var(--strokeWidthThin));
+      color: var(--colorNeutralForeground2);
+
+      & > .Tab__icon,
+      & > .Tab__content {
+        color: inherit;
+      }
+
+      &[data-size='small'] {
+        padding-block: calc(var(--spacingVerticalXXS) - var(--strokeWidthThin));
+      }
+
+      &[data-size='large'] {
+        padding-block: calc(var(--spacingVerticalS) - var(--strokeWidthThin));
+      }
+
+      &:focus-visible {
+        box-shadow:
+          var(--shadow4),
+          0 0 0 var(--strokeWidthThick) var(--colorStrokeFocus2),
+          0 0 0 var(--strokeWidthThin) var(--colorNeutralStrokeOnBrand) inset;
+      }
+    }
+
+    &[data-appearance='subtle-circular'] {
+      background-color: var(--colorSubtleBackground);
+
+      &:not([data-disabled]) {
+        &:hover {
+          background-color: var(--colorSubtleBackgroundHover);
+          border-color: var(--colorNeutralStroke1Hover);
+          color: var(--colorNeutralForeground2Hover);
+        }
+
+        &:active {
+          background-color: var(--colorSubtleBackgroundPressed);
+          border-color: var(--colorNeutralStroke1Pressed);
+          color: var(--colorNeutralForeground2Pressed);
+        }
+
+        &[data-selected] {
+          background-color: var(--colorBrandBackground2);
+          border-color: var(--colorCompoundBrandStroke);
+          color: var(--colorBrandForeground2);
+
+          &:hover {
+            background-color: var(--colorBrandBackground2Hover);
+            border-color: var(--colorCompoundBrandStrokeHover);
+            color: var(--colorBrandForeground2Hover);
+          }
+
+          &:active {
+            background-color: var(--colorBrandBackground2Pressed);
+            border-color: var(--colorCompoundBrandStrokePressed);
+            color: var(--colorBrandForeground2Pressed);
+          }
+        }
+      }
+
+      &[data-disabled] {
+        color: var(--colorNeutralForegroundDisabled);
+
+        &[data-selected] {
+          background-color: var(--colorNeutralBackgroundDisabled);
+          border-color: var(--colorNeutralStrokeDisabled);
+        }
+      }
+
+      @media (forced-colors: active) {
+        border-color: Canvas;
+
+        &[data-selected]:not([data-disabled]) {
+          border-color: Highlight;
+        }
+      }
+    }
+
+    &[data-appearance='filled-circular'] {
+      background-color: var(--colorNeutralBackground3);
+
+      &:not([data-disabled]) {
+        &:hover {
+          background-color: var(--colorNeutralBackground3Hover);
+          color: var(--colorNeutralForeground2Hover);
+        }
+
+        &:active {
+          background-color: var(--colorNeutralBackground3Pressed);
+          color: var(--colorNeutralForeground2Pressed);
+        }
+
+        &[data-selected] {
+          background-color: var(--colorBrandBackground);
+          color: var(--colorNeutralForegroundOnBrand);
+
+          &:hover {
+            background-color: var(--colorBrandBackgroundHover);
+          }
+
+          &:active {
+            background-color: var(--colorBrandBackgroundPressed);
+          }
+        }
+      }
+
+      &[data-disabled] {
+        background-color: var(--colorNeutralBackgroundDisabled);
+        color: var(--colorNeutralForegroundDisabled);
+
+        &[data-selected] {
+          border-color: var(--colorNeutralStrokeDisabled);
+        }
+      }
+
+      @media (forced-colors: active) {
+        &:not([data-disabled]):hover {
+          background-color: Highlight;
+          forced-color-adjust: none;
+
+          & > .Tab__content,
+          & > .Tab__icon {
+            color: HighlightText;
+          }
+        }
+
+        &[data-selected]:not([data-disabled]) {
+          background-color: ButtonText;
+
+          & > .Tab__content {
+            color: ButtonFace;
+            forced-color-adjust: none;
+          }
+
+          & > .Tab__icon {
+            color: ButtonFace;
+          }
+        }
+      }
+    }
+
+    &:is(
+        [data-appearance='subtle-circular'],
+        [data-appearance='filled-circular']
+      ):focus-visible:not(:hover, :active) {
+      border-color: transparent;
+    }
+  }
+
+  /* Styles for the icon slot. */
+  .Tab__icon {
+    grid-column-start: 1;
+    grid-row-start: 1;
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    overflow: hidden;
+    /* Per design, small and medium icons are the same size; spacing differs. */
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+
+    .Tab[data-size='large'] > & {
+      font-size: 24px;
+      height: 24px;
+      width: 24px;
+    }
+  }
+
+  /* Styles for the content slot (children). */
+  .Tab__content,
+  .Tab__contentReservedSpace {
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+    overflow: hidden;
+    /* Content padding is the same for medium/small, horizontal/vertical. */
+    padding: var(--spacingVerticalNone) var(--spacingHorizontalXXS);
+    grid-column-start: 1;
+    grid-row-start: 1;
+
+    .Tab[data-has-icon] > & {
+      grid-column-start: 2;
+    }
+
+    .Tab[data-size='large'] > & {
+      font-size: var(--fontSizeBase400);
+      line-height: var(--lineHeightBase400);
+    }
+  }
+
+  .Tab[data-selected] > .Tab__content,
+  .Tab__contentReservedSpace {
+    font-weight: var(--fontWeightSemibold);
+  }
+
+  .Tab__contentReservedSpace {
+    visibility: hidden;
+  }
+}
+
+/* Bundled Fluent icons carry unlayered rules. Limit this adapter to the styled icon slot. */
+.Tab__icon :global(.fui-Icon-filled) {
+  display: none;
+}
+
+.Tab__icon :global(.fui-Icon-regular) {
+  display: inline;
+}
+
+.Tab[data-selected] > .Tab__icon :global(.fui-Icon-filled) {
+  display: inline;
+}
+
+.Tab[data-selected] > .Tab__icon :global(.fui-Icon-regular) {
+  display: none;
+}

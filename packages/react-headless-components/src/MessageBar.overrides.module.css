@@ -1,0 +1,25 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI brand intent from [MessageBar.tsx](../../react-components/src/components/MessageBar.tsx).
+ * Fluent baseline: @fluentui/react-message-bar 9.7.9,
+ * [useMessageBarStyles.styles.raw.js](../../../node_modules/@fluentui/react-message-bar/lib/components/MessageBar/useMessageBarStyles.styles.raw.js).
+ * Brand delegates icon, announcement, and layout behavior to info. It is an explicit
+ * visual extension, not a component-default override, and remains available on opt-out.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .MessageBar {
+    background-color: var(--colorBrandBackground2);
+    border: var(--strokeWidthThin) solid var(--colorBrandStroke2);
+  }
+
+  .MessageBar__icon {
+    color: var(--colorBrandForeground1);
+  }
+}

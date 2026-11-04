@@ -1,0 +1,354 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-teaching-popover 9.7.9.
+ * Local sources:
+ * [Surface](../../../node_modules/@fluentui/react-teaching-popover/lib/components/TeachingPopoverSurface/useTeachingPopoverSurfaceStyles.styles.raw.js),
+ * [Header](../../../node_modules/@fluentui/react-teaching-popover/lib/components/TeachingPopoverHeader/useTeachingPopoverHeaderStyles.styles.raw.js),
+ * [Title](../../../node_modules/@fluentui/react-teaching-popover/lib/components/TeachingPopoverTitle/useTeachingPopoverTitleStyles.styles.raw.js),
+ * [Body](../../../node_modules/@fluentui/react-teaching-popover/lib/components/TeachingPopoverBody/useTeachingPopoverBodyStyles.styles.raw.js),
+ * [Footer](../../../node_modules/@fluentui/react-teaching-popover/lib/components/TeachingPopoverFooter/useTeachingPopoverFooterStyles.styles.raw.js),
+ * [Carousel](../../../node_modules/@fluentui/react-teaching-popover/lib/components/TeachingPopoverCarousel/useTeachingPopoverCarouselStyles.styles.raw.js),
+ * [Card](../../../node_modules/@fluentui/react-teaching-popover/lib/components/TeachingPopoverCarouselCard/useTeachingPopoverCarouselCardStyles.styles.raw.js),
+ * [CarouselFooter](../../../node_modules/@fluentui/react-teaching-popover/lib/components/TeachingPopoverCarouselFooter/useTeachingPopoverCarouselFooterStyles.styles.raw.js),
+ * [FooterButton](../../../node_modules/@fluentui/react-teaching-popover/lib/components/TeachingPopoverCarouselFooterButton/useTeachingPopoverCarouselFooterButtonStyles.styles.raw.js),
+ * [Nav](../../../node_modules/@fluentui/react-teaching-popover/lib/components/TeachingPopoverCarouselNav/useTeachingPopoverCarouselNavStyles.styles.raw.js),
+ * [NavButton](../../../node_modules/@fluentui/react-teaching-popover/lib/components/TeachingPopoverCarouselNavButton/useTeachingPopoverCarouselNavButtonStyles.styles.raw.js),
+ * [PageCount](../../../node_modules/@fluentui/react-teaching-popover/lib/components/TeachingPopoverCarouselPageCount/useTeachingPopoverCarouselPageCountStyles.styles.raw.js).
+ * Carousel and Card have no visual declarations. Current Footer composes consumer-owned
+ * children, not legacy primary/secondary slots. Native :focus-visible replaces Tabster.
+ * Surface delegates to the completed Popover CSS, not its CoreAI Overlay override:
+ * the original TeachingPopover custom hook never invokes usePopoverSurfaceStyles overrides.
+ * FooterButton delegates to the completed Button CSS without CoreAI wrapper defaults;
+ * upstream likewise calls the Fluent Button style hook, not the CoreAI Button component.
+ * Its final merge gives atomic Button appearance/size/disabled classes priority over family
+ * recipes, while family recipes override Button's monolithic reset. Resolved brand attributes
+ * preserve that distinction without duplicating the Button foundation.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+.TeachingPopoverSurface {
+  composes: PopoverSurface from './PopoverSurface.module.css';
+}
+
+.TeachingPopoverCarouselFooterButton {
+  composes: Button from './Button.module.css';
+}
+
+@layer fluent-components {
+  /* Resolved-state specificity protects family rules from re-emitted composed foundations. */
+  .TeachingPopoverSurface[data-teaching-popover-surface][data-popover-surface] {
+    padding: var(--spacingVerticalL);
+    border-radius: var(--borderRadiusXLarge);
+    min-width: 320px;
+    box-sizing: border-box;
+  }
+
+  .TeachingPopoverHeader {
+    display: flex;
+    flex-direction: row;
+    color: var(--colorNeutralForeground3);
+    font-weight: var(--fontWeightSemibold);
+    font-size: var(--fontSizeBase200);
+    line-height: var(--lineHeightBase200);
+    padding-bottom: var(--spacingVerticalXS);
+    align-items: center;
+    margin-top: var(--spacingHorizontalNone);
+    margin-bottom: var(--spacingHorizontalNone);
+
+    &[data-appearance='brand'] {
+      color: var(--colorNeutralForegroundOnBrand);
+    }
+  }
+
+  .TeachingPopoverHeader__dismissButton,
+  .TeachingPopoverTitle__dismissButton {
+    position: relative;
+    border: var(--strokeWidthThin) solid var(--colorTransparentStroke);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+    background-color: var(--colorTransparentBackground);
+    box-sizing: border-box;
+    border-start-end-radius: var(--borderRadiusNone);
+    border-end-end-radius: var(--borderRadiusNone);
+    border-inline-end-style: none;
+    margin-inline-start: auto;
+
+    &:focus-visible {
+      outline: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+      border-radius: var(--borderRadiusMedium);
+      border-color: transparent;
+    }
+
+    &[data-appearance='brand'] {
+      color: var(--colorNeutralForegroundOnBrand);
+    }
+  }
+
+  .TeachingPopoverHeader__dismissButton {
+    color: var(--colorNeutralForeground2);
+    padding: var(--spacingVerticalXS) var(--spacingHorizontalXS);
+  }
+
+  .TeachingPopoverHeader__icon {
+    height: var(--fontSizeBase200);
+    width: var(--fontSizeBase200);
+    line-height: var(--lineHeightBase200);
+    font-size: var(--fontSizeBase200);
+    align-items: center;
+    box-sizing: content-box;
+    display: inline-flex;
+    justify-content: center;
+    text-decoration-line: none;
+    vertical-align: middle;
+    position: relative;
+    background-color: var(--colorTransparentBackground);
+    color: var(--colorNeutralForeground2);
+    margin-inline-end: var(--spacingHorizontalXS);
+
+    &[data-appearance='brand'] {
+      color: var(--colorNeutralForegroundOnBrand);
+    }
+  }
+
+  .TeachingPopoverTitle {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: var(--fontSizeBase400);
+    font-weight: var(--fontWeightSemibold);
+    color: var(--colorNeutralForeground1);
+    line-height: var(--lineHeightBase400);
+    padding-bottom: var(--spacingVerticalS);
+    margin-top: var(--spacingHorizontalNone);
+    margin-bottom: var(--spacingHorizontalNone);
+
+    &[data-appearance='brand'] {
+      color: var(--colorNeutralForegroundOnBrand);
+    }
+  }
+
+  .TeachingPopoverBody {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 12px;
+  }
+
+  .TeachingPopoverBody__media {
+    grid-area: media;
+    overflow: hidden;
+    width: auto;
+    margin-bottom: 12px;
+    vertical-align: middle;
+    justify-content: center;
+    display: flex;
+
+    &[data-media-length='short'] {
+      aspect-ratio: 2.4615384615384617;
+
+      /* Preserve the installed boolean supports query and its selected fixed height. */
+      @supports not (aspect-ratio) {
+        height: 117px;
+      }
+    }
+
+    &[data-media-length='medium'] {
+      aspect-ratio: 1.6363636363636365;
+
+      @supports not (aspect-ratio) {
+        height: 176px;
+      }
+    }
+
+    &[data-media-length='tall'] {
+      aspect-ratio: 1;
+
+      @supports not (aspect-ratio) {
+        height: 288px;
+      }
+    }
+  }
+
+  .TeachingPopoverFooter {
+    display: flex;
+    gap: 8px;
+    padding-top: 12px;
+    flex-direction: column;
+
+    &[data-footer-layout='horizontal'] {
+      flex-direction: row;
+      justify-content: flex-end;
+    }
+  }
+
+  .TeachingPopoverCarouselFooter {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+
+    &[data-layout='centered'] {
+      justify-content: space-between;
+    }
+
+    .TeachingPopoverCarouselFooterButton[data-brand-nav='next'] {
+      color: var(--colorBrandForeground1);
+      border-color: var(--colorTransparentBackground);
+
+      &[data-brand-background] {
+        background-color: var(--colorNeutralForegroundOnBrand);
+      }
+
+      &:not([data-disabled], [data-disabled-focusable]) {
+        &:hover {
+          color: var(--colorCompoundBrandForeground1Hover);
+        }
+
+        &:hover:active,
+        &:active:focus-visible {
+          color: var(--colorCompoundBrandForeground1Pressed);
+        }
+
+        &[data-brand-background]:hover,
+        &[data-brand-background]:hover:active,
+        &[data-brand-background]:active:focus-visible {
+          background-color: var(--colorNeutralForegroundOnBrand);
+        }
+      }
+    }
+
+    .TeachingPopoverCarouselFooterButton[data-brand-nav='prev'] {
+      /* In brand, this is always NeutralForegroundOnBrand. */
+      color: var(--colorNeutralForegroundOnBrand);
+      border-color: var(--colorNeutralForegroundOnBrand);
+
+      &[data-brand-background] {
+        background-color: var(--colorBrandBackground);
+      }
+
+      &:not([data-disabled], [data-disabled-focusable]) {
+        &:hover {
+          color: var(--colorNeutralForegroundOnBrand);
+          border-color: var(--colorNeutralForegroundOnBrand);
+        }
+
+        &:hover:active,
+        &:active:focus-visible {
+          color: var(--colorNeutralForegroundOnBrand);
+          border-color: var(--colorNeutralForegroundOnBrand);
+        }
+
+        &[data-brand-background]:hover {
+          background-color: var(--colorBrandBackgroundHover);
+        }
+
+        &[data-brand-background]:hover:active,
+        &[data-brand-background]:active:focus-visible {
+          background-color: var(--colorBrandBackgroundPressed);
+        }
+      }
+    }
+
+    &[data-layout='offset'] :first-child {
+      margin-inline-end: auto;
+    }
+
+    /* The current renderer retains previous-first DOM order, including for native Tab. */
+    &[data-layout='offset'] > .TeachingPopoverCarouselFooter__previous {
+      order: 1;
+      margin-inline-end: 0;
+    }
+
+    &[data-layout='offset'] > .TeachingPopoverCarouselFooter__next {
+      order: 2;
+    }
+
+    &[data-layout='offset'][data-has-previous] > :nth-child(2) {
+      margin-inline-end: auto;
+    }
+  }
+
+  .TeachingPopoverCarouselNav {
+    display: flex;
+    flex-direction: row;
+    column-gap: var(--spacingHorizontalXS);
+    align-items: center;
+    justify-content: center;
+
+    &:focus-visible {
+      outline: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+      border-radius: var(--borderRadiusMedium);
+      border-color: transparent;
+    }
+  }
+
+  .TeachingPopoverCarouselNavButton {
+    display: flex;
+    cursor: pointer;
+    box-sizing: border-box;
+    height: 8px;
+    width: 8px;
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+    outline: var(--strokeWidthThin) solid transparent;
+    background-color: color-mix(in srgb, var(--colorBrandBackground) 30%, transparent);
+
+    &:focus-visible {
+      outline: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+      border-radius: var(--borderRadiusMedium);
+      border-color: transparent;
+    }
+
+    /* This also affects the focus border, but only in older unsupported browsers. */
+    @supports not (color: color-mix(in lch, white, black)) {
+      opacity: 0.3;
+      background-color: var(--colorBrandBackground);
+    }
+
+    &[data-appearance='brand'] {
+      background-color: color-mix(in srgb, var(--colorNeutralForegroundOnBrand) 30%, transparent);
+
+      @supports not (color: color-mix(in lch, white, black)) {
+        background-color: var(--colorBrandBackground);
+      }
+    }
+
+    &[data-selected] {
+      width: 16px;
+      border-radius: 4px;
+      background-color: var(--colorBrandBackground);
+      opacity: 1;
+
+      &[data-appearance='brand'] {
+        background-color: var(--colorNeutralForegroundOnBrand);
+      }
+
+      @media (forced-colors: active) {
+        &,
+        &[data-appearance='brand'] {
+          background-color: CanvasText;
+        }
+      }
+    }
+  }
+
+  .TeachingPopoverCarouselPageCount {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .TeachingPopover__glyph {
+    display: inline;
+    fill: currentColor;
+  }
+}

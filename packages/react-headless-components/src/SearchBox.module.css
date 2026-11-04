@@ -1,0 +1,98 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-search 9.4.8, useSearchBoxStyles.styles.raw.js.
+ * Local source: [useSearchBoxStyles.styles.raw.js](../../../node_modules/@fluentui/react-search/lib/components/SearchBox/useSearchBoxStyles.styles.raw.js).
+ * Inherited baseline: @fluentui/react-input 9.8.8,
+ * [useInputStyles.styles.raw.js](../../../node_modules/@fluentui/react-input/lib/components/Input/useInputStyles.styles.raw.js).
+ * The existing [Input.module.css](./Input.module.css) supplies that baseline through CSS Modules composition.
+ * CoreAI provenance: [SearchBox.ts](../../react-components/src/components/SearchBox.ts) at 86a8705.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ * Horizontal spacing is logical for RTL. Input's native focus, forced-colors, and reduced-motion rules are retained.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .SearchBox {
+    composes: Input from './Input.module.css';
+
+    --fui-searchbox-padding: var(--spacingHorizontalS);
+
+    max-width: 468px;
+
+    &[data-size='small'] {
+      --fui-searchbox-padding: var(--spacingHorizontalSNudge);
+    }
+
+    &[data-size='large'] {
+      --fui-searchbox-padding: var(--spacingHorizontalMNudge);
+    }
+
+    &[data-size] {
+      --fui-input-root-padding: var(--fui-searchbox-padding);
+
+      column-gap: 0;
+      padding-inline: var(--fui-searchbox-padding);
+
+      & > .SearchBox__input {
+        padding-inline: var(--spacingHorizontalSNudge) 0;
+      }
+
+      &:not([data-focused]) {
+        padding-inline-end: 0;
+
+        & > .SearchBox__input {
+          padding-inline-end: var(--fui-searchbox-padding);
+        }
+      }
+    }
+
+    &:not([data-focused]) > .SearchBox__contentAfter {
+      height: 0;
+      width: 0;
+      padding-inline-start: 0;
+      overflow: hidden;
+    }
+
+    &[data-disabled] .SearchBox__dismiss {
+      color: var(--colorNeutralForegroundDisabled);
+    }
+  }
+
+  .SearchBox__input {
+    composes: Input__input from './Input.module.css';
+
+    /* Removes the WebKit pseudo-element styling; the hook owns the dismiss control. */
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+  }
+
+  .SearchBox__contentBefore {
+    composes: Input__contentBefore from './Input.module.css';
+  }
+
+  .SearchBox__contentAfter {
+    composes: Input__contentAfter from './Input.module.css';
+
+    padding-inline-start: var(--spacingHorizontalM);
+    column-gap: var(--spacingHorizontalXS);
+  }
+
+  .SearchBox__dismiss {
+    box-sizing: border-box;
+    color: var(--colorNeutralForeground3);
+    display: flex;
+    cursor: pointer;
+
+    /* Special case for icons (the most common case): center and size resizable glyphs. */
+    & > svg {
+      font-size: var(--fui-input-icon-size);
+    }
+  }
+}

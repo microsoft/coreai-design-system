@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Public headless icon defaults from @fluentui/react-icons 2.0.343.
+ * Global-only defaults belong to a side-effect stylesheet, below component and consumer styling.
+ */
+
+@import '@fluentui/react-icons/headless/styles.css' layer(fluent-components);
+
+@layer fluent-components, coreai-overrides;

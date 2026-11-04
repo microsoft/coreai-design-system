@@ -1,0 +1,78 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/* Handwritten experimental comparison layout and ordinary consumer overrides. */
+
+.examples {
+  display: grid;
+  gap: 20px;
+
+  & > section {
+    /* Keep overflow on the pair, not outside the viewport in RTL. */
+    min-width: 0;
+  }
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(340px, 1fr));
+  gap: 20px;
+  overflow-x: auto;
+  padding: 12px;
+}
+
+.cell {
+  padding: 12px;
+  min-width: 0;
+  border: 1px solid var(--colorNeutralStroke2);
+}
+
+.report {
+  display: block;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin-block: 16px;
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 300px;
+}
+
+.consumerPicker {
+  gap: 12px;
+}
+
+.consumerArea {
+  min-width: 260px;
+  min-height: 180px;
+  border-width: 3px;
+  border-radius: 3px;
+}
+
+.consumerSlider {
+  --fui-Slider__thumb--size: 28px;
+  --fui-Slider__rail--size: 12px;
+
+  min-height: 44px;
+}
+
+.consumerRail {
+  border-radius: 1px;
+  background-image: none;
+  background-color: rgb(210 230 240);
+}
+
+.consumerThumb {
+  border-radius: 3px;
+  background-color: rgb(90 40 130);
+  box-shadow: none;
+
+  &::before {
+    border: 1px dashed rgb(10 20 30);
+  }
+}

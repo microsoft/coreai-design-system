@@ -1,0 +1,25 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-message-bar 9.7.9, useMessageBarTitleStyles.styles.ts.
+ * Local source: [useMessageBarTitleStyles.styles.raw.js](../../../node_modules/@fluentui/react-message-bar/lib/components/MessageBarTitle/useMessageBarTitleStyles.styles.raw.js).
+ * CoreAI re-exports MessageBarTitle unchanged.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .MessageBarTitle {
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightSemibold);
+    line-height: var(--lineHeightBase300);
+
+    &::after {
+      content: ' ';
+    }
+  }
+}

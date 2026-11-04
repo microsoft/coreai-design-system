@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-toast 9.8.5, useToastFooterStyles.styles.ts.
+ * Local source: [useToastFooterStyles.styles.raw.js](../../../node_modules/@fluentui/react-toast/lib/components/ToastFooter/useToastFooterStyles.styles.raw.js).
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .ToastFooter {
+    padding-top: 16px;
+    grid-column: 2 / 3;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+}

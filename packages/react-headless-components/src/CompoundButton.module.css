@@ -1,0 +1,161 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-button 9.11.1.
+ * Local source: [useCompoundButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-button/lib/components/CompoundButton/useCompoundButtonStyles.styles.raw.js).
+ * Inherited Button baseline: [useButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-button/lib/components/Button/useButtonStyles.styles.raw.js).
+ * [Button.module.css](./Button.module.css) supplies that baseline through slot composition.
+ * CoreAI defaults/override: [CompoundButton.ts](../../react-components/src/components/CompoundButton.ts)
+ * and [Button.styles.ts](../../react-components/src/components/Button.styles.ts), reference 66f1b04.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .CompoundButton {
+    composes: Button from './Button.module.css';
+
+    /* Base styles */
+    height: auto;
+
+    .CompoundButton__secondaryContent {
+      color: var(--colorNeutralForeground2);
+    }
+
+    &:not([data-disabled], [data-disabled-focusable]) {
+      &:hover .CompoundButton__secondaryContent {
+        color: var(--colorNeutralForeground2Hover);
+      }
+
+      &:is(:hover:active, :active:focus-visible) .CompoundButton__secondaryContent {
+        color: var(--colorNeutralForeground2Pressed);
+      }
+
+      /* Appearance variations */
+      &[data-appearance='primary'] {
+        .CompoundButton__secondaryContent,
+        &:hover .CompoundButton__secondaryContent,
+        &:is(:hover:active, :active:focus-visible) .CompoundButton__secondaryContent {
+          color: var(--colorNeutralForegroundOnBrand);
+        }
+      }
+
+      &[data-appearance='transparent'] {
+        &:hover .CompoundButton__secondaryContent {
+          color: var(--colorNeutralForeground2BrandHover);
+        }
+
+        &:is(:hover:active, :active:focus-visible) .CompoundButton__secondaryContent {
+          color: var(--colorNeutralForeground2BrandPressed);
+        }
+      }
+    }
+
+    /* Match the delegated Button size selectors, including its with-icon padding. */
+    &[data-size][data-appearance] {
+      &[data-size='small'] {
+        padding: var(--spacingHorizontalS) var(--spacingHorizontalS) var(--spacingHorizontalMNudge);
+        font-size: var(--fontSizeBase300);
+        line-height: var(--lineHeightBase300);
+      }
+
+      &[data-size='medium'] {
+        padding: 14px var(--spacingHorizontalM) var(--spacingHorizontalL);
+      }
+
+      &[data-size='large'] {
+        padding: 18px var(--spacingHorizontalL) var(--spacingHorizontalXL);
+      }
+
+      .CompoundButton__icon {
+        font-size: 40px;
+        height: 40px;
+        width: 40px;
+      }
+    }
+
+    /* Icon-only size variations */
+    &[data-icon-only][data-size] {
+      &[data-size='small'] {
+        padding: var(--spacingHorizontalXS);
+        min-width: 48px;
+        max-width: 48px;
+      }
+
+      &[data-size='medium'] {
+        padding: var(--spacingHorizontalSNudge);
+        min-width: 52px;
+        max-width: 52px;
+      }
+
+      &[data-size='large'] {
+        padding: var(--spacingHorizontalS);
+        min-width: 56px;
+        max-width: 56px;
+      }
+    }
+
+    /* Icon position variations */
+    &[data-size][data-has-primary-content][data-icon-position='before'] .CompoundButton__icon {
+      margin-inline-end: var(--spacingHorizontalM);
+    }
+
+    &[data-size][data-has-primary-content][data-icon-position='after'] .CompoundButton__icon {
+      margin-inline-start: var(--spacingHorizontalM);
+    }
+
+    /* Disabled styles */
+    &:is([data-disabled], [data-disabled-focusable]) .CompoundButton__secondaryContent {
+      color: var(--colorNeutralForegroundDisabled);
+    }
+
+    /* High contrast styles */
+    @media (forced-colors: active) {
+      &[data-appearance='primary'] .CompoundButton__secondaryContent {
+        color: HighlightText;
+      }
+
+      &:not([data-disabled], [data-disabled-focusable]):is(:hover, :active:focus-visible) {
+        .CompoundButton__secondaryContent {
+          color: Highlight;
+        }
+
+        &[data-appearance='subtle'] .CompoundButton__secondaryContent {
+          color: Canvas;
+        }
+      }
+
+      &:is([data-disabled], [data-disabled-focusable]) .CompoundButton__secondaryContent {
+        color: GrayText;
+      }
+    }
+  }
+
+  .CompoundButton__icon {
+    composes: Button__icon from './Button.module.css';
+  }
+
+  .CompoundButton__contentContainer {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+
+    &:dir(rtl) {
+      text-align: right;
+    }
+  }
+
+  .CompoundButton__secondaryContent {
+    line-height: 100%;
+    font-weight: var(--fontWeightRegular);
+    font-size: var(--fontSizeBase200);
+  }
+
+  .CompoundButton[data-size='large'] .CompoundButton__secondaryContent {
+    font-size: var(--fontSizeBase300);
+  }
+}

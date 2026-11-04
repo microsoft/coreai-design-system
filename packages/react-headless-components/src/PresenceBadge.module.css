@@ -1,0 +1,125 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported directly from @fluentui/react-badge 9.5.7.
+ * Local source: [usePresenceBadgeStyles.styles.raw.js](../../../node_modules/@fluentui/react-badge/lib/components/PresenceBadge/usePresenceBadgeStyles.styles.raw.js).
+ * Source: https://unpkg.com/@fluentui/react-badge@9.5.7/lib/components/PresenceBadge/usePresenceBadgeStyles.styles.raw.js
+ * PresenceBadge does not delegate to useBadgeStyles; its independent baseline is intentional.
+ * Default glyphs use the style-free public @fluentui/react-icons 2.0.343 headless SVG entries.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ * CoreAI adds no PresenceBadge defaults or CSS overrides.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .PresenceBadge {
+    display: inline-flex;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--borderRadiusCircular);
+    background-color: var(--colorNeutralBackground1);
+    /* The background color bleeds around the antialiased SVG edge.
+     * Every presence icon has at least a 1px border, except size="tiny".
+     * Inset the background with padding and background-clip; the icon offsets the padding.
+     */
+    padding: 1px;
+    background-clip: content-box;
+
+    &[data-status='busy'],
+    &[data-status='do-not-disturb'],
+    &[data-status='blocked'] {
+      color: var(--colorPaletteRedBackground3);
+    }
+
+    &[data-status='away'] {
+      color: var(--colorPaletteMarigoldBackground3);
+    }
+
+    &[data-status='available'] {
+      color: var(--colorPaletteLightGreenForeground3);
+    }
+
+    &[data-status='offline'],
+    &[data-status='unknown'] {
+      color: var(--colorNeutralForeground3);
+    }
+
+    &[data-status='out-of-office'] {
+      color: var(--colorPaletteBerryForeground3);
+    }
+
+    &[data-out-of-office] {
+      color: var(--colorNeutralBackground1);
+
+      &[data-status='available'] {
+        color: var(--colorPaletteLightGreenForeground3);
+      }
+
+      &[data-status='busy'],
+      &[data-status='do-not-disturb'],
+      &[data-status='blocked'] {
+        color: var(--colorPaletteRedBackground3);
+      }
+
+      &[data-status='away'],
+      &[data-status='offline'],
+      &[data-status='out-of-office'] {
+        color: var(--colorPaletteBerryForeground3);
+      }
+
+      &[data-status='unknown'] {
+        color: var(--colorNeutralForeground3);
+      }
+    }
+
+    /* Icons are not resizable and these sizes are currently missing.
+     * Use !important to size the available icons to the missing ones.
+     */
+    &[data-size='tiny'] {
+      aspect-ratio: 1;
+      width: 6px;
+      background-clip: unset;
+
+      & svg {
+        width: 6px !important;
+        height: 6px !important;
+      }
+    }
+
+    &[data-size='large'] {
+      aspect-ratio: 1;
+      width: 20px;
+
+      & svg {
+        width: 20px !important;
+        height: 20px !important;
+      }
+    }
+
+    &[data-size='extra-large'] {
+      aspect-ratio: 1;
+      width: 28px;
+
+      & svg {
+        width: 28px !important;
+        height: 28px !important;
+      }
+    }
+  }
+
+  .PresenceBadge__icon {
+    display: flex;
+    margin: -1px;
+  }
+
+  .PresenceBadge__glyph {
+    @media (forced-colors: active) {
+      forced-color-adjust: auto;
+    }
+  }
+}

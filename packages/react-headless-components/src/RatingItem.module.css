@@ -1,0 +1,169 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-rating 9.4.7, useRatingItemStyles.styles.ts.
+ * Local source: [useRatingItemStyles.styles.raw.js](../../../node_modules/@fluentui/react-rating/lib/components/RatingItem/useRatingItemStyles.styles.raw.js).
+ * Inherited focus reference: @fluentui/react-tabster 9.26.19,
+ * [createFocusOutlineStyle.js](../../../node_modules/@fluentui/react-tabster/lib/focus/createFocusOutlineStyle.js).
+ * Native :focus-visible replaces legacy focus attributes; half-fill clipping uses logical edges.
+ * Owned default glyph forced-color rule: @fluentui/react-icons 2.0.343,
+ * [createFluentIcon.styles.raw.js](../../../node_modules/@fluentui/react-icons/lib/utils/createFluentIcon.styles.raw.js).
+ * CoreAI has no RatingItem defaults or style overrides:
+ * [index.ts](../../react-components/src/index.ts),
+ * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts).
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot */
+  .RatingItem {
+    position: relative;
+
+    &:focus,
+    &:focus-visible {
+      outline-style: none;
+    }
+
+    /* The element with the focus outline needs position: relative so that the
+     * pseudo-element can be properly positioned.
+     */
+    &:focus-visible,
+    &:has(:focus-visible) {
+      border-color: transparent;
+
+      &::after {
+        content: '';
+        position: absolute;
+        pointer-events: none;
+        z-index: 1;
+        /* FIXME: tokens.strokeWidthThick causes some weird bugs. */
+        border: 2px solid var(--colorStrokeFocus2);
+        border-radius: var(--borderRadiusMedium);
+        inset: -2px;
+      }
+
+      @media (forced-colors: active) {
+        &::after {
+          border-color: Highlight;
+        }
+      }
+    }
+
+    &[data-size='small'] {
+      font-size: 12px;
+      width: 12px;
+      height: 12px;
+    }
+
+    &[data-size='medium'] {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+
+    &[data-size='large'] {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    &[data-size='extra-large'] {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+
+    &[data-has-half-input] .RatingItem__fullValueInput {
+      inset-inline-start: 50%;
+    }
+
+    &[data-appearance='filled-half'] {
+      .RatingItem__selectedIcon {
+        inset-inline-end: 50%;
+
+        & > svg {
+          flex: 0 0 auto;
+        }
+      }
+
+      .RatingItem__unselectedIcon {
+        inset-inline-start: 50%;
+        margin-inline-start: -50%;
+      }
+    }
+
+    &[data-color='brand'] {
+      .RatingItem__selectedIcon,
+      .RatingItem__unselectedIcon {
+        color: var(--colorBrandForeground1);
+      }
+    }
+
+    &[data-color='marigold'] {
+      .RatingItem__selectedIcon,
+      .RatingItem__unselectedIcon {
+        color: var(--colorPaletteMarigoldBorderActive);
+      }
+    }
+
+    &[data-icon-appearance='filled'] .RatingItem__unselectedIcon {
+      color: var(--colorNeutralBackground6);
+      stroke: var(--colorTransparentStroke);
+    }
+
+    &[data-icon-appearance='filled'][data-color='brand'] .RatingItem__unselectedIcon {
+      color: var(--colorBrandBackground2);
+    }
+
+    &[data-icon-appearance='filled'][data-color='marigold'] .RatingItem__unselectedIcon {
+      color: var(--colorPaletteMarigoldBackground2);
+    }
+
+    @media (forced-colors: active) {
+      &[data-icon-appearance='filled'][data-color] .RatingItem__unselectedIcon {
+        color: Canvas;
+        stroke: CanvasText;
+      }
+    }
+  }
+
+  .RatingItem__halfValueInput,
+  .RatingItem__fullValueInput {
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    height: 100%;
+  }
+
+  .RatingItem__halfValueInput {
+    inset-inline-end: 50%;
+  }
+
+  .RatingItem__selectedIcon,
+  .RatingItem__unselectedIcon {
+    display: flex;
+    overflow: hidden;
+    color: var(--colorNeutralForeground1);
+    fill: currentColor;
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+  }
+
+  .RatingItem__glyph {
+    /* This style is required because browsers automatically have SVGs set to
+     * forced-color-adjust: preserve-parent-color, which will not override
+     * internally-defined colors in our SVG icons in high contrast mode.
+     */
+    @media (forced-colors: active) {
+      forced-color-adjust: auto;
+    }
+  }
+}

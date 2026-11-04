@@ -1,0 +1,158 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-avatar 9.11.9 at reference ee9b499.
+ * Local sources:
+ * [useAvatarGroupStyles.styles.raw.js](../../../node_modules/@fluentui/react-avatar/lib/components/AvatarGroup/useAvatarGroupStyles.styles.raw.js),
+ * [useAvatarGroupItemStyles.styles.raw.js](../../../node_modules/@fluentui/react-avatar/lib/components/AvatarGroupItem/useAvatarGroupItemStyles.styles.raw.js),
+ * [useAvatarStyles.styles.raw.js](../../../node_modules/@fluentui/react-avatar/lib/components/Avatar/useAvatarStyles.styles.raw.js).
+ * Source: https://unpkg.com/@fluentui/react-avatar@9.11.9/lib/components/AvatarGroup/useAvatarGroupStyles.styles.raw.js
+ * Shared size/child rules port useSizeStyles and useGroupChildClassName once for the family.
+ * AvatarGroup has no CoreAI wrapper, prop-default override, or custom style hook.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .AvatarGroup {
+    display: inline-flex;
+    position: relative;
+
+    &[data-layout='pie'] {
+      width: var(--fui-AvatarGroup-size);
+      height: var(--fui-AvatarGroup-size);
+      clip-path: circle(50%);
+      background-color: var(--colorTransparentStroke);
+
+      @media (forced-colors: active) {
+        background-color: CanvasText;
+      }
+    }
+  }
+
+  .AvatarGroup__size {
+    --fui-AvatarGroup-size: 32px;
+    --fui-AvatarGroup-stack-gap: var(--spacingHorizontalXS);
+    --fui-AvatarGroup-spread-gap: var(--spacingHorizontalL);
+    --fui-AvatarGroup-outline-width: var(--strokeWidthThick);
+
+    &[data-size='16'] {
+      --fui-AvatarGroup-size: 16px;
+      --fui-AvatarGroup-spread-gap: var(--spacingHorizontalS);
+    }
+
+    &[data-size='20'] {
+      --fui-AvatarGroup-size: 20px;
+    }
+
+    &[data-size='24'] {
+      --fui-AvatarGroup-size: 24px;
+    }
+
+    &[data-size='28'] {
+      --fui-AvatarGroup-size: 28px;
+    }
+
+    &[data-size='36'] {
+      --fui-AvatarGroup-size: 36px;
+    }
+
+    &[data-size='40'] {
+      --fui-AvatarGroup-size: 40px;
+    }
+
+    &[data-size='48'] {
+      --fui-AvatarGroup-size: 48px;
+    }
+
+    &[data-size='56'] {
+      --fui-AvatarGroup-size: 56px;
+    }
+
+    &[data-size='64'] {
+      --fui-AvatarGroup-size: 64px;
+    }
+
+    &[data-size='72'] {
+      --fui-AvatarGroup-size: 72px;
+    }
+
+    &[data-size='96'] {
+      --fui-AvatarGroup-size: 96px;
+    }
+
+    &[data-size='120'] {
+      --fui-AvatarGroup-size: 120px;
+    }
+
+    &[data-size='128'] {
+      --fui-AvatarGroup-size: 128px;
+    }
+
+    &[data-size='16'],
+    &[data-size='20'] {
+      --fui-AvatarGroup-stack-gap: var(--spacingHorizontalXXS);
+    }
+
+    &[data-size='20'],
+    &[data-size='24'],
+    &[data-size='28'] {
+      --fui-AvatarGroup-spread-gap: var(--spacingHorizontalMNudge);
+    }
+
+    &[data-size='48'],
+    &[data-size='56'],
+    &[data-size='64'],
+    &[data-size='72'] {
+      --fui-AvatarGroup-stack-gap: var(--spacingHorizontalS);
+    }
+
+    &[data-size='56'],
+    &[data-size='64'] {
+      --fui-AvatarGroup-outline-width: var(--strokeWidthThicker);
+    }
+
+    &[data-size='72'],
+    &[data-size='96'],
+    &[data-size='120'],
+    &[data-size='128'] {
+      --fui-AvatarGroup-outline-width: var(--strokeWidthThickest);
+    }
+
+    &[data-size='64'],
+    &[data-size='72'],
+    &[data-size='96'],
+    &[data-size='120'],
+    &[data-size='128'] {
+      --fui-AvatarGroup-spread-gap: var(--spacingHorizontalXL);
+    }
+
+    &[data-size='96'],
+    &[data-size='120'],
+    &[data-size='128'] {
+      --fui-AvatarGroup-stack-gap: var(--spacingHorizontalL);
+    }
+  }
+
+  /* Shared spacing and outlines for inline items and the native overflow button. */
+  .AvatarGroup__child {
+    width: var(--fui-AvatarGroup-size);
+    height: var(--fui-AvatarGroup-size);
+
+    &[data-layout='stack'] {
+      box-shadow: 0 0 0 var(--fui-AvatarGroup-outline-width) var(--colorNeutralBackground2);
+
+      &:not(:first-child) {
+        margin-inline-start: calc(-1 * var(--fui-AvatarGroup-stack-gap));
+      }
+    }
+
+    &[data-layout='spread']:not(:first-child) {
+      margin-inline-start: var(--fui-AvatarGroup-spread-gap);
+    }
+  }
+}

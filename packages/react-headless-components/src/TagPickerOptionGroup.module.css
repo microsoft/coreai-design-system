@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported directly from @fluentui/react-tag-picker 9.10.5.
+ * Local source: [useTagPickerOptionGroupStyles.styles.raw.js](../../../node_modules/@fluentui/react-tag-picker/lib/components/TagPickerOptionGroup/useTagPickerOptionGroupStyles.styles.raw.js).
+ * Delegated source: [useOptionGroupStyles.styles.raw.js](../../../node_modules/@fluentui/react-combobox/lib/components/OptionGroup/useOptionGroupStyles.styles.raw.js)
+ * in @fluentui/react-combobox 9.17.7, reused from the completed OptionGroup CSS.
+ * CoreAI has no TagPickerOptionGroup defaults or style overrides.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+.TagPickerOptionGroup {
+  composes: OptionGroup from './OptionGroup.module.css';
+}
+
+.TagPickerOptionGroup__label {
+  composes: OptionGroup__label from './OptionGroup.module.css';
+}

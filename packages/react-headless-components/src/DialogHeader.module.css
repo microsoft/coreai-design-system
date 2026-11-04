@@ -1,0 +1,32 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Layout adapted from @fluentui/react-dialog 9.18.6,
+ * [useDialogBodyStyles.styles.raw.js](../../../node_modules/@fluentui/react-dialog/lib/components/DialogBody/useDialogBodyStyles.styles.raw.js)
+ * and [useDialogTitleStyles.styles.raw.js](../../../node_modules/@fluentui/react-dialog/lib/components/DialogTitle/useDialogTitleStyles.styles.raw.js).
+ * The current public DialogHeader provides the native header boundary. There is
+ * no legacy Header style hook or CoreAI Header override. An explicit completed
+ * Button + DialogTrigger can occupy its second column; no removed Title.action
+ * slot or default close-button behavior is recreated.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .DialogHeader {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: var(--fui-Dialog--gap, 8px);
+    grid-row: 1 / 1;
+    grid-column: 1 / -1;
+    min-width: 0;
+
+    &:has(> :nth-child(2)) {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+  }
+}

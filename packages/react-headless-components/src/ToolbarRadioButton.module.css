@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-toolbar 9.8.7, reference b8337ab.
+ * Local source: [useToolbarRadioButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-toolbar/lib/components/ToolbarRadioButton/useToolbarRadioButtonStyles.styles.raw.js).
+ * The Radio/Toggle style-selection and declarations are identical; reuse
+ * [ToolbarToggleButton.module.css](./ToolbarToggleButton.module.css), including its
+ * delegated @fluentui/react-button 9.11.3 source attribution and checked high-contrast delta.
+ * CoreAI has no ToolbarRadioButton defaults/override: [index.ts](../../react-components/src/index.ts),
+ * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts).
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .ToolbarRadioButton {
+    composes: ToolbarToggleButton from './ToolbarToggleButton.module.css';
+  }
+
+  .ToolbarRadioButton__icon {
+    composes: ToolbarToggleButton__icon from './ToolbarToggleButton.module.css';
+  }
+}

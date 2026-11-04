@@ -1,0 +1,43 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-tooltip 9.10.8, useTooltipStyles.styles.ts.
+ * Local source: [useTooltipStyles.styles.raw.js](../../../node_modules/@fluentui/react-tooltip/lib/components/Tooltip/useTooltipStyles.styles.raw.js).
+ * Arrow height: [constants.js](../../../node_modules/@fluentui/react-tooltip/lib/components/Tooltip/private/constants.js).
+ * Shared native surface/arrow foundation: @fluentui/react-popover 9.14.10,
+ * [usePopoverSurfaceStyles.styles.raw.js](../../../node_modules/@fluentui/react-popover/lib/components/PopoverSurface/usePopoverSurfaceStyles.styles.raw.js)
+ * and @fluentui/react-positioning 9.23.4,
+ * [createArrowStyles.js](../../../node_modules/@fluentui/react-positioning/lib/createArrowStyles.js).
+ * The native hint popover owns closed-state hiding and top-layer behavior.
+ * No legacy Portal, visibility state, or measured arrow positioner is restored.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Tooltip__content {
+    composes: PopoverSurface from './PopoverSurface.module.css';
+
+    /* Survive size-specific foundation rules re-emitted by other composed families. */
+    &[data-tooltip-content][data-appearance] {
+      --fui-positioning-arrow-height: 8.484px;
+      --fui-positioning-arrow-offset: -4.242px;
+
+      box-sizing: border-box;
+      max-width: 240px;
+      cursor: default;
+      font-size: var(--fontSizeBase200);
+      line-height: var(--lineHeightBase200);
+      overflow-wrap: break-word;
+      padding: 4px 11px 6px;
+
+      /* TODO need versions of shadow8 tokens that work with filter. */
+      filter: drop-shadow(0 0 2px var(--colorNeutralShadowAmbient))
+        drop-shadow(0 4px 8px var(--colorNeutralShadowKey));
+    }
+  }
+}

@@ -1,0 +1,105 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-dialog 9.18.6:
+ * [useDialogSurfaceStyles.styles.raw.js](../../../node_modules/@fluentui/react-dialog/lib/components/DialogSurface/useDialogSurfaceStyles.styles.raw.js)
+ * and [useDialogBodyStyles.styles.raw.js](../../../node_modules/@fluentui/react-dialog/lib/components/DialogBody/useDialogBodyStyles.styles.raw.js).
+ * Constants: [constants.js](../../../node_modules/@fluentui/react-dialog/lib/contexts/constants.js).
+ * Focus reference: @fluentui/react-tabster 9.26.19,
+ * [createFocusOutlineStyle.js](../../../node_modules/@fluentui/react-tabster/lib/focus/createFocusOutlineStyle.js).
+ * Native :focus-visible replaces the legacy focus attributes; no Tabster is imported.
+ * The native surface owns the layout formerly supplied by the legacy DialogBody grid.
+ * Current headless DialogBody is the scrollable content area; DialogHeader is public.
+ * Native ::backdrop replaces the removed backdrop slot. Native top-layer positioning
+ * replaces Portal, and the UA remains responsible for hiding every closed dialog.
+ * CoreAI deviations: [Dialog.styles.ts](../../react-components/src/components/Dialog.styles.ts)
+ * and [Overlay.styles.ts](../../react-components/src/components/Overlay.styles.ts),
+ * reference commit 1cabc6b, are isolated in DialogSurface.overrides.module.css.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .DialogSurface {
+    --fui-Dialog--surface-padding: 24px;
+    --fui-Dialog--gap: 8px;
+
+    inset: 0;
+    padding: var(--fui-Dialog--surface-padding);
+    margin: auto;
+    border: 1px solid var(--colorTransparentStroke);
+    border-radius: var(--borderRadiusXLarge);
+    overflow: visible;
+    user-select: unset;
+    visibility: unset;
+    position: fixed;
+    height: fit-content;
+    width: 100%;
+    max-width: 600px;
+    max-height: 100vh;
+    max-height: 100dvh;
+    box-sizing: border-box;
+    background-color: var(--colorNeutralBackground1);
+    color: var(--colorNeutralForeground1);
+    /* Same styles as DialogSurfaceMotion's last keyframe. The native port has no
+     * legacy motion slots; consumers may supply ordinary CSS animations. */
+    box-shadow: var(--shadow64);
+    gap: var(--fui-Dialog--gap);
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+
+    /* Never apply display unconditionally: author display overrides the UA's
+     * closed <dialog> and closed [popover] hiding rules. */
+    &[open],
+    &:popover-open {
+      display: grid;
+    }
+
+    &::backdrop {
+      background-color: var(--colorBackgroundOverlay);
+    }
+
+    &[data-dialog-nested]::backdrop,
+    &[data-modal-type='non-modal']::backdrop {
+      background-color: var(--colorTransparentBackground);
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colorStrokeFocus2);
+      outline-offset: -2px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .DialogSurface {
+      max-width: 100vw;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+    }
+  }
+
+  @media screen and (max-height: 359px) {
+    .DialogSurface {
+      overflow-y: auto;
+      /* Offset the scrollbar with transparent borders so it cannot conflict
+       * with the border radius. Logical edges preserve the original RTL flip. */
+      padding-inline-end: calc(var(--fui-Dialog--surface-padding) - 4px);
+      border-inline-end-width: 4px;
+      border-block-start-width: 4px;
+      border-block-end-width: 4px;
+      grid-template-rows: auto auto;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .DialogSurface:focus-visible {
+      outline-color: Highlight;
+    }
+  }
+}

@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Fluent baseline: @fluentui/react-tags 9.9.8,
+ * [useInteractionTagSecondaryStyles.styles.raw.js](../../../node_modules/@fluentui/react-tags/lib/components/InteractionTagSecondary/useInteractionTagSecondaryStyles.styles.raw.js).
+ * Actual CoreAI source: [Tag.styles.ts](../../react-components/src/components/Tag.styles.ts).
+ * Applied only when useCoreAIDefaults() is enabled; outline keeps its full border.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .InteractionTagSecondary:not([data-appearance='outline']) {
+    border-inline-start: unset;
+    margin-inline-start: 1px;
+  }
+}

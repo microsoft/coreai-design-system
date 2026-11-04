@@ -1,0 +1,270 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-menu 9.25.8, useMenuItemStyles.styles.ts.
+ * Local source: [useMenuItemStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuItem/useMenuItemStyles.styles.raw.js).
+ * Checkmark source: [useCheckmarkStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/selectable/useCheckmarkStyles.styles.raw.js).
+ * Delegating sources:
+ * [useMenuItemCheckboxStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuItemCheckbox/useMenuItemCheckboxStyles.styles.raw.js),
+ * [useMenuItemRadioStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuItemRadio/useMenuItemRadioStyles.styles.raw.js),
+ * [useMenuItemLinkStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuItemLink/useMenuItemLinkStyles.styles.raw.js),
+ * [useMenuItemSwitchStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuItemSwitch/useMenuItemSwitchStyles.styles.raw.js).
+ * Focus source: [createFocusOutlineStyle.js](../../../node_modules/@fluentui/react-tabster/lib/focus/createFocusOutlineStyle.js).
+ * Native :focus-visible replaces the old focus attribute; current public hooks own behavior.
+ * Default glyphs use @fluentui/react-icons 2.0.343 public style-free entries:
+ * [checkmark.js](../../../node_modules/@fluentui/react-icons/lib/atoms/headless-svg/checkmark.js),
+ * [chevron-left.js](../../../node_modules/@fluentui/react-icons/lib/atoms/headless-svg/chevron-left.js),
+ * [chevron-right.js](../../../node_modules/@fluentui/react-icons/lib/atoms/headless-svg/chevron-right.js).
+ * Glyph reset sources: [useIconStyles.styles.js](../../../node_modules/@fluentui/react-icons/lib/utils/useIconStyles.styles.js)
+ * and [createFluentIcon.styles.js](../../../node_modules/@fluentui/react-icons/lib/utils/createFluentIcon.styles.js).
+ * There are no CoreAI MenuItem-family overrides or defaults.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .MenuItem {
+    border-radius: var(--borderRadiusMedium);
+    position: relative;
+    color: var(--colorNeutralForeground2);
+    background-color: var(--colorNeutralBackground1);
+    padding: var(--spacingVerticalSNudge);
+    box-sizing: border-box;
+    max-width: 290px;
+    min-height: 32px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: start;
+    font-size: var(--fontSizeBase300);
+    cursor: pointer;
+    gap: 4px;
+    user-select: none;
+
+    &:focus,
+    &:focus-visible {
+      outline-style: none;
+    }
+
+    /* The element with the focus outline needs position: relative. */
+    &:focus-visible {
+      border-color: transparent;
+
+      &::after {
+        content: '';
+        position: absolute;
+        pointer-events: none;
+        z-index: 1;
+        border: 2px solid var(--colorStrokeFocus2);
+        border-radius: var(--borderRadiusMedium);
+        inset: -2px;
+      }
+    }
+
+    &:hover,
+    &[data-submenu-open] {
+      background-color: var(--colorNeutralBackground1Hover);
+      color: var(--colorNeutralForeground2Hover);
+
+      & > .MenuItem__icon {
+        color: var(--colorNeutralForeground2BrandSelected);
+      }
+
+      & > .MenuItem__content > .MenuItem__subText {
+        color: var(--colorNeutralForeground3Hover);
+      }
+    }
+
+    &:hover:active {
+      background-color: var(--colorNeutralBackground1Pressed);
+      color: var(--colorNeutralForeground2Pressed);
+
+      & > .MenuItem__content > .MenuItem__subText {
+        color: var(--colorNeutralForeground3Pressed);
+      }
+    }
+
+    &[data-checked] > .MenuItem__checkmark {
+      visibility: visible;
+    }
+
+    &[data-multiline] {
+      & > .MenuItem__content {
+        display: flex;
+        flex-direction: column;
+      }
+
+      & > .MenuItem__secondaryContent,
+      & > .MenuItem__submenuIndicator {
+        align-self: center;
+      }
+    }
+
+    &[data-disabled] {
+      color: var(--colorNeutralForegroundDisabled);
+
+      & > .MenuItem__secondaryContent,
+      & > .MenuItem__content > .MenuItem__subText {
+        color: var(--colorNeutralForegroundDisabled);
+      }
+
+      &:hover,
+      &:hover:active {
+        color: var(--colorNeutralForegroundDisabled);
+        background-color: var(--colorNeutralBackground1);
+        cursor: not-allowed;
+
+        & > .MenuItem__icon,
+        & > .MenuItem__secondaryContent,
+        & > .MenuItem__content > .MenuItem__subText {
+          color: var(--colorNeutralForegroundDisabled);
+        }
+      }
+
+      & > .MenuItem__secondaryContent:hover {
+        background-color: var(--colorNeutralBackground1);
+        cursor: not-allowed;
+      }
+    }
+
+    /* High contrast styles */
+    @media (forced-colors: active) {
+      &:hover,
+      &[data-submenu-open] {
+        forced-color-adjust: none;
+        background-color: Highlight;
+        color: HighlightText;
+
+        & > .MenuItem__icon,
+        & > .MenuItem__checkmark,
+        & > .MenuItem__secondaryContent,
+        & > .MenuItem__content > .MenuItem__subText {
+          color: HighlightText;
+        }
+      }
+
+      &:focus-visible::after {
+        border-color: Highlight;
+      }
+
+      &[data-disabled] {
+        color: GrayText;
+
+        & > .MenuItem__secondaryContent,
+        & > .MenuItem__content > .MenuItem__subText {
+          color: GrayText;
+        }
+
+        &:hover,
+        &:hover:active,
+        &:focus {
+          forced-color-adjust: auto;
+          color: GrayText;
+          background-color: Canvas;
+
+          & > .MenuItem__icon,
+          & > .MenuItem__checkmark,
+          & > .MenuItem__secondaryContent,
+          & > .MenuItem__content > .MenuItem__subText {
+            color: GrayText;
+          }
+        }
+      }
+    }
+  }
+
+  .MenuItem__content {
+    padding-inline: 2px;
+    background-color: transparent;
+    flex-grow: 1;
+  }
+
+  .MenuItem__secondaryContent {
+    padding-inline: 2px;
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase200);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+    color: var(--colorNeutralForeground3);
+
+    &:hover,
+    &:focus {
+      color: var(--colorNeutralForeground3Hover);
+    }
+  }
+
+  .MenuItem__icon,
+  .MenuItem__submenuIndicator {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    line-height: 0;
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+  }
+
+  .MenuItem__icon {
+    flex-shrink: 0;
+  }
+
+  /* Applies styles to a checkmark slot for selectable menu items. */
+  .MenuItem__checkmark {
+    margin-top: 2px;
+    width: 16px;
+    height: 16px;
+    visibility: hidden;
+    flex-shrink: 0;
+  }
+
+  .MenuItem__subText {
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase100);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase100);
+    color: var(--colorNeutralForeground3);
+  }
+
+  .MenuItem__glyph {
+    display: inline;
+    line-height: 0;
+
+    &[data-menu-icon-kind='filled'] {
+      display: none;
+    }
+
+    @media (forced-colors: active) {
+      forced-color-adjust: auto;
+    }
+  }
+}
+
+/* Existing Fluent icon bundles ship unlayered visibility rules. Scope this narrow adapter
+ * to owned MenuItem DOM, while the component's remaining styles stay layered. */
+.MenuItem {
+  &:is(:hover, [data-submenu-open]) {
+    .MenuItem__glyph[data-menu-icon-kind='filled'],
+    :global(.fui-Icon-filled) {
+      display: inline;
+    }
+
+    .MenuItem__glyph[data-menu-icon-kind='regular'],
+    :global(.fui-Icon-regular) {
+      display: none;
+    }
+  }
+
+  &[data-disabled]:hover {
+    .MenuItem__glyph[data-menu-icon-kind='filled'],
+    :global(.fui-Icon-filled) {
+      display: none;
+    }
+
+    .MenuItem__glyph[data-menu-icon-kind='regular'],
+    :global(.fui-Icon-regular) {
+      display: inline;
+    }
+  }
+}

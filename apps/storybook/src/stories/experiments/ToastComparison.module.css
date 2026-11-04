@@ -1,0 +1,104 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten shared-fixture layout and unlayered consumer examples; not a Fluent port.
+ */
+
+.examples,
+.flow,
+.form,
+.positionFlow {
+  display: grid;
+  gap: var(--spacingVerticalM);
+  min-width: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: var(--spacingHorizontalL);
+  min-width: 0;
+}
+
+.caseName {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.cell {
+  min-width: 0;
+  overflow: auto;
+}
+
+.visualWidth {
+  width: 292px;
+}
+
+.compact {
+  width: 220px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacingHorizontalM);
+}
+
+.positionFlow {
+  padding-block: 140px;
+}
+
+.consumerRoot {
+  border: 3px solid rgb(98, 42, 139);
+  border-radius: 3px;
+  padding: 17px;
+  background-color: rgb(237, 232, 247);
+}
+
+.consumerTitle {
+  color: rgb(80, 40, 120);
+}
+
+.consumerMedia {
+  padding-inline-end: 11px;
+  color: rgb(80, 40, 120);
+}
+
+.consumerAction {
+  padding-inline-start: 7px;
+}
+
+.consumerBody {
+  padding-top: 9px;
+  font-size: 13px;
+  line-height: 19px;
+}
+
+.consumerSubtitle {
+  padding-top: 7px;
+}
+
+.consumerFooter {
+  gap: 7px;
+  padding-top: 11px;
+}
+
+.report {
+  display: block;
+  margin-block: var(--spacingVerticalL);
+  max-height: 28rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+}
+
+@media (max-width: 720px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

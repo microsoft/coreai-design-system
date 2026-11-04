@@ -1,0 +1,52 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-toast 9.8.5, useToasterStyles.styles.ts and getPositionStyles.
+ * Local sources: [useToasterStyles.styles.raw.js](../../../node_modules/@fluentui/react-toast/lib/components/Toaster/useToasterStyles.styles.raw.js),
+ * [getPositionStyles.js](../../../node_modules/@fluentui/react-toast/lib/state/vanilla/getPositionStyles.js).
+ * Center placements preserve the source's physical left offset in either direction.
+ * The current native-popover facade has no inline/portal styling branch.
+ * The native inset reset shares this layer so the position selectors can override it.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Toaster {
+    position: fixed;
+    inset: auto;
+    width: 292px;
+    pointer-events: none;
+
+    &[data-toaster-position='top'],
+    &[data-toaster-position='top-start'],
+    &[data-toaster-position='top-end'] {
+      top: var(--fui-toast-offset-vertical, 16px);
+    }
+
+    &[data-toaster-position='bottom'],
+    &[data-toaster-position='bottom-start'],
+    &[data-toaster-position='bottom-end'] {
+      bottom: var(--fui-toast-offset-vertical, 16px);
+    }
+
+    &[data-toaster-position='top-start'],
+    &[data-toaster-position='bottom-start'] {
+      inset-inline-start: var(--fui-toast-offset-horizontal, 20px);
+    }
+
+    &[data-toaster-position='top-end'],
+    &[data-toaster-position='bottom-end'] {
+      inset-inline-end: var(--fui-toast-offset-horizontal, 20px);
+    }
+
+    &[data-toaster-position='top'],
+    &[data-toaster-position='bottom'] {
+      left: calc(50% + var(--fui-toast-offset-horizontal, 0px));
+      transform: translateX(-50%);
+    }
+  }
+}

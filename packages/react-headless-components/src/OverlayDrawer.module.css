@@ -1,0 +1,84 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-drawer 9.13.5:
+ * [useOverlayDrawerStyles.styles.raw.js](../../../node_modules/@fluentui/react-drawer/lib/components/OverlayDrawer/useOverlayDrawerStyles.styles.raw.js)
+ * and its actual backdrop delegation,
+ * [useOverlayDrawerSurfaceStyles.styles.raw.js](../../../node_modules/@fluentui/react-drawer/lib/components/OverlayDrawer/OverlayDrawerSurface/useOverlayDrawerSurfaceStyles.styles.raw.js).
+ * Shared sizing/positioning: [useDrawerBaseStyles.styles.raw.js](../../../node_modules/@fluentui/react-drawer/lib/shared/useDrawerBaseStyles.styles.raw.js).
+ * Focus reference: @fluentui/react-tabster 9.26.19,
+ * [createFocusOutlineStyle.js](../../../node_modules/@fluentui/react-tabster/lib/focus/createFocusOutlineStyle.js).
+ * Native :focus-visible replaces legacy focus attributes; no Tabster is imported.
+ * OverlayDrawerSurface delegates behavior, not DialogSurface visual styles.
+ * Native top-layer positioning/backdrop replace the old portal/mountNode/motion
+ * pipeline. The UA alone hides closed dialogs and popovers.
+ * CoreAI reference ebb5a9e has no Drawer visual overrides or prop defaults.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot */
+  .OverlayDrawer {
+    composes: Drawer from './Drawer.module.css';
+
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 0;
+    border-block: 0;
+    border-inline-start: 0;
+    border-inline-end: 0;
+    border-radius: 0;
+    max-width: 100%;
+
+    /* The derived selectors must beat repeated composed foundation sheets. */
+    &[data-position='start'] {
+      border-inline-end: var(--strokeWidthThin) solid var(--colorTransparentStroke);
+    }
+
+    &[data-position='end'] {
+      border-inline-start: var(--strokeWidthThin) solid var(--colorTransparentStroke);
+    }
+
+    &[data-position='bottom'] {
+      inset-inline: 0;
+      top: auto;
+      height: var(--fui-Drawer--size);
+      width: 100%;
+    }
+
+    &[open],
+    &:popover-open {
+      display: flex;
+    }
+
+    /* Styles for the backdrop slot, now the browser-owned pseudo-element. */
+    &::backdrop {
+      background-color: var(--colorBackgroundOverlay);
+    }
+
+    &[data-modal-type='non-modal']::backdrop {
+      background-color: var(--colorTransparentBackground);
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colorStrokeFocus2);
+      outline-offset: -2px;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .OverlayDrawer:focus-visible {
+      outline-color: Highlight;
+    }
+  }
+}

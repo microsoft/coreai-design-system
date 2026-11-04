@@ -1,0 +1,72 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/* stylelint-disable declaration-property-value-allowed-list */
+/* Optional local font registration. No font files are distributed or downloaded.
+   Install Aptos separately under your license; missing faces use the theme fallback. */
+
+@font-face {
+  font-family: 'Aptos Mono';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: local('Aptos Mono'), local('AptosMono');
+}
+
+@font-face {
+  font-family: 'Aptos Mono';
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  src: local('Aptos Mono Italic'), local('AptosMono-Italic');
+}
+
+@font-face {
+  font-family: 'Aptos Mono';
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+  src: local('Aptos Mono Bold'), local('AptosMono-Bold');
+}
+
+@font-face {
+  font-family: 'Aptos Mono';
+  font-weight: 600 700;
+  font-style: italic;
+  font-display: swap;
+  src: local('Aptos Mono Bold Italic'), local('AptosMono-BoldItalic');
+}
+
+@font-face {
+  font-family: Aptos;
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: local('Aptos'), local('Aptos-Regular');
+}
+
+@font-face {
+  font-family: Aptos;
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  src: local('Aptos Italic'), local('Aptos-Italic');
+}
+
+@font-face {
+  font-family: Aptos;
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: local('Aptos SemiBold'), local('Aptos-SemiBold');
+}
+
+@font-face {
+  font-family: Aptos;
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+  src: local('Aptos SemiBold Italic'), local('Aptos-SemiBoldItalic');
+}

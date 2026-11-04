@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-menu 9.25.8, useMenuDividerStyles.styles.ts.
+ * Local source: [useMenuDividerStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuDivider/useMenuDividerStyles.styles.raw.js).
+ * There are no CoreAI MenuDivider overrides or defaults.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .MenuDivider {
+    margin: 4px -5px;
+    width: auto;
+    border-bottom: var(--strokeWidthThin) solid var(--colorNeutralStroke2);
+  }
+}

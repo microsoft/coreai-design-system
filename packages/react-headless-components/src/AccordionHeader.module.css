@@ -1,0 +1,167 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-accordion 9.12.5.
+ * Local source: [useAccordionHeaderStyles.styles.raw.js](../../../node_modules/@fluentui/react-accordion/lib/components/AccordionHeader/useAccordionHeaderStyles.styles.raw.js).
+ * Default-chevron selection/rotation: [useAccordionHeader.js](../../../node_modules/@fluentui/react-accordion/lib/components/AccordionHeader/useAccordionHeader.js).
+ * Focus outline (@fluentui/react-tabster 9.26.19): [createFocusOutlineStyle.js](../../../node_modules/@fluentui/react-tabster/lib/focus/createFocusOutlineStyle.js).
+ * Default SVG display/line-height (@fluentui/react-icons 2.0.343): [useIconStyles.styles.js](../../../node_modules/@fluentui/react-icons/lib/utils/useIconStyles.styles.js); no raw style module is shipped for that helper.
+ * Native :focus-visible replaces legacy focus attributes; logical spacing preserves RTL.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .AccordionHeader {
+    color: var(--colorNeutralForeground1);
+    background-color: var(--colorTransparentBackground);
+    margin: 0;
+    border-radius: var(--borderRadiusMedium);
+
+    &[data-disabled] {
+      background-image: none;
+      color: var(--colorNeutralForegroundDisabled);
+
+      .AccordionHeader__button {
+        cursor: not-allowed;
+      }
+    }
+
+    &[data-inline] {
+      display: inline-block;
+
+      .AccordionHeader__button {
+        display: inline-flex;
+      }
+    }
+
+    &[data-size='small'] .AccordionHeader__button {
+      min-height: 32px;
+      font-size: var(--fontSizeBase200);
+    }
+
+    &[data-size='large'] .AccordionHeader__button {
+      line-height: var(--lineHeightBase400);
+      font-size: var(--fontSizeBase400);
+    }
+
+    &[data-size='extra-large'] .AccordionHeader__button {
+      line-height: var(--lineHeightBase500);
+      font-size: var(--fontSizeBase500);
+    }
+
+    &[data-expand-icon-position='start'] .AccordionHeader__expandIcon {
+      padding-inline-end: var(--spacingHorizontalS);
+    }
+
+    &[data-expand-icon-position='end'] {
+      .AccordionHeader__button {
+        padding-inline-end: var(--spacingHorizontalMNudge);
+      }
+
+      &:not([data-has-icon]) .AccordionHeader__button {
+        padding-inline-start: var(--spacingHorizontalM);
+      }
+
+      .AccordionHeader__expandIcon {
+        flex: 1 1 0%;
+        justify-content: flex-end;
+        padding-inline-start: var(--spacingHorizontalS);
+      }
+
+      .AccordionHeader__chevron {
+        transform: rotate(90deg);
+      }
+
+      &[data-open] .AccordionHeader__chevron {
+        transform: rotate(-90deg);
+      }
+    }
+
+    &[data-expand-icon-position='start'] {
+      &:dir(rtl) .AccordionHeader__chevron {
+        transform: rotate(180deg);
+      }
+
+      &[data-open] .AccordionHeader__chevron {
+        transform: rotate(90deg);
+      }
+    }
+  }
+
+  .AccordionHeader__button {
+    /* TODO: this should be extracted to another package */
+    background-color: inherit;
+    color: inherit;
+    overflow: visible;
+    appearance: button;
+    text-align: unset;
+    position: relative;
+    width: 100%;
+    border-width: 0;
+    padding-block: 0;
+    padding-inline: var(--spacingHorizontalMNudge) var(--spacingHorizontalM);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+    box-sizing: border-box;
+
+    &:focus,
+    &:focus-visible {
+      outline-style: none;
+    }
+
+    &:focus-visible {
+      border-color: transparent;
+
+      /* The focus outline needs position: relative on its owning button. */
+      &::after {
+        content: '';
+        position: absolute;
+        pointer-events: none;
+        z-index: 1;
+        border: 2px solid var(--colorStrokeFocus2);
+        border-radius: var(--borderRadiusMedium);
+        inset: -2px;
+      }
+
+      @media (forced-colors: active) {
+        &::after {
+          border-color: Highlight;
+        }
+      }
+    }
+  }
+
+  .AccordionHeader__expandIcon,
+  .AccordionHeader__icon {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    line-height: var(--lineHeightBase500);
+    font-size: var(--fontSizeBase500);
+  }
+
+  .AccordionHeader__icon {
+    padding-inline-end: var(--spacingHorizontalS);
+  }
+
+  .AccordionHeader__chevron {
+    display: inline;
+    line-height: 0;
+    transform: rotate(0deg);
+    transition: transform 200ms ease-out;
+
+    @media (prefers-reduced-motion: reduce) {
+      transition-duration: 0.01ms;
+    }
+  }
+}

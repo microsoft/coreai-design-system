@@ -1,0 +1,237 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI source at c3af1b8: [Markdown.tsx](../../react-components/src/components/Markdown.tsx).
+ * This is a local react-markdown/native-content composition, not Fluent component CSS.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .Markdown__tableScroll {
+    /* Wrap wide tables so they scroll horizontally instead of overflowing. */
+    overflow-x: auto;
+    max-width: 100%;
+    margin-top: var(--spacingVerticalM);
+    margin-bottom: var(--spacingVerticalM);
+  }
+
+  .Markdown {
+    font-size: var(--fontSizeBase300);
+    line-height: var(--lineHeightBase300);
+    color: var(--colorNeutralForeground2);
+
+    /* Lists. */
+    & ul,
+    & ol {
+      padding-inline-start: var(--spacingHorizontalXL);
+    }
+
+    /* No margin for nested lists. */
+    & ul ul,
+    & ol ol {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    /* Bold / heading weight. */
+    & h1,
+    & h2,
+    & h3,
+    & h4,
+    & h5,
+    & h6,
+    & b,
+    & strong,
+    & th {
+      font-weight: var(--fontWeightSemibold);
+    }
+
+    /* Primary foreground for emphasized elements. */
+    & h1,
+    & h2,
+    & h3,
+    & h4,
+    & h5,
+    & h6,
+    & strong,
+    & em,
+    & th,
+    & summary {
+      color: var(--colorNeutralForeground1);
+    }
+
+    & i,
+    & em {
+      font-style: italic;
+    }
+
+    /* Heading / block-quote scale. */
+    & h1 {
+      font-size: var(--fontSizeHero700);
+      line-height: var(--lineHeightHero700);
+    }
+
+    & h2 {
+      font-size: var(--fontSizeBase600);
+      line-height: var(--lineHeightBase600);
+    }
+
+    & h3 {
+      font-size: var(--fontSizeBase500);
+      line-height: var(--lineHeightBase500);
+    }
+
+    & h4,
+    & blockquote {
+      font-size: var(--fontSizeBase400);
+      line-height: var(--lineHeightBase400);
+    }
+
+    & h5 {
+      font-size: var(--fontSizeBase300);
+      line-height: var(--lineHeightBase300);
+    }
+
+    & h6,
+    & small {
+      font-size: var(--fontSizeBase200);
+      line-height: var(--lineHeightBase200);
+    }
+
+    /* Blockquote. */
+    & blockquote {
+      margin-left: 0;
+      margin-right: 0;
+      padding-inline-start: var(--spacingHorizontalL);
+      border-inline-start: var(--strokeWidthThick) solid var(--colorNeutralStroke1);
+      font-style: italic;
+      color: var(--colorNeutralForeground1);
+    }
+
+    & q {
+      font-style: italic;
+      color: var(--colorNeutralForeground1);
+    }
+
+    & code,
+    & kbd,
+    & samp,
+    & pre {
+      font-family: var(--fontFamilyMonospace);
+    }
+
+    & del,
+    & s {
+      text-decoration: line-through;
+      color: var(--colorNeutralForeground4);
+    }
+
+    /* Inline code/kbd/samp inside text blocks (fenced/highlighted code is
+     * rendered by CodeBlock and carries a class, so it is excluded here).
+     */
+    &
+      :where(p, h1, h2, h3, h4, h5, h6, blockquote, ul, ol)
+      :where(code, kbd, samp):not([class], [style]) {
+      padding: 1px 4px;
+      border-radius: var(--borderRadiusMedium);
+      /* Downscale inline monospace font so it has the same visual weight as sans. */
+      font-size: 0.9em;
+      color: var(--colorNeutralForeground1);
+      vertical-align: bottom;
+      background-color: var(--colorNeutralBackground3);
+    }
+
+    /* Fenced code blocks are covered by CodeBlock. */
+    & :global(.fui-CodeBlock) {
+      margin-block: var(--spacingVerticalM);
+    }
+
+    /* Horizontal rule. */
+    & hr {
+      margin-top: var(--spacingVerticalXL);
+      margin-bottom: var(--spacingVerticalXL);
+      margin-left: 0;
+      margin-right: 0;
+      border: none;
+      border-top: var(--strokeWidthThin) solid var(--colorNeutralStroke1);
+    }
+
+    /* Vertical rhythm between block elements. */
+    & :where(div, p, h1, h2, h3, h4, h5, h6, blockquote, ul, ol):not([class], [style]) {
+      margin-top: var(--spacingVerticalM);
+      margin-bottom: var(--spacingVerticalM);
+    }
+
+    & :is(h1, h2, h3, h4, h5, h6):not([class], [style], :first-child) {
+      margin-top: 1em;
+    }
+
+    /* Collapse outer margins of the first/last child. */
+    & > :not([class], [style]):first-child {
+      margin-top: 0;
+    }
+
+    & > :not([class], [style]):last-child {
+      margin-bottom: 0;
+    }
+
+    & img {
+      max-width: 100%;
+      border-radius: var(--borderRadiusMedium);
+    }
+
+    /* Tables. */
+    & table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border: var(--strokeWidthThin) solid var(--colorNeutralStroke1);
+      border-radius: var(--borderRadiusXLarge);
+      overflow: hidden;
+    }
+
+    & th,
+    & td {
+      padding: var(--spacingVerticalS) var(--spacingHorizontalL);
+      border-bottom: var(--strokeWidthThin) solid var(--colorNeutralStroke1);
+      text-align: left;
+
+      &:dir(rtl) {
+        text-align: right;
+      }
+    }
+
+    & th {
+      color: var(--colorNeutralForeground1);
+      font-weight: var(--fontWeightSemibold);
+      background-color: var(--colorNeutralBackground3);
+    }
+
+    & tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Rendered footnotes (from remark-gfm). */
+    & [data-footnotes] {
+      margin-top: var(--spacingVerticalL);
+      background-color: var(--colorNeutralBackground3);
+      padding: var(--spacingVerticalM);
+      border-radius: var(--borderRadiusXLarge);
+      font-size: var(--fontSizeBase200);
+      line-height: var(--lineHeightBase200);
+    }
+
+    & [data-footnotes] h2 {
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+    & [data-footnotes] :is(h2, p, ul, ol) {
+      margin-block: 0 !important;
+    }
+  }
+}

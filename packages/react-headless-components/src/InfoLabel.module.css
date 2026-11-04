@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-infolabel 9.4.27, useInfoLabelStyles.styles.ts.
+ * Local source: [useInfoLabelStyles.styles.raw.js](../../../node_modules/@fluentui/react-infolabel/lib/components/InfoLabel/useInfoLabelStyles.styles.raw.js).
+ * Inherited Label: @fluentui/react-label 9.4.6,
+ * [useLabelStyles.styles.raw.js](../../../node_modules/@fluentui/react-label/lib/components/Label/useLabelStyles.styles.raw.js).
+ * Inherited InfoButton: @fluentui/react-infolabel 9.4.27,
+ * [useInfoButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-infolabel/lib/components/InfoButton/useInfoButtonStyles.styles.raw.js).
+ * Inherited Popover: @fluentui/react-popover 9.14.10,
+ * [usePopoverSurfaceStyles.styles.raw.js](../../../node_modules/@fluentui/react-popover/lib/components/PopoverSurface/usePopoverSurfaceStyles.styles.raw.js).
+ * Completed Label and native Popover foundations are reused, not duplicated.
+ * CoreAI has no InfoLabel defaults or style overrides at reference commit 9c7a515;
+ * [index.ts](../../react-components/src/index.ts) re-exports Fluent InfoLabel unchanged.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Resolved-state specificity protects the derived slot rules from later foundation sheets. */
+  .InfoLabel[data-size] > .InfoLabel__label {
+    vertical-align: top;
+    cursor: inherit;
+    color: inherit;
+  }
+
+  .InfoLabel[data-size] > .InfoLabel__infoButton {
+    vertical-align: top;
+    /* Negative margin aligns the button with the text. */
+    margin-block: calc(0px - var(--spacingVerticalXXS));
+  }
+
+  .InfoLabel[data-size='large'] > .InfoLabel__infoButton {
+    /* Negative margin aligns the button with the text. */
+    margin-block: -1px;
+  }
+}

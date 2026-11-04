@@ -1,0 +1,37 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-toolbar 9.8.7, reference b8337ab.
+ * Local source: [useToolbarButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-toolbar/lib/components/ToolbarButton/useToolbarButtonStyles.styles.raw.js).
+ * Delegated @fluentui/react-button 9.11.3 source:
+ * [useButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-toolbar/node_modules/@fluentui/react-button/lib/components/Button/useButtonStyles.styles.raw.js).
+ * It is byte-identical to the completed 9.11.1 [Button.module.css](./Button.module.css) baseline.
+ * CoreAI has no ToolbarButton defaults/override: [index.ts](../../react-components/src/index.ts),
+ * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts).
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .ToolbarButton {
+    composes: Button from './Button.module.css';
+
+    &[data-vertical] {
+      flex-direction: column;
+    }
+
+    /* Retain the resolved-state priority over later composed Button sheets. */
+    &[data-vertical][data-has-icon][data-icon-position] .ToolbarButton__icon {
+      font-size: 24px;
+      margin: 0;
+    }
+  }
+
+  .ToolbarButton__icon {
+    composes: Button__icon from './Button.module.css';
+  }
+}

@@ -1,0 +1,139 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-text 9.6.21, useTextStyles.styles.ts.
+ * Local source: [useTextStyles.styles.raw.js](../../../node_modules/@fluentui/react-text/lib/components/Text/useTextStyles.styles.raw.js).
+ * Visual selection reference: [useText.js](../../../node_modules/@fluentui/react-text/lib/components/Text/useText.js).
+ * Text is a local native primitive; neither the styled component nor its hook is imported.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot */
+  .Text {
+    --fui-text-font-family: var(--fontFamilyBase);
+    --fui-text-font-size: var(--fontSizeBase300);
+    --fui-text-line-height: var(--lineHeightBase300);
+    --fui-text-font-weight: var(--fontWeightRegular);
+
+    font-family: var(--fui-text-font-family);
+    font-size: var(--fui-text-font-size);
+    line-height: var(--fui-text-line-height);
+    font-weight: var(--fui-text-font-weight);
+    text-align: start;
+    display: inline;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+
+    &[data-nowrap] {
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    &[data-truncate] {
+      text-overflow: ellipsis;
+    }
+
+    &[data-block] {
+      display: block;
+    }
+
+    &[data-italic] {
+      font-style: italic;
+    }
+
+    &[data-underline] {
+      text-decoration-line: underline;
+    }
+
+    &[data-strikethrough] {
+      text-decoration-line: line-through;
+    }
+
+    &[data-underline][data-strikethrough] {
+      text-decoration-line: line-through underline;
+    }
+
+    &[data-size='100'] {
+      --fui-text-font-size: var(--fontSizeBase100);
+      --fui-text-line-height: var(--lineHeightBase100);
+    }
+
+    &[data-size='200'] {
+      --fui-text-font-size: var(--fontSizeBase200);
+      --fui-text-line-height: var(--lineHeightBase200);
+    }
+
+    &[data-size='400'] {
+      --fui-text-font-size: var(--fontSizeBase400);
+      --fui-text-line-height: var(--lineHeightBase400);
+    }
+
+    &[data-size='500'] {
+      --fui-text-font-size: var(--fontSizeBase500);
+      --fui-text-line-height: var(--lineHeightBase500);
+    }
+
+    &[data-size='600'] {
+      --fui-text-font-size: var(--fontSizeBase600);
+      --fui-text-line-height: var(--lineHeightBase600);
+    }
+
+    &[data-size='700'] {
+      --fui-text-font-size: var(--fontSizeHero700);
+      --fui-text-line-height: var(--lineHeightHero700);
+    }
+
+    &[data-size='800'] {
+      --fui-text-font-size: var(--fontSizeHero800);
+      --fui-text-line-height: var(--lineHeightHero800);
+    }
+
+    &[data-size='900'] {
+      --fui-text-font-size: var(--fontSizeHero900);
+      --fui-text-line-height: var(--lineHeightHero900);
+    }
+
+    &[data-size='1000'] {
+      --fui-text-font-size: var(--fontSizeHero1000);
+      --fui-text-line-height: var(--lineHeightHero1000);
+    }
+
+    &[data-font='monospace'] {
+      --fui-text-font-family: var(--fontFamilyMonospace);
+    }
+
+    &[data-font='numeric'] {
+      --fui-text-font-family: var(--fontFamilyNumeric);
+    }
+
+    &[data-weight='medium'] {
+      --fui-text-font-weight: var(--fontWeightMedium);
+    }
+
+    &[data-weight='semibold'] {
+      --fui-text-font-weight: var(--fontWeightSemibold);
+    }
+
+    &[data-weight='bold'] {
+      --fui-text-font-weight: var(--fontWeightBold);
+    }
+
+    &[data-align='center'] {
+      text-align: center;
+    }
+
+    &[data-align='end'] {
+      text-align: end;
+    }
+
+    &[data-align='justify'] {
+      text-align: justify;
+    }
+  }
+}

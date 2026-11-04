@@ -1,0 +1,122 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten shared-fixture layout and unlayered consumer examples; not a Fluent port.
+ */
+
+.examples {
+  display: grid;
+  gap: var(--spacingVerticalL);
+  overflow-x: auto;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.6fr) repeat(2, minmax(320px, 1fr));
+  align-items: start;
+  gap: var(--spacingHorizontalL);
+}
+
+.card {
+  width: 320px;
+}
+
+.preview {
+  height: 120px;
+}
+
+.horizontalPreview {
+  width: 88px;
+  flex-shrink: 0;
+}
+
+.railButton {
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tintedText {
+  color: var(--colorNeutralForeground3);
+}
+
+.consumerCard {
+  padding: 17px;
+  gap: 9px;
+  border: 3px solid rgb(98, 42, 139);
+  border-radius: 3px;
+  background-color: rgb(237, 232, 247);
+}
+
+.consumerHeader {
+  --fui-CardHeader--gap: 7px;
+}
+
+.consumerHeaderImage {
+  width: 28px;
+  height: 28px;
+}
+
+.consumerTitle {
+  color: rgb(80, 40, 120);
+}
+
+.consumerDescription {
+  color: rgb(60, 70, 90);
+}
+
+.consumerHeaderAction {
+  margin-inline-start: 5px;
+}
+
+.consumerPreview {
+  height: 100px;
+}
+
+.consumerLogo {
+  width: 24px;
+  height: 24px;
+  inset-inline-start: 7px;
+}
+
+.consumerFooter {
+  gap: 7px;
+}
+
+.consumerFooterAction {
+  margin-inline-start: 9px;
+}
+
+.consumerFloating {
+  width: 24px;
+  padding: 2px;
+}
+
+.report {
+  display: block;
+  max-height: 32rem;
+  margin-block: var(--spacingVerticalL);
+  overflow: auto;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+}
+
+.flow {
+  display: grid;
+  justify-items: start;
+  gap: var(--spacingVerticalM);
+}
+
+.flowTitle,
+.flowText {
+  margin: 0;
+}

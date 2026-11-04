@@ -1,0 +1,214 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-persona 9.7.11 at reference 53ebde2.
+ * Local source: [usePersonaStyles.styles.raw.js](../../../node_modules/@fluentui/react-persona/lib/components/Persona/usePersonaStyles.styles.raw.js).
+ * Source: https://unpkg.com/@fluentui/react-persona@9.7.11/lib/components/Persona/usePersonaStyles.styles.raw.js
+ * Typography: @fluentui/react-theme 9.2.2 reexports @fluentui/tokens 1.0.0-alpha.24
+ * [typographyStyles.js](../../../node_modules/@fluentui/tokens/lib/global/typographyStyles.js).
+ * Persona uses native text spans and typography styles, not styled Text components or presets.
+ * Reused Avatar foundation: @fluentui/react-avatar 9.11.9
+ * [useAvatarStyles.styles.raw.js](../../../node_modules/@fluentui/react-avatar/lib/components/Avatar/useAvatarStyles.styles.raw.js).
+ * Reused presence foundation: @fluentui/react-badge 9.5.7
+ * [usePresenceBadgeStyles.styles.raw.js](../../../node_modules/@fluentui/react-badge/lib/components/PresenceBadge/usePresenceBadgeStyles.styles.raw.js).
+ * Persona has no CoreAI wrapper, prop defaults, or custom style hook.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Persona {
+    --fui-Persona__avatar--spacing: var(--spacingHorizontalS);
+
+    display: inline-grid;
+    grid-auto-rows: max-content;
+    grid-auto-flow: column;
+    justify-items: start;
+    grid-template-columns: max-content [middle] auto;
+
+    &[data-size='extra-small'] {
+      --fui-Persona__avatar--spacing: var(--spacingHorizontalSNudge);
+    }
+
+    &[data-size='large'],
+    &[data-size='extra-large'] {
+      --fui-Persona__avatar--spacing: var(--spacingHorizontalMNudge);
+    }
+
+    &[data-size='huge'] {
+      --fui-Persona__avatar--spacing: var(--spacingHorizontalM);
+    }
+
+    &[data-presence-only][data-size='small'] {
+      --fui-Persona__avatar--spacing: var(--spacingHorizontalSNudge);
+    }
+
+    &[data-text-position='before'] {
+      justify-items: end;
+      grid-template-columns: auto [middle] max-content;
+    }
+
+    &[data-text-position='below'] {
+      grid-auto-flow: unset;
+      justify-items: center;
+      grid-template-columns: unset;
+
+      & > .Persona__avatar,
+      & > .Persona__presence {
+        margin-block-end: var(--fui-Persona__avatar--spacing);
+      }
+    }
+
+    &[data-text-position='after'] {
+      & > .Persona__avatar,
+      & > .Persona__presence {
+        margin-inline-end: var(--fui-Persona__avatar--spacing);
+      }
+    }
+
+    &[data-text-position='before'] {
+      & > .Persona__avatar,
+      & > .Persona__presence {
+        margin-inline-start: var(--fui-Persona__avatar--spacing);
+      }
+    }
+
+    &[data-text-alignment='start'] {
+      & > .Persona__avatar,
+      & > .Persona__presence {
+        align-self: start;
+      }
+    }
+
+    &[data-text-alignment='center'] {
+      & > .Persona__avatar,
+      & > .Persona__presence {
+        align-self: center;
+      }
+    }
+
+    &:not([data-text-position='below']) {
+      & > .Persona__avatar,
+      & > .Persona__presence {
+        grid-row-start: span 5;
+      }
+
+      &[data-text-alignment='center'] {
+        /* This template centers the Avatar when it takes up more space than the text lines. */
+        grid-template-rows:
+          1fr [primary] max-content [secondary] max-content [tertiary] max-content
+          [quaternary] max-content 1fr;
+
+        & > .Persona__avatar,
+        & > .Persona__presence {
+          grid-row-start: span 6;
+        }
+
+        & > .Persona__primaryText {
+          grid-row-start: primary;
+        }
+
+        & > .Persona__secondaryText {
+          grid-row-start: secondary;
+        }
+
+        & > .Persona__tertiaryText {
+          grid-row-start: tertiary;
+        }
+
+        & > .Persona__quaternaryText {
+          grid-row-start: quaternary;
+        }
+      }
+    }
+
+    &[data-align-to-primary][data-text-position='after'] {
+      & > .Persona__presence {
+        align-self: center;
+        grid-row-start: unset;
+        grid-column-end: middle;
+      }
+
+      & > .Persona__primaryText,
+      & > .Persona__secondaryText,
+      & > .Persona__tertiaryText,
+      & > .Persona__quaternaryText {
+        grid-column-start: middle;
+      }
+    }
+
+    &[data-align-to-primary][data-text-position='before'] {
+      & > .Persona__presence {
+        align-self: center;
+        grid-row-start: unset;
+        grid-column-start: middle;
+      }
+
+      & > .Persona__primaryText,
+      & > .Persona__secondaryText,
+      & > .Persona__tertiaryText,
+      & > .Persona__quaternaryText {
+        grid-column-end: middle;
+      }
+    }
+
+    &[data-presence-only][data-size='extra-small'][data-text-lines='1'] > .Persona__primaryText {
+      font-size: var(--fontSizeBase200);
+      line-height: var(--lineHeightBase200);
+    }
+
+    &[data-size='extra-large'] > .Persona__primaryText,
+    &[data-size='huge'] > .Persona__primaryText {
+      font-size: var(--fontSizeBase400);
+      font-weight: var(--fontWeightSemibold);
+      line-height: var(--lineHeightBase400);
+    }
+
+    &:not([data-presence-only])[data-size='huge'] {
+      & > .Persona__secondaryText,
+      & > .Persona__tertiaryText,
+      & > .Persona__quaternaryText {
+        font-size: var(--fontSizeBase300);
+        line-height: var(--lineHeightBase300);
+      }
+    }
+  }
+
+  .Persona__primaryText {
+    display: block;
+    color: var(--colorNeutralForeground1);
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+  }
+
+  .Persona__secondaryText,
+  .Persona__tertiaryText,
+  .Persona__quaternaryText {
+    display: block;
+    color: var(--colorNeutralForeground2);
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase200);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase200);
+  }
+
+  .Persona__secondaryText {
+    margin-block-start: -2px;
+  }
+}
+
+@layer coreai-overrides {
+  /* The real Persona composes Fluent Avatar, not CoreAI's neutral-background wrapper.
+   * Restore that composition boundary without copying Avatar styles or behavior.
+   * Resolved slot specificity survives repeated foundation selectors from family CSS.
+   */
+  .Persona > .Persona__avatar[data-color='neutral'] {
+    --coreai-Avatar-background: var(--colorNeutralBackground6);
+  }
+}

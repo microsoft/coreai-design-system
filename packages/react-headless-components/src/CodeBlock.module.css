@@ -1,0 +1,273 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI source at c3af1b8: [CodeBlock.tsx](../../react-components/src/components/CodeBlock.tsx).
+ * This is a local native/content composition, not a Fluent component style port.
+ * Syntax palettes are translated directly from the source's highlight.js vs/vs2015 themes.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .CodeBlock {
+    position: relative;
+    border-radius: var(--borderRadiusXLarge);
+
+    /* Set in appearance variants below. */
+    background-color: var(--coreai-CodeBlock-background);
+    border: var(--coreai-CodeBlock-border);
+
+    /* For header padding: copyButton height + top inset * 2. */
+    --coreai-CodeBlock-copy-button-height: 46px;
+
+    display: flex;
+    flex-direction: column;
+
+    & .CodeBlock__pre {
+      margin: 0;
+      overflow-x: auto;
+      padding: var(--spacingVerticalM) var(--spacingHorizontalL);
+      font-family: var(--fontFamilyMonospace);
+      color: var(--colorNeutralForeground2);
+      font-size: var(--fontSizeBase300);
+      line-height: var(--lineHeightBase300);
+    }
+
+    & code {
+      font-family: inherit;
+    }
+
+    & :global(.hljs-emphasis) {
+      font-style: italic;
+    }
+
+    & :global(.hljs-strong) {
+      font-weight: var(--fontWeightSemibold);
+    }
+
+    /* Appearance variants (mirror Card's appearances and ordering). */
+    &:where([data-appearance='filled-alternative']) {
+      --coreai-CodeBlock-background: var(--colorNeutralBackground3);
+      --coreai-CodeBlock-border: var(--strokeWidthThin) solid var(--colorNeutralBackground1);
+    }
+
+    &:where([data-appearance='filled']) {
+      --coreai-CodeBlock-background: var(--colorNeutralBackground1);
+      --coreai-CodeBlock-border: var(--strokeWidthThin) solid var(--colorNeutralBackground3);
+    }
+
+    &:where([data-appearance='outline']) {
+      --coreai-CodeBlock-background: var(--colorTransparentBackground);
+      --coreai-CodeBlock-border: var(--strokeWidthThin) solid var(--colorNeutralStroke1);
+    }
+
+    &:where([data-appearance='subtle']) {
+      --coreai-CodeBlock-background: var(--colorTransparentBackground);
+      --coreai-CodeBlock-border: none;
+
+      /* subtle is meant to sit inline with surrounding content; retain the source selector. */
+      & pre {
+        padding: 0;
+      }
+    }
+
+    /* Visual Studio light theme (highlight.js vs.css). */
+    &:where([data-theme-mode='light']) {
+      & :global(.hljs-comment),
+      & :global(.hljs-quote),
+      & :global(.hljs-variable) {
+        color: #008000;
+      }
+
+      & :global(.hljs-keyword),
+      & :global(.hljs-selector-tag),
+      & :global(.hljs-built_in),
+      & :global(.hljs-name),
+      & :global(.hljs-tag) {
+        color: #0000ff;
+      }
+
+      & :global(.hljs-string),
+      & :global(.hljs-title),
+      & :global(.hljs-section),
+      & :global(.hljs-attribute),
+      & :global(.hljs-literal),
+      & :global(.hljs-template-tag),
+      & :global(.hljs-template-variable),
+      & :global(.hljs-type),
+      & :global(.hljs-addition) {
+        color: #a31515;
+      }
+
+      & :global(.hljs-deletion),
+      & :global(.hljs-selector-attr),
+      & :global(.hljs-selector-pseudo),
+      & :global(.hljs-meta) {
+        color: #2b91af;
+      }
+
+      & :global(.hljs-doctag) {
+        color: #808080;
+      }
+
+      & :global(.hljs-attr) {
+        color: #ff0000;
+      }
+
+      & :global(.hljs-symbol),
+      & :global(.hljs-bullet),
+      & :global(.hljs-link) {
+        color: #00b0e8;
+      }
+    }
+
+    /* Visual Studio 2015 dark theme (highlight.js vs2015.css). */
+    &:where([data-theme-mode='dark']) {
+      & :global(.hljs-keyword),
+      & :global(.hljs-literal),
+      & :global(.hljs-symbol),
+      & :global(.hljs-name) {
+        color: #569cd6;
+      }
+
+      & :global(.hljs-link) {
+        color: #569cd6;
+        text-decoration-line: underline;
+      }
+
+      & :global(.hljs-built_in),
+      & :global(.hljs-type) {
+        color: #4ec9b0;
+      }
+
+      & :global(.hljs-number),
+      & :global(.hljs-class) {
+        color: #b8d7a3;
+      }
+
+      & :global(.hljs-string),
+      & :global(.hljs-meta) :global(.hljs-string) {
+        color: #d69d85;
+      }
+
+      & :global(.hljs-regexp),
+      & :global(.hljs-template-tag) {
+        color: #9a5334;
+      }
+
+      & :global(.hljs-subst),
+      & :global(.hljs-function),
+      & :global(.hljs-title),
+      & :global(.hljs-params),
+      & :global(.hljs-formula) {
+        color: #dcdcdc;
+      }
+
+      & :global(.hljs-comment),
+      & :global(.hljs-quote) {
+        color: #57a64a;
+        font-style: italic;
+      }
+
+      & :global(.hljs-doctag) {
+        color: #608b4e;
+      }
+
+      & :global(.hljs-meta),
+      & :global(.hljs-meta) :global(.hljs-keyword),
+      & :global(.hljs-tag) {
+        color: #9b9b9b;
+      }
+
+      & :global(.hljs-variable),
+      & :global(.hljs-template-variable) {
+        color: #bd63c5;
+      }
+
+      & :global(.hljs-attr),
+      & :global(.hljs-attribute) {
+        color: #9cdcfe;
+      }
+
+      & :global(.hljs-section) {
+        color: #ffd700;
+      }
+
+      & :global(.hljs-bullet),
+      & :global(.hljs-selector-tag),
+      & :global(.hljs-selector-id),
+      & :global(.hljs-selector-class),
+      & :global(.hljs-selector-attr),
+      & :global(.hljs-selector-pseudo) {
+        color: #d7ba7d;
+      }
+
+      & :global(.hljs-addition) {
+        background-color: #144212;
+        display: inline-block;
+        width: 100%;
+      }
+
+      & :global(.hljs-deletion) {
+        background-color: #660000;
+        display: inline-block;
+        width: 100%;
+      }
+    }
+  }
+
+  .CodeBlock__header {
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacingHorizontalXS);
+    padding-top: var(--spacingHorizontalM);
+    padding-inline-start: var(--spacingHorizontalL);
+    padding-bottom: var(--spacingVerticalXXS);
+    padding-inline-end: var(--coreai-CodeBlock-copy-button-height);
+
+    /* The subtle header has no extra styling. */
+    &:where([data-appearance='divided']) {
+      padding-top: var(--spacingHorizontalS);
+      padding-inline-start: var(--spacingHorizontalM);
+      padding-bottom: var(--spacingVerticalS);
+      padding-inline-end: var(--coreai-CodeBlock-copy-button-height);
+      min-height: var(--coreai-CodeBlock-copy-button-height);
+      border-bottom: var(--coreai-CodeBlock-border);
+    }
+  }
+
+  .CodeBlock__footer {
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacingHorizontalXS);
+    padding-top: var(--spacingVerticalXXS);
+    padding-right: var(--spacingHorizontalL);
+    padding-bottom: var(--spacingVerticalS);
+    padding-left: var(--spacingHorizontalL);
+
+    &:where([data-appearance='divided']) {
+      padding: var(--spacingVerticalXS) var(--spacingHorizontalM);
+      border-top: var(--coreai-CodeBlock-border);
+    }
+  }
+
+  .CodeBlock__fallbackContent {
+    overflow: auto;
+    padding: var(--spacingVerticalM) var(--spacingHorizontalL);
+  }
+
+  /* Copy button pinned to the top-right corner, above the scrolling code. */
+  .CodeBlock__copyButton {
+    position: absolute;
+    top: var(--spacingVerticalSNudge);
+    inset-inline-end: var(--spacingHorizontalSNudge);
+    z-index: 1;
+  }
+}

@@ -1,0 +1,29 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported directly from @fluentui/react-tags 9.9.8.
+ * Local source: [useTagGroupStyles.styles.raw.js](../../../node_modules/@fluentui/react-tags/lib/components/TagGroup/useTagGroupStyles.styles.raw.js).
+ * Source: https://unpkg.com/@fluentui/react-tags@9.9.8/lib/components/TagGroup/useTagGroupStyles.styles.raw.js
+ * CoreAI has no TagGroup defaults or style overrides.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .TagGroup {
+    display: inline-flex;
+    column-gap: var(--spacingHorizontalS);
+
+    &[data-size='small'] {
+      column-gap: var(--spacingHorizontalSNudge);
+    }
+
+    &[data-size='extra-small'] {
+      column-gap: var(--spacingHorizontalXS);
+    }
+  }
+}

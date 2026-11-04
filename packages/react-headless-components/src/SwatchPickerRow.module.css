@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-swatch-picker 9.6.3, useSwatchPickerRowStyles.styles.ts.
+ * Local source: [useSwatchPickerRowStyles.styles.raw.js](../../../node_modules/@fluentui/react-swatch-picker/lib/components/SwatchPickerRow/useSwatchPickerRowStyles.styles.raw.js).
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .SwatchPickerRow {
+    display: flex;
+    flex-direction: row;
+    column-gap: 4px;
+
+    &[data-spacing='small'] {
+      column-gap: 2px;
+    }
+  }
+}

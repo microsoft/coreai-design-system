@@ -1,0 +1,77 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported directly from @fluentui/react-tag-picker 9.10.5.
+ * Local source: [useTagPickerButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-tag-picker/lib/components/TagPickerButton/useTagPickerButtonStyles.styles.raw.js).
+ * Source: https://unpkg.com/@fluentui/react-tag-picker@9.10.5/lib/components/TagPickerButton/useTagPickerButtonStyles.styles.raw.js
+ * CoreAI has no TagPickerButton defaults or style overrides. Only upstream's actually selected
+ * button, context-size and visuallyHidden rules apply; unused appearance branches are not ported.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .TagPickerButton {
+    align-items: center;
+    min-height: 32px;
+    background-color: var(--colorTransparentBackground);
+    border: none;
+    box-sizing: border-box;
+    color: var(--colorNeutralForeground1);
+    column-gap: var(--spacingHorizontalXXS);
+    cursor: pointer;
+    flex-grow: 1;
+    font-family: var(--fontFamilyBase);
+    text-align: left;
+
+    &:dir(rtl) {
+      text-align: right;
+    }
+
+    &:focus {
+      outline-style: none;
+    }
+
+    &[data-size='medium'] {
+      font-size: var(--fontSizeBase200);
+      font-weight: var(--fontWeightRegular);
+      line-height: var(--lineHeightBase200);
+      padding-block: 3px;
+      padding-inline: calc(var(--spacingHorizontalSNudge) + var(--spacingHorizontalXXS))
+        var(--spacingHorizontalSNudge);
+    }
+
+    &[data-size='large'] {
+      font-size: var(--fontSizeBase300);
+      font-weight: var(--fontWeightRegular);
+      line-height: var(--lineHeightBase300);
+      padding-block: 5px;
+      padding-inline: calc(var(--spacingHorizontalMNudge) + var(--spacingHorizontalXXS))
+        var(--spacingHorizontalMNudge);
+    }
+
+    &[data-size='extra-large'] {
+      column-gap: var(--spacingHorizontalSNudge);
+      font-size: var(--fontSizeBase400);
+      font-weight: var(--fontWeightRegular);
+      line-height: var(--lineHeightBase400);
+      padding-block: 7px;
+      padding-inline: calc(var(--spacingHorizontalM) + var(--spacingHorizontalSNudge))
+        var(--spacingHorizontalM);
+    }
+
+    &[data-has-selected-option] {
+      clip: rect(0px, 0px, 0px, 0px);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      width: 1px;
+      position: absolute;
+    }
+  }
+}

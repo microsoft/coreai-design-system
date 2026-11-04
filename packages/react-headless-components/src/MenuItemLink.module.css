@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-menu 9.25.8, useMenuItemLinkStyles.styles.ts.
+ * Local source: [useMenuItemLinkStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuItemLink/useMenuItemLinkStyles.styles.raw.js).
+ * Inherited foundation: [useMenuItemStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuItem/useMenuItemStyles.styles.raw.js),
+ * shared through MenuVisualStyles.ts and MenuItem.module.css without a second copy.
+ * There are no CoreAI MenuItemLink overrides or defaults.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .MenuItemLink {
+    text-decoration-line: none;
+    text-decoration-thickness: initial;
+    text-decoration-style: initial;
+    text-decoration-color: initial;
+  }
+}

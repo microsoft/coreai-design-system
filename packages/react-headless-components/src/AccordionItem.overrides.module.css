@@ -1,0 +1,14 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI sources: [index.ts](../../react-components/src/index.ts) re-exports Fluent AccordionItem;
+ * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts) registers no AccordionItem override.
+ * Fluent baseline: @fluentui/react-accordion 9.12.5,
+ * [useAccordionItemStyles.styles.raw.js](../../../node_modules/@fluentui/react-accordion/lib/components/AccordionItem/useAccordionItemStyles.styles.raw.js).
+ * CoreAI adds no AccordionItem defaults or style overrides. This layer is intentionally empty.
+ */
+
+@layer fluent-components, coreai-overrides;

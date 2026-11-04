@@ -1,0 +1,59 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI source: [Input.tsx](../../react-components/src/components/Input.tsx) at 51997c2e.
+ * Fluent baseline: [useInputStyles.styles.raw.js](../../../node_modules/@fluentui/react-input/lib/components/Input/useInputStyles.styles.raw.js).
+ * Explicit inline-label/sizing/read-only features remain available when defaults are disabled.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .Input {
+    &[data-dynamic-width] {
+      min-width: 0;
+
+      & > .Input__input {
+        field-sizing: content;
+        max-width: 200px;
+      }
+    }
+
+    &[data-truncate-text-overflow] > .Input__input {
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &[data-coreai-read-only] {
+      &::after,
+      &:focus-within:active::after {
+        border-bottom: 2px solid var(--colorNeutralStroke1);
+      }
+    }
+
+    &[data-has-value] .Input__label::after {
+      content: ':';
+    }
+
+    &[data-coreai-disabled] .Input__label {
+      color: var(--colorNeutralForegroundDisabled);
+    }
+  }
+
+  .Input__contentBefore {
+    margin-inline-end: 0;
+  }
+
+  .Input__label {
+    cursor: text;
+    font-family: var(--fontFamilyBase);
+    font-size: inherit;
+    font-weight: 600;
+    line-height: inherit;
+    color: var(--colorNeutralForeground1);
+  }
+}

@@ -1,0 +1,60 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten comparison layout and intentional unlayered consumer overrides; not a Fluent style port.
+ */
+
+.examples {
+  display: grid;
+  gap: var(--spacingVerticalM);
+  overflow-x: auto;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.65fr) repeat(2, minmax(260px, 1fr));
+  align-items: center;
+  gap: var(--spacingHorizontalL);
+  min-height: 48px;
+}
+
+.row > div {
+  min-width: 0;
+}
+
+.consumerRoot {
+  min-width: 220px;
+}
+
+.consumerSelect {
+  background-color: rgb(232, 240, 255);
+  color: rgb(32, 48, 96);
+  border-radius: 3px;
+  padding-inline: 18px 44px;
+}
+
+.consumerIcon {
+  color: rgb(72, 32, 128);
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  inset-inline-end: 14px;
+}
+
+.report {
+  display: block;
+  max-height: 32rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+  margin-block: var(--spacingVerticalL);
+}
+
+.playground {
+  display: grid;
+  justify-items: start;
+  gap: var(--spacingVerticalM);
+}

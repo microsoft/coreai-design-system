@@ -1,0 +1,100 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten experimental comparison/consumer layout; not an upstream style port.
+ */
+
+.comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.column {
+  min-width: 0;
+}
+
+.viewport {
+  min-height: 100px;
+  overflow: auto;
+}
+
+.pointerRest {
+  padding: 8px;
+  margin-block: 8px;
+}
+
+.report {
+  overflow: auto;
+  max-height: 320px;
+  padding: 12px;
+  background-color: var(--colorNeutralBackground2);
+  white-space: pre-wrap;
+}
+
+.flow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.selection {
+  width: 100%;
+  overflow: auto;
+}
+
+.preview {
+  box-sizing: border-box;
+  width: 72px;
+  height: 72px;
+  background-size: cover;
+  border: 1px solid var(--colorNeutralStroke1);
+}
+
+.boundaryPicker {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.boundaryRow {
+  display: flex;
+  gap: 4px;
+}
+
+.boundarySwatch {
+  width: 28px;
+  height: 28px;
+  background: var(--fui-SwatchPicker--color);
+}
+
+.consumerPicker {
+  gap: 9px;
+  padding: 6px;
+}
+
+.consumerRow {
+  column-gap: 9px;
+}
+
+.consumerSwatch {
+  width: 36px;
+  height: 36px;
+  border-radius: 3px;
+  box-shadow: none;
+}
+
+.consumerIcon {
+  font-size: 14px;
+}
+
+@media (width <= 700px) {
+  .comparison {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

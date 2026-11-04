@@ -1,0 +1,190 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-avatar 9.11.9 at reference ee9b499.
+ * Local source: [useAvatarGroupPopoverStyles.styles.raw.js](../../../node_modules/@fluentui/react-avatar/lib/components/AvatarGroupPopover/useAvatarGroupPopoverStyles.styles.raw.js).
+ * Source: https://unpkg.com/@fluentui/react-avatar@9.11.9/lib/components/AvatarGroupPopover/useAvatarGroupPopoverStyles.styles.raw.js
+ * Tooltip content reuses the completed TooltipStyles visual slot adapter and CSS foundation.
+ * Glyph: @fluentui/react-icons 2.0.343,
+ * [useIconStyles.styles.raw.js](../../../node_modules/@fluentui/react-icons/lib/utils/useIconStyles.styles.raw.js),
+ * [createFluentIcon.styles.raw.js](../../../node_modules/@fluentui/react-icons/lib/utils/createFluentIcon.styles.raw.js).
+ * Native Popover/Trigger behavior remains in the current public renderer.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .AvatarGroupPopover__content {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .AvatarGroupPopover__popoverSurface[data-avatar-group-surface] {
+    max-height: 220px;
+    min-height: 80px;
+    overflow: hidden scroll;
+    padding: var(--spacingVerticalS) var(--spacingHorizontalS);
+    width: 220px;
+
+    /* Family padding must survive repeated size-specific foundation selectors. */
+    &[data-size] {
+      padding: var(--spacingVerticalS) var(--spacingHorizontalS);
+    }
+  }
+
+  .AvatarGroupPopover__triggerButton {
+    display: inline-flex;
+    position: relative;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    color: var(--colorNeutralForeground1);
+    background-color: var(--colorNeutralBackground1);
+    border: var(--strokeWidthThin) solid var(--colorNeutralStroke1);
+    border-radius: var(--borderRadiusCircular);
+    padding: 0;
+
+    /* Match color to Avatar's outline color. */
+    @media (forced-colors: active) {
+      border-color: CanvasText;
+    }
+
+    &[data-size='36'],
+    &[data-size='40'],
+    &[data-size='48'] {
+      border-width: var(--strokeWidthThick);
+    }
+
+    &[data-size='56'],
+    &[data-size='64'] {
+      border-width: var(--strokeWidthThicker);
+    }
+
+    &[data-size='72'],
+    &[data-size='96'],
+    &[data-size='120'],
+    &[data-size='128'] {
+      border-width: var(--strokeWidthThickest);
+    }
+
+    &[data-indicator='count'] {
+      font-family: var(--fontFamilyBase);
+      font-size: var(--fontSizeBase300);
+      font-weight: var(--fontWeightSemibold);
+      line-height: var(--lineHeightBase300);
+
+      &[data-size='16'],
+      &[data-size='20'],
+      &[data-size='24'] {
+        font-size: var(--fontSizeBase100);
+        line-height: var(--lineHeightBase100);
+      }
+
+      &[data-size='28'] {
+        font-size: var(--fontSizeBase200);
+        line-height: var(--lineHeightBase200);
+      }
+
+      &[data-size='48'],
+      &[data-size='56'] {
+        font-size: var(--fontSizeBase400);
+        line-height: var(--lineHeightBase400);
+      }
+
+      &[data-size='64'],
+      &[data-size='72'],
+      &[data-size='96'] {
+        font-size: var(--fontSizeBase500);
+        line-height: var(--lineHeightBase500);
+      }
+
+      &[data-size='120'],
+      &[data-size='128'] {
+        font-size: var(--fontSizeBase600);
+        line-height: var(--lineHeightBase600);
+      }
+    }
+
+    &[data-indicator='icon'] {
+      font-size: 20px;
+
+      &[data-size='16'] {
+        font-size: 12px;
+      }
+
+      &[data-size='20'],
+      &[data-size='24'] {
+        font-size: 16px;
+      }
+
+      &[data-size='48'] {
+        font-size: 24px;
+      }
+
+      &[data-size='56'] {
+        font-size: 28px;
+      }
+
+      &[data-size='64'],
+      &[data-size='72'] {
+        font-size: 32px;
+      }
+
+      &[data-size='96'],
+      &[data-size='120'],
+      &[data-size='128'] {
+        font-size: 48px;
+      }
+    }
+
+    &:not([data-layout='pie']) {
+      &:hover {
+        color: var(--colorNeutralForeground1Hover);
+        background-color: var(--colorNeutralBackground1Hover);
+        border-color: var(--colorNeutralStroke1Hover);
+      }
+
+      &:active {
+        color: var(--colorNeutralForeground1Pressed);
+        background-color: var(--colorNeutralBackground1Pressed);
+        border-color: var(--colorNeutralStroke1Pressed);
+      }
+
+      &[data-open] {
+        color: var(--colorNeutralForeground1Selected);
+        background-color: var(--colorNeutralBackground1Selected);
+        border-color: var(--colorNeutralStroke1Selected);
+      }
+    }
+
+    &[data-layout='pie'] {
+      background-color: var(--colorTransparentBackground);
+      border-color: var(--colorTransparentStroke);
+      color: transparent;
+    }
+
+    &:focus-visible {
+      border: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+      outline-style: none;
+    }
+  }
+
+  .AvatarGroupPopover__glyph {
+    display: inline;
+    line-height: 0;
+    width: 1em;
+    height: 1em;
+
+    /* SVGs otherwise preserve internally defined colors in high-contrast mode. */
+    @media (forced-colors: active) {
+      forced-color-adjust: auto;
+    }
+  }
+}

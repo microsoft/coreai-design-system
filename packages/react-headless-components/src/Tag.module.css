@@ -1,0 +1,238 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported directly from @fluentui/react-tags 9.9.8.
+ * Local source: [useTagStyles.styles.raw.js](../../../node_modules/@fluentui/react-tags/lib/components/Tag/useTagStyles.styles.raw.js).
+ * Source: https://unpkg.com/@fluentui/react-tags@9.9.8/lib/components/Tag/useTagStyles.styles.raw.js
+ * CoreAI provenance: [Tag.styles.ts](../../react-components/src/components/Tag.styles.ts);
+ * its defaults-gated text override is in TagVisual.overrides.module.css.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ * Focus uses native :focus-visible instead of legacy focus attributes. No motion is defined upstream.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Tag {
+    composes: TagVisual from './TagVisual.module.css';
+
+    /* Reset default button style. */
+    font-family: inherit;
+    padding: 0;
+    appearance: button;
+    text-align: unset;
+    display: inline-grid;
+    align-items: center;
+    grid-template-areas:
+      'media primary dismissIcon'
+      'media secondary dismissIcon';
+    box-sizing: border-box;
+    width: fit-content;
+    border: var(--strokeWidthThin) solid var(--colorTransparentStroke);
+    border-radius: var(--borderRadiusMedium);
+    height: 32px;
+    background-color: var(--colorNeutralBackground3);
+    color: var(--colorNeutralForeground2);
+
+    &:focus-visible {
+      outline: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+    }
+
+    &[data-shape='circular'] {
+      border-radius: var(--borderRadiusCircular);
+    }
+
+    &[data-size='small'] {
+      height: 24px;
+    }
+
+    &[data-size='extra-small'] {
+      position: relative;
+      height: 20px;
+
+      /* Increase clickable area to meet WCAG 2.2 AA.
+       * https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html
+       */
+      @media (forced-colors: none) {
+        &::before,
+        &::after {
+          content: '';
+          position: absolute;
+          height: 2px;
+          inset-inline-start: 0;
+          width: 100%;
+        }
+
+        &::before {
+          bottom: 100%;
+        }
+
+        &::after {
+          top: 100%;
+        }
+      }
+    }
+
+    /* Styles for Tag without leading media/icon or a dismiss slot. */
+    &:not([data-has-media]) {
+      padding-inline-start: var(--fui-tag-spacing);
+    }
+
+    &:not([data-has-dismiss]) {
+      padding-inline-end: var(--fui-tag-spacing);
+    }
+
+    &[data-appearance='outline'] {
+      background-color: var(--colorSubtleBackground);
+      border-color: var(--colorNeutralStroke1);
+    }
+
+    &[data-appearance='brand'] {
+      background-color: var(--colorBrandBackground2);
+      color: var(--colorBrandForeground2);
+    }
+
+    &[data-selected]:not([data-disabled]) {
+      background-color: var(--colorBrandBackground);
+      color: var(--colorNeutralForegroundOnBrand);
+      border-color: var(--colorBrandStroke1);
+
+      @media (forced-colors: active) {
+        forced-color-adjust: none;
+        background-color: Highlight;
+        color: HighlightText;
+      }
+    }
+
+    &[data-disabled] {
+      cursor: not-allowed;
+      background-color: var(--colorNeutralBackgroundDisabled);
+      color: var(--colorNeutralForegroundDisabled);
+      border-color: var(--colorTransparentStrokeDisabled);
+
+      &[data-appearance='outline'] {
+        background-color: var(--colorSubtleBackground);
+        border-color: var(--colorNeutralStrokeDisabled);
+      }
+    }
+
+    /* Pseudo element to draw the border for Windows high contrast mode:
+     * with secondary text, primary text has a negative margin that covers the border.
+     */
+    @media (forced-colors: active) {
+      position: relative;
+
+      &::before {
+        content: '';
+        border-top: var(--strokeWidthThin) solid;
+        position: absolute;
+        inset: -1px;
+        border-start-start-radius: var(--borderRadiusMedium);
+        border-start-end-radius: var(--borderRadiusMedium);
+      }
+
+      &[data-shape='circular']::before {
+        border-inline: var(--strokeWidthThin) solid;
+        border-radius: var(--borderRadiusCircular);
+      }
+    }
+  }
+
+  .Tag__icon {
+    grid-area: media;
+    display: flex;
+    box-sizing: content-box;
+    padding-inline-start: var(--fui-tag-spacing);
+    padding-inline-end: var(--fui-tag-icon-spacing);
+    width: var(--fui-tag-icon-size);
+    font-size: var(--fui-tag-icon-size);
+  }
+
+  .Tag__media {
+    grid-area: media;
+    display: flex;
+    padding-inline-start: 1px;
+    padding-inline-end: var(--fui-tag-media-spacing);
+  }
+
+  .Tag__primaryText {
+    white-space: nowrap;
+    padding-inline: var(--spacingHorizontalXXS);
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+    grid-column-start: primary;
+    grid-row-start: primary;
+    grid-row-end: secondary;
+    padding-bottom: var(--spacingHorizontalXXS);
+
+    &[data-size='small'],
+    &[data-size='extra-small'] {
+      font-size: var(--fontSizeBase200);
+      line-height: var(--lineHeightBase200);
+    }
+
+    &[data-has-secondary-text] {
+      grid-area: primary;
+      font-size: var(--fontSizeBase200);
+      line-height: var(--lineHeightBase200);
+      margin-top: -2px;
+      padding-bottom: 0;
+    }
+  }
+
+  .Tag__secondaryText {
+    grid-area: secondary;
+    padding-inline: var(--spacingHorizontalXXS);
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase100);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase100);
+    white-space: nowrap;
+  }
+
+  .Tag__dismissIcon {
+    grid-area: dismissIcon;
+    display: flex;
+    padding-inline-start: var(--fui-tag-icon-spacing);
+    padding-inline-end: var(--fui-tag-spacing);
+    font-size: var(--fui-tag-icon-size);
+
+    &:not([data-disabled]) {
+      &:hover {
+        cursor: pointer;
+        color: var(--colorCompoundBrandForeground1Hover);
+      }
+
+      &:active {
+        color: var(--colorCompoundBrandForeground1Pressed);
+      }
+
+      &[data-selected]:is(:hover, :active) {
+        color: var(--colorNeutralForegroundOnBrand);
+      }
+    }
+
+    /* Windows high contrast. */
+    @media (forced-colors: active) {
+      &:hover,
+      &:active {
+        color: Highlight;
+      }
+    }
+  }
+
+  .Tag__glyph {
+    display: inline;
+    line-height: 0;
+
+    /* Match the original icon's high-contrast color inheritance. */
+    @media (forced-colors: active) {
+      forced-color-adjust: auto;
+    }
+  }
+}

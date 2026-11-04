@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-color-picker 9.3.3.
+ * Local source: [useColorPickerStyles.styles.raw.js](../../../node_modules/@fluentui/react-color-picker/lib/components/ColorPicker/useColorPickerStyles.styles.raw.js).
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot */
+  .ColorPicker {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacingVerticalXS);
+  }
+}

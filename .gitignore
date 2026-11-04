@@ -43,3 +43,6 @@ apps/*/dist/
 # agent files
 .playwright*
 .vitest-attachments/
+
+# Browser test failure screenshots
+__screenshots__/

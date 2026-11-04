@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-combobox 9.17.7.
+ * Local source: [useOptionGroupStyles.styles.raw.js](../../../node_modules/@fluentui/react-combobox/lib/components/OptionGroup/useOptionGroupStyles.styles.raw.js).
+ * CoreAI has no OptionGroup style override.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .OptionGroup {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--spacingHorizontalXXS);
+
+    &:not(:last-child)::after {
+      content: '';
+      border-bottom: var(--strokeWidthThin) solid var(--colorNeutralStroke2);
+      display: block;
+      padding-bottom: var(--spacingHorizontalXS);
+      margin: 0 calc(var(--spacingHorizontalXS) * -1) var(--spacingVerticalXS);
+    }
+  }
+
+  .OptionGroup__label {
+    border-radius: var(--borderRadiusMedium);
+    color: var(--colorNeutralForeground3);
+    display: block;
+    font-size: var(--fontSizeBase200);
+    font-weight: var(--fontWeightSemibold);
+    line-height: var(--lineHeightBase200);
+    padding: var(--spacingHorizontalS) var(--spacingHorizontalSNudge);
+  }
+}

@@ -1,0 +1,38 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-combobox 9.17.7.
+ * Local source: [useListboxStyles.styles.raw.js](../../../node_modules/@fluentui/react-combobox/lib/components/Listbox/useListboxStyles.styles.raw.js).
+ * CoreAI has no Listbox style override. The public headless 0.3.2 facade owns native popovers.
+ * Closed popovers retain the UA display:none; only open or explicitly inline listboxes use flex.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Listbox {
+    background-color: var(--colorNeutralBackground1);
+    box-sizing: border-box;
+    flex-direction: column;
+    min-width: 160px;
+    overflow-y: auto;
+    outline: 1px solid var(--colorTransparentStroke);
+    padding: var(--spacingHorizontalXS);
+    row-gap: var(--spacingHorizontalXXS);
+
+    &:not([popover]),
+    &:popover-open {
+      display: flex;
+    }
+
+    &[popover] {
+      /* Native popovers have a UA border and text color that ordinary divs do not. */
+      border: none;
+      color: inherit;
+    }
+  }
+}

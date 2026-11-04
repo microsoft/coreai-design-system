@@ -1,0 +1,101 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten comparison layout and unlayered consumer examples, not an upstream style port.
+ */
+
+.examples {
+  display: grid;
+  gap: 20px;
+  max-width: 1180px;
+  overflow-x: auto;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) repeat(2, 280px);
+  align-items: start;
+  gap: 20px;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 260px;
+  min-height: 48px;
+}
+
+.vertical {
+  height: 160px;
+}
+
+.icon {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.content {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.consumerDivider {
+  border-color: rgb(30 100 130);
+  margin-block: 18px;
+
+  &[aria-orientation='horizontal'] {
+    border-top-width: 3px;
+  }
+
+  &[aria-orientation='vertical'] {
+    border-inline-end-width: 3px;
+  }
+}
+
+.consumerLabeled {
+  color: rgb(30 100 130);
+  font-size: 18px;
+  line-height: 24px;
+
+  &::before,
+  &::after {
+    border-color: rgb(30 100 130);
+    border-width: 3px;
+  }
+}
+
+.consumerWrapper {
+  font-weight: 600;
+  padding-inline: 6px;
+}
+
+.report {
+  display: block;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+  margin-block: 16px;
+}
+
+.playground {
+  display: grid;
+  gap: 16px;
+  max-width: 560px;
+}
+
+.playgroundFrame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

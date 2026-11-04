@@ -1,0 +1,32 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-card 9.7.4, useCardPreviewStyles.styles.ts.
+ * Local source: [useCardPreviewStyles.styles.raw.js](../../../node_modules/@fluentui/react-card/lib/components/CardPreview/useCardPreviewStyles.styles.raw.js).
+ * CoreAI re-exports CardPreview without additional defaults or style overrides at reference commit 53ebde2.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .CardPreview {
+    position: relative;
+
+    & > :not(.CardPreview__logo) {
+      display: block;
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  .CardPreview__logo {
+    position: absolute;
+    inset-block-end: 12px;
+    inset-inline-start: 12px;
+    width: 32px;
+    height: 32px;
+  }
+}

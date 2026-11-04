@@ -1,0 +1,41 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI sources: [Dialog.styles.ts](../../react-components/src/components/Dialog.styles.ts)
+ * and [Overlay.styles.ts](../../react-components/src/components/Overlay.styles.ts),
+ * reference commit 1cabc6b. There are no CoreAI Dialog prop defaults.
+ * Fluent baseline: @fluentui/react-dialog 9.18.6,
+ * [useDialogSurfaceStyles.styles.raw.js](../../../node_modules/@fluentui/react-dialog/lib/components/DialogSurface/useDialogSurfaceStyles.styles.raw.js)
+ * and [useDialogBodyStyles.styles.raw.js](../../../node_modules/@fluentui/react-dialog/lib/components/DialogBody/useDialogBodyStyles.styles.raw.js).
+ * Native DialogSurface now owns the grid and the divider previously owned by
+ * legacy DialogBody. The overlay's obsolete first-div beak selector is omitted:
+ * native dialogs have no Popper arrow or backdrop DOM element.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .DialogSurface {
+    /* Mimic the way Card spacing is handled. */
+    --fui-Dialog--spacing: var(--spacingHorizontalL);
+    --fui-Dialog--gap: var(--fui-Dialog--spacing);
+
+    padding: var(--fui-Dialog--spacing);
+    gap: var(--fui-Dialog--spacing);
+    border: var(--strokeWidthThin) solid var(--colorNeutralStroke3);
+
+    /* A divider between the scrollable body and DialogActions. */
+    &::before {
+      content: '';
+      grid-area: -2 / 1 / -2 / -1;
+      align-self: end;
+      margin-inline: calc(-1 * var(--fui-Dialog--spacing));
+      height: 0;
+      border-block-end: var(--strokeWidthThin) solid var(--colorNeutralStrokeSubtle);
+      pointer-events: none;
+    }
+  }
+}

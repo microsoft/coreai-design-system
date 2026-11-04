@@ -1,0 +1,112 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-breadcrumb 9.4.8, useBreadcrumbButtonStyles.styles.raw.js.
+ * Local source: [useBreadcrumbButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-breadcrumb/lib/components/BreadcrumbButton/useBreadcrumbButtonStyles.styles.raw.js).
+ * Inherited baseline: @fluentui/react-button 9.11.1,
+ * [useButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-button/lib/components/Button/useButtonStyles.styles.raw.js).
+ * The existing [Button.module.css](./Button.module.css) supplies that baseline through CSS Modules composition.
+ * CoreAI has no BreadcrumbButton overrides or defaults; the CoreAI Button override is not delegated.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ * Native :focus-visible, logical RTL spacing, forced-colors, reduced-motion, and the Firefox focus fix
+ * come from the reused Button foundation.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .BreadcrumbButton {
+    composes: Button from './Button.module.css';
+
+    /* Composition repeats Button rules in later sheets; family choices must win by specificity. */
+    &[data-size][data-appearance='subtle'] {
+      min-width: unset;
+      text-wrap: nowrap;
+      font-weight: var(--fontWeightRegular);
+
+      &[data-icon-only] {
+        min-width: unset;
+      }
+
+      &[data-size='small'] {
+        --fui-Breadcrumb--icon-size: 12px;
+        --fui-Breadcrumb--icon-line-height: var(--lineHeightBase200);
+
+        height: 24px;
+        font-size: var(--fontSizeBase200);
+        line-height: var(--lineHeightBase200);
+        padding: var(--spacingHorizontalSNudge);
+      }
+
+      &[data-size='medium'] {
+        --fui-Breadcrumb--icon-size: 16px;
+        --fui-Breadcrumb--icon-line-height: var(--lineHeightBase400);
+
+        height: 32px;
+        font-size: var(--fontSizeBase300);
+        line-height: var(--lineHeightBase300);
+        padding: var(--spacingHorizontalSNudge);
+      }
+
+      &[data-size='large'] {
+        --fui-Breadcrumb--icon-size: 20px;
+        --fui-Breadcrumb--icon-line-height: var(--lineHeightBase600);
+
+        height: 40px;
+        font-size: var(--fontSizeBase400);
+        line-height: var(--lineHeightBase400);
+        padding: var(--spacingHorizontalS);
+      }
+
+      &[data-current] {
+        font-weight: var(--fontWeightSemibold);
+
+        &:hover,
+        &:hover:active,
+        &:disabled {
+          background-color: var(--colorTransparentBackground);
+          color: var(--colorNeutralForeground2);
+          cursor: auto;
+
+          & > .BreadcrumbButton__icon {
+            color: unset;
+          }
+        }
+      }
+    }
+
+    &[data-size][data-icon-position='before'] > .BreadcrumbButton__icon {
+      /* The composed Button margin rule also reads this variable. Breadcrumb keeps XS at every size. */
+      --fui-button-icon-spacing: var(--spacingHorizontalXS);
+
+      font-size: var(--fui-Breadcrumb--icon-size);
+      height: var(--fui-Breadcrumb--icon-size);
+      line-height: var(--fui-Breadcrumb--icon-line-height);
+      width: var(--fui-Breadcrumb--icon-size);
+      margin-inline-end: var(--spacingHorizontalXS);
+    }
+  }
+
+  .BreadcrumbButton__icon {
+    composes: Button__icon from './Button.module.css';
+  }
+}
+
+/* Existing Fluent icon bundles have unlayered display rules, as does the reused Button adapter.
+ * Current-page breadcrumbs keep regular glyphs even while hovered or disabled.
+ * Keep upstream hover:active specificity above Button's active:focus-visible alternative.
+ */
+.BreadcrumbButton[data-current][data-size][data-appearance='subtle'] {
+  &:is(:hover, :hover:active, :disabled) > .BreadcrumbButton__icon {
+    :global(.fui-Icon-filled) {
+      display: none;
+    }
+
+    :global(.fui-Icon-regular) {
+      display: inline;
+    }
+  }
+}

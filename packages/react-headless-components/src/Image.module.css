@@ -1,0 +1,82 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported directly from @fluentui/react-image 9.4.6, useImageStyles.styles.raw.js.
+ * Local source: [useImageStyles.styles.raw.js](../../../node_modules/@fluentui/react-image/lib/components/Image/useImageStyles.styles.raw.js).
+ * Source: https://unpkg.com/@fluentui/react-image@9.4.6/lib/components/Image/useImageStyles.styles.raw.js
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ * Native :dir() preserves Griffel's RTL object-position adjustment.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Image {
+    /* Base styles */
+    border-color: var(--colorNeutralStroke1);
+    border-radius: var(--borderRadiusNone);
+    box-sizing: border-box;
+    display: inline-block;
+
+    /* Bordered styles */
+    &[data-bordered] {
+      border-style: solid;
+      border-width: var(--strokeWidthThin);
+    }
+
+    /* Shape variations */
+    &[data-shape='circular'] {
+      border-radius: var(--borderRadiusCircular);
+    }
+
+    &[data-shape='rounded'] {
+      border-radius: var(--borderRadiusMedium);
+    }
+
+    /* Shadow styles */
+    &[data-shadow] {
+      box-shadow: var(--shadow4);
+    }
+
+    /* Fit variations */
+    &[data-fit='center'] {
+      object-fit: none;
+      object-position: center;
+    }
+
+    &[data-fit='contain'] {
+      object-fit: contain;
+      object-position: center;
+    }
+
+    &[data-fit='cover'] {
+      object-fit: cover;
+      object-position: center;
+    }
+
+    &[data-fit='none'] {
+      object-fit: none;
+      object-position: left top;
+
+      &:dir(rtl) {
+        object-position: right top;
+      }
+    }
+
+    /* When no explicit height/width props are provided, apply full-size
+     * sizing so fit modes behave as intended (object-fit fills the element).
+     */
+    &[data-fit-fill] {
+      height: 100%;
+      width: 100%;
+    }
+
+    /* Block styles */
+    &[data-block] {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,25 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported directly from @fluentui/react-tag-picker 9.10.5.
+ * Local source: [useTagPickerListStyles.styles.raw.js](../../../node_modules/@fluentui/react-tag-picker/lib/components/TagPickerList/useTagPickerListStyles.styles.raw.js).
+ * Inherited source: [useListboxStyles.styles.raw.js](../../../node_modules/@fluentui/react-combobox/lib/components/Listbox/useListboxStyles.styles.raw.js)
+ * in @fluentui/react-combobox 9.17.7, reused through the completed Listbox slot adapter.
+ * CoreAI has no TagPickerList defaults or style overrides. Public headless 0.3.2 owns native
+ * closed-popover hiding, top-layer placement, CSS anchors and dismissal; no Portal is restored.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .TagPickerList {
+    box-shadow: var(--shadow16);
+    border-radius: var(--borderRadiusMedium);
+    max-height: 80vh;
+    box-sizing: border-box;
+  }
+}

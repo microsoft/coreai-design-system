@@ -1,0 +1,114 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-link 9.8.6, useLinkStyles.styles.ts.
+ * Local source: [useLinkStyles.styles.raw.js](../../../node_modules/@fluentui/react-link/lib/components/Link/useLinkStyles.styles.raw.js).
+ * Glyph baseline: @fluentui/react-icons 2.0.343
+ * [useIconStyles.styles.raw.js](../../../node_modules/@fluentui/react-icons/lib/utils/useIconStyles.styles.raw.js).
+ * Native :focus-visible replaces the legacy focus-visibility machinery.
+ * Logical text alignment preserves Griffel's RTL flipping.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Common styles. */
+  .Link {
+    --fui-Link-color: var(--colorBrandForegroundLink);
+    --fui-Link-color-hover: var(--colorBrandForegroundLinkHover);
+    --fui-Link-color-pressed: var(--colorBrandForegroundLinkPressed);
+
+    background-color: transparent;
+    box-sizing: border-box;
+    color: var(--fui-Link-color);
+    cursor: pointer;
+    display: inline;
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    margin: 0;
+    padding: 0;
+    overflow: inherit;
+    text-align: start;
+    text-decoration-line: none;
+    text-decoration-thickness: var(--strokeWidthThin);
+    text-overflow: inherit;
+    user-select: text;
+
+    /* Overrides when the Link renders as a button. */
+    &:is(button) {
+      border-style: none;
+    }
+
+    /* Overrides when an href is present so the Link renders as an anchor. */
+    &[data-has-href] {
+      font-size: inherit;
+    }
+
+    /* Overrides when the Link appears subtle. */
+    &[data-appearance='subtle'] {
+      --fui-Link-color: var(--colorNeutralForeground2Link);
+      --fui-Link-color-hover: var(--colorNeutralForeground2LinkHover);
+      --fui-Link-color-pressed: var(--colorNeutralForeground2LinkPressed);
+    }
+
+    &[data-background-appearance='inverted'] {
+      --fui-Link-color: var(--colorBrandForegroundInverted);
+      --fui-Link-color-hover: var(--colorBrandForegroundInverted);
+      --fui-Link-color-pressed: var(--colorBrandForegroundInverted);
+    }
+
+    &[data-background-appearance='brand'] {
+      --fui-Link-color: var(--colorNeutralForegroundInvertedLink);
+      --fui-Link-color-hover: var(--colorNeutralForegroundInvertedLinkHover);
+      --fui-Link-color-pressed: var(--colorNeutralForegroundInvertedLinkPressed);
+    }
+
+    /* Overrides when the Link is rendered inline within text. */
+    &[data-inline] {
+      text-decoration-line: underline;
+    }
+
+    &:not([data-disabled]):hover {
+      text-decoration-line: underline;
+      color: var(--fui-Link-color-hover);
+    }
+
+    &:not([data-disabled]):active {
+      text-decoration-line: underline;
+      color: var(--fui-Link-color-pressed);
+    }
+
+    /* Overrides when the Link is disabled. */
+    &[data-disabled] {
+      text-decoration-line: none;
+      color: var(--colorNeutralForegroundDisabled);
+      cursor: not-allowed;
+
+      /* There is no native disabled state for links, so explicitly style high contrast mode. */
+      @media (forced-colors: active) {
+        color: GrayText;
+      }
+    }
+
+    /* Disabled-focusable links retain a visible keyboard focus indicator. */
+    &:focus-visible {
+      text-decoration-color: var(--colorStrokeFocus2);
+      text-decoration-line: underline;
+      text-decoration-style: double;
+      outline-style: none;
+
+      @media (forced-colors: active) {
+        text-decoration-color: CanvasText;
+      }
+    }
+  }
+
+  .Link__externalIcon {
+    display: inline;
+    line-height: 0;
+  }
+}

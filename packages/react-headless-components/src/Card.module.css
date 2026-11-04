@@ -1,0 +1,338 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-card 9.7.4, useCardStyles.styles.ts.
+ * Local source: [useCardStyles.styles.raw.js](../../../node_modules/@fluentui/react-card/lib/components/Card/useCardStyles.styles.raw.js).
+ * Inherited focus reference: [createFocusOutlineStyle.js](../../../node_modules/@fluentui/react-tabster/lib/focus/createFocusOutlineStyle.js), @fluentui/react-tabster 9.26.19.
+ * Native :focus-visible replaces Tabster focus attributes and pseudo-border focus machinery.
+ * CoreAI deviations: [Card.styles.ts](../../react-components/src/components/Card.styles.ts) and [Card.tsx](../../react-components/src/components/Card.tsx), reference commit 53ebde2.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Card {
+    overflow: hidden;
+    border-radius: var(--fui-Card--border-radius);
+    padding: var(--fui-Card--size);
+    gap: var(--fui-Card--size);
+    display: flex;
+    position: relative;
+    box-sizing: border-box;
+    color: var(--colorNeutralForeground1);
+
+    /* Border setting using after pseudo element to allow CardPreview to render behind it. */
+    &::after {
+      position: absolute;
+      inset: 0;
+      content: '';
+      pointer-events: none;
+      border: var(--strokeWidthThin) solid var(--colorTransparentStroke);
+      border-radius: var(--fui-Card--border-radius);
+    }
+
+    /* Prevents CardHeader and CardFooter from shrinking. */
+    & > :global(.fui-CardHeader),
+    & > :global(.fui-CardFooter) {
+      flex-shrink: 0;
+    }
+
+    &[data-size='small'] {
+      --fui-Card--size: 8px;
+      --fui-Card--border-radius: var(--borderRadiusSmall);
+    }
+
+    &[data-size='medium'] {
+      --fui-Card--size: 12px;
+      --fui-Card--border-radius: var(--borderRadiusMedium);
+    }
+
+    &[data-size='large'] {
+      --fui-Card--size: 16px;
+      --fui-Card--border-radius: var(--borderRadiusLarge);
+    }
+
+    &[data-orientation='horizontal'] {
+      flex-direction: row;
+      align-items: center;
+
+      /* Remove vertical padding to keep CardPreview content flush with Card's borders. */
+      & > :global(.fui-CardPreview) {
+        margin-block: calc(var(--fui-Card--size) * -1);
+      }
+
+      /* Native cards do not inject Tabster's hidden groupper elements. */
+      & > :global(.fui-CardPreview):first-of-type {
+        margin-inline-start: calc(var(--fui-Card--size) * -1);
+      }
+
+      & > :global(.fui-CardPreview):last-of-type {
+        margin-inline-end: calc(var(--fui-Card--size) * -1);
+      }
+
+      /* If the last child is a CardHeader or CardFooter, allow it to grow to fill the available space. */
+      & > :global(.fui-CardHeader):last-of-type,
+      & > :global(.fui-CardFooter):last-of-type {
+        flex-grow: 1;
+      }
+    }
+
+    &[data-orientation='vertical'] {
+      flex-direction: column;
+
+      /* Remove lateral padding to keep CardPreview content flush with Card's borders. */
+      & > :global(.fui-CardPreview) {
+        margin-inline: calc(var(--fui-Card--size) * -1);
+      }
+
+      /* Native cards do not inject Tabster's hidden groupper elements. */
+      & > :global(.fui-CardPreview):first-of-type,
+      & > .Card__floatingAction + :global(.fui-CardPreview) {
+        margin-block-start: calc(var(--fui-Card--size) * -1);
+      }
+
+      & > :global(.fui-CardPreview):last-of-type {
+        margin-block-end: calc(var(--fui-Card--size) * -1);
+      }
+    }
+
+    &[data-interactive]:not([data-coreai-defaults]) :global(.fui-Text) {
+      color: currentcolor;
+    }
+
+    &[data-appearance='filled'] {
+      background-color: var(--colorNeutralBackground1);
+      box-shadow: var(--shadow4);
+
+      &[data-interactive] {
+        cursor: pointer;
+
+        &:hover {
+          color: var(--colorNeutralForeground1Hover);
+          background-color: var(--colorNeutralBackground1Hover);
+          box-shadow: var(--shadow8);
+        }
+
+        &:active {
+          background-color: var(--colorNeutralBackground1Pressed);
+        }
+      }
+
+      &[data-selected] {
+        background-color: var(--colorNeutralBackground1Selected);
+
+        &:hover {
+          color: var(--colorNeutralForeground1Selected);
+          background-color: var(--colorNeutralBackground1Selected);
+        }
+
+        &[data-interactive]:active {
+          background-color: var(--colorNeutralBackground1Pressed);
+        }
+      }
+    }
+
+    &[data-appearance='filled-alternative'] {
+      background-color: var(--colorNeutralBackground2);
+      box-shadow: var(--shadow4);
+
+      &[data-interactive] {
+        cursor: pointer;
+
+        &:hover {
+          color: var(--colorNeutralForeground2Hover);
+          background-color: var(--colorNeutralBackground2Hover);
+          box-shadow: var(--shadow8);
+        }
+
+        &:active {
+          background-color: var(--colorNeutralBackground2Pressed);
+        }
+      }
+
+      &[data-selected] {
+        background-color: var(--colorNeutralBackground2Selected);
+
+        &:hover {
+          color: var(--colorNeutralForeground2Selected);
+          background-color: var(--colorNeutralBackground2Selected);
+        }
+
+        &[data-interactive]:active {
+          background-color: var(--colorNeutralBackground2Pressed);
+        }
+      }
+    }
+
+    &[data-appearance='outline'] {
+      background-color: var(--colorTransparentBackground);
+      box-shadow: none;
+
+      &::after {
+        border-color: var(--colorNeutralStroke1);
+      }
+
+      &[data-interactive] {
+        cursor: pointer;
+
+        &:hover {
+          color: var(--colorNeutralForeground1Hover);
+          background-color: var(--colorTransparentBackgroundHover);
+
+          &::after {
+            border-color: var(--colorNeutralStroke1Hover);
+          }
+        }
+
+        &:active {
+          background-color: var(--colorTransparentBackgroundPressed);
+
+          &::after {
+            border-color: var(--colorNeutralStroke1Pressed);
+          }
+        }
+      }
+
+      &[data-selected] {
+        background-color: var(--colorTransparentBackgroundSelected);
+
+        &:hover {
+          color: var(--colorNeutralForeground1Selected);
+          background-color: var(--colorTransparentBackgroundSelected);
+        }
+
+        &[data-interactive]:active {
+          background-color: var(--colorTransparentBackgroundPressed);
+        }
+      }
+    }
+
+    &[data-appearance='subtle'] {
+      background-color: var(--colorSubtleBackground);
+      box-shadow: none;
+
+      &[data-interactive] {
+        cursor: pointer;
+
+        &:hover {
+          color: var(--colorNeutralForeground1Hover);
+          background-color: var(--colorSubtleBackgroundHover);
+        }
+
+        &:active {
+          background-color: var(--colorSubtleBackgroundPressed);
+        }
+      }
+
+      &[data-selected] {
+        background-color: var(--colorSubtleBackgroundSelected);
+
+        &:hover {
+          color: var(--colorNeutralForeground1Selected);
+          background-color: var(--colorSubtleBackgroundSelected);
+        }
+
+        &[data-interactive]:active {
+          background-color: var(--colorSubtleBackgroundPressed);
+        }
+      }
+    }
+
+    &[data-selected]::after {
+      border-color: var(--colorNeutralStroke1Selected);
+    }
+
+    &:not([data-disabled]):focus-visible,
+    &:not([data-disabled]):has(> .Card__checkbox:focus-visible) {
+      outline: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+      outline-offset: -2px;
+    }
+
+    &[data-appearance][data-disabled] {
+      cursor: not-allowed;
+      user-select: none;
+      color: var(--colorNeutralForegroundDisabled);
+      background-color: var(--colorNeutralBackgroundDisabled);
+      box-shadow: var(--shadow2);
+      border-color: var(--colorNeutralStrokeDisabled);
+
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: calc(var(--zIndexContent) + 1);
+      }
+
+      &::after {
+        border-color: var(--colorNeutralStrokeDisabled);
+      }
+
+      &:hover,
+      &:active {
+        cursor: not-allowed;
+        color: var(--colorNeutralForegroundDisabled);
+        background-color: var(--colorNeutralBackgroundDisabled);
+        box-shadow: var(--shadow2);
+      }
+
+      &[data-appearance='outline'] {
+        background-color: var(--colorTransparentBackground);
+        box-shadow: none;
+
+        &:hover,
+        &:active {
+          background-color: var(--colorTransparentBackground);
+          box-shadow: none;
+        }
+      }
+    }
+  }
+
+  .Card__floatingAction {
+    position: absolute;
+    inset-block-start: 4px;
+    inset-inline-end: 4px;
+    z-index: var(--zIndexContent);
+  }
+
+  .Card__checkbox {
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media (forced-colors: active) {
+    .Card[data-interactive]::after {
+      border-color: Highlight;
+    }
+
+    .Card[data-appearance][data-interactive]:hover,
+    .Card[data-appearance][data-interactive]:active,
+    .Card[data-appearance][data-selected] {
+      forced-color-adjust: none;
+      background-color: Highlight;
+      color: HighlightText;
+
+      & :global(.fui-CardPreview),
+      & :global(.fui-CardFooter) {
+        forced-color-adjust: auto;
+      }
+
+      &::after {
+        border-color: Highlight;
+      }
+    }
+
+    .Card:not([data-disabled]):focus-visible,
+    .Card:not([data-disabled]):has(> .Card__checkbox:focus-visible) {
+      outline-color: Highlight;
+    }
+  }
+}

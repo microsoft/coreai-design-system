@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-tabs 9.12.6, useTabListStyles.styles.ts.
+ * Local source: [useTabListStyles.styles.raw.js](../../../node_modules/@fluentui/react-tabs/lib/components/TabList/useTabListStyles.styles.raw.js).
+ * Headless behavior: @fluentui/react-headless-components-preview 0.3.2 /tab-list.
+ * See README.md and the repository MIT license (LICENSE-CODE).
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot. */
+  .TabList {
+    display: flex;
+    align-items: stretch;
+    flex-direction: row;
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+    position: relative;
+
+    &[data-orientation='vertical'] {
+      flex-direction: column;
+    }
+
+    &[data-appearance='subtle-circular'],
+    &[data-appearance='filled-circular'],
+    &[data-appearance='elevated'] {
+      gap: var(--spacingHorizontalS);
+
+      &[data-size='small'] {
+        gap: var(--spacingHorizontalSNudge);
+      }
+    }
+  }
+}

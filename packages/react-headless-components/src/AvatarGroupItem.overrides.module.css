@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI source: [Avatar.tsx](../../react-components/src/components/Avatar.tsx), reference ee9b499.
+ * Reused local override: [Avatar.overrides.module.css](./Avatar.overrides.module.css).
+ * Fluent baseline: @fluentui/react-avatar 9.11.9,
+ * [useAvatarStyles.styles.raw.js](../../../node_modules/@fluentui/react-avatar/lib/components/Avatar/useAvatarStyles.styles.raw.js),
+ * [useAvatarGroupItemStyles.styles.raw.js](../../../node_modules/@fluentui/react-avatar/lib/components/AvatarGroupItem/useAvatarGroupItemStyles.styles.raw.js).
+ * Source: https://unpkg.com/@fluentui/react-avatar@9.11.9/lib/components/Avatar/useAvatarStyles.styles.raw.js
+ * Implementation bridge: AvatarGroupItem originally composes Fluent Avatar, whose neutral
+ * background is background6, not standalone CoreAI Avatar's background4. Reusing the local
+ * Avatar requires resetting its CoreAI-owned variable at this composition boundary.
+ * This variable is not an upstream Fluent API. No Avatar foundation is copied.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  /* Resolved-slot specificity survives repeated Avatar foundation selectors. */
+  .AvatarGroupItem > .AvatarGroupItem__avatar[data-color='neutral'] {
+    --coreai-Avatar-background: var(--colorNeutralBackground6);
+  }
+}

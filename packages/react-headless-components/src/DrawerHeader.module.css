@@ -1,0 +1,32 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-drawer 9.13.5:
+ * [useDrawerHeaderStyles.styles.raw.js](../../../node_modules/@fluentui/react-drawer/lib/components/DrawerHeader/useDrawerHeaderStyles.styles.raw.js).
+ * Inherited separator: [drawerSeparatorStyles.js](../../../node_modules/@fluentui/react-drawer/lib/shared/drawerSeparatorStyles.js),
+ * ported once in DrawerSeparators.module.css.
+ * CoreAI reference ebb5a9e has no DrawerHeader overrides or prop defaults.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot */
+  .DrawerHeader {
+    composes: DrawerHeader from './DrawerSeparators.module.css';
+
+    width: 100%;
+    max-width: 100%;
+    padding: var(--spacingVerticalXXL) var(--spacingHorizontalXXL) var(--spacingVerticalS);
+    gap: var(--spacingHorizontalS);
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 2;
+  }
+}

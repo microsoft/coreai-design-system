@@ -1,0 +1,22 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-rating 9.4.7, useRatingStyles.styles.ts.
+ * Local source: [useRatingStyles.styles.raw.js](../../../node_modules/@fluentui/react-rating/lib/components/Rating/useRatingStyles.styles.raw.js).
+ * CoreAI re-exports Fluent Rating without defaults or style overrides:
+ * [index.ts](../../react-components/src/index.ts),
+ * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts).
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot */
+  .Rating {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}

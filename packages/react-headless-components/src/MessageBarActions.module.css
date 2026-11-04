@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-message-bar 9.7.9, useMessageBarActionsStyles.styles.ts.
+ * Local source: [useMessageBarActionsStyles.styles.raw.js](../../../node_modules/@fluentui/react-message-bar/lib/components/MessageBarActions/useMessageBarActionsStyles.styles.raw.js).
+ * CoreAI re-exports MessageBarActions unchanged. The public renderer places containerAction
+ * beside the root; it is not a root descendant. Logical spacing retains Griffel's RTL flipping.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .MessageBarActions {
+    grid-area: secondaryActions;
+    display: flex;
+    column-gap: var(--spacingHorizontalM);
+    padding-inline-end: var(--spacingHorizontalM);
+
+    &[data-layout='multiline'] {
+      justify-content: end;
+      margin-top: var(--spacingVerticalMNudge);
+      margin-bottom: var(--spacingVerticalS);
+      margin-inline-end: 0;
+      padding-inline-end: var(--spacingVerticalM);
+    }
+
+    &:not([data-has-actions]) {
+      display: none;
+    }
+  }
+
+  .MessageBarActions__containerAction {
+    grid-area: actions;
+    padding-inline-end: var(--spacingHorizontalM);
+  }
+}

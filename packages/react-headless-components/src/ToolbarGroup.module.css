@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-toolbar 9.8.7, reference b8337ab.
+ * Local source: [useToolbarGroupStyles.styles.raw.js](../../../node_modules/@fluentui/react-toolbar/lib/components/ToolbarGroup/useToolbarGroupStyles.styles.raw.js).
+ * ToolbarRadioGroup delegates to this exact style hook and has no separate stylesheet.
+ * CoreAI has no ToolbarGroup/ToolbarRadioGroup defaults/override:
+ * [index.ts](../../react-components/src/index.ts), [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts).
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .ToolbarGroup {
+    display: flex;
+    align-items: center;
+
+    &[data-vertical] {
+      flex-direction: column;
+      width: fit-content;
+    }
+  }
+}

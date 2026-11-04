@@ -1,0 +1,69 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten comparison layout and unlayered consumer examples; not a Fluent style port.
+ */
+
+.examples {
+  display: grid;
+  gap: var(--spacingVerticalM);
+  overflow-x: auto;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.65fr) repeat(2, minmax(300px, 1fr));
+  align-items: center;
+  gap: var(--spacingHorizontalL);
+  min-height: 48px;
+}
+
+.row > div {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.consumerRoot {
+  min-height: 46px;
+  max-width: 420px;
+  border-radius: 3px;
+  background-color: rgb(232, 240, 255);
+}
+
+.consumerInput {
+  padding-inline: 18px;
+  color: rgb(32, 48, 96);
+}
+
+.consumerBefore {
+  color: rgb(72, 32, 128);
+}
+
+.consumerAfter {
+  padding-inline-start: 18px;
+  column-gap: 9px;
+}
+
+.consumerDismiss {
+  color: rgb(128, 48, 32);
+  cursor: crosshair;
+}
+
+.report {
+  display: block;
+  max-height: 32rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+  margin-block: var(--spacingVerticalL);
+}
+
+.playground {
+  display: grid;
+  justify-items: start;
+  gap: var(--spacingVerticalM);
+}

@@ -1,0 +1,54 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten RatingDisplay fixture layout and consumer overrides; not an upstream style port.
+ */
+
+.examples {
+  composes: examples from './RatingComparison.module.css';
+}
+
+.row {
+  composes: row from './RatingComparison.module.css';
+}
+
+.cell {
+  composes: cell from './RatingComparison.module.css';
+}
+
+.report {
+  composes: report from './RatingComparison.module.css';
+}
+
+.playground {
+  composes: playground from './RatingComparison.module.css';
+}
+
+.actions {
+  composes: actions from './RatingComparison.module.css';
+}
+
+.consumerRoot {
+  gap: 3px;
+  padding: 5px;
+}
+
+.consumerValue {
+  color: rgb(100, 40, 120);
+  font-size: 18px;
+  line-height: 26px;
+  margin-inline-start: 10px;
+}
+
+.consumerCount {
+  color: rgb(20, 90, 110);
+  font-weight: 600;
+  margin-inline-start: 9px;
+
+  &::before {
+    content: '/ ';
+  }
+}

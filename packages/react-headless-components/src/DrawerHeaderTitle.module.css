@@ -1,0 +1,47 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-drawer 9.13.5:
+ * [useDrawerHeaderTitleStyles.styles.raw.js](../../../node_modules/@fluentui/react-drawer/lib/components/DrawerHeaderTitle/useDrawerHeaderTitleStyles.styles.raw.js).
+ * Actual delegated foundation: @fluentui/react-dialog 9.18.6,
+ * [useDialogTitleStyles.styles.raw.js](../../../node_modules/@fluentui/react-dialog/lib/components/DialogTitle/useDialogTitleStyles.styles.raw.js).
+ * The completed DialogTitle CSS supplies typography on the current native
+ * heading slot. Its remaining inherited grid/action declarations are retained
+ * here without importing legacy DialogTitle, deprecated Text presets, or hooks.
+ * CoreAI reference ebb5a9e has no DrawerHeaderTitle overrides or prop defaults.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot */
+  .DrawerHeaderTitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    column-gap: var(--spacingHorizontalS);
+  }
+
+  .DrawerHeaderTitle__heading {
+    composes: DialogTitle from './DialogTitle.module.css';
+
+    grid-row: 1 / 1;
+    grid-column: 1 / 3;
+  }
+
+  .DrawerHeaderTitle:not([data-has-action]) > .DrawerHeaderTitle__heading {
+    grid-column-end: 4;
+  }
+
+  /* Styles for the action slot */
+  .DrawerHeaderTitle__action {
+    grid-row: 1 / 1;
+    grid-column-start: 3;
+    justify-self: end;
+    align-self: start;
+    margin-inline-end: calc(var(--spacingHorizontalS) * -1);
+  }
+}

@@ -1,0 +1,228 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported directly from @fluentui/react-select 9.5.7, useSelectStyles.styles.raw.js.
+ * Local source: [useSelectStyles.styles.raw.js](../../../node_modules/@fluentui/react-select/lib/components/Select/useSelectStyles.styles.raw.js).
+ * Source: https://unpkg.com/@fluentui/react-select@9.5.7/lib/components/Select/useSelectStyles.styles.raw.js
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ * Horizontal positioning is expressed logically for RTL; focus uses native :focus-within.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Select {
+    --fui-select-icon-size: 20px;
+    /* TODO: Should field heights be a set of global design tokens or constants? */
+    --fui-select-field-height: 32px;
+    --fui-select-outer-padding: var(--spacingHorizontalMNudge);
+    --fui-select-inner-padding: var(--spacingHorizontalXXS);
+
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: nowrap;
+    font-family: var(--fontFamilyBase);
+    position: relative;
+
+    &::after {
+      background-image: linear-gradient(
+        0deg,
+        var(--colorCompoundBrandStroke) 0%,
+        var(--colorCompoundBrandStroke) 50%,
+        transparent 50%,
+        transparent 100%
+      );
+      border-radius: 0 0 var(--borderRadiusMedium) var(--borderRadiusMedium);
+      box-sizing: border-box;
+      content: '';
+      height: var(--borderRadiusMedium);
+      position: absolute;
+      bottom: 0;
+      inset-inline: 0;
+      transform: scaleX(0);
+      transition-property: transform;
+      transition-duration: var(--durationUltraFast);
+      transition-delay: var(--curveAccelerateMid);
+    }
+
+    &:focus-within::after {
+      transform: scaleX(1);
+      transition-property: transform;
+      transition-duration: var(--durationNormal);
+      transition-delay: var(--curveDecelerateMid);
+    }
+
+    &[data-size='small'] {
+      --fui-select-icon-size: 16px;
+      --fui-select-field-height: 24px;
+      --fui-select-outer-padding: var(--spacingHorizontalSNudge);
+
+      .Select__select {
+        font-size: var(--fontSizeBase200);
+        line-height: var(--lineHeightBase200);
+      }
+    }
+
+    &[data-size='large'] {
+      --fui-select-icon-size: 24px;
+      --fui-select-field-height: 40px;
+      --fui-select-outer-padding: var(--spacingHorizontalM);
+      --fui-select-inner-padding: var(--spacingHorizontalSNudge);
+
+      .Select__select {
+        font-size: var(--fontSizeBase400);
+        line-height: var(--lineHeightBase400);
+      }
+    }
+
+    &[data-appearance='outline'] .Select__select {
+      background-color: var(--colorNeutralBackground1);
+      border-color: var(--colorNeutralStroke1);
+      border-bottom-color: var(--colorNeutralStrokeAccessible);
+    }
+
+    &[data-appearance='underline'] .Select__select {
+      background-color: var(--colorTransparentBackground);
+      border-bottom: 1px solid var(--colorNeutralStrokeAccessible);
+      border-radius: 0;
+
+      & option {
+        /* The transparent select bg means the option background must be set so the text is visible in dark themes. */
+        background-color: var(--colorNeutralBackground1);
+      }
+    }
+
+    &[data-appearance='filled-lighter'] .Select__select {
+      background-color: var(--colorNeutralBackground1);
+    }
+
+    &[data-appearance='filled-darker'] .Select__select {
+      background-color: var(--colorNeutralBackground3);
+    }
+
+    &:not([data-disabled]) {
+      &[data-appearance='outline'] .Select__select {
+        &:hover {
+          border-color: var(--colorNeutralStroke1Hover);
+          border-bottom-color: var(--colorNeutralStrokeAccessible);
+        }
+
+        &:active {
+          border-color: var(--colorNeutralStroke1Pressed);
+          border-bottom-color: var(--colorNeutralStrokeAccessible);
+        }
+      }
+
+      &[data-invalid='']:not([data-appearance='underline']) .Select__select {
+        &:not(:focus-within),
+        &:hover:not(:focus-within) {
+          border-color: var(--colorPaletteRedBorder2);
+        }
+      }
+
+      &[data-invalid=''][data-appearance='underline'] .Select__select {
+        &:not(:focus-within),
+        &:hover:not(:focus-within) {
+          border-bottom-color: var(--colorPaletteRedBorder2);
+        }
+      }
+    }
+
+    &[data-disabled] {
+      .Select__select {
+        background-color: var(--colorTransparentBackground);
+        border-color: var(--colorNeutralStrokeDisabled);
+        color: var(--colorNeutralForegroundDisabled);
+        cursor: not-allowed;
+      }
+
+      &[data-appearance='underline'] .Select__select {
+        border-color: var(--colorTransparentStrokeDisabled);
+        border-bottom-color: var(--colorNeutralStrokeDisabled);
+      }
+
+      .Select__icon {
+        color: var(--colorNeutralForegroundDisabled);
+      }
+
+      @media (forced-colors: active) {
+        .Select__select,
+        &[data-appearance='underline'] .Select__select {
+          border-color: GrayText;
+        }
+
+        .Select__icon {
+          color: GrayText;
+        }
+      }
+    }
+
+    @media screen and (prefers-reduced-motion: reduce) {
+      &::after,
+      &:focus-within::after {
+        transition-duration: 0.01ms;
+        transition-delay: 0.01ms;
+      }
+    }
+  }
+
+  .Select__select {
+    appearance: none;
+    border: 1px solid transparent;
+    border-radius: var(--borderRadiusMedium);
+    box-shadow: none;
+    box-sizing: border-box;
+    color: var(--colorNeutralForeground1);
+    cursor: pointer;
+    flex-grow: 1;
+    max-width: 100%;
+    padding-block: 0;
+    height: var(--fui-select-field-height);
+    /* Left padding is calculated from the outer padding + inner content padding values
+     * since <select> can't have additional child content or custom inner layout.
+     */
+    padding-inline-start: calc(var(--fui-select-outer-padding) + var(--fui-select-inner-padding));
+    /* Since the <select> element must span the full width and cannot have children,
+     * the end padding needs to be calculated from the sum of the following:
+     * 1. Field outer padding
+     * 2. Icon width
+     * 3. Content-icon spacing
+     * 4. Content inner padding
+     */
+    padding-inline-end: calc(
+      var(--fui-select-outer-padding) + var(--fui-select-icon-size) +
+        var(--fui-select-inner-padding) + var(--fui-select-inner-padding)
+    );
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+
+    &:focus {
+      outline: 2px solid transparent;
+    }
+  }
+
+  .Select__icon {
+    box-sizing: border-box;
+    color: var(--colorNeutralStrokeAccessible);
+    display: block;
+    position: absolute;
+    pointer-events: none;
+    font-size: var(--fui-select-icon-size);
+    height: var(--fui-select-icon-size);
+    width: var(--fui-select-icon-size);
+    inset-inline-end: var(--fui-select-outer-padding);
+
+    & svg {
+      /* The SVG must have display: block for accurate positioning;
+       * otherwise an extra inline space is inserted after the SVG element.
+       */
+      display: block;
+    }
+  }
+}

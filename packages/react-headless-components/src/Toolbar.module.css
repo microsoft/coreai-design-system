@@ -1,0 +1,37 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-toolbar 9.8.7, reference b8337ab.
+ * Local source: [useToolbarStyles.styles.raw.js](../../../node_modules/@fluentui/react-toolbar/lib/components/Toolbar/useToolbarStyles.styles.raw.js).
+ * CoreAI has no Toolbar wrapper/defaults or style hook:
+ * [index.ts](../../react-components/src/index.ts), [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts).
+ * Native focusgroup navigation is supplied by the current public headless hook.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot */
+  .Toolbar {
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+
+    &[data-vertical] {
+      flex-direction: column;
+      width: fit-content;
+    }
+
+    &[data-size='small']:not([data-vertical]) {
+      padding: 0 4px;
+    }
+
+    &[data-size='large']:not([data-vertical]) {
+      padding: 4px 20px;
+    }
+  }
+}
