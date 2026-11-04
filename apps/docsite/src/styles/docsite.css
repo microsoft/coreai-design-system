@@ -1588,23 +1588,19 @@ code:not(pre code) {
 }
 
 .content-flow {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
 }
 
 .content-step {
-  display: grid;
-  grid-template-columns: 32px minmax(0, 1fr);
-  align-items: start;
-  gap: 16px;
+  min-width: 0;
   padding: 20px;
   border: 1px solid var(--colorNeutralStrokeAlpha);
   border-radius: var(--borderRadiusXLarge);
   background: transparent;
 }
 
-.content-step__number,
 .content-principle__number {
   display: flex;
   align-items: center;
@@ -1758,6 +1754,12 @@ code:not(pre code) {
   flex-direction: column;
   gap: 0;
   padding-left: var(--spacingHorizontalXXL);
+}
+
+@media (max-width: 900px) {
+  .content-flow {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 @media (max-width: 640px) {

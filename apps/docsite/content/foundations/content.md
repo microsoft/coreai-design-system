@@ -62,19 +62,9 @@ Organize content so people can find the main point quickly and use it with any i
 - Use descriptive headings and meaningful link text.
 - Do not rely on color, direction, or one input method to explain an action.
 
-## Before you publish
-
-If the answer to any question is no, keep editing.
-
-- Is the main point first?
-- Is the next action clear?
-- Can I remove any words?
-- Does it sound natural when read aloud?
-- Can everyone understand and use it?
-
 ## Process tips
 
-Move from a realistic first draft to reviewed content in three steps.
+Move from a realistic first draft to reviewed content in four steps.
 
 ### Write real content
 
@@ -87,6 +77,16 @@ Use the Content Design Copilot agent to simplify jargon and move the draft close
 ### Review it in context
 
 Check the content in the full experience, including UI terminology, errors and empty states, and the complete flow or mockup.
+
+### Before you publish
+
+If the answer to any question is no, keep editing.
+
+- Is the main point first?
+- Is the next action clear?
+- Can I remove any words?
+- Does it sound natural when read aloud?
+- Can everyone understand and use it?
 
 ## Get help
 

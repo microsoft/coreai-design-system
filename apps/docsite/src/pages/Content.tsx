@@ -37,6 +37,14 @@ interface Principle {
   details?: string[];
 }
 
+const editingChecklist = [
+  'Is the main point first?',
+  'Is the next action clear?',
+  'Can I remove any words?',
+  'Does it sound natural when read aloud?',
+  'Can everyone understand and use it?',
+];
+
 const contentDesignSteps: ContentStep[] = [
   {
     title: 'Write real content',
@@ -52,6 +60,11 @@ const contentDesignSteps: ContentStep[] = [
     title: 'Review it in context',
     description:
       'Check the content in the full experience, including UI terminology, errors and empty states, and the complete flow or mockup.',
+  },
+  {
+    title: 'Before you publish',
+    description: 'If the answer to any question is no, keep editing.',
+    details: editingChecklist,
   },
 ];
 
@@ -175,14 +188,6 @@ const principles: Principle[] = [
   },
 ];
 
-const editingChecklist = [
-  'Is the main point first?',
-  'Is the next action clear?',
-  'Can I remove any words?',
-  'Does it sound natural when read aloud?',
-  'Can everyone understand and use it?',
-];
-
 function ExampleComparison({ example }: { example: ContentExample }) {
   return (
     <div className="content-example-grid">
@@ -255,9 +260,8 @@ function PrincipleList() {
 function StepList({ steps }: { steps: ContentStep[] }) {
   return (
     <div className="content-flow">
-      {steps.map((step, index) => (
+      {steps.map((step) => (
         <div className="content-step" key={step.title}>
-          <span className="content-step__number">{index + 1}</span>
           <div className="content-step__content">
             <Text as="h3" weight="semibold">
               {step.title}
@@ -310,22 +314,6 @@ function Principles() {
       <section className="page-section content-section">
         <PrincipleList />
       </section>
-
-      <section className="page-section content-section">
-        <SectionHeader
-          title="Before you publish"
-          description="If the answer to any question is no, keep editing."
-        />
-        <ul className="content-publish-checklist">
-          {editingChecklist.map((item) => (
-            <li key={item}>
-              <Text size={300} foreground={3}>
-                {item}
-              </Text>
-            </li>
-          ))}
-        </ul>
-      </section>
     </>
   );
 }
@@ -336,7 +324,7 @@ function Process() {
       <section id="process-tips" className="page-section content-section content-section--primary">
         <SectionHeader
           title="Process tips"
-          description="Move from a realistic first draft to reviewed content in three steps."
+          description="Move from a realistic first draft to reviewed content in four steps."
         />
         <StepList steps={contentDesignSteps} />
       </section>

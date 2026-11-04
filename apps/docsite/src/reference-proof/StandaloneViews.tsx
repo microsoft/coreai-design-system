@@ -851,9 +851,8 @@ function contentSteps(document: Document, sectionId: string): ContentStep[] {
 function ContentStepList({ steps }: { steps: ContentStep[] }) {
   return (
     <div className="content-flow">
-      {steps.map((step, index) => (
+      {steps.map((step) => (
         <div className="content-step" key={step.title}>
-          <span className="content-step__number">{index + 1}</span>
           <div className="content-step__content">
             <Text as="h3" weight="semibold" foreground={1}>
               {step.title}
@@ -925,16 +924,10 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
           .map((item) => item.textContent?.trim() ?? ''),
       };
     });
-    const checklistElements = sectionElements(document, 'guidance-before-you-publish', ['H2']);
     const processElements = sectionElements(document, 'guidance-process-tips', ['H2']);
     const helpElements = sectionElements(document, 'guidance-get-help', ['H2']);
     return {
       principles,
-      checklistDescription:
-        checklistElements.find((element) => element.tagName === 'P')?.textContent?.trim() ?? '',
-      checklist: checklistElements
-        .flatMap((element) => [...element.querySelectorAll('li')])
-        .map((item) => item.textContent?.trim() ?? ''),
       processDescription:
         processElements.find((element) => element.tagName === 'P')?.textContent?.trim() ?? '',
       process: contentSteps(document, 'guidance-process-tips'),
@@ -999,14 +992,6 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
             </AccordionItem>
           ))}
         </Accordion>
-      </section>
-      <section className="page-section content-section">
-        <ContentSectionHeader title="Before you publish" description={model.checklistDescription} />
-        <ul className="content-publish-checklist">
-          {model.checklist.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
       </section>
       <section className="page-section content-section content-section--primary">
         <ContentSectionHeader title="Process tips" description={model.processDescription} />
