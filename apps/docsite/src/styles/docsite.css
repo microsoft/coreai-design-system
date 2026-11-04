@@ -1738,6 +1738,10 @@ code:not(pre code) {
   border: 1px solid color-mix(in srgb, var(--content-example-accent) 25%, transparent);
 }
 
+.content-page .content-example .fui-Badge::after {
+  border: 0;
+}
+
 .content-example__body {
   position: relative;
   width: 100%;

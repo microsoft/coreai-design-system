@@ -965,7 +965,7 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
                   <div className="content-example-grid">
                     <div className="content-example content-example--avoid">
                       <Badge appearance="filled" color="danger" shape="rounded" size="medium">
-                        Bad
+                        Bad example
                       </Badge>
                       <div className="content-example__body">
                         <Text as="p" size={300} foreground={3}>
@@ -975,7 +975,7 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
                     </div>
                     <div className="content-example content-example--prefer">
                       <Badge appearance="filled" color="success" shape="rounded" size="medium">
-                        Better
+                        Better example
                       </Badge>
                       <div className="content-example__body">
                         <Text as="p" size={300} foreground={3}>

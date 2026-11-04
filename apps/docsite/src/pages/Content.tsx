@@ -186,7 +186,7 @@ function ExampleComparison({ example }: { example: ContentExample }) {
     <div className="content-example-grid">
       <div className="content-example content-example--avoid">
         <Badge appearance="filled" color="danger" shape="rounded" size="medium">
-          {example.firstLabel}
+          {example.firstLabel} example
         </Badge>
         <div className="content-example__body">
           <Text as="p" size={300} foreground={3}>
@@ -196,7 +196,7 @@ function ExampleComparison({ example }: { example: ContentExample }) {
       </div>
       <div className="content-example content-example--prefer">
         <Badge appearance="filled" color="success" shape="rounded" size="medium">
-          {example.secondLabel}
+          {example.secondLabel} example
         </Badge>
         <div className="content-example__body">
           <Text as="p" size={300}>

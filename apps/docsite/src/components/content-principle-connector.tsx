@@ -50,17 +50,15 @@ export function ContentPrincipleConnector() {
   return (
     <svg ref={ref} className="content-principle-connector" aria-hidden="true">
       {graph ? (
-        <>
-          <path
-            d={`M ${graph.x} ${graph.start} V ${graph.branches[graph.branches.length - 1].y - 12}`}
-          />
-          {graph.branches.map((branch, index) => (
-            <path
-              key={index}
-              d={`M ${graph.x} ${branch.y - 12} Q ${graph.x} ${branch.y} ${graph.x + 12} ${branch.y} H ${branch.x}`}
-            />
-          ))}
-        </>
+        <path
+          d={[
+            `M ${graph.x} ${graph.start} V ${graph.branches[graph.branches.length - 1].y - 12}`,
+            ...graph.branches.map(
+              (branch) =>
+                `M ${graph.x} ${branch.y - 12} Q ${graph.x} ${branch.y} ${graph.x + 12} ${branch.y} H ${branch.x}`,
+            ),
+          ].join(' ')}
+        />
       ) : null}
     </svg>
   );
