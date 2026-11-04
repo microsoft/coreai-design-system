@@ -1618,6 +1618,10 @@ code:not(pre code) {
   background: transparent;
 }
 
+.content-step--unnumbered {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .content-step__number,
 .content-principle__number {
   display: flex;

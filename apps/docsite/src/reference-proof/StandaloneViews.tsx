@@ -844,12 +844,15 @@ function contentSteps(document: Document, sectionId: string): ContentStep[] {
   );
 }
 
-function ContentStepList({ steps }: { steps: ContentStep[] }) {
+function ContentStepList({ steps, numbered = true }: { steps: ContentStep[]; numbered?: boolean }) {
   return (
     <div className="content-flow">
       {steps.map((step, index) => (
-        <div className="content-step" key={step.title}>
-          <span className="content-step__number">{index + 1}</span>
+        <div
+          className={numbered ? 'content-step' : 'content-step content-step--unnumbered'}
+          key={step.title}
+        >
+          {numbered ? <span className="content-step__number">{index + 1}</span> : null}
           <div className="content-step__content">
             <Text as="h3" weight="semibold" foreground={1}>
               {step.title}
@@ -955,7 +958,6 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
       {view === 'principles' ? (
         <div className="content-principles">
           <section className="page-section content-section">
-            <ContentSectionHeader title="Write clear, useful content" />
             <Accordion className="content-principle-list" multiple collapsible>
               {model.principles.map((principle, index) => (
                 <AccordionItem
@@ -1034,7 +1036,7 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
           </section>
           <section className="page-section content-section">
             <ContentSectionHeader title="Get help" description={model.helpDescription} />
-            <ContentStepList steps={model.help} />
+            <ContentStepList steps={model.help} numbered={false} />
           </section>
         </div>
       )}

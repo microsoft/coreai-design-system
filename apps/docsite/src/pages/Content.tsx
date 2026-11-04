@@ -248,12 +248,15 @@ function PrincipleList() {
   );
 }
 
-function StepList({ steps }: { steps: ContentStep[] }) {
+function StepList({ steps, numbered = true }: { steps: ContentStep[]; numbered?: boolean }) {
   return (
     <div className="content-flow">
       {steps.map((step, index) => (
-        <div className="content-step" key={step.title}>
-          <span className="content-step__number">{index + 1}</span>
+        <div
+          className={numbered ? 'content-step' : 'content-step content-step--unnumbered'}
+          key={step.title}
+        >
+          {numbered ? <span className="content-step__number">{index + 1}</span> : null}
           <div className="content-step__content">
             <Text as="h3" weight="semibold">
               {step.title}
@@ -304,7 +307,6 @@ function Principles() {
   return (
     <div className="content-principles">
       <section className="page-section content-section">
-        <SectionHeader title="Write clear, useful content" />
         <PrincipleList />
       </section>
 
@@ -346,7 +348,7 @@ function Process() {
           title="Get help"
           description="Start with the lightest support option that fits the work. Reach out earlier rather than later."
         />
-        <StepList steps={supportSteps} />
+        <StepList steps={supportSteps} numbered={false} />
       </section>
     </div>
   );
