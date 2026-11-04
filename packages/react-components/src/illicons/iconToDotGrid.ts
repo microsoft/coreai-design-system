@@ -10,17 +10,17 @@ export type IconToDotGridSource =
   string | SVGSVGElement | React.ReactElement<React.SVGProps<SVGSVGElement>> | FluentIcon;
 
 export interface IconToDotGridOptions {
-  /** Grid width in cells, from 1 to 256. Defaults to 24. Prefer native-size multiples for Fluent icons. */
+  /** Source viewBox dimensions times this whole number, from 1 to 256. Defaults to 2. Do not combine with columns/rows. */
+  multiplier?: number;
+  /** Explicit grid width, from 1 to 256; overrides source-relative sampling. */
   columns?: number;
-  /** Grid height in cells, from 1 to 256. Defaults to the source aspect ratio, rounded. */
+  /** Explicit grid height, from 1 to 256. With columns, defaults to the source aspect ratio, rounded. */
   rows?: number;
-  /** Minimum sampled alpha, from 1 to 255. Defaults to 128 (approximately 50% opacity). */
+  /** Minimum raster pixel alpha, from 1 to 255. Defaults to 128 (approximately 50% coverage/opacity). */
   alphaThreshold?: number;
 }
 
 const svgNamespace = 'http://www.w3.org/2000/svg';
-// An odd raster scale puts the sampled pixel exactly at each cell's center.
-const pixelsPerCell = 5;
 const supportedElements = new Set([
   'svg',
   'g',
@@ -178,19 +178,35 @@ function validateInteger(value: number, name: string, maximum: number) {
 /**
  * Browser-only conversion of standalone, static SVG artwork into occupancy.
  * The browser renders shapes, strokes, transforms, and local SVG references.
- * Each cell samples its center, not the average coverage of the whole cell.
+ * By default, grid dimensions are the SVG viewBox dimensions times 2.
+ * For Fluent-based Illicons, prefer native 20px variants at the default 2x.
+ * The canvas has one pixel per output cell; each pixel's alpha determines occupancy.
  * Empty rows and columns are never trimmed. No radius or pitch is stored.
  */
 export async function iconToDotGrid(
   source: IconToDotGridSource,
-  { columns = 24, rows, alphaThreshold = 128 }: IconToDotGridOptions = {},
+  options: IconToDotGridOptions = {},
 ): Promise<DotGridData> {
+  return (await rasterizeIconToDotGrid(source, options)).data;
+}
+
+/** Internal diagnostic entry point; not exported from the package barrel. */
+export async function rasterizeIconToDotGrid(
+  source: IconToDotGridSource,
+  { columns: requestedColumns, rows, multiplier, alphaThreshold = 128 }: IconToDotGridOptions = {},
+): Promise<{ data: DotGridData; canvas: HTMLCanvasElement }> {
   if (typeof document === 'undefined' || typeof DOMParser === 'undefined') {
     throw new Error(
       'iconToDotGrid: conversion requires a browser; use saved grid data during SSR.',
     );
   }
-  validateInteger(columns, 'columns', 256);
+  if (multiplier !== undefined && (requestedColumns !== undefined || rows !== undefined)) {
+    throw new Error('iconToDotGrid: use multiplier or explicit columns/rows, not both.');
+  }
+  const scale = multiplier ?? 2;
+  validateInteger(scale, 'multiplier', 256);
+  if (requestedColumns !== undefined) validateInteger(requestedColumns, 'columns', 256);
+  if (rows !== undefined) validateInteger(rows, 'rows', 256);
   validateInteger(alphaThreshold, 'alphaThreshold', 255);
   const markup =
     typeof source === 'string'
@@ -208,12 +224,21 @@ export async function iconToDotGrid(
   }
   validateSvg(svg, parsed);
   const viewBox = readViewBox(svg);
-  const rowCount = rows ?? Math.max(1, Math.round((columns * viewBox[3]) / viewBox[2]));
+  const columns = requestedColumns ?? Math.max(1, Math.round(viewBox[2] * scale));
+  const rowCount =
+    rows ??
+    Math.max(
+      1,
+      Math.round(
+        requestedColumns === undefined ? viewBox[3] * scale : (columns * viewBox[3]) / viewBox[2],
+      ),
+    );
+  validateInteger(columns, 'columns', 256);
   validateInteger(rowCount, 'rows', 256);
 
   const canvas = document.createElement('canvas');
-  canvas.width = columns * pixelsPerCell;
-  canvas.height = rowCount * pixelsPerCell;
+  canvas.width = columns;
+  canvas.height = rowCount;
   const context = canvas.getContext('2d', { willReadFrequently: true });
   if (!context) throw new Error('iconToDotGrid: 2D canvas context is unavailable.');
 
@@ -229,16 +254,16 @@ export async function iconToDotGrid(
     image.src = url;
     await image.decode();
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
-    const { data } = context.getImageData(0, 0, canvas.width, canvas.height);
-    const center = Math.floor(pixelsPerCell / 2);
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
     return {
-      rows: Array.from({ length: rowCount }, (_, row) =>
-        Array.from({ length: columns }, (_, column) => {
-          const x = column * pixelsPerCell + center;
-          const y = row * pixelsPerCell + center;
-          return data[(y * canvas.width + x) * 4 + 3] >= alphaThreshold ? '1' : '0';
-        }).join(''),
-      ),
+      canvas,
+      data: {
+        rows: Array.from({ length: rowCount }, (_, row) =>
+          Array.from({ length: columns }, (_, column) =>
+            pixels[(row * columns + column) * 4 + 3] >= alphaThreshold ? '1' : '0',
+          ).join(''),
+        ),
+      },
     };
   } finally {
     URL.revokeObjectURL(url);

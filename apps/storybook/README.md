@@ -19,6 +19,15 @@ npm -w apps/storybook run dev
 
 Toolbar dropdowns toggle theme (CoreAI / Web / Teams / Teams v2.1) and Light / Dark mode.
 
+## Illicon catalog
+
+**Components / Illicon** groups component usage examples and a searchable
+artwork gallery with Copy SVG actions. The gallery preserves original SVGs for
+Figma and further editing; saved-data catalog integration remains separate.
+The gallery is excluded from the component MCP manifest.
+See the [asset contribution guide](../../packages/react-components/illicons/README.md)
+for SVG conventions and the title, file, tags, and author fields.
+
 ## Scripts
 
 | Script                   | What it does                                                                                |
@@ -52,8 +61,8 @@ version at that commit, update both `version` and `ref` in the setup script, and
 automatic selection of the newest or nearest commit.
 
 The 9.74.9 refresh adds Popover `NonInteractiveContent` and Tooltip `OverflowHidden`, with no
-selected story removals. The current catalog has **689 selected stories**: 144 local and 545
-Fluent, with 70 local overrides. All 689 consumer examples type-check. CounterBadge uses the
+selected story removals. The current catalog has **697 selected stories**: 152 local and 545
+Fluent, with 70 local overrides. All selected examples type-check. CounterBadge uses the
 canonical `Components/Badge/Counter Badge` title so its local Default replaces the upstream
 Default in one catalog instead of publishing a second component.
 

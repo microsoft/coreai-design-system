@@ -84,6 +84,7 @@ function adaptFluentPartialProps(node, bindings) {
 async function resolveRelative(file, specifier) {
   const target = path.resolve(path.dirname(file), specifier);
   for (const candidate of [
+    ...(target.endsWith('.js') ? [target.slice(0, -3) + '.ts', target.slice(0, -3) + '.tsx'] : []),
     target,
     `${target}.tsx`,
     `${target}.ts`,

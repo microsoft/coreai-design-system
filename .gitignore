@@ -1,4 +1,5 @@
 node_modules/
+packages/react-components/src/illicons.generated.ts
 dist/
 storybook-static/
 .storybook/.cache/

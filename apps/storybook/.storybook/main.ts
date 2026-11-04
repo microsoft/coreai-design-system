@@ -12,6 +12,7 @@ import { generateSkillDoc } from '../scripts/generate-skill-doc.mjs';
 import { componentStoryDocsProvider } from '../scripts/component-story-docs.mjs';
 import { publicMarkdown } from '../scripts/public-markdown.mjs';
 import { generatedStoryIndexer } from '../scripts/generate-component-stories.mjs';
+import { themeSourceRevision } from '../scripts/theme-source-revision.mjs';
 
 // Storybook 10 loads config files as native ESM, where `__dirname` doesn't
 // exist. Recreate it from `import.meta.url` for the path math below.
@@ -146,6 +147,19 @@ const config: StorybookConfig = {
     // edits actually show up without a manual cache wipe.
     const coreaiThemeWatcher: Plugin = {
       name: 'coreai:theme-restart-on-change',
+      config() {
+        // A forced re-bundle alone can reuse the old immutable browser URL.
+        // Include package content in Vite's dependency config hash on every restart.
+        return {
+          optimizeDeps: {
+            esbuildOptions: {
+              define: {
+                __COREAI_DS_SOURCE_REVISION__: JSON.stringify(themeSourceRevision(themeSrcDir)),
+              },
+            },
+          },
+        };
+      },
       configureServer(server) {
         server.watcher.add(themeSrcDir);
         let restarting = false;

@@ -4,18 +4,16 @@
 import * as React from 'react';
 import {
   Button,
-  iconToDotGrid,
   Illicon,
   Link,
   makeStyles,
   Text,
   tokens,
-  type DotGridData,
   type DotGridRenderOptions,
 } from '@coreai-ds/react-components';
 import {
-  Agents24Filled,
-  Agents24Regular,
+  Agents20Filled,
+  Agents20Regular,
   Brain24Filled,
   Brain24Regular,
   CodeRegular,
@@ -39,6 +37,8 @@ import {
   Rocket16Regular,
   Rocket24Filled,
   Rocket24Regular,
+  Scales20Filled,
+  Scales20Regular,
   Search24Filled,
   Search24Regular,
   Shield24Filled,
@@ -50,9 +50,11 @@ import {
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
 import { EmptyState } from '../templates/EmptyState';
+import { IlliconCatalog } from '../../illicons/IlliconCatalog';
+import { ConvertedIllicon } from '../../illicons/ConvertedIllicon';
 
 const iconOptions = {
-  Agents24: { filled: Agents24Filled, regular: Agents24Regular, nativeSize: 24 },
+  Agents20: { filled: Agents20Filled, regular: Agents20Regular, nativeSize: 20 },
   Brain24: { filled: Brain24Filled, regular: Brain24Regular, nativeSize: 24 },
   Cube24: { filled: Cube24Filled, regular: Cube24Regular, nativeSize: 24 },
   Database24: { filled: Database24Filled, regular: Database24Regular, nativeSize: 24 },
@@ -64,6 +66,7 @@ const iconOptions = {
   Heart24: { filled: Heart24Filled, regular: Heart24Regular, nativeSize: 24 },
   Rocket16: { filled: Rocket16Filled, regular: Rocket16Regular, nativeSize: 16 },
   Rocket24: { filled: Rocket24Filled, regular: Rocket24Regular, nativeSize: 24 },
+  Scales20: { filled: Scales20Filled, regular: Scales20Regular, nativeSize: 20 },
   Search24: { filled: Search24Filled, regular: Search24Regular, nativeSize: 24 },
   Shield24: { filled: Shield24Filled, regular: Shield24Regular, nativeSize: 24 },
   Star24: { filled: Star24Filled, regular: Star24Regular, nativeSize: 24 },
@@ -74,50 +77,6 @@ type ComparisonProps = SamplingProps & {
   icon: keyof typeof iconOptions;
   variant: 'Filled' | 'Regular';
 };
-
-function ConvertedIllicon({
-  icon,
-  columns,
-  ...props
-}: DotGridRenderOptions & {
-  icon: FluentIcon;
-  columns: number;
-  'aria-label'?: string;
-}) {
-  const [sample, setSample] = React.useState<{
-    icon: FluentIcon;
-    columns: number;
-    value: DotGridData | Error;
-  }>();
-  React.useEffect(() => {
-    let active = true;
-    void iconToDotGrid(icon, { columns }).then(
-      (value) => {
-        if (active) setSample({ icon, columns, value });
-      },
-      (error: unknown) => {
-        if (active) {
-          setSample({
-            icon,
-            columns,
-            value: error instanceof Error ? error : new Error(String(error)),
-          });
-        }
-      },
-    );
-    return () => {
-      active = false;
-    };
-  }, [icon, columns]);
-
-  if (!sample || sample.icon !== icon || sample.columns !== columns) {
-    return <Text role="status">Converting illustration...</Text>;
-  }
-  if (sample.value instanceof Error) {
-    return <Text role="alert">{sample.value.message}</Text>;
-  }
-  return <Illicon {...props} data={sample.value} />;
-}
 
 const useComparisonStyles = makeStyles({
   root: {
@@ -166,7 +125,7 @@ function IconComparison({
           <Text>Illicon</Text>
           <ConvertedIllicon
             icon={Icon}
-            columns={columns}
+            multiplier={multiplier}
             radius={radius}
             pitch={pitch}
             aria-label={`Illicon ${label}`}
@@ -181,34 +140,31 @@ function IconComparison({
 }
 
 /**
- * Samples Agents24Filled at 2x its native resolution, then renders the resulting
- * 48 x 48 grid at 240 x 240 CSS pixels with 2px dots and 5px pitch.
+ * Samples Agents20Filled at 2x its native resolution, then renders the resulting
+ * 40 x 40 grid at 200 x 200 CSS pixels with 2px dots and 5px pitch.
+ * Native 20px at 2x is the recommended standard for new Fluent-based Illicons.
  * The helper shows asynchronous browser preparation with explicit loading and
  * error states. Applications can save the returned data and render it directly
  * without converting again. An accessible label identifies the standalone image.
  *
- * @summary Agents illustration at 240px with independently sized 2px dots.
+ * @summary Agents illustration at 200px with independently sized 2px dots.
  */
-export const Default: StoryObj<DotGridRenderOptions> = {
-  args: { radius: 1, pitch: 5 },
+export const Default: StoryObj<SamplingProps> = {
+  args: { multiplier: 2, radius: 1, pitch: 5 },
   argTypes: {
+    multiplier: { control: 'select', options: [1, 2, 3, 4] },
     radius: { control: { type: 'range', min: 0.5, max: 2, step: 0.5 } },
     pitch: { control: { type: 'range', min: 4, max: 12, step: 1 } },
   },
-  parameters: { controls: { disable: false, include: ['radius', 'pitch'] } },
-  render: (args: DotGridRenderOptions) => (
-    <ConvertedIllicon
-      {...args}
-      icon={Agents24Filled}
-      columns={48}
-      aria-label="Agents illustration"
-    />
+  parameters: { controls: { disable: false, include: ['multiplier', 'radius', 'pitch'] } },
+  render: (args: SamplingProps) => (
+    <ConvertedIllicon {...args} icon={Agents20Filled} aria-label="Agents illustration" />
   ),
   play: async ({ canvas, args }) => {
     const image = await canvas.findByRole('img', { name: 'Agents illustration' });
     await expect(image.querySelector('svg')).toHaveAttribute(
       'width',
-      String(48 * (args.pitch ?? 5)),
+      String(20 * args.multiplier * (args.pitch ?? 5)),
     );
     await expect(image.querySelector('circle')?.getBoundingClientRect().width).toBe(
       (args.radius ?? 1) * 2,
@@ -218,6 +174,8 @@ export const Default: StoryObj<DotGridRenderOptions> = {
 
 /**
  * Compare Filled and Regular icons at native-size sampling multiples.
+ * Starts with the recommended native 20px source at 2x; other settings are
+ * available for visual testing.
  * The multiplier changes occupancy resolution. Radius and pitch only change
  * rendering; a 2px dot stays 2px at every multiplier. Regular icons usually
  * represent outlines using filled paths rather than SVG stroke attributes.
@@ -227,9 +185,9 @@ export const Default: StoryObj<DotGridRenderOptions> = {
 export const OriginalVsIllicon: StoryObj<ComparisonProps> = {
   name: 'Original vs. Illicon',
   args: {
-    icon: 'Rocket24',
+    icon: 'Scales20',
     variant: 'Filled',
-    multiplier: 1,
+    multiplier: 2,
     radius: 1,
     pitch: 5,
   },
@@ -241,7 +199,7 @@ export const OriginalVsIllicon: StoryObj<ComparisonProps> = {
     },
     variant: { control: 'select', options: ['Filled', 'Regular'] },
     multiplier: {
-      description: 'Recommended sampling resolution: native dimensions times this integer.',
+      description: 'Defaults to the recommended 2x. Other whole-number scales are for comparison.',
       control: 'select',
       options: [1, 2, 3, 4],
     },
@@ -320,7 +278,7 @@ export const StrokedSvg: StoryObj<SamplingProps> = {
 export const InEmptyState: StoryObj = {
   render: () => (
     <EmptyState
-      illustration={<ConvertedIllicon icon={Agents24Filled} columns={24} />}
+      illustration={<ConvertedIllicon icon={Agents20Filled} />}
       header="Benefit from Action Artifact"
       description="Disambiguate with text or exclude entirely."
       actions={
@@ -335,10 +293,30 @@ export const InEmptyState: StoryObj = {
 };
 
 /**
+ * Browse reviewed SVG artwork, search names and tags, and copy original SVG
+ * markup for Figma or further editing. This gallery is not a component usage
+ * example; saved-data catalog integration is a separate step.
+ *
+ * @summary Search reviewed artwork and copy original SVG markup.
+ */
+export const Catalog: StoryObj = {
+  tags: ['!manifest'],
+  render: () => <IlliconCatalog />,
+  parameters: {
+    layout: 'fullscreen',
+    fullBleed: true,
+    controls: { disable: true },
+  },
+};
+
+/**
  * Renders saved occupancy as SVG circles or preserves custom inline SVG artwork.
  * Grid data is equal-length rows of 0s and 1s, including empty borders.
  * Prepare data separately with iconToDotGrid; conversion is browser-only and
  * asynchronous, while saved-data rendering needs no canvas or DOM.
+ * For new Fluent-based Illicons, use native 20px icons at 2x (the default
+ * multiplier), producing 40 x 40 cells. Other source sizes remain supported
+ * for verification and custom needs; do not resize a 24px variant to substitute.
  * Radius defaults to 1px and pitch to 5px. Output dimensions are cells times
  * pitch, so dot diameter is unchanged when sampling resolution increases.
  * Theme-aware paint uses currentColor. Supply aria-label or aria-labelledby

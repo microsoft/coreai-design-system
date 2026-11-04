@@ -7,7 +7,7 @@
  * Wraps the CoreAI `Button` with:
  *   - a copy icon (`bundleIcon(CopyFilled, CopyRegular)`) that swaps to a
  *     checkmark for ~1.5s after a successful copy,
- *   - a `Tooltip` that surfaces "Copied" feedback during that window, and
+ *   - a `Tooltip` that surfaces `copiedMessage` ("Copied" by default) during that window, and
  *   - a `subtle` default appearance.
  *
  * Pass the text to copy via `contentToCopy`. Use `onCopySuccess` and
@@ -47,6 +47,8 @@ async function writeClipboardText(text: string): Promise<boolean> {
 export type CopyButtonProps = ButtonProps & {
   /** Text written to the clipboard when the button is clicked. */
   contentToCopy: string | undefined;
+  /** Confirmation shown above the button after copying. Defaults to "Copied". */
+  copiedMessage?: string;
   /** Required so screen readers can differentiate multiple copy buttons on a page. */
   'aria-label': string;
   /** Called after the clipboard write completes successfully. */
@@ -64,6 +66,7 @@ export const CopyButton: ForwardRefComponent<CopyButtonProps> = React.forwardRef
 >((props, ref) => {
   const {
     contentToCopy,
+    copiedMessage = 'Copied',
     appearance = 'subtle',
     className,
     onClick,
@@ -116,7 +119,12 @@ export const CopyButton: ForwardRefComponent<CopyButtonProps> = React.forwardRef
   }, [contentToCopy]);
 
   return (
-    <Tooltip content="Copied" relationship="inaccessible" visible={isRecentlyCopied}>
+    <Tooltip
+      content={<span role="status">{copiedMessage}</span>}
+      positioning="above"
+      relationship="inaccessible"
+      visible={isRecentlyCopied}
+    >
       <Button
         ref={ref}
         appearance={appearance}

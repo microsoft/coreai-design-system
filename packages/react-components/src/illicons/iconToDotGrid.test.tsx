@@ -2,9 +2,11 @@
 // Licensed under the MIT license.
 
 import * as React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import {
   Heart16Filled,
   Heart16Regular,
+  Scales20Filled,
   Heart24Filled,
   Heart24Regular,
 } from '@fluentui/react-icons';
@@ -31,16 +33,24 @@ test('accepts SVG markup without an explicit namespace', async () => {
   ).toEqual({ rows: ['11', '11'] });
 });
 
-test('samples cell centers rather than any geometry overlapping the cell', async () => {
+test('uses raster pixel coverage instead of a supersampled center point', async () => {
   expect(
     await iconToDotGrid(svg('<rect x="1.3" y="1.3" width=".4" height=".4"/>'), { columns: 4 }),
+  ).toEqual({ rows: ['0000', '0000', '0000', '0000'] });
+  expect(
+    await iconToDotGrid(
+      svg(
+        '<rect x="1" y="1" width=".3" height="1"/>' + '<rect x="1.7" y="1" width=".3" height="1"/>',
+      ),
+      { columns: 4 },
+    ),
   ).toEqual({ rows: ['0000', '0100', '0000', '0000'] });
   expect(
     await iconToDotGrid(svg('<rect x="1.05" y="1.05" width=".2" height=".2"/>'), { columns: 4 }),
   ).toEqual({ rows: ['0000', '0000', '0000', '0000'] });
 });
 
-test('lets the browser render paths, shapes, strokes, and transforms together', async () => {
+test('rasterizes mixed SVG geometry and applies the pixel alpha threshold', async () => {
   const source = svg(
     '<rect width="1" height="1"/>' +
       '<circle cx="2.5" cy=".5" r=".4"/>' +
@@ -50,6 +60,9 @@ test('lets the browser render paths, shapes, strokes, and transforms together', 
       '<polygon points="1,3 2,3 2,4 1,4"/>',
   );
   expect(await iconToDotGrid(source, { columns: 4 })).toEqual({
+    rows: ['1000', '0000', '1000', '0100'],
+  });
+  expect(await iconToDotGrid(source, { columns: 4, alphaThreshold: 64 })).toEqual({
     rows: ['1010', '0001', '1010', '0100'],
   });
 });
@@ -156,14 +169,14 @@ test('uses the sampling viewport rather than the source root CSS dimensions', as
   });
 });
 
-test('renders real Fluent Filled and Regular components through React', async () => {
+test('renders real Fluent Filled and Regular components through React at 2x by default', async () => {
   const filled = await iconToDotGrid(Heart24Filled);
   const element = await iconToDotGrid(<Heart24Filled />);
   const regular = await iconToDotGrid(Heart24Regular);
   const occupied = (rows: readonly string[]) => rows.join('').replace(/0/g, '').length;
   expect(filled).toEqual(element);
-  expect(filled.rows).toHaveLength(24);
-  expect(filled.rows.every((row) => row.length === 24)).toBe(true);
+  expect(filled.rows).toHaveLength(48);
+  expect(filled.rows.every((row) => row.length === 48)).toBe(true);
   expect(occupied(regular.rows)).toBeGreaterThan(0);
   expect(occupied(filled.rows)).toBeGreaterThan(occupied(regular.rows));
 });
@@ -171,12 +184,13 @@ test('renders real Fluent Filled and Regular components through React', async ()
 test.each([
   { icon: Heart16Filled, nativeSize: 16, name: 'Heart16Filled' },
   { icon: Heart16Regular, nativeSize: 16, name: 'Heart16Regular' },
+  { icon: Scales20Filled, nativeSize: 20, name: 'Scales20Filled' },
   { icon: Heart24Filled, nativeSize: 24, name: 'Heart24Filled' },
   { icon: Heart24Regular, nativeSize: 24, name: 'Heart24Regular' },
 ])('supports native-size sampling multiples for $name', async ({ icon, nativeSize }) => {
   for (const multiplier of [1, 2, 3]) {
     const columns = nativeSize * multiplier;
-    const data = await iconToDotGrid(icon, { columns });
+    const data = await iconToDotGrid(icon, { multiplier });
     expect(data.rows).toHaveLength(columns);
     expect(data.rows.every((row) => row.length === columns)).toBe(true);
     expect(data.rows.some((row) => row.includes('1'))).toBe(true);
@@ -188,6 +202,125 @@ test('keeps native-size multiples as guidance rather than a restriction', async 
   expect(data.rows).toHaveLength(23);
   expect(data.rows.every((row) => row.length === 23)).toBe(true);
   expect(data.rows.some((row) => row.includes('1'))).toBe(true);
+});
+
+test.each([
+  { icon: Heart16Filled, nativeSize: 16, name: 'Heart16Filled' },
+  { icon: Heart16Regular, nativeSize: 16, name: 'Heart16Regular' },
+  { icon: Scales20Filled, nativeSize: 20, name: 'Scales20Filled' },
+  { icon: Heart24Filled, nativeSize: 24, name: 'Heart24Filled' },
+  { icon: Heart24Regular, nativeSize: 24, name: 'Heart24Regular' },
+])('matches a direct 1x and 2x browser raster of $name', async ({ icon, nativeSize }) => {
+  for (const multiplier of [1, 2]) {
+    const size = nativeSize * multiplier;
+    const drawImage = vi.spyOn(CanvasRenderingContext2D.prototype, 'drawImage');
+    const actual = await iconToDotGrid(icon, { multiplier });
+    expect(drawImage).toHaveBeenCalledTimes(1);
+    const target = drawImage.mock.contexts[0];
+    if (!(target instanceof CanvasRenderingContext2D)) {
+      throw new Error('Conversion did not draw into a 2D canvas');
+    }
+    expect(target.canvas.width).toBe(size);
+    expect(target.canvas.height).toBe(size);
+    expect(drawImage.mock.calls[0].slice(1)).toEqual([0, 0, size, size]);
+    drawImage.mockRestore();
+
+    const markup = renderToStaticMarkup(React.createElement(icon, { width: size, height: size }));
+    const image = new Image();
+    image.src = `data:image/svg+xml,${encodeURIComponent(markup)}`;
+    await image.decode();
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = size;
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error('Canvas is required for the native raster reference');
+    context.drawImage(image, 0, 0, size, size);
+    const pixels = context.getImageData(0, 0, size, size).data;
+    const expected = {
+      rows: Array.from({ length: size }, (_, row) =>
+        Array.from({ length: size }, (_, column) =>
+          pixels[(row * size + column) * 4 + 3] >= 128 ? '1' : '0',
+        ).join(''),
+      ),
+    };
+    expect(actual).toEqual(expected);
+  }
+});
+
+test('defaults to the source viewBox times 2 without using the component name or display dimensions', async () => {
+  const Misleading24Icon = () => (
+    <svg width="200" height="200" viewBox="0 0 20 20">
+      <rect x=".5" y=".5" width="1" height="1" />
+    </svg>
+  );
+  const actual = await iconToDotGrid(Misleading24Icon);
+  expect(actual.rows).toHaveLength(40);
+  expect(actual.rows.every((row) => row.length === 40)).toBe(true);
+  expect(actual.rows[0]).toBe('0'.repeat(40));
+  expect(actual.rows[1]).toBe('011' + '0'.repeat(37));
+  expect(actual.rows[2]).toBe(actual.rows[1]);
+  expect(actual.rows.slice(3).every((row) => row === '0'.repeat(40))).toBe(true);
+  expect(actual).toEqual(await iconToDotGrid(Misleading24Icon, { multiplier: 2 }));
+});
+
+test('scales both source dimensions and retains nonzero origins and empty borders', async () => {
+  const actual = await iconToDotGrid(
+    svg('<rect x="11" y="21" width="1" height="1"/>', '10 20 4 2'),
+  );
+  expect(actual).toEqual({
+    rows: ['00000000', '00000000', '00110000', '00110000'],
+  });
+  const one = await iconToDotGrid(
+    '<svg width="4px" height="2"><rect width="4" height="2"/></svg>',
+    { multiplier: 1 },
+  );
+  expect(one).toEqual({ rows: ['1111', '1111'] });
+});
+
+test('rounds fractional source dimensions to whole raster pixels', async () => {
+  const actual = await iconToDotGrid(svg('<rect width="2.5" height="1.25"/>', '0 0 2.5 1.25'));
+  expect(actual.rows).toHaveLength(3);
+  expect(actual.rows.every((row) => row.length === 5)).toBe(true);
+});
+
+test('preserves explicit dimensions as an alternative to source-relative sampling', async () => {
+  const source = svg('<rect width="4" height="2"/>', '0 0 4 2');
+  expect(await iconToDotGrid(source, { columns: 4 })).toEqual({ rows: ['1111', '1111'] });
+  expect(await iconToDotGrid(source, { columns: 2, rows: 1 })).toEqual({ rows: ['11'] });
+  expect((await iconToDotGrid(source, { rows: 8 })).rows).toHaveLength(8);
+});
+
+test.each([
+  { multiplier: 0 },
+  { multiplier: -1 },
+  { multiplier: 1.5 },
+  { multiplier: NaN },
+  { multiplier: Infinity },
+  { multiplier: 257 },
+])('rejects invalid source multiplier %j before allocating a canvas', async (options) => {
+  const getContext = vi.spyOn(HTMLCanvasElement.prototype, 'getContext');
+  await expect(iconToDotGrid(svg(''), options)).rejects.toThrow(
+    /multiplier must be a whole number/,
+  );
+  expect(getContext).not.toHaveBeenCalled();
+});
+
+test.each([
+  { multiplier: 2, columns: 40 },
+  { multiplier: 2, rows: 40 },
+])('rejects conflicting sampling modes %j', async (options) => {
+  const getContext = vi.spyOn(HTMLCanvasElement.prototype, 'getContext');
+  await expect(iconToDotGrid(svg(''), options)).rejects.toThrow(/not both/);
+  expect(getContext).not.toHaveBeenCalled();
+});
+
+test('checks scaled dimension limits before allocating a canvas', async () => {
+  const getContext = vi.spyOn(HTMLCanvasElement.prototype, 'getContext');
+  await expect(iconToDotGrid(Scales20Filled, { multiplier: 13 })).rejects.toThrow(/columns/);
+  await expect(iconToDotGrid(svg('', '0 0 10 129'))).rejects.toThrow(/rows/);
+  expect(getContext).not.toHaveBeenCalled();
+  const maximum = await iconToDotGrid(svg('', '0 0 128 128'));
+  expect(maximum.rows).toHaveLength(256);
+  expect(maximum.rows[0]).toHaveLength(256);
 });
 
 test('supports React SVG elements and static inline paint styles', async () => {
@@ -212,9 +345,15 @@ test('uses an explicit alpha threshold and retains fully transparent cells', asy
   expect(await iconToDotGrid(svg(''), { columns: 2 })).toEqual({ rows: ['00', '00'] });
 });
 
-test('can sample exported circles back into the same occupancy', async () => {
+test('treats exported dots as raster coverage, not a lossless grid-data import', async () => {
   const data = { rows: ['00000', '00100', '01110', '00100', '00000'] };
-  expect(await iconToDotGrid(dotGridToSvg(data), { columns: 5 })).toEqual(data);
+  const source = dotGridToSvg(data);
+  expect(await iconToDotGrid(source, { columns: 5 })).toEqual({
+    rows: ['00000', '00000', '00000', '00000', '00000'],
+  });
+  expect(
+    await iconToDotGrid(dotGridToSvg(data, { radius: 2.5, pitch: 5 }), { columns: 5 }),
+  ).toEqual(data);
 });
 
 test.each([
