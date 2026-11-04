@@ -2,9 +2,10 @@
 id: materials
 title: Surfaces
 summary: 'Surface tiers, depth, and visual hierarchy.'
+status: under-construction
 resources: []
 reference:
-  renderer: materials
+  renderer: work-in-progress
   route: foundations/surfaces
   aliases:
     - /foundations/materials/

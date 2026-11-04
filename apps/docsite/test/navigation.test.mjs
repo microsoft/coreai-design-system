@@ -625,7 +625,7 @@ test('unfinished pages retain their routes and use the shared work-in-progress s
     fs.readFile(new URL('apps/docsite/src/App.tsx', repoRoot), 'utf8'),
   ]);
   const { pages } = JSON.parse(registrySource);
-  const blankPageIds = ['prototyping', 'content'];
+  const blankPageIds = ['prototyping', 'content', 'materials'];
   for (const id of blankPageIds) {
     const page = pages.find((entry) => entry.id === id);
     assert.equal(page.slug, `/${id}/`);

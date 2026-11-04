@@ -90,7 +90,7 @@ test('unfinished status restores standalone states without replacing explicit vi
     );
   }
   const pages = await readReferencePages(directory);
-  assert.equal(pages.find(({ id }) => id === 'unfinished').renderer, undefined);
+  assert.equal(pages.find(({ id }) => id === 'unfinished').renderer, 'work-in-progress');
   assert.equal(pages.find(({ id }) => id === 'finished').renderer, undefined);
   assert.equal(pages.find(({ id }) => id === 'rich').renderer, 'resources');
   assert.equal(pages.find(({ id }) => id === 'component').renderer, undefined);
@@ -120,32 +120,45 @@ test('component and template Markdown cannot silently fall out of the catalog', 
   await assert.rejects(readReferencePages(directory), /require reference metadata/);
 });
 
-test('unfinished standalone pages retain their standard page presentation', async () => {
+test('unfinished standalone pages retain agent content and native fallback without a duplicate visible title', async () => {
   const pages = await readReferencePages(path.join(appRoot, 'content'));
   assert.deepEqual(
-    pages.filter(({ renderer }) => renderer === 'work-in-progress'),
-    [],
+    pages
+      .filter(({ renderer }) => renderer === 'work-in-progress')
+      .map(({ route }) => route)
+      .sort(),
+    [
+      'foundations/layout',
+      'foundations/spacing',
+      'foundations/surfaces',
+      'templates/page-header',
+      'templates/top-nav',
+    ],
   );
   const page = {
     id: 'spacing',
     route: 'foundations/spacing',
     title: 'Spacing',
     standalone: true,
+    renderer: 'work-in-progress',
     resources: [],
     examples: [],
     guidance: '# Spacing\n\nCoreAI spacing guidance.\n\n## Useful links\n\nKeep this for agents.',
   };
   const metadata = { basePath: '/repo/', pages: [] };
   const html = standalonePageHtml(page, metadata);
-  assert.match(html, /class="page-header"[^>]*data-page-title="Spacing"/);
+  assert.match(html, /class="page-header" hidden[^>]*data-page-title="Spacing"/);
   assert.match(html, /data-markdown-url="\/repo\/foundations\/spacing.md"/);
-  assert.match(html, /data-under-construction="false"/);
-  assert.doesNotMatch(html, /data-page-widget="work-in-progress"|Page under construction/);
-  assert.match(html, /Keep this for agents/);
+  assert.match(html, /data-under-construction="true"/);
+  assert.match(html, /data-page-widget="work-in-progress"/);
+  assert.match(html, /<h1[^>]*>Page under construction<\/h1>/);
+  assert.match(html, /src="\/repo\/assets\/favicon.svg"/);
+  assert.match(html, /Share a suggestion/);
+  assert.doesNotMatch(html, /Keep this for agents/);
   assert.match(pageMarkdown(page, metadata), /Keep this for agents/);
 });
 
-test('unfinished component guidance keeps examples and authored guidance without placeholder chrome', () => {
+test('unfinished component guidance restores the inline state without losing examples or authored guidance', () => {
   const page = {
     id: 'button',
     route: 'components/button',
@@ -167,10 +180,9 @@ test('unfinished component guidance keeps examples and authored guidance without
   page.guidance = guidanceMarkdown(page);
   const html = componentPageGuidanceHtml(page, { basePath: '/' });
   assert.match(html, /data-example-id="button--default"/);
-  assert.doesNotMatch(
-    html,
-    /data-page-widget="work-in-progress"|Page under construction|>Status<\/h2>/,
-  );
+  assert.match(html, /data-page-widget="work-in-progress"/);
+  assert.match(html, /<h2[^>]*>Page under construction<\/h2>/);
+  assert.doesNotMatch(html, /work-in-progress--page|>Status<\/h2>/);
   assert.match(html, /Keep authored guidance/);
   const finished = componentPageGuidanceHtml({ ...page, status: 'complete' }, { basePath: '/' });
   assert.doesNotMatch(finished, /data-page-widget="work-in-progress"/);

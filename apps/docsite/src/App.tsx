@@ -87,7 +87,7 @@ const routeComponents: Record<string, React.LazyExoticComponent<React.ComponentT
   'mcp-server': McpServer,
 };
 
-const blankPageIds = new Set(['prototyping', 'content']);
+const blankPageIds = new Set(['prototyping', 'content', 'materials']);
 
 export function App() {
   return (

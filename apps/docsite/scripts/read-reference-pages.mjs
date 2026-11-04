@@ -210,7 +210,11 @@ export async function readReferencePages(contentDirectory) {
           ...reference,
           aliases: [...(reference.aliases ?? [])],
           status: data.status,
-          renderer: reference.renderer,
+          renderer:
+            reference.renderer ??
+            (!reference.component && data.status === 'under-construction'
+              ? 'work-in-progress'
+              : undefined),
           id,
           kind,
           guidance,
