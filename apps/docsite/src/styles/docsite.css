@@ -1583,7 +1583,22 @@ code:not(pre code) {
 .content-section__header {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
+}
+
+.content-page
+  :is(
+    .content-section__header p,
+    .content-example p,
+    .content-step__content p,
+    .content-guidance-list,
+    .content-publish-checklist
+  ) {
+  margin-block: 0;
+}
+
+.content-page :is(.content-guidance-list, .content-publish-checklist) > li + li {
+  margin-block-start: 0;
 }
 
 .content-flow {
@@ -1650,9 +1665,9 @@ code:not(pre code) {
   border-bottom: 1px solid var(--colorNeutralStrokeAlpha);
 }
 
-.content-principle-list .fui-AccordionHeader__button {
+.content-page .content-principle-list .fui-AccordionHeader__button {
   width: 100%;
-  padding: 20px 0;
+  padding: 24px 0;
   grid-template-columns: minmax(0, 1fr) auto;
 }
 
@@ -1662,29 +1677,30 @@ code:not(pre code) {
 }
 
 .content-principle-list .fui-AccordionPanel {
-  padding: 8px 48px 32px 60px;
+  margin: 0;
+  padding: 0 28px 28px 48px;
 }
 
 .content-principle__trigger {
   display: grid;
   width: 100%;
-  grid-template-columns: 48px minmax(0, 1fr);
-  align-items: center;
-  gap: 24px;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: start;
+  gap: 16px;
 }
 
 .content-principle__number {
   color: var(--mf-text-muted);
-  font-size: var(--fontSizeBase500);
+  font-size: var(--fontSizeBase400);
   font-weight: var(--fontWeightSemibold);
-  line-height: var(--lineHeightBase500);
+  line-height: var(--lineHeightBase400);
 }
 
 .content-principle__heading {
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 .content-principle__content {
@@ -1694,7 +1710,7 @@ code:not(pre code) {
 
 .content-principle__content {
   min-width: 0;
-  gap: 16px;
+  gap: 24px;
 }
 
 .content-example p,
@@ -1702,10 +1718,14 @@ code:not(pre code) {
   margin: 0;
 }
 
+.content-example p {
+  display: block;
+}
+
 .content-example-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 24px;
 }
 
 .content-example {
@@ -1713,12 +1733,12 @@ code:not(pre code) {
   min-width: 0;
   flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
+  gap: 8px;
 }
 
 .content-example__body {
   width: 100%;
-  padding: 2px 0 2px 12px;
+  padding: 4px 0 4px 12px;
   border-left: 3px solid;
 }
 
@@ -1750,7 +1770,7 @@ code:not(pre code) {
   }
 
   .content-principle-list .fui-AccordionPanel {
-    padding: 8px 0 24px 36px;
+    padding: 0 0 24px 44px;
   }
 
   .content-example-grid {
