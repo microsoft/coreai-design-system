@@ -850,7 +850,7 @@
 .reference-shell .home-foreground {
   gap: 20px;
   max-width: 480px;
-  transform: translateY(24px);
+  transform: translate(32px, 24px);
 }
 
 .reference-shell .home-heading {
@@ -951,7 +951,7 @@
 .reference-shell .home-visual {
   position: absolute;
   inset: 0 0 0 50%;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .home-page-actions {
