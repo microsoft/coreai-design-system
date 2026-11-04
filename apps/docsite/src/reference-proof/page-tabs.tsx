@@ -422,6 +422,7 @@ export function PageTabs({
   return (
     <>
       <TabList
+        className="reference-page-tablist"
         appearance="transparent"
         aria-label={`${title} content`}
         selectedValue={selected}

@@ -4,8 +4,13 @@
  */
 
 .reference-page-tabs {
-  align-self: flex-start;
-  width: fit-content;
+  align-self: stretch;
+  width: 100%;
+}
+
+.reference-shell .reference-page-tablist {
+  width: 100%;
+  border-block-end: 1px solid var(--colorNeutralStroke2);
 }
 
 .reference-page-panel {
@@ -22,14 +27,21 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: var(--spacingHorizontalS);
+  min-height: 48px;
+  padding: var(--spacingVerticalS) var(--spacingHorizontalM);
+  border-block-end: 1px solid var(--colorNeutralStroke2);
 }
 
 .reference-sample-section {
   display: flex;
   flex-direction: column;
-  gap: var(--spacingVerticalM);
+  gap: 0;
   min-width: 0;
   padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--colorNeutralStroke2);
+  border-radius: var(--borderRadiusXLarge, 12px);
+  background: var(--colorNeutralBackground1);
 }
 
 .reference-sample-section > * {
@@ -66,12 +78,23 @@
   min-width: 0;
 }
 
+.reference-sample-section .reference-page-code-block,
+.reference-sample-section .reference-page-code-block::after {
+  border: 0;
+  border-radius: 0;
+}
+
+.reference-sample-section > .preview + .reference-page-code-block-host,
+.reference-sample-section > .reference-page-code-block-host + .reference-page-code-block-host {
+  border-block-start: 1px solid var(--colorNeutralStroke2);
+}
+
 .reference-sample-section > .preview {
   display: grid;
   min-height: 220px;
   place-items: center;
-  border: 1px solid var(--colorNeutralStroke2);
-  border-radius: var(--borderRadiusXLarge, 12px);
+  border: 0;
+  border-radius: 0;
 }
 
 .reference-sample-section > .preview > * {
@@ -180,7 +203,9 @@
 }
 
 .reference-shell .reference-sample-header > :is(h3, h4, h5, h6) {
+  min-width: 0;
   margin: 0;
+  overflow-wrap: anywhere;
   color: var(--colorNeutralForeground1);
   font-size: var(--fontSizeBase500);
   line-height: var(--lineHeightBase500);

@@ -95,6 +95,17 @@ try {
       1,
       `${record.id}: tabs sit directly below the page header`,
     );
+    assert.ok(
+      await tabs.evaluate((host) => {
+        const tablist = host.querySelector('[role="tablist"]');
+        const header = host.previousElementSibling;
+        return (
+          Math.abs(tablist.getBoundingClientRect().width - header.getBoundingClientRect().width) <
+            1 && globalThis.getComputedStyle(tablist).borderBottomWidth === '1px'
+        );
+      }),
+      `${record.id}: the tab divider spans the content width`,
+    );
     const bestPractices = usage.locator('#guidance-best-practices');
     if (await bestPractices.count()) {
       assert.equal(
@@ -218,6 +229,20 @@ try {
       await samples.locator('.reference-sample-menu__trigger, .reference-sample-group').count(),
       0,
       `${record.id}: Samples has no compact groups or selectors`,
+    );
+    assert.ok(
+      await samples.locator('.reference-sample-section').evaluateAll((sections) =>
+        sections.every((section) => {
+          const style = globalThis.getComputedStyle(section);
+          const preview = section.querySelector(':scope > .preview');
+          return (
+            style.borderTopWidth === '1px' &&
+            style.overflow === 'hidden' &&
+            (!preview || globalThis.getComputedStyle(preview).borderTopWidth === '0px')
+          );
+        }),
+      ),
+      `${record.id}: each sample has one shared frame`,
     );
     assert.equal(
       await page.locator('[data-page-header] + .reference-page-tabs').count(),
