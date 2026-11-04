@@ -1662,6 +1662,25 @@ code:not(pre code) {
   display: block;
 }
 
+.content-principle-connector__reveal {
+  stroke: #fff;
+  stroke-width: 3px;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: content-connector-trace 500ms linear both;
+}
+
+.content-principle-connector__reveal--branch {
+  animation-duration: 280ms;
+  animation-timing-function: ease-out;
+}
+
+@keyframes content-connector-trace {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 .content-principle:last-child {
   border-bottom: 1px solid var(--colorNeutralStrokeAlpha);
 }
@@ -3878,6 +3897,11 @@ a.theme-crossfade:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .content-principle-connector__reveal {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
   .work-in-progress > * {
     animation: none;
   }

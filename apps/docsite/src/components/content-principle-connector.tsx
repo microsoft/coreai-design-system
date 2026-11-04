@@ -11,6 +11,7 @@ interface ConnectorGraph {
 
 export function ContentPrincipleConnector() {
   const ref = React.useRef<SVGSVGElement>(null);
+  const maskId = React.useId();
   const [graph, setGraph] = React.useState<ConnectorGraph | null>(null);
 
   React.useLayoutEffect(() => {
@@ -47,18 +48,44 @@ export function ContentPrincipleConnector() {
     return () => observer.disconnect();
   }, []);
 
+  const stemEnd = graph ? graph.branches[graph.branches.length - 1].y - 12 : 0;
+  const paths = graph
+    ? [
+        `M ${graph.x} ${graph.start} V ${stemEnd}`,
+        ...graph.branches.map(
+          (branch) =>
+            `M ${graph.x} ${branch.y - 12} Q ${graph.x} ${branch.y} ${graph.x + 12} ${branch.y} H ${branch.x}`,
+        ),
+      ]
+    : [];
+
   return (
     <svg ref={ref} className="content-principle-connector" aria-hidden="true">
       {graph ? (
-        <path
-          d={[
-            `M ${graph.x} ${graph.start} V ${graph.branches[graph.branches.length - 1].y - 12}`,
-            ...graph.branches.map(
-              (branch) =>
-                `M ${graph.x} ${branch.y - 12} Q ${graph.x} ${branch.y} ${graph.x + 12} ${branch.y} H ${branch.x}`,
-            ),
-          ].join(' ')}
-        />
+        <>
+          {/* Reveal one painted stroke so translucent joins do not overlap. */}
+          <defs>
+            <mask id={maskId} maskUnits="userSpaceOnUse">
+              <path className="content-principle-connector__reveal" d={paths[0]} pathLength={1} />
+              {graph.branches.map((branch, index) => (
+                <path
+                  key={index}
+                  className="content-principle-connector__reveal content-principle-connector__reveal--branch"
+                  d={paths[index + 1]}
+                  pathLength={1}
+                  style={{
+                    animationDelay: `${
+                      (Math.max(0, branch.y - 12 - graph.start) /
+                        Math.max(1, stemEnd - graph.start)) *
+                      500
+                    }ms`,
+                  }}
+                />
+              ))}
+            </mask>
+          </defs>
+          <path d={paths.join(' ')} mask={`url(#${maskId})`} />
+        </>
       ) : null}
     </svg>
   );
