@@ -1,11 +1,14 @@
 # Contributing illicons
 
 This directory is the source of truth for finished Illicon SVGs packaged with
-`@coreai-ds/react-components`. One `Illicon` component selects the artwork by its
-filename without `.svg`; Storybook's **Components / Illicon / Catalog** makes the assets
-searchable and copies JSX. Consumers do not fetch Storybook or copy asset files.
-All illustrations render at one fixed 80px size, including in empty and error
-states; there is no size prop. Original SVG artboards remain 140px.
+`@coreai-ds/react-components`. Storybook's **Components / Illicon / Catalog** makes
+the assets searchable and copies their original SVG markup for Figma or further
+editing. Its previews are 80px; original SVG artboards remain 140px.
+
+The completed `Illicon` component accepts saved dot-grid data or custom inline SVG,
+not an artwork name. See the [component guide](../src/components/Illicon.md) for
+usage and sizing. Saved-data catalog integration is a separate step; the current
+`illicons` registry retains artwork metadata and original image sources only.
 
 ## Add artwork
 
@@ -33,7 +36,7 @@ states; there is no size prop. Original SVG artboards remain 140px.
    npm run storybook
    ```
 
-6. Open **Components / Illicon / Catalog**. Check search, preview, and Copy JSX.
+6. Open **Components / Illicon / Catalog**. Check search, preview, and Copy SVG.
    Include light/dark screenshots in your PR.
 
 Storybook startup validates and generates the catalog automatically. If Storybook
@@ -54,8 +57,8 @@ review and CLA requirements. Assets reach consumers in a published package relea
   additional keywords are useful. Do not repeat the illustration's title.
 - `author`: the artwork creator's GitHub handle or credited name.
 
-The filename determines the JSX name: `trash.svg` becomes `<Illicon name="trash" />`.
-Keep filenames stable so existing usages continue to work.
+The filename determines the registry ID: `trash.svg` becomes `trash`.
+Keep filenames stable so existing registry lookups continue to work.
 
 ## Suggest tags
 
@@ -80,7 +83,7 @@ still verify dot spacing, size, contrast, centering, meaningful names/tags, and
 consistency with the illustration family.
 
 The manifest and all listed SVGs are validated before generating the typed
-component registry. Missing files, duplicate filenames/titles, missing authors,
+artwork registry. Missing files, duplicate filenames/titles, missing authors,
 invalid tags, unsafe SVGs, and unlisted SVG files fail validation. The registry
 embeds byte-identical SVGs as image sources, avoiding asset-path configuration
 and keeping SVG IDs isolated when an illustration appears more than once.

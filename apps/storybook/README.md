@@ -21,9 +21,10 @@ Toolbar dropdowns toggle theme (CoreAI / Web / Teams / Teams v2.1) and Light / D
 
 ## Illicon catalog
 
-**Components / Illicon** groups placeholder documentation and a searchable
-catalog story with Copy JSX actions. The component and starter assets belong to
-`@coreai-ds/react-components`; consumers do not download files or fetch a catalog.
+**Components / Illicon** groups component usage examples and a searchable
+artwork gallery with Copy SVG actions. The gallery preserves original SVGs for
+Figma and further editing; saved-data catalog integration remains separate.
+The gallery is excluded from the component MCP manifest.
 See the [asset contribution guide](../../packages/react-components/illicons/README.md)
 for SVG conventions and the title, file, tags, and author fields.
 
@@ -60,8 +61,8 @@ version at that commit, update both `version` and `ref` in the setup script, and
 automatic selection of the newest or nearest commit.
 
 The 9.74.9 refresh adds Popover `NonInteractiveContent` and Tooltip `OverflowHidden`, with no
-selected story removals. The current catalog has **689 selected stories**: 144 local and 545
-Fluent, with 70 local overrides. All 689 consumer examples type-check. CounterBadge uses the
+selected story removals. The current catalog has **696 selected stories**: 151 local and 545
+Fluent, with 70 local overrides. All selected examples type-check. CounterBadge uses the
 canonical `Components/Badge/Counter Badge` title so its local Default replaces the upstream
 Default in one catalog instead of publishing a second component.
 
@@ -222,6 +223,8 @@ entries delegate to Storybook's provider. Templates and MDX discovery are unchan
 `npm --workspace apps/storybook run test:source` checks source extraction and provider ownership.
 `npm --workspace apps/storybook run stories:verify-source` checks all consumer examples against
 the CoreAI types and writes `.storybook/.cache/story-source-validation.json`.
+Explicitly type CSF object stories' `render` parameters: extracted examples are standalone
+functions and do not retain contextual typing from `StoryObj`.
 All 689 selected examples now type-check with zero diagnostics.
 
 For upstream examples only, the source extractor adapts `Partial<ComboboxProps>` and
@@ -372,6 +375,10 @@ Story files under `src/stories/` are grouped into three folders:
 Storybook supports `manifest` and `!manifest` tags to control manifest inclusion.
 A `Dev` filename or export suffix does not itself hide a story from MCP. Check the manifest
 debugger and docs tools when changing inclusion or grouping stories under the same title.
+Mark verification-only stories with per-story `tags: ['!manifest']`; the inventory-backed
+source documentation provider also excludes these stories from MCP examples.
+Build verification still requires their generated owners in the story index and checks that
+they are absent from component manifest examples.
 
 ### Creating a template
 

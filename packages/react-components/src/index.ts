@@ -48,7 +48,6 @@ export {
 export { Text, type TextProps, type TextForeground, type TextPreset } from './components/Text.js';
 export { LinkButton, type LinkButtonProps } from './components/LinkButton.js';
 export { CopyButton, type CopyButtonProps } from './components/CopyButton.js';
-export { Illicon, type IlliconProps } from './components/Illicon.js';
 export { illicons, type IlliconName, type IlliconDefinition } from './illicons.generated.js';
 export { InfoButton, type InfoButtonProps } from './components/InfoButton.js';
 export { CodeBlock, type CodeBlockProps } from './components/CodeBlock.js';
@@ -66,6 +65,15 @@ export {
 export { DataGridCell, type DataGridCellProps } from './components/DataGridCell.js';
 
 export { FileUpload, type FileUploadProps, type FileUploadState } from './components/FileUpload.js';
+
+export { Illicon, type IlliconProps } from './components/Illicon.js';
+export {
+  iconToDotGrid,
+  type IconToDotGridOptions,
+  type IconToDotGridSource,
+} from './illicons/iconToDotGrid.js';
+export { dotGridToSvg } from './illicons/dotGridToSvg.js';
+export type { DotGridData, DotGridRenderOptions } from './illicons/dotGridGeometry.js';
 
 // Deprecated Fluent `Nav` primitives. Explicit exports preserve CoreAI's
 // deprecation metadata over the Fluent star export above.

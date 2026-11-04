@@ -25,7 +25,9 @@ headings in this changelog.
 
 ### Added
 
-- `Illicon` preserves curated SVG geometry at a fixed 80px size with theme-aware monochrome ink, a searchable Storybook catalog, and copyable component JSX.
+- `Illicon` renders occupancy-only `DotGridData` as theme-aware SVG circles at cells-times-pitch pixel dimensions, with diameter-aware pixel alignment and separate custom inline SVG sizing.
+- `iconToDotGrid` converts static SVG (including local inline CSS masks) and Fluent icons through browser canvas sampling; `dotGridToSvg` exports editable circle-based SVG for Figma. Both are exported from the main package.
+- A searchable Storybook artwork gallery previews reviewed SVGs and copies their original markup; saved-data catalog integration remains separate.
 - `CopyButton` accepts `copiedMessage` for illustration-specific confirmation in its anchored tooltip.
 
 ## [0.12.0] - 2026-10-16
