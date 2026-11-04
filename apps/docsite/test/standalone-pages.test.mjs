@@ -501,6 +501,7 @@ test('standalone renderers stay bounded and whole-page views are explicit', () =
     'materials',
     'resources',
     'includes',
+    'agent-cards',
     'faqs',
     'package',
     'changelog',
@@ -538,7 +539,7 @@ test('overview pages opt into their Markdown-backed rich views', async () => {
       },
       { basePath: '/', pages },
     ),
-    /data-page-widget="resources".*id="guidance-assets"/s,
+    /id="guidance-resources".*data-page-widget="resources"/s,
   );
   assert.equal(
     pages.find((page) => page.route === 'overview/resources'),

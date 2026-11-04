@@ -76,19 +76,6 @@ const supportSteps = [
     },
   },
   {
-    title: 'Join office hours',
-    description: 'Bring quick questions to the weekly, optional 30-minute content design session.',
-    details: [
-      'Review UI copy and terminology.',
-      'Review errors and empty states.',
-      'Review a flow or mockup.',
-    ],
-    link: {
-      href: 'https://microsoft-my.sharepoint.com/:fl:/p/wanggloria/IQC-OJlJkO7oR4bpG3LDAQtCAalezFj8llyuvzuh-NNIGzs?nav=cz0lMkZwZXJzb25hbCUyRndhbmdnbG9yaWFfbWljcm9zb2Z0X2NvbSZkPWIhZXhFV2RJR3FiMDJPYm8wb0dJZnh5aTRibVNfMEhXSklxRjNKc0w0dk1PQkdPT3JOTERHc1FhRkNRVzBoSzh3SSZmPTAxTkhBQ1ZGTjZIQ01VVEVITzVCRFlOMkkzT0xCUUNDMkMmYz0lMkYmZmx1aWQ9MSZhPVRlYW1zJnA9JTQwZmx1aWR4JTJGbG9vcC1wYWdlLWNvbnRhaW5lcg%3D%3D',
-      label: 'Sign up for office hours',
-    },
-  },
-  {
     title: 'Make a content design request',
     description:
       'Ask for direct support when the work is sensitive, strategic, or needs expert judgment.',

@@ -134,7 +134,7 @@ export async function assertReferenceTypography(page, label) {
           let size = defaultSize;
           if (
             element.matches(
-              '.component-markdown > :is(h2,h3), .standalone-guidance > :is(h2,h3), .standalone-guidance .guidance-section > :is(h2,h3)',
+              '.reference-page-panel[data-page-panel="usage"] > .component-markdown > :is(h2,h3), .standalone-guidance .guidance-section > :is(h2,h3)',
             )
           ) {
             size = 'Base400';
@@ -143,9 +143,18 @@ export async function assertReferenceTypography(page, label) {
             if (element.tagName === 'H2') size = 'Base400';
             if (element.tagName === 'H3') size = 'Base400';
           }
+          if (
+            element.matches(
+              '.reference-page--compact-guidance:has([data-page-widget="includes"]) .standalone-guidance h2',
+            )
+          )
+            size = 'Base500';
+          if (element.matches('.resource-card p')) size = 'Base200';
           if (element.matches('.do-dont-card > h3')) size = 'Base400';
           const family = element.tagName === 'PRE' ? 'Monospace' : 'Base';
-          probe.style.fontSize = `var(--fontSize${size})`;
+          probe.style.fontSize = element.matches('.intro-feature-copy p')
+            ? '13px'
+            : `var(--fontSize${size})`;
           probe.style.lineHeight = `var(--lineHeight${size})`;
           probe.style.fontWeight = `var(--fontWeight${weight})`;
           probe.style.fontFamily = `var(--fontFamily${family})`;

@@ -85,8 +85,8 @@ export default function HomeView({ model, sourceHtml }: PageWidgetProps) {
                         'aria-label': 'Starter prompt options',
                       }}
                       primaryActionButton={{
-                        'data-copy': prompt,
-                        'data-copy-label': 'starter prompt',
+                        type: 'button',
+                        ...{ 'data-copy': prompt, 'data-copy-label': 'starter prompt' },
                       }}
                     >
                       Copy starter prompt

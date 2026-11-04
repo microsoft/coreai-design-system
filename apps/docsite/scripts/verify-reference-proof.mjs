@@ -29,6 +29,7 @@ import {
   componentPageGuidanceHtml,
 } from './build-reference-proof.mjs';
 import { standaloneSections } from './standalone-sections.mjs';
+import { expandStandaloneMarkdown } from './standalone-markdown.mjs';
 import { componentApiSource } from './sources/component-api.mjs';
 import { serveReferenceProof } from './serve-reference-proof.mjs';
 
@@ -250,7 +251,10 @@ try {
     assert.deepEqual(page.resources, authored.data.resources ?? []);
     assert.equal(
       page.renderer,
-      authored.data.reference?.renderer,
+      authored.data.reference?.renderer ??
+        (!authored.data.reference?.component && authored.data.status === 'under-construction'
+          ? 'work-in-progress'
+          : undefined),
     );
     const guidance = guidanceMarkdown({ ...authored.data, body: authored.content.trim() });
     if (page.standalone) {
@@ -278,7 +282,13 @@ try {
     } else {
       const expected = {
         ...page,
-        guidance,
+        guidance: await expandStandaloneMarkdown(guidance, {
+          route: page.route,
+          pages: metadata.pages,
+          basePath: metadata.basePath,
+          generated: generatedSections,
+          fence: codeFence,
+        }),
         examples: page.examples.map((example) => sourceExamples.get(example.id)),
         templateSources: await Promise.all(
           page.templateSources.map(async (source) => ({
@@ -365,7 +375,7 @@ try {
     await page.getByRole('button', { name: 'Settings', exact: true }).click();
     const settings = page.locator('.docsite-settings');
     await settings
-      .getByRole('combobox', { name: 'Product color palette', exact: true })
+      .getByRole('combobox', { name: 'Theme', exact: true })
       .click();
     await page
       .getByRole('option', {
@@ -418,7 +428,7 @@ try {
       const resourceLinks = resourceSections.locator('.resources-grid > .fui-Link');
       assert.equal(await resourceLinks.count(), 3);
       assert.equal(await resourceSections.locator('.fui-Card').count(), 3);
-      assert.equal(await resourceSections.locator('[class*="resource-card"]').count(), 0);
+      assert.equal(await resourceSections.locator('.resource-card.fui-Card').count(), 3);
       assert.ok(
         await resourceLinks.evaluateAll((cards) =>
           cards.every(
@@ -431,6 +441,7 @@ try {
       );
     }
     if (!record.standalone) {
+      const html = await get(record.htmlPath);
       const expectedCodeBlocks = (html.match(/<pre>/g) ?? []).length;
       const expectedDownloads = (html.match(/class="source-actions"/g) ?? []).length;
       assert.equal(
@@ -480,7 +491,7 @@ try {
       assert.equal(
         await page
           .locator('[data-page-panel="samples"] .reference-page-code-block')
-          .getByRole('button', { name: 'Copy code', exact: true })
+          .getByRole('button', { name: 'Copy code', exact: true, includeHidden: true })
           .count(),
         expectedCodeBlocks,
       );
@@ -519,7 +530,7 @@ try {
       assert.equal(
         await page
           .locator('.reference-page-tabs')
-          .getByRole('tab', { name: 'Usage', selected: true })
+          .getByRole('tab', { name: 'Guidance', selected: true })
           .count(),
         1,
       );
@@ -585,7 +596,7 @@ try {
       await page
         .locator('nav[aria-label="Documentation"] [role="tab"][aria-selected="true"]')
         .count(),
-      1,
+      record.showInSidebar === false ? 0 : 1,
       `${record.id}: active navigation`,
     );
     for (const link of await page
@@ -602,7 +613,7 @@ try {
         if (panel)
           await page
             .locator('.reference-page-tabs')
-            .getByRole('tab', { name: panel === 'usage' ? 'Usage' : 'Code', exact: true })
+            .getByRole('tab', { name: panel === 'usage' ? 'Guidance' : 'Samples', exact: true })
             .click();
         const run = container.getByRole('button', { name: 'Run this example', exact: true });
         if (await run.count()) await run.click();
@@ -674,9 +685,9 @@ try {
   const settings = page.locator('.docsite-settings');
   const colorMode = settings.getByRole('tablist', { name: 'Color mode', exact: true });
   const appearanceSettings = settings.locator('.docsite-settings__appearance');
-  const productThemeLabel = settings.getByText('Product color palette', { exact: true });
+  const productThemeLabel = settings.getByText('Theme', { exact: true });
   const productTheme = settings.getByRole('combobox', {
-    name: 'Product color palette',
+    name: 'Theme',
     exact: true,
   });
   assert.equal(
@@ -742,7 +753,7 @@ try {
   const colorTabs = page.locator('.reference-page-tabs');
   assert.equal(await colorTabs.count(), 1);
   assert.equal(
-    await colorTabs.getByRole('tab', { name: 'Usage', exact: true }).getAttribute('aria-selected'),
+    await colorTabs.getByRole('tab', { name: 'Guidance', exact: true }).getAttribute('aria-selected'),
     'true',
   );
   const colorSections = page.locator(
@@ -805,7 +816,7 @@ try {
     await page.evaluate(() => navigator.clipboard.readText()),
     'colorNeutralBackground1',
   );
-  await colorTabs.getByRole('tab', { name: 'Code', exact: true }).click();
+  await colorTabs.getByRole('tab', { name: 'Samples', exact: true }).click();
   assert.ok(await page.locator('[data-page-panel="samples"]').isVisible());
   assert.equal(
     await page
@@ -816,7 +827,7 @@ try {
   );
   await page.getByRole('heading', { name: 'Apply the CoreAI theme', exact: true }).waitFor();
   await page.getByRole('heading', { name: 'Apply the Azure theme', exact: true }).waitFor();
-  await colorTabs.getByRole('tab', { name: 'Usage', exact: true }).click();
+  await colorTabs.getByRole('tab', { name: 'Guidance', exact: true }).click();
   await setTheme('light');
   const foundationOrigin = await page.evaluate(() => globalThis.performance.timeOrigin);
   await page
@@ -825,7 +836,7 @@ try {
     .click();
   await page.getByRole('heading', { name: 'Typography', exact: true }).waitFor();
   await page.locator('[data-reference-ready="true"]').waitFor();
-  await page.locator('[data-example-id="components-text--presets"] .fui-Text').first().waitFor();
+  assert.equal(await page.locator('[data-example-id="components-text--presets"]').count(), 0);
   const typographyTabs = page.locator('.reference-page-tabs');
   assert.equal(await typographyTabs.count(), 1);
   assert.equal(
@@ -875,7 +886,7 @@ try {
     typeSizes[0] > typeSizes[1] && typeSizes[1] > typeSizes[4],
     'Type samples use real text presets',
   );
-  await typographyTabs.getByRole('tab', { name: 'Code', exact: true }).click();
+  await typographyTabs.getByRole('tab', { name: 'Samples', exact: true }).click();
   assert.ok(await page.locator('[data-page-panel="samples"]').isVisible());
   assert.equal(
     await page
@@ -886,7 +897,7 @@ try {
   );
   await page.getByRole('heading', { name: 'Register installed Aptos fonts', exact: true }).waitFor();
   await page.getByRole('heading', { name: 'Load the Inter fallback', exact: true }).waitFor();
-  await typographyTabs.getByRole('tab', { name: 'Usage', exact: true }).click();
+  await typographyTabs.getByRole('tab', { name: 'Guidance', exact: true }).click();
   assert.equal(
     await page
       .locator('[data-page-panel="usage"]')
@@ -917,10 +928,13 @@ try {
   assert.equal(await page.evaluate(() => globalThis.performance.timeOrigin), foundationOrigin);
   await page.goto(`${root}foundations/surfaces/`);
   await page.locator('[data-reference-ready="true"]').waitFor();
-  const materialsImage = page.locator('[data-page-widget="materials"] img');
-  assert.ok((await materialsImage.getAttribute('src')).endsWith('-light.png'));
+  await page
+    .locator('.work-in-progress')
+    .getByRole('heading', { name: 'Page under construction', exact: true })
+    .waitFor();
+  assert.equal(await page.locator('[data-page-widget="materials"] img').count(), 0);
   await setTheme('dark');
-  assert.ok((await materialsImage.getAttribute('src')).endsWith('-dark.png'));
+  await assertReferenceTextTokens(page, 'Surfaces dark placeholder');
   await setTheme('light');
 
   await page.goto(`${root}components/button/`);
@@ -944,7 +958,7 @@ try {
   assert.match(buttonApi, /shape\?:/);
   await page
     .locator('.reference-page-tabs')
-    .getByRole('tab', { name: 'Code', exact: true })
+    .getByRole('tab', { name: 'Samples', exact: true })
     .click();
   await page
     .locator('[id="source-components-button-button--default"]')
@@ -963,7 +977,7 @@ try {
   await page.goto(`${root}components/dropdown/`);
   await page
     .locator('.reference-page-tabs')
-    .getByRole('tab', { name: 'Code', exact: true })
+    .getByRole('tab', { name: 'Samples', exact: true })
     .click();
   const inlineLabel = page.locator('[data-example-id="components-dropdown--inline-label"]');
   const dropdown = inlineLabel.getByRole('combobox').first();
@@ -1019,7 +1033,7 @@ try {
       .setAttribute('data-sidebar-sentinel', 'persistent');
     return globalThis.performance.timeOrigin;
   });
-  await page.locator('#main').getByRole('tab', { name: 'Code', exact: true }).click();
+  await page.locator('#main').getByRole('tab', { name: 'Samples', exact: true }).click();
   await page
     .locator('#main')
     .getByRole('link', { name: 'Setup and dependencies', exact: true })
@@ -1263,7 +1277,7 @@ try {
   await page.goto(`${root}components/tree/`);
   await page
     .locator('.reference-page-tabs')
-    .getByRole('tab', { name: 'Code', exact: true })
+    .getByRole('tab', { name: 'Samples', exact: true })
     .click();
   const lazyTree = page.locator('[data-example-id="components-tree--lazy-loading"]');
   await lazyTree.getByRole('treeitem', { name: 'People', exact: true }).click();
@@ -1272,7 +1286,7 @@ try {
   await page.goto(`${root}components/codeblock/`);
   await page
     .locator('.reference-page-tabs')
-    .getByRole('tab', { name: 'Code', exact: true })
+    .getByRole('tab', { name: 'Samples', exact: true })
     .click();
   await page
     .locator('[data-example-id="components-codeblock--header"]')
@@ -1314,7 +1328,8 @@ try {
   assert.equal(await staticPage.locator('[data-page-widget="font-families"] table').count(), 1);
   assert.equal(await staticPage.locator('[data-page-widget="typography"] table').count(), 1);
   await staticPage.goto(`${root}foundations/surfaces/`);
-  assert.equal(await staticPage.locator('[data-page-widget="materials"] img').count(), 2);
+  assert.equal(await staticPage.locator('.work-in-progress').count(), 1);
+  assert.equal(await staticPage.locator('[data-page-widget="materials"] img').count(), 0);
   await staticPage.goto(root);
   assert.equal(await staticPage.locator('.reference-footer.sr-only').count(), 1);
   assert.notEqual(await staticPage.locator('.reference-footer').getAttribute('inert'), null);
@@ -1447,7 +1462,8 @@ try {
     0,
   );
   assert.equal(await page.locator('.home-agent-entry h2, .home-agent-entry p').count(), 0);
-  assert.equal(await page.locator('.home-agent-entry > .fui-Button').count(), 2);
+  assert.equal(await page.locator('.home-agent-entry > .fui-SplitButton').count(), 1);
+  assert.equal(await page.locator('.home-agent-entry > .fui-LinkButton').count(), 1);
   assert.equal(await page.locator('.home-agent-preview').count(), 0);
   assert.equal(
     await page.locator('.home-heading p').innerText(),
@@ -1463,22 +1479,36 @@ try {
     normalizeSource(await page.evaluate(() => navigator.clipboard.readText())),
     normalizeSource(starter),
   );
+  const promptOptions = page.getByRole('button', { name: 'Starter prompt options', exact: true });
+  await promptOptions.click();
+  await page.getByRole('menuitem', { name: 'Show starter prompt', exact: true }).click();
+  const promptPreview = page.getByRole('dialog', { name: 'Starter prompt', exact: true });
+  assert.equal(
+    normalizeSource(await promptPreview.locator('.fui-CodeBlock__pre').textContent()),
+    normalizeSource(starter),
+  );
+  await promptPreview.getByRole('button', { name: 'Close', exact: true }).click();
+  await promptPreview.waitFor({ state: 'hidden' });
+  await page.waitForFunction(
+    () => globalThis.document.activeElement?.getAttribute('aria-label') === 'Starter prompt options',
+  );
   const starterOrigin = await page.evaluate(() => globalThis.performance.timeOrigin);
   await page
     .locator('.home-agent-entry')
     .getByRole('link', { name: 'Learn more', exact: true })
     .click();
   await page
-    .getByRole('heading', { level: 1, name: 'Build with your agent', exact: true })
+    .getByRole('heading', { level: 1, name: 'Introduction', exact: true })
     .waitFor();
   await page.locator('[data-reference-ready="true"]').waitFor();
-  await page.locator('#main').getByRole('tab', { name: 'Code', exact: true }).click();
-  assert.ok(
-    (
+  assert.equal(
+    normalizeSource(
       await page
-        .locator('[data-page-panel="samples"]:not([hidden]) .standalone-guidance')
-        .innerText()
-    ).includes(starter),
+        .locator('.intro-agent-cards')
+        .getByRole('button', { name: 'Copy starter prompt', exact: true })
+        .getAttribute('data-copy'),
+    ),
+    normalizeSource(starter),
   );
   assert.equal(await page.evaluate(() => globalThis.performance.timeOrigin), starterOrigin);
   await page.goto(root);
@@ -1496,7 +1526,7 @@ try {
     .getByRole('link', { name: 'Learn more', exact: true })
     .click();
   await page
-    .getByRole('heading', { level: 1, name: 'Build with your agent', exact: true })
+    .getByRole('heading', { level: 1, name: 'Introduction', exact: true })
     .waitFor();
   await page.locator('[data-reference-ready="true"]').waitFor();
   assert.equal(await page.evaluate(() => globalThis.performance.timeOrigin), homeOrigin);
