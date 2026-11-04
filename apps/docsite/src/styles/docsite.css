@@ -1715,14 +1715,6 @@ code:not(pre code) {
   padding-inline-start: 24px;
 }
 
-.content-principle__content::before {
-  position: absolute;
-  inset: -2px auto 10px 0;
-  width: 1px;
-  background: color-mix(in srgb, var(--colorBrandStroke1) 50%, var(--colorNeutralBackground1));
-  content: '';
-}
-
 .content-example p,
 .content-publish-checklist {
   margin: 0;
@@ -1748,25 +1740,6 @@ code:not(pre code) {
   padding-inline-start: 20px;
 }
 
-.content-example::before,
-.content-principle__content > .content-guidance-list::before {
-  position: absolute;
-  top: -2px;
-  left: -24px;
-  width: 24px;
-  height: 12px;
-  border-bottom: 1px solid
-    color-mix(
-      in srgb,
-      var(--content-example-accent, var(--colorBrandStroke1)) 50%,
-      var(--colorNeutralBackground1)
-    );
-  border-left: 1px solid
-    color-mix(in srgb, var(--colorBrandStroke1) 50%, var(--colorNeutralBackground1));
-  border-bottom-left-radius: 12px;
-  content: '';
-}
-
 .content-example::after {
   position: absolute;
   top: 7px;
@@ -1787,16 +1760,6 @@ code:not(pre code) {
 .content-example__body {
   position: relative;
   width: 100%;
-}
-
-.content-example__body::before {
-  position: absolute;
-  top: -18px;
-  bottom: 10px;
-  left: -20px;
-  width: 1px;
-  background: color-mix(in srgb, var(--content-example-accent) 50%, var(--colorNeutralBackground1));
-  content: '';
 }
 
 .content-example--avoid {
@@ -1829,16 +1792,6 @@ code:not(pre code) {
   height: 5px;
   border-radius: 50%;
   background: var(--colorBrandStroke1);
-  content: '';
-}
-
-.content-principle__content > .content-guidance-list > li:not(:last-child)::after {
-  position: absolute;
-  top: 10px;
-  bottom: -22px;
-  left: -20px;
-  width: 1px;
-  background: color-mix(in srgb, var(--colorBrandStroke1) 50%, var(--colorNeutralBackground1));
   content: '';
 }
 
