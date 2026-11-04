@@ -845,6 +845,7 @@
 
 .reference-shell .home-landing {
   min-height: calc(100dvh - 8px);
+  overflow: clip;
 }
 
 .reference-shell .home-foreground {
