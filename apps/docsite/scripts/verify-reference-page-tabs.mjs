@@ -30,6 +30,12 @@ try {
     const html = await (await fetch(url)).text();
     await page.goto(url.href);
     await page.locator('[data-reference-ready="true"]').waitFor();
+    const tabs = page.locator('.reference-page-tabs');
+    if (!(await tabs.count())) {
+      assert.ok(record.standalone, `${record.id}: component and template pages have tabs`);
+      continue;
+    }
+    tabbedPages++;
     assert.equal(
       await page
         .locator('main')
@@ -47,7 +53,7 @@ try {
           ...new Set(
             headings
               .filter((heading) => !heading.closest('.do-dont-card'))
-              .map((heading) => getComputedStyle(heading).fontSize),
+              .map((heading) => globalThis.getComputedStyle(heading).fontSize),
           ),
         ]);
       assert.ok(
@@ -59,12 +65,6 @@ try {
         `${record.id}: guidance headings use the 16px section-title size`,
       );
     }
-    const tabs = page.locator('.reference-page-tabs');
-    if (!(await tabs.count())) {
-      assert.ok(record.standalone, `${record.id}: component and template pages have tabs`);
-      continue;
-    }
-    tabbedPages++;
     const usage = page.locator('[data-page-panel="usage"]');
     const samples = page.locator('[data-page-panel="samples"]');
     assert.equal(
@@ -82,14 +82,19 @@ try {
       `${record.id}: Usage has no headings orphaned by Samples`,
     );
     assert.equal(await tabs.getByRole('tab').count(), 2);
-    for (const name of ['Usage', 'Code'])
+    for (const name of ['Guidance', 'Samples'])
       assert.equal(await tabs.getByRole('tab', { name, exact: true }).count(), 1);
     assert.equal(
-      await tabs.getByRole('tab', { name: 'Usage' }).getAttribute('aria-selected'),
+      await tabs.getByRole('tab', { name: 'Guidance' }).getAttribute('aria-selected'),
       'true',
     );
     assert.ok(await usage.isVisible());
     assert.ok(!(await samples.isVisible()));
+    assert.equal(
+      await page.locator('[data-page-header] + .reference-page-tabs').count(),
+      1,
+      `${record.id}: tabs sit directly below the page header`,
+    );
     const bestPractices = usage.locator('#guidance-best-practices');
     if (await bestPractices.count()) {
       assert.equal(
@@ -190,7 +195,7 @@ try {
     assert.equal(await page.locator('[data-example-id]').count(), record.examples.length);
     checks += await assertReferenceTextTokens(page, record.id);
     checks += await assertReferenceTypography(page, record.id);
-    await tabs.getByRole('tab', { name: 'Code' }).click();
+    await tabs.getByRole('tab', { name: 'Samples' }).click();
     assert.ok(await samples.isVisible());
     assert.ok(!(await usage.isVisible()));
     assert.equal(page.url(), url.href, 'Tab selection does not create another page');
@@ -198,48 +203,32 @@ try {
       assert.ok(
         await samples
           .locator(
-            `.reference-sample-group--examples .reference-sample-section:not([hidden]) .preview[data-example-id="${record.defaultExampleId}"]`,
+            `.reference-sample-section .preview[data-example-id="${record.defaultExampleId}"]`,
           )
           .isVisible(),
         `${record.id}: the default sample shows its live preview`,
       );
     }
-    const sampleGroups = await samples.locator('.reference-sample-group').evaluateAll((groups) =>
-      groups.map((group) => ({
-        options: group.querySelectorAll('.reference-sample-section').length,
-        visible: [...group.querySelectorAll('.reference-sample-section')].filter(
-          (section) => !section.hidden,
-        ).length,
-        menus: group.querySelectorAll('.reference-sample-menu__trigger').length,
-      })),
+    assert.equal(
+      await samples.locator('.reference-sample-section[hidden]').count(),
+      0,
+      `${record.id}: every sample stays expanded`,
     );
-    if (expandedFoundationCode) {
-      assert.equal(sampleGroups.length, 0, `${record.id}: Code blocks stay expanded`);
-      assert.equal(
-        await samples.locator('.reference-sample-section[hidden]').count(),
-        0,
-        `${record.id}: every Code section stays visible`,
-      );
-      assert.ok(
-        !(await tabs.evaluate((element) => Boolean(element.closest('.reference-sample-group')))),
-        `${record.id}: the Usage/Code switch stays outside Code cards`,
-      );
-    } else {
-      assert.equal(
-        await samples.locator(':scope > .reference-sample-section').count(),
-        0,
-        `${record.id}: Code sections are consolidated into compact groups`,
-      );
-      assert.ok(sampleGroups.length > 0 && sampleGroups.length <= 2);
-      for (const group of sampleGroups) {
-        assert.equal(group.visible, 1, `${record.id}: each Code group shows one option`);
-        assert.equal(
-          group.menus,
-          group.options > 1 ? 1 : 0,
-          `${record.id}: Code groups use a menu only when needed`,
-        );
-      }
-    }
+    assert.equal(
+      await samples.locator('.reference-sample-menu__trigger, .reference-sample-group').count(),
+      0,
+      `${record.id}: Samples has no compact groups or selectors`,
+    );
+    assert.equal(
+      await page.locator('[data-page-header] + .reference-page-tabs').count(),
+      1,
+      `${record.id}: selecting Samples does not move the tablist`,
+    );
+    assert.equal(
+      await samples.locator('.preview[data-example-id]').count(),
+      record.examples.length,
+      `${record.id}: every live example appears in Samples`,
+    );
     assert.equal(
       await samples.locator('.reference-page-code-block').count(),
       parity.original.length,
@@ -268,11 +257,11 @@ try {
         .locator('.reference-page-code-block .fui-CodeBlock__pre')
         .evaluateAll((blocks) =>
           blocks.every((block) => {
-            const style = getComputedStyle(block);
+            const style = globalThis.getComputedStyle(block);
             return style.maxHeight === '480px' && style.overflowY === 'auto';
           }),
         ),
-      `${record.id}: CodeBlocks scroll beyond 480px`,
+      `${record.id}: code blocks retain their 480px scroll limit`,
     );
     assert.deepEqual(
       await samples
@@ -302,15 +291,16 @@ try {
       `${record.id}: Samples omit loose prose and oversized headings`,
     );
     assert.ok(
-      await samples
-        .locator('.reference-sample-section')
-        .evaluateAll((sections) =>
-          sections.every((section) => /^H[3-6]$/.test(section.firstElementChild?.tagName ?? '')),
-        ),
+      await samples.locator('.reference-sample-section').evaluateAll((sections) =>
+        sections.every((section) => {
+          const heading = section.querySelector('.reference-sample-header > :is(h3,h4,h5,h6)');
+          return heading && !heading.classList.contains('sr-only');
+        }),
+      ),
       `${record.id}: every Samples section starts with an h3-or-lower label`,
     );
     for (const value of ['usage', 'samples']) {
-      const tab = tabs.getByRole('tab', { name: value === 'usage' ? 'Usage' : 'Code' });
+      const tab = tabs.getByRole('tab', { name: value === 'usage' ? 'Guidance' : 'Samples' });
       assert.equal(
         await tab.getAttribute('aria-controls'),
         await page.locator(`[data-page-panel="${value}"]`).getAttribute('id'),
@@ -325,7 +315,7 @@ try {
       originalMarkdown,
       new RegExp(`# ${record.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`),
     );
-    await tabs.getByRole('tab', { name: 'Usage' }).click();
+    await tabs.getByRole('tab', { name: 'Guidance' }).click();
     assert.equal(await page.locator('[data-preview-error]').count(), 0);
   }
   assert.ok(tabbedPages > 80, 'Cover the component, template, foundation and code-guide catalog');
@@ -343,14 +333,14 @@ try {
         await page.goto(new URL(route, root).href);
         await page.locator('[data-reference-ready="true"]').waitFor();
         const tabs = page.locator('.reference-page-tabs');
-        await tabs.getByRole('tab', { name: 'Usage' }).focus();
+        await tabs.getByRole('tab', { name: 'Guidance' }).focus();
         await page.keyboard.press('ArrowRight');
         await page.keyboard.press('Enter');
         await page.waitForFunction(
           () => globalThis.document.querySelector('[data-page-panel="samples"]')?.hidden === false,
         );
         assert.equal(
-          await tabs.getByRole('tab', { name: 'Code' }).getAttribute('aria-selected'),
+          await tabs.getByRole('tab', { name: 'Samples' }).getAttribute('aria-selected'),
           'true',
         );
         checks += await assertReferenceTextTokens(page, `${mode}/${width}/${route}`);
@@ -380,7 +370,7 @@ try {
   );
   assert.ok(
     await page.locator('[id="source-components-button-button--default"]').isVisible(),
-    'A source deep link reveals its selected sample',
+    'A source deep link reveals its sample in the list',
   );
   await page
     .locator('[id="source-components-button-button--default"]')
@@ -413,12 +403,12 @@ try {
   assert.equal(
     (await page.evaluate(() => navigator.clipboard.readText())).trim(),
     (await (await fetch(new URL('components/button.md', root))).text()).trim(),
-    'Copy .md includes both Usage and Samples',
+    'Copy .md includes both guidance and samples',
   );
 
   await page
     .locator('.reference-page-tabs')
-    .getByRole('tab', { name: 'Code', exact: true })
+    .getByRole('tab', { name: 'Samples', exact: true })
     .click();
   await page.reload();
   await page.locator('[data-reference-ready="true"]').waitFor();
@@ -445,21 +435,27 @@ try {
     alternateAccordion.id,
   );
   assert.equal(await page.locator('[data-basic-example] [data-preview-error]').count(), 0);
-  await page.locator('.reference-page-tabs').getByRole('tab', { name: 'Code' }).click();
-  const accordionSampleMenu = page
-    .locator('[data-page-panel="samples"]')
-    .getByRole('button', { name: `Choose ${accordion.title} sample`, exact: true });
+  await page.locator('.reference-page-tabs').getByRole('tab', { name: 'Samples' }).click();
   assert.equal(
-    (await accordionSampleMenu.innerText()).trim(),
-    `Example: ${alternateAccordion.name}`,
+    await page
+      .locator(`[data-page-panel="samples"] [data-example-id="${accordion.defaultExampleId}"]`)
+      .getAttribute('data-showcase-example'),
+    accordion.defaultExampleId,
+    'Samples shows Default even after choosing another Guidance example',
   );
-  const accordionReferenceMenu = page
-    .locator('[data-page-panel="samples"]')
-    .getByRole('button', { name: 'Choose reference code', exact: true });
-  await accordionReferenceMenu.click();
-  await page.getByRole('menuitemradio', { name: 'AccordionHeader API', exact: true }).click();
-  assert.equal((await accordionReferenceMenu.innerText()).trim(), 'AccordionHeader API');
-  await page.locator('.reference-page-tabs').getByRole('tab', { name: 'Usage' }).click();
+  assert.ok(
+    await page
+      .locator('[data-page-panel="samples"]')
+      .getByRole('heading', { name: 'AccordionHeader API', exact: true })
+      .isVisible(),
+    'API reference blocks stay expanded alongside all examples',
+  );
+  await page.locator('.reference-page-tabs').getByRole('tab', { name: 'Guidance' }).click();
+  assert.equal(
+    (await accordionMenu.innerText()).trim(),
+    `Example: ${alternateAccordion.name}`,
+    'Returning to Guidance keeps its example selection',
+  );
   const accordionFigma = accordion.resources.find((resource) =>
     new URL(resource.href ?? resource.url, root).hostname.endsWith('figma.com'),
   );
@@ -469,20 +465,15 @@ try {
 
   await page.goto(new URL('components/dropdown/', root).href);
   await page.locator('[data-reference-ready="true"]').waitFor();
-  await page.locator('.reference-page-tabs').getByRole('tab', { name: 'Code' }).click();
-  const dropdownSampleMenu = page
-    .locator('[data-page-panel="samples"]')
-    .getByRole('button', { name: 'Choose Dropdown sample', exact: true });
-  await dropdownSampleMenu.click();
-  await page.getByRole('menuitemradio', { name: 'Inline Label', exact: true }).click();
+  await page.locator('.reference-page-tabs').getByRole('tab', { name: 'Samples' }).click();
   const dropdown = page
     .locator('[data-example-id="components-dropdown--inline-label"]')
     .getByRole('combobox')
     .first();
   await dropdown.click();
   await page.getByRole('option', { name: 'In progress', exact: true }).click();
-  await page.locator('.reference-page-tabs').getByRole('tab', { name: 'Usage' }).click();
-  await page.locator('.reference-page-tabs').getByRole('tab', { name: 'Code' }).click();
+  await page.locator('.reference-page-tabs').getByRole('tab', { name: 'Guidance' }).click();
+  await page.locator('.reference-page-tabs').getByRole('tab', { name: 'Samples' }).click();
   assert.match(await dropdown.innerText(), /In progress/, 'Switching tabs preserves example state');
   await page.goto(new URL('tab-elevated/', root).href);
   await page.waitForURL(new URL('components/tab-elevated/', root).href);

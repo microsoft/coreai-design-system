@@ -181,6 +181,7 @@ export function PageContent({
   const [examples, setExamples] = React.useState<Record<string, React.ComponentType>>({});
   const [loadError, setLoadError] = React.useState<string>();
   const [pageTabs, setPageTabs] = React.useState<PageTabTargets | null>(null);
+  const [selectedPageTab, setSelectedPageTab] = React.useState<PageTab>('usage');
   const [activeExample, setActiveExample] = React.useState<string>();
   const [selectedShowcase, setSelectedShowcase] = React.useState<string>();
   const [presentation, setPresentation] = React.useState<{
@@ -232,7 +233,8 @@ export function PageContent({
     setViews({});
     setPresentation({ model, header, resources });
     setPageTabs(tabs);
-    setSelectedShowcase(tabs?.showcase?.defaultId ?? tabs?.sampleGroups.examples?.defaultId);
+    setSelectedPageTab('usage');
+    setSelectedShowcase(tabs?.showcase?.defaultId);
     const components = [
       ...new Set(containers.map((container) => container.dataset.exampleId?.split('--')[0])),
     ];
@@ -287,25 +289,18 @@ export function PageContent({
   }, [page, onReady]);
   React.useLayoutEffect(() => {
     if (!pageTabs?.showcase || !selectedShowcase) return;
-    pageTabs.showcase.preview.dataset.showcaseExample = selectedShowcase;
-  }, [pageTabs, selectedShowcase]);
-  const selectSampleExample = React.useCallback(
-    (id: string) => {
-      setSelectedShowcase(id);
-      if (activeExample) setActiveExample(id);
-    },
-    [activeExample],
-  );
+    pageTabs.showcase.preview.dataset.showcaseExample =
+      selectedPageTab === 'usage' ? selectedShowcase : pageTabs.showcase.defaultId;
+  }, [pageTabs, selectedPageTab, selectedShowcase]);
   const handlePageTabChange = React.useCallback(
     (tab: PageTab) => {
-      if (!activeExample) return;
-      setActiveExample(
-        tab === 'usage'
-          ? (pageTabs?.showcase?.defaultId ?? activeExample)
-          : (selectedShowcase ?? pageTabs?.sampleGroups.examples?.defaultId ?? activeExample),
-      );
+      setSelectedPageTab(tab);
+      if (tab === 'usage')
+        setActiveExample((current) =>
+          current ? (pageTabs?.showcase?.defaultId ?? current) : current,
+        );
     },
-    [activeExample, pageTabs, selectedShowcase],
+    [pageTabs],
   );
   return (
     <div
@@ -338,8 +333,6 @@ export function PageContent({
               key={pageTabs.prefix}
               targets={pageTabs}
               title={presentation.model.title}
-              selectedExample={selectedShowcase}
-              onSelectExample={selectSampleExample}
               onTabChange={handlePageTabChange}
             />,
             pageTabs.host,
@@ -390,7 +383,10 @@ export function PageContent({
       {targets?.map((container) => {
         const id = container.dataset.exampleId;
         const showcasePreview = pageTabs?.showcase?.preview === container;
-        const renderedId = showcasePreview && selectedShowcase ? selectedShowcase : id;
+        const renderedId =
+          showcasePreview && selectedPageTab === 'usage' && selectedShowcase
+            ? selectedShowcase
+            : id;
         const Example = renderedId ? examples[renderedId] : undefined;
         if (!id || !renderedId || !Example)
           throw new Error(`Unknown reference example: ${renderedId ?? id}`);
