@@ -29,6 +29,7 @@ import { PageTabs, preparePageTabs, type PageTab, type PageTabTargets } from './
 
 const standaloneViewNames = new Set([
   'resources',
+  'agent-cards',
   'faqs',
   'package',
   'changelog',

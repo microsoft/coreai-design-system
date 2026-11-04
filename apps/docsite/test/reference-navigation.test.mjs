@@ -32,6 +32,7 @@ test('site sections use the requested order with alphabetized component and temp
     { path: '/foundations/theming/', title: 'Theming' },
     { path: '/overview/faq/', title: 'FAQ' },
     { path: '/overview/changelog/', title: 'Changelog' },
+    { path: '/guides/package/', title: 'NPM package' },
     { path: '/overview/introduction/', title: 'Introduction' },
     { path: '/', title: 'Home' },
     { path: '/foundations/layout/', title: 'Layout' },
@@ -48,7 +49,7 @@ test('site sections use the requested order with alphabetized component and temp
   assert.deepEqual(
     groups.map((group) => group.items.map((entry) => entry.title)),
     [
-      ['Home', 'Introduction', 'Changelog', 'FAQ'],
+      ['Home', 'Introduction', 'Changelog', 'NPM package', 'FAQ'],
       ['Typography', 'Colors', 'Content', 'Surfaces', 'Spacing', 'Layout'],
       ['Button'],
       ['Empty State'],

@@ -3,6 +3,8 @@ id: agent-workflow
 title: Agent workflow
 summary: Find the right CoreAI Markdown page, retrieve only what you need, and verify the result.
 resources: []
+navigation:
+  showInSidebar: false
 reference:
   renderer: agent-workflow
 ---

@@ -13,6 +13,7 @@ import {
   CodeBlock,
   CopyButton,
   Link,
+  LinkButton,
   Markdown,
   MessageBar,
   MessageBarActions,
@@ -22,7 +23,11 @@ import {
   TabList,
   Text,
 } from '@coreai-ds/react-components';
-import { ArrowDownload20Regular } from '@fluentui/react-icons';
+import {
+  ArrowDownload20Regular,
+  Copy20Regular,
+  DocumentSearch20Regular,
+} from '@fluentui/react-icons';
 import { ChevronRight, ExternalIcon } from '../components/Icons';
 import { WorkInProgress } from '../components/work-in-progress';
 import type { PageWidgetProps } from './FoundationViews';
@@ -247,6 +252,65 @@ function ResourcesView({ sourceHtml }: PageWidgetProps) {
           </div>
         </section>
       ))}
+    </div>
+  );
+}
+
+function IntroAgentCards({ sourceHtml }: PageWidgetProps) {
+  const cards = React.useMemo(() => {
+    const document = documentFrom(sourceHtml);
+    return [...document.querySelectorAll('h3')].map((heading) => {
+      const elements = followingUntil(heading, (element) => element.tagName === 'H3');
+      const action = elements.flatMap((element) => [...element.querySelectorAll('a')])[0];
+      if (!action) throw new Error('Missing agent card action.');
+      return {
+        id: heading.id,
+        title: heading.textContent,
+        description: elements
+          .filter((element) => element.tagName === 'P' && !element.contains(action))
+          .map((element) => element.textContent)
+          .join(' '),
+        label: action.textContent,
+        href: action.href,
+        prompt: elements.find((element) => element.tagName === 'PRE')?.textContent?.trim(),
+      };
+    });
+  }, [sourceHtml]);
+  const icons = [Copy20Regular, DocumentSearch20Regular, ArrowDownload20Regular];
+  return (
+    <div className="intro-agent-cards">
+      {cards.map((card, index) => {
+        const Icon = icons[index] ?? DocumentSearch20Regular;
+        return (
+          <Card className="intro-agent-card" key={card.id} aria-labelledby={card.id}>
+            <span className="intro-agent-card__icon" aria-hidden="true">
+              <Icon />
+            </span>
+            <Text as="h3" id={card.id} size={400} weight="semibold" foreground={1}>
+              {card.title}
+            </Text>
+            <Text as="p" className="intro-agent-card__description" size={300} foreground={3}>
+              {card.description}
+            </Text>
+            <div className="intro-agent-card__action">
+              {card.prompt ? (
+                <Button
+                  appearance="primary"
+                  icon={<Copy20Regular />}
+                  data-copy={card.prompt}
+                  data-copy-label="starter prompt"
+                >
+                  {card.label}
+                </Button>
+              ) : (
+                <LinkButton appearance="outline" href={card.href}>
+                  {card.label}
+                </LinkButton>
+              )}
+            </div>
+          </Card>
+        );
+      })}
     </div>
   );
 }
@@ -1117,6 +1181,7 @@ export const standaloneViews: Record<string, React.ComponentType<PageWidgetProps
   'work-in-progress': WorkInProgressView,
   resources: ResourcesView,
   includes: IntroFeatureCards,
+  'agent-cards': IntroAgentCards,
   faqs: FaqsView,
   package: PackageView,
   changelog: ChangelogView,

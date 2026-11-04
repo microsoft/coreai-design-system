@@ -12,3 +12,5 @@ reference:
     - src/stories/templates/react-router/RouterLinkSlots.tsx
   route: templates/react-router-tab-link-list
 ---
+
+<!-- include: router-link-notes -->

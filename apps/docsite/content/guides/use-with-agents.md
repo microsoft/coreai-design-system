@@ -2,6 +2,8 @@
 id: use-with-agents
 title: Build with your agent
 summary: Give your coding agent CoreAI guidance, working examples, and accurate APIs with one prompt.
+navigation:
+  showInSidebar: false
 resources:
   - label: Agent documentation index
     url: /llms.txt

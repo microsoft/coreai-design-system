@@ -431,7 +431,13 @@ function lowerBestPracticesHeading(html) {
 }
 
 export function componentPageGuidanceHtml(page, metadata) {
-  const parts = pageGuidanceParts(page.guidance, page.resources);
+  const markdown = rewriteDocumentationLinks(page.guidance, {
+    route: page.route,
+    pages: metadata.pages ?? [],
+    basePath: metadata.basePath,
+    html: true,
+  });
+  const parts = pageGuidanceParts(markdown, page.resources);
   const basic = page.examples?.find((example) => example.id === page.defaultExampleId);
   const api = componentApiMarkdown(page.api);
   const guidanceHtml = lowerBestPracticesHeading(renderGuidance(parts.body).html);
@@ -580,6 +586,7 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
       status: scope.status,
       layout: scope.layout,
       hideSummary: scope.hideSummary,
+      showInSidebar: data.navigation?.showInSidebar !== false,
       resources: data.resources ?? [],
       aliases: scope.aliases ?? [],
       legacyIds: [
@@ -720,11 +727,21 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
     fence: codeFence,
     foundationData,
   });
-  for (const page of pages.filter((page) => page.standalone)) {
-    Object.assign(
-      page,
-      await resolveStandalonePage(page, { pages, basePath, generated, allExamples }),
-    );
+  for (const page of pages) {
+    if (page.standalone) {
+      Object.assign(
+        page,
+        await resolveStandalonePage(page, { pages, basePath, generated, allExamples }),
+      );
+    } else {
+      page.guidance = await expandStandaloneMarkdown(page.guidance, {
+        route: page.route,
+        pages,
+        basePath,
+        generated,
+        fence: codeFence,
+      });
+    }
   }
   await build({
     configFile: false,
@@ -818,13 +835,15 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
   const navigation = (currentPath) =>
     navigationGroups
       .map((group) => {
-        const active = group.items.some(
+        const items = group.items.filter(({ page }) => page.showInSidebar);
+        if (!items.length) return '';
+        const active = items.some(
           ({ page }) => `${page.route}${page.route ? '/' : ''}` === currentPath,
         );
         const open = group.value === 'getting-started' || active;
         return (
           `<details${open ? ' open' : ''} class="reference-nav-group" data-shell-fallback><summary>${group.label}<svg class="reference-nav-chevron" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.47a.5.5 0 0 1-.7-.71L12.8 10 7.65 4.85a.5.5 0 0 1 0-.7" fill="currentColor"></path></svg></summary>` +
-          group.items
+          items
             .map(({ page, title }) => {
               const pagePath = `${page.route}${page.route ? '/' : ''}`;
               return `<a class="reference-nav-link" data-navigation-entry data-navigation-summary="${escapeHtml(page.summary)}"${pagePath === currentPath ? ' aria-current="page"' : ''} href="${basePath}${pagePath}"><span>${escapeHtml(title)}</span></a>`;

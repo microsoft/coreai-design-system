@@ -22,6 +22,7 @@ export const includedSources = {
   'package-release-notes': 'packages/react-components/CHANGELOG.md',
   'package-skill': 'packages/react-components/agent/SKILL.md',
   'agent-prompt': 'apps/docsite/content/data/agent-prompt.md',
+  'router-link-notes': 'apps/docsite/content/data/router-link-notes.md',
   'router-link-slots': 'apps/storybook/src/stories/templates/react-router/RouterLinkSlots.tsx',
 };
 

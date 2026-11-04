@@ -5,7 +5,13 @@ const navigationGroups = [
   {
     value: 'getting-started',
     label: 'Getting started',
-    paths: ['/', '/overview/introduction/', '/overview/changelog/', '/overview/faq/'],
+    paths: [
+      '/',
+      '/overview/introduction/',
+      '/overview/changelog/',
+      '/guides/package/',
+      '/overview/faq/',
+    ],
   },
   {
     value: 'foundations',

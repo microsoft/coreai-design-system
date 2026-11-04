@@ -72,7 +72,7 @@ For individual components, start with documented props and design tokens. Preser
 
 Install the package to build an application. Agents can read the same UX guidance and complete examples as people through this site's Markdown endpoints with ordinary HTTPS.
 
-Use [Build with your agent](/guides/use-with-agents.md) for a starter prompt. The optional reusable skill makes this workflow available for repeated work in a consuming repository.
+See [Working with agents](./introduction.md#working-with-agents) for a starter prompt. The optional reusable skill makes this workflow available for repeated work in a consuming repository.
 
 - [Agent workflow](/guides/agent-workflow.md)
 

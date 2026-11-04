@@ -11,3 +11,5 @@ reference:
     - src/stories/templates/react-router/RouterLinkSlots.tsx
   route: templates/react-router-menu-item-link
 ---
+
+<!-- include: router-link-notes -->

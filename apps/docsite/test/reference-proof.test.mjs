@@ -23,6 +23,27 @@ import {
   initialThemeStyles,
 } from '../scripts/build-reference-proof.mjs';
 
+test('component guidance links use published routes, section anchors and the deployment base', () => {
+  const html = componentPageGuidanceHtml(
+    {
+      id: 'field',
+      title: 'Field',
+      summary: 'Form guidance.',
+      route: 'components/field',
+      guidance:
+        '# Field\n\nForm guidance.\n\n## Forms\n\n[Dropdown](./dropdown.md) and [Forms in dialogs](./dialog.md#forms-in-dialogs).',
+      resources: [],
+    },
+    {
+      basePath: '/repo/',
+      pages: [{ route: 'components/dropdown' }, { route: 'components/dialog' }],
+    },
+  );
+  assert.match(html, /href="\/repo\/components\/dropdown\/"/);
+  assert.match(html, /href="\/repo\/components\/dialog\/#guidance-forms-in-dialogs"/);
+  assert.doesNotMatch(html, /href="[^"]*\.md#forms-in-dialogs"/);
+});
+
 test('initial paint uses the active CoreAI tokens, including referenced token aliases', () => {
   const light = {
     colorNeutralForeground1: '#102030',

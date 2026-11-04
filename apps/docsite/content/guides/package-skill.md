@@ -3,6 +3,8 @@ id: package-skill
 title: Reusable agent skill
 summary: Teach your agent to find CoreAI Markdown guidance quickly in any consuming repository.
 resources: []
+navigation:
+  showInSidebar: false
 reference:
   renderer: package-skill
   legacyIds: [docs-agent-skill--docs]

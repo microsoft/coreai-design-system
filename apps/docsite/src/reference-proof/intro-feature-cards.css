@@ -12,6 +12,63 @@
   gap: 24px;
 }
 
+.reference-shell
+  .reference-page--compact-guidance:has([data-page-widget='includes'])
+  .standalone-guidance
+  h2 {
+  font-size: var(--fontSizeBase600);
+  line-height: var(--lineHeightBase600);
+}
+
+.intro-agent-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-block-start: 16px;
+}
+
+.reference-shell .intro-agent-card {
+  min-width: 0;
+  padding: 20px;
+  gap: 12px;
+  border: 1px solid var(--colorNeutralStroke2);
+  border-radius: var(--borderRadiusXLarge);
+  background: var(--colorNeutralBackground3);
+}
+
+.intro-agent-card__icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-block-end: 4px;
+  border-radius: var(--borderRadiusLarge);
+  background: var(--colorBrandBackground2);
+  color: var(--colorBrandForeground1);
+}
+
+.reference-shell .intro-agent-card :is(h3, p) {
+  margin: 0;
+}
+
+.intro-agent-card__description {
+  flex: 1;
+}
+
+.intro-agent-card__action {
+  margin-block-start: 8px;
+}
+
+.reference-shell .intro-agent-card__action a {
+  text-decoration: none;
+}
+
+@media (max-width: 900px) {
+  .intro-agent-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
 .reference-page--compact-guidance
   .standalone-guidance:has([data-page-widget='includes'])
   > .guidance-section

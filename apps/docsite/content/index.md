@@ -25,12 +25,12 @@ copy-and-adapt templates, and UX guidance.
 ## Get started
 
 - [Set up the package](./guides/package.md).
-- [Build with your agent](./guides/use-with-agents.md): copy a starter prompt or install the optional reusable skill.
+- [Working with agents](./overview/introduction.md#working-with-agents): use a starter prompt or install the optional reusable skill.
 
 ## Give your agent CoreAI guidance
 
-Start at [llms.txt](/llms.txt). Share the [starter prompt](./guides/use-with-agents.md)
-with your coding agent or add the [reusable skill](./guides/package-skill.md) to
+Start at [llms.txt](/llms.txt). Share the [starter prompt](/agent-prompt.txt)
+with your coding agent or add the [reusable skill](/source/package/SKILL.md) to
 your repository. Agents read the same guidance, APIs, and example source as people
 over ordinary HTTPS.
 
@@ -45,7 +45,7 @@ over ordinary HTTPS.
 - [Spacing](./foundations/spacing.md)
 - [Layout](./foundations/layout.md)
 - [Theming](./foundations/theming.md)
-- [Forms](./patterns/forms.md)
+- [Forms and validation](./components/field.md#forms)
 
 ## Component and template catalog
 

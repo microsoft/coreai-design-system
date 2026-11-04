@@ -12,6 +12,7 @@ export const standaloneRendererNames = [
   'materials',
   'resources',
   'includes',
+  'agent-cards',
   'faqs',
   'package',
   'changelog',

@@ -547,7 +547,7 @@ test('overview pages opt into their Markdown-backed rich views', async () => {
   assert.equal(pages.find((page) => page.route === 'overview/faq')?.renderer, 'faqs');
 });
 
-test('Introduction feature cards preserve all four sections in HTML and agent Markdown', async () => {
+test('Introduction keeps feature cards, agent guidance and resources in order', async () => {
   const pages = await readReferencePages(path.join(appRoot, 'content'));
   const page = pages.find((candidate) => candidate.route === 'overview/introduction');
   const source = matter(await fs.readFile(path.join(appRoot, 'content', page.guidance), 'utf8'));
@@ -555,7 +555,10 @@ test('Introduction feature cards preserve all four sections in HTML and agent Ma
     ...page,
     ...source.data,
     standalone: true,
-    guidance: guidanceMarkdown({ ...source.data, body: source.content.trim() }),
+    guidance: await expandStandaloneMarkdown(
+      guidanceMarkdown({ ...source.data, body: source.content.trim() }),
+      { route: page.route, pages, basePath: '/', fence: codeFence },
+    ),
     examples: [],
   };
   const metadata = { basePath: '/', pages };
@@ -576,6 +579,36 @@ test('Introduction feature cards preserve all four sections in HTML and agent Ma
   assert.ok(html.indexOf('>Foundations</h3>') < html.indexOf('>Components</h3>'));
   assert.doesNotMatch(markdown, /### Samples/);
   assert.doesNotMatch(markdown, /<!-- \/?view:includes -->/);
+  for (const output of [html, markdown]) {
+    assert.ok(output.indexOf('Documentation for agents') < output.indexOf('Working with agents'));
+    assert.ok(output.indexOf('Working with agents') < output.lastIndexOf('Resources'));
+    assert.match(output, /agent-prompt\.txt/);
+    assert.match(output, /source\/package\/SKILL\.md/);
+    assert.match(output, /guides\/agent-workflow/);
+  }
+  assert.match(html, /id="guidance-working-with-agents"/);
+  assert.match(html, /data-page-widget="agent-cards"/);
+  assert.match(html, /Copy starter prompt/);
+});
+
+test('React Router templates share setup notes and retain the helper source', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  const templates = pages.filter((page) => page.id.startsWith('react-router-'));
+  assert.ok(templates.length > 0);
+  for (const page of templates) {
+    const source = matter(await fs.readFile(path.join(appRoot, 'content', page.guidance), 'utf8'));
+    const markdown = await expandStandaloneMarkdown(source.content, {
+      route: page.route,
+      pages,
+      basePath: '/',
+      fence: codeFence,
+    });
+    assert.match(markdown, /Copy all files listed under \*\*Code\*\*/);
+    assert.match(markdown, /`RouterLinkSlots\.tsx`/);
+    assert.match(markdown, /not an\nnpm export/);
+    assert.doesNotMatch(markdown, /<!-- include:/);
+    assert.ok(page.sources.some((file) => file.endsWith('/RouterLinkSlots.tsx')));
+  }
 });
 
 test('package guidance opts into its Markdown-backed setup view', async () => {
