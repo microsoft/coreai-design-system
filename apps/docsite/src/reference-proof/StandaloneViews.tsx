@@ -982,11 +982,25 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
                       </div>
                     </div>
                   </div>
-                  <ul className="content-guidance-list">
-                    {principle.details.map((detail) => (
-                      <li key={detail}>{detail}</li>
-                    ))}
-                  </ul>
+                  <div className="content-principle__guidance">
+                    <Badge
+                      id={`content-principle-${index}-tips`}
+                      appearance="outline"
+                      color="informative"
+                      shape="rounded"
+                      size="medium"
+                    >
+                      Writing tips
+                    </Badge>
+                    <ul
+                      className="content-guidance-list"
+                      aria-labelledby={`content-principle-${index}-tips`}
+                    >
+                      {principle.details.map((detail) => (
+                        <li key={detail}>{detail}</li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </AccordionPanel>
             </AccordionItem>

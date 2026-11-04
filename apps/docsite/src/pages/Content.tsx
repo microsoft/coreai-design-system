@@ -231,15 +231,29 @@ function PrincipleList() {
                 <ExampleComparison key={`${principle.title}-${exampleIndex}`} example={example} />
               ))}
               {principle.details ? (
-                <ul className="content-guidance-list">
-                  {principle.details.map((detail) => (
-                    <li key={detail}>
-                      <Text size={300} foreground={3}>
-                        {detail}
-                      </Text>
-                    </li>
-                  ))}
-                </ul>
+                <div className="content-principle__guidance">
+                  <Badge
+                    id={`content-principle-${index}-tips`}
+                    appearance="outline"
+                    color="informative"
+                    shape="rounded"
+                    size="medium"
+                  >
+                    Writing tips
+                  </Badge>
+                  <ul
+                    className="content-guidance-list"
+                    aria-labelledby={`content-principle-${index}-tips`}
+                  >
+                    {principle.details.map((detail) => (
+                      <li key={detail}>
+                        <Text size={300} foreground={3}>
+                          {detail}
+                        </Text>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ) : null}
             </div>
           </AccordionPanel>

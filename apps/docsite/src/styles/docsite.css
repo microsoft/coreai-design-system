@@ -1735,7 +1735,17 @@ code:not(pre code) {
   --content-example-foreground: var(--colorPaletteGreenForeground2);
 }
 
-.content-principle__content > .content-guidance-list {
+.content-principle__guidance {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.content-principle__guidance > .fui-Badge {
+  align-self: flex-start;
+}
+
+.content-principle__guidance .content-guidance-list {
   position: relative;
   padding-inline-start: 16px;
   list-style: disc;
