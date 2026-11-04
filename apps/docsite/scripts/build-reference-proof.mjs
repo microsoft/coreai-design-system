@@ -403,7 +403,7 @@ export function standalonePageHtml(page, metadata) {
   });
   const parts = pageGuidanceParts(markdown, page.resources);
   if (page.renderer === 'work-in-progress') {
-    return `<div class="reference-page-introduction reference-work-in-progress">${pageTemplateHeader(page, metadata, parts)}${workInProgressFallback(page, metadata, true)}</div>`;
+    return `<div class="reference-page-introduction reference-work-in-progress">${pageTemplateHeader(page, metadata, parts)}${workInProgressFallback(page, true)}</div>`;
   }
   const bodyMarkdown = wholePageRendererNames.includes(page.renderer)
     ? `<!-- view:${page.renderer} -->\n\n${parts.body}\n\n<!-- /view:${page.renderer} -->`
@@ -435,7 +435,7 @@ export function componentPageGuidanceHtml(page, metadata) {
   const basic = page.examples?.find((example) => example.id === page.defaultExampleId);
   const api = componentApiMarkdown(page.api);
   const guidanceHtml = lowerBestPracticesHeading(renderGuidance(parts.body).html);
-  return `<div class="reference-page-introduction${page.layout ? ` reference-page--${page.layout}` : ''}">${pageTemplateHeader(page, metadata, parts)}${basic ? exampleHtml(basic, metadata.basePath, true) : ''}${pageTemplateResources(page, metadata)}${!basic && page.status === 'under-construction' ? workInProgressFallback(page, metadata) : ''}<div class="component-markdown">${guidanceHtml}</div>${api ? `<section class="reference-api"><details><summary><strong>API reference</strong><span>Generated CoreAI prop and type summaries</span></summary><div class="reference-api__content">${renderGuidance(api).html}</div></details></section>` : ''}</div>`;
+  return `<div class="reference-page-introduction${page.layout ? ` reference-page--${page.layout}` : ''}">${pageTemplateHeader(page, metadata, parts)}${basic ? exampleHtml(basic, metadata.basePath, true) : ''}${pageTemplateResources(page, metadata)}${!basic && page.status === 'under-construction' ? workInProgressFallback(page) : ''}<div class="component-markdown">${guidanceHtml}</div>${api ? `<section class="reference-api"><details><summary><strong>API reference</strong><span>Generated CoreAI prop and type summaries</span></summary><div class="reference-api__content">${renderGuidance(api).html}</div></details></section>` : ''}</div>`;
 }
 
 export function initialThemeStyles(themes, stylesheets) {

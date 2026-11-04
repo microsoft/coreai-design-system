@@ -5,7 +5,6 @@ import * as React from 'react';
 import { LinkButton, Text } from '@coreai-ds/react-components';
 import { Open16Filled } from '@fluentui/react-icons';
 import { siteLinks } from '../../../../shared/site-links';
-import { CoreAILogo } from './Icons';
 
 const CoreAILogoCube = React.lazy(() =>
   import('./CoreAILogoCube').then((module) => ({ default: module.CoreAILogoCube })),
@@ -30,7 +29,6 @@ export function WorkInProgress({ standalone = false }: { standalone?: boolean })
       aria-labelledby={headingId}
     >
       <div className="work-in-progress__logo">
-        <CoreAILogo className="work-in-progress__fallback" aria-hidden="true" />
         <GraphicBoundary>
           <React.Suspense fallback={null}>
             <CoreAILogoCube monochrome />

@@ -293,10 +293,13 @@ test('working component and template previews do not show construction placehold
     assert.match(html, /data-example-id="example--default"/);
     assert.match(html, /Keep authored guidance\./);
     assert.doesNotMatch(html, /Page under construction|Imported story descriptor\./);
-    assert.match(
-      componentPageGuidanceHtml({ ...page, examples: [], defaultExampleId: undefined }, metadata),
-      /Page under construction/,
+    const unfinished = componentPageGuidanceHtml(
+      { ...page, examples: [], defaultExampleId: undefined },
+      metadata,
     );
+    assert.match(unfinished, /Page under construction/);
+    assert.match(unfinished, /<div class="work-in-progress__logo"><\/div>/);
+    assert.doesNotMatch(unfinished, /work-in-progress__fallback/);
   }
 });
 

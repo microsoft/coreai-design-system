@@ -152,13 +152,13 @@ test('unfinished standalone pages retain agent content and native fallback witho
   assert.match(html, /data-under-construction="true"/);
   assert.match(html, /data-page-widget="work-in-progress"/);
   assert.match(html, /<h1[^>]*>Page under construction<\/h1>/);
-  assert.match(html, /src="\/repo\/assets\/favicon.svg"/);
+  assert.doesNotMatch(html, /<img|<svg|work-in-progress__fallback/);
   assert.match(html, /Share a suggestion/);
   assert.doesNotMatch(html, /Keep this for agents/);
   assert.match(pageMarkdown(page, metadata), /Keep this for agents/);
 });
 
-test('unfinished component guidance restores the inline state without losing examples or authored guidance', () => {
+test('unfinished component guidance keeps working previews without a construction state', () => {
   const page = {
     id: 'button',
     route: 'components/button',
@@ -180,8 +180,7 @@ test('unfinished component guidance restores the inline state without losing exa
   page.guidance = guidanceMarkdown(page);
   const html = componentPageGuidanceHtml(page, { basePath: '/' });
   assert.match(html, /data-example-id="button--default"/);
-  assert.match(html, /data-page-widget="work-in-progress"/);
-  assert.match(html, /<h2[^>]*>Page under construction<\/h2>/);
+  assert.doesNotMatch(html, /data-page-widget="work-in-progress"|Page under construction/);
   assert.doesNotMatch(html, /work-in-progress--page|>Status<\/h2>/);
   assert.match(html, /Keep authored guidance/);
   const finished = componentPageGuidanceHtml({ ...page, status: 'complete' }, { basePath: '/' });
