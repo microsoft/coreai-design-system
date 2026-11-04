@@ -326,7 +326,7 @@ function exampleHeading(example) {
 }
 
 export function exampleHeadingHtml(example) {
-  return renderGuidance(exampleHeading(example))
+  return renderGuidance(`## ${example.name}`)
     .html.replaceAll('id="guidance-', `id="${example.id}-`)
     .replaceAll('href="#guidance-', `href="#${example.id}-`);
 }
@@ -435,7 +435,7 @@ export function componentPageGuidanceHtml(page, metadata) {
   const basic = page.examples?.find((example) => example.id === page.defaultExampleId);
   const api = componentApiMarkdown(page.api);
   const guidanceHtml = lowerBestPracticesHeading(renderGuidance(parts.body).html);
-  return `<div class="reference-page-introduction${page.layout ? ` reference-page--${page.layout}` : ''}">${pageTemplateHeader(page, metadata, parts)}${basic ? exampleHtml(basic, metadata.basePath, true) : ''}${pageTemplateResources(page, metadata)}${page.status === 'under-construction' ? workInProgressFallback(page, metadata) : ''}<div class="component-markdown">${guidanceHtml}</div>${api ? `<section class="reference-api"><details><summary><strong>API reference</strong><span>Generated CoreAI prop and type summaries</span></summary><div class="reference-api__content">${renderGuidance(api).html}</div></details></section>` : ''}</div>`;
+  return `<div class="reference-page-introduction${page.layout ? ` reference-page--${page.layout}` : ''}">${pageTemplateHeader(page, metadata, parts)}${basic ? exampleHtml(basic, metadata.basePath, true) : ''}${pageTemplateResources(page, metadata)}${!basic && page.status === 'under-construction' ? workInProgressFallback(page, metadata) : ''}<div class="component-markdown">${guidanceHtml}</div>${api ? `<section class="reference-api"><details><summary><strong>API reference</strong><span>Generated CoreAI prop and type summaries</span></summary><div class="reference-api__content">${renderGuidance(api).html}</div></details></section>` : ''}</div>`;
 }
 
 export function initialThemeStyles(themes, stylesheets) {

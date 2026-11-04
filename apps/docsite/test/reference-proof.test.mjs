@@ -18,6 +18,7 @@ import {
   accountForStories,
   pageMarkdown,
   exampleHeadingHtml,
+  componentPageGuidanceHtml,
   scopeExampleIds,
   initialThemeStyles,
 } from '../scripts/build-reference-proof.mjs';
@@ -262,8 +263,41 @@ test('example headings cannot collide with authored component headings', () => {
     description: '[Return to example](#empty-state).',
   });
   assert.match(html, /id="templates-empty-state--default-empty-state"/);
-  assert.match(html, /href="#templates-empty-state--default-empty-state"/);
+  assert.doesNotMatch(html, /Return to example|Source:/);
   assert.doesNotMatch(html, /id="guidance-empty-state"/);
+});
+
+test('working component and template previews do not show construction placeholders', () => {
+  for (const kind of ['components', 'templates']) {
+    const example = {
+      id: 'example--default',
+      name: 'Default',
+      origin: 'local',
+      description: 'Imported story descriptor.',
+      sourcePath: 'source/examples/default.tsx',
+      source: 'export default function Example() { return null; }\n',
+    };
+    const page = {
+      id: 'example',
+      route: `${kind}/example`,
+      title: 'Example',
+      kind,
+      status: 'under-construction',
+      guidance: '# Example\n\nThe page summary.\n\n## Behavior\n\nKeep authored guidance.',
+      resources: [],
+      examples: [example],
+      defaultExampleId: example.id,
+    };
+    const metadata = { basePath: '/' };
+    const html = componentPageGuidanceHtml(page, metadata);
+    assert.match(html, /data-example-id="example--default"/);
+    assert.match(html, /Keep authored guidance\./);
+    assert.doesNotMatch(html, /Page under construction|Imported story descriptor\./);
+    assert.match(
+      componentPageGuidanceHtml({ ...page, examples: [], defaultExampleId: undefined }, metadata),
+      /Page under construction/,
+    );
+  }
 });
 
 test('simple function and object examples do not require Storybook runtime', () => {
@@ -356,6 +390,7 @@ test('Markdown includes authored guidance, exact example source, base-aware link
     versions: { '@coreai-ds/react-components': '0.11.1', '@fluentui/react-components': '9.74.9' },
   });
   assert.match(markdown, /Do not confuse no results with missing permissions/);
+  assert.match(markdown, /A complete example\./);
   assert.match(markdown, /not an npm export/);
   assert.match(markdown, /\(\/repo\/guides\/package\.md\)/);
   assert.match(markdown, /\(\/repo\/source\/examples\/default\.tsx\)/);
