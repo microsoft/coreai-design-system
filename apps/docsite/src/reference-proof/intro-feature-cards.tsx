@@ -25,6 +25,7 @@ import {
   ChevronRight16Regular,
   Code16Regular,
   Copy16Regular,
+  Cursor20Filled,
   Dismiss16Regular,
   DocumentText20Regular,
   WeatherMoon16Regular,
@@ -35,6 +36,14 @@ import './intro-feature-cards.css';
 
 function makeInert(element: HTMLDivElement | null) {
   element?.setAttribute('inert', '');
+}
+
+function SceneCursor({ kind }: { kind: string }) {
+  return (
+    <span className={`intro-scene-cursor intro-cursor--${kind}`} aria-hidden="true">
+      <Cursor20Filled />
+    </span>
+  );
 }
 
 function FoundationsScene() {
@@ -59,6 +68,7 @@ function FoundationsScene() {
             <WeatherSunny16Regular />
             <WeatherMoon16Regular />
           </span>
+          <SceneCursor kind="foundations" />
         </span>
       </div>
       <div className="intro-foundation-palette">
@@ -154,6 +164,7 @@ function ComponentsScene() {
             <span>&lt;/Button&gt;</span>
           </code>
         </div>
+        <SceneCursor kind="components" />
       </div>
     </>
   );
@@ -297,6 +308,7 @@ function TemplatesScene({ running }: { running: boolean }) {
             <Button appearance="subtle" icon={<ChevronRight16Regular />} aria-label="Next page" />
           </span>
         </div>
+        <SceneCursor kind="templates" />
       </div>
     </>
   );
@@ -332,6 +344,7 @@ function AgentsScene() {
             <span>{code}</span>
           </code>
         </div>
+        <SceneCursor kind="agents" />
       </div>
       <span className="intro-agent-result">
         <Checkmark16Regular /> Guidance + code

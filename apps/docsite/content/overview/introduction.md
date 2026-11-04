@@ -20,21 +20,23 @@ reference:
 
 ### Foundations
 
-Color, typography, spacing, and themes provide a shared visual language.
+Color, typography, spacing, and themes provide a shared visual language for
+building CoreAI interfaces.
 
 ### Components
 
-Components are reusable controls maintained in the npm package.
+Reusable controls in the CoreAI npm package come with usage guidance and code
+examples for your project.
 
 ### Templates
 
-Templates are larger starting points that you copy into your project and
-maintain yourself. They are not package imports.
+Templates are larger starting points you copy and maintain in your project.
+They are not package imports.
 
 ### Documentation for agents
 
-Agents can read the same UX guidance and complete examples as people through
-this site's Markdown endpoints with ordinary HTTPS.
+Agents read UX guidance and complete examples through this site's Markdown
+endpoints over ordinary HTTPS.
 
 <!-- /view:includes -->
 

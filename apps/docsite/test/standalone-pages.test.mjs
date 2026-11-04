@@ -552,10 +552,10 @@ test('Introduction feature cards preserve all four sections in HTML and agent Ma
   const markdown = pageMarkdown(introduction, metadata);
   assert.match(html, /data-page-widget="includes"/);
   for (const [heading, description] of [
-    ['Foundations', 'Color, typography, spacing, and themes provide a shared visual language.'],
-    ['Components', 'Components are reusable controls maintained in the npm package.'],
+    ['Foundations', 'Color, typography, spacing, and themes provide a shared visual language for'],
+    ['Components', 'Reusable controls in the CoreAI npm package come with usage guidance and code'],
     ['Templates', 'They are not package imports.'],
-    ['Documentation for agents', "this site's Markdown endpoints with ordinary HTTPS."],
+    ['Documentation for agents', 'endpoints over ordinary HTTPS.'],
   ]) {
     assert.ok(html.includes(`>${heading}</h3>`));
     assert.ok(markdown.includes(`### ${heading}`));
