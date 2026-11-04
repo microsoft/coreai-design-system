@@ -1546,7 +1546,7 @@ code:not(pre code) {
 .content-guidance-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacingVerticalS);
+  gap: var(--spacingVerticalXS);
   margin: 0;
   padding-left: var(--spacingHorizontalXXL);
 }
@@ -1583,7 +1583,7 @@ code:not(pre code) {
 .content-section__header {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
 }
 
 .content-page
@@ -1700,7 +1700,7 @@ code:not(pre code) {
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
 }
 
 .content-principle__content {
@@ -1774,7 +1774,6 @@ code:not(pre code) {
 
 .content-principle__content > .content-guidance-list {
   position: relative;
-  gap: 12px;
   padding-inline-start: 20px;
   list-style: none;
 }
@@ -1798,7 +1797,7 @@ code:not(pre code) {
 .content-publish-checklist {
   display: flex;
   flex-direction: column;
-  gap: var(--spacingVerticalS);
+  gap: var(--spacingVerticalXS);
   padding-left: var(--spacingHorizontalXXL);
 }
 
