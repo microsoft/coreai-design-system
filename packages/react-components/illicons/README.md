@@ -49,7 +49,11 @@ Shield, Warning, and the new Code illustration. Models and Shield approximate
 designer-modified originals. `Beaker20Filled` is a temporary Fine-tune candidate
 because Beaker Empty is not available in the installed package. `Fluid20Filled`
 is an unconfirmed Workflows candidate from silhouette matching. AI Gateway and
-Foundry are custom logos and remain original-only.
+Foundry compare the original dotted artwork against their authored monochrome
+20px SVG source strings, the actual sampling canvas, and the recreated dot grid.
+The multiplier applies to these sources; the Fluent native-size selector does
+not change their 20 x 20 viewBoxes. Both comparison stories share the same SVG
+source markup, without Fluent substitutes.
 
 ## Add artwork
 

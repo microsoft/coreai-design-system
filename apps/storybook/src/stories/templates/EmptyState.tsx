@@ -8,7 +8,9 @@
  * content to display. Supply only the slots needed for the use case, from a
  * compact message through to metrics, cards, actions, and supporting links.
  * Use Illicon with saved grid data for illustrations; the slot also accepts
- * custom artwork without converting it during rendering.
+ * custom artwork without converting it during rendering. Prepare Fluent-based
+ * grids from native 20px icons at 2x: 40 x 40 cells, rendered at 200 x 200px
+ * with the default 2px dots and 5px pitch.
  *
  * Copy-paste starting point — not a published, importable component. Copy
  * this file into your codebase and adjust as needed.

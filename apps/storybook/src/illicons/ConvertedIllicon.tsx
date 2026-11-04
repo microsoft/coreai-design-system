@@ -8,7 +8,6 @@ import {
   Text,
   type DotGridRenderOptions,
 } from '@coreai-ds/react-components';
-import type { FluentIcon } from '@fluentui/react-icons';
 
 export function ConvertedIllicon({
   icon,
@@ -16,13 +15,13 @@ export function ConvertedIllicon({
   convert = iconToDotGrid,
   ...props
 }: DotGridRenderOptions & {
-  icon: FluentIcon;
+  icon: Parameters<typeof iconToDotGrid>[0];
   multiplier?: number;
   'aria-label'?: string;
   convert?: typeof iconToDotGrid;
 }) {
   const [sample, setSample] = React.useState<{
-    icon: FluentIcon;
+    icon: Parameters<typeof iconToDotGrid>[0];
     multiplier?: number;
     convert: typeof iconToDotGrid;
     value: Awaited<ReturnType<typeof iconToDotGrid>> | Error;

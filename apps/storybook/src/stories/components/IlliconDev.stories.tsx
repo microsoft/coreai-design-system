@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import * as React from 'react';
-import { Illicon, tokens, type IlliconProps } from '@coreai-ds/react-components';
+import { Illicon, type IlliconProps } from '@coreai-ds/react-components';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
   IlliconSourceComparison,
@@ -17,7 +17,9 @@ import {
  * and sampled grid without replacing assets. Canvas pixels are enlarged without
  * smoothing to make partial alpha coverage visible.
  * Beaker and Workflows are tentative; Cube and Shield omit designer modifications.
- * Custom logos remain original-only. Code is a new Filled illustration.
+ * AI Gateway and Foundry use authored 20px monochrome SVG strings at the same
+ * multiplier; their sources are not resized by the Fluent native-size selector.
+ * Code is a new Filled illustration.
  *
  * @summary Verification only: compare Fluent source recreations with original artwork.
  */
@@ -26,7 +28,8 @@ export const SourceRecreationDev: StoryObj<IlliconSourceComparisonProps> = {
   args: { nativeSize: 20, multiplier: 2, radius: 1, pitch: 5 },
   argTypes: {
     nativeSize: {
-      description: 'Select the actual native Fluent icon variant, not a resized version.',
+      description:
+        'Select the actual Fluent variant. Custom SVGs keep their native 20px viewBoxes.',
       control: 'select',
       options: [16, 20, 24],
     },
@@ -40,21 +43,6 @@ export const SourceRecreationDev: StoryObj<IlliconSourceComparisonProps> = {
     controls: { disable: false, include: ['nativeSize', 'multiplier', 'radius', 'pitch'] },
   },
   render: (args: IlliconSourceComparisonProps) => <IlliconSourceComparison {...args} />,
-};
-
-/**
- * Verifies that an all-zero grid keeps its artboard. The consumer outline
- * makes the otherwise invisible bounds observable.
- *
- * @summary Verification only: empty occupancy retains its dimensions.
- */
-export const EmptyGridDev: StoryObj<typeof Illicon> = {
-  tags: ['!manifest'],
-  args: {
-    data: { rows: ['0000', '0000'] },
-    style: { outline: `1px solid ${tokens.colorNeutralStroke2}` },
-  },
-  render: (args: IlliconProps) => <Illicon {...args} />,
 };
 
 /**

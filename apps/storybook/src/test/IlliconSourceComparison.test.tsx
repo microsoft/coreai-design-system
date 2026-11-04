@@ -11,6 +11,7 @@ import { ConvertedIllicon } from '../illicons/ConvertedIllicon';
 import {
   IlliconSourceComparison,
   illiconSourceCandidates,
+  customSvgSourceCandidates,
 } from '../illicons/IlliconSourceComparison';
 
 afterEach(() => {
@@ -126,17 +127,72 @@ test('switches native variants and replaces the actual raster and grids', async 
   }
 });
 
+for (const nativeSize of [16, 20, 24] as const) {
+  test(`custom SVGs keep 20px sources with Fluent size ${nativeSize} and use the same canvas pixels as their dots`, async () => {
+    const screen = await renderCoreAIComponent(<IlliconSourceComparison nativeSize={nativeSize} />);
+    for (const { title, source } of customSvgSourceCandidates) {
+      const image = screen.getByRole('img', { name: `Recreated ${title}`, exact: true });
+      await expect.element(image).toBeVisible();
+      const originalSource = screen
+        .getByRole('img', { name: `Custom SVG source ${title}` })
+        .element();
+      if (!(originalSource instanceof HTMLImageElement))
+        throw new Error('Expected an SVG source image');
+      expect(await fetch(originalSource.src).then((response) => response.text())).toBe(source);
+      const grid = await iconToDotGrid(source, { multiplier: 2 });
+      const canvas = screen
+        .getByRole('img', { name: `Sampling canvas ${title}` })
+        .element()
+        .querySelector('canvas');
+      if (!canvas) throw new Error(`Missing canvas for ${title}`);
+      expect(canvas.width).toBe(40);
+      expect(canvas.height).toBe(40);
+      const context = canvas.getContext('2d');
+      if (!context) throw new Error('Missing sampling context');
+      const pixels = context.getImageData(0, 0, 40, 40).data;
+      expect(
+        Array.from({ length: 40 }, (_, row) =>
+          Array.from({ length: 40 }, (_, column) =>
+            pixels[(row * 40 + column) * 4 + 3] >= 128 ? '1' : '0',
+          ).join(''),
+        ),
+      ).toEqual(grid.rows);
+      const expected = new DOMParser().parseFromString(dotGridToSvg(grid), 'image/svg+xml');
+      const positions = (root: ParentNode) =>
+        Array.from(root.querySelectorAll('circle'), (circle) => [
+          circle.getAttribute('cx'),
+          circle.getAttribute('cy'),
+          circle.getAttribute('r'),
+        ]);
+      expect(positions(image.element())).toEqual(positions(expected));
+      expect(image.element().querySelector('svg')).toHaveAttribute('width', '200');
+    }
+    await screen.rerender(<IlliconSourceComparison nativeSize={nativeSize} multiplier={3} />);
+    for (const { title } of customSvgSourceCandidates) {
+      const image = screen.getByRole('img', { name: `Recreated ${title}`, exact: true });
+      await expect.element(image).toBeVisible();
+      expect(image.element().querySelector('svg')).toHaveAttribute('width', '300');
+      expect(
+        screen
+          .getByRole('img', { name: `Sampling canvas ${title}` })
+          .element()
+          .querySelector('canvas')?.width,
+      ).toBe(60);
+    }
+  });
+}
+
 test('defaults to 20x2 and displays actual canvases without a second rasterization or repaint on pitch changes', async () => {
   const drawImage = vi.spyOn(CanvasRenderingContext2D.prototype, 'drawImage');
   const screen = await renderCoreAIComponent(<IlliconSourceComparison />);
-  for (const candidate of illiconSourceCandidates) {
+  for (const candidate of [...illiconSourceCandidates, ...customSvgSourceCandidates]) {
     await expect
       .element(screen.getByRole('img', { name: `Recreated ${candidate.title}`, exact: true }))
       .toBeVisible();
   }
   const canvases = Array.from(screen.container.querySelectorAll('canvas'));
-  expect(canvases).toHaveLength(13);
-  expect(drawImage).toHaveBeenCalledTimes(13);
+  expect(canvases).toHaveLength(15);
+  expect(drawImage).toHaveBeenCalledTimes(15);
   for (const target of drawImage.mock.contexts) {
     if (!(target instanceof CanvasRenderingContext2D)) {
       throw new Error('Conversion did not draw into a 2D canvas');
@@ -145,7 +201,7 @@ test('defaults to 20x2 and displays actual canvases without a second rasterizati
   }
   const pixels = canvases.map((canvas) => canvas.toDataURL());
   await screen.rerender(<IlliconSourceComparison pitch={6} />);
-  expect(drawImage).toHaveBeenCalledTimes(13);
+  expect(drawImage).toHaveBeenCalledTimes(15);
   expect(Array.from(screen.container.querySelectorAll('canvas'))).toEqual(canvases);
   expect(canvases.map((canvas) => canvas.toDataURL())).toEqual(pixels);
   for (const canvas of canvases) {
@@ -157,7 +213,9 @@ test('defaults to 20x2 and displays actual canvases without a second rasterizati
 
 test('retains all original image sources and explains uncertain and custom artwork', async () => {
   const screen = await renderCoreAIComponent(<IlliconSourceComparison multiplier={1} />);
-  const images = Array.from(screen.container.querySelectorAll('img'));
+  const images = Array.from(
+    screen.container.querySelectorAll<HTMLImageElement>('img[alt^="Original "]'),
+  );
   expect(images).toHaveLength(illicons.length);
   for (const artwork of illicons) {
     const image = images.find((image) => image.alt === `Original ${artwork.name}`);
@@ -165,11 +223,6 @@ test('retains all original image sources and explains uncertain and custom artwo
     await image?.decode();
     expect(image?.naturalWidth).toBe(140);
     expect(image?.getBoundingClientRect().width).toBe(140);
-  }
-  for (const name of ['ai-gateway', 'foundry']) {
-    const section = screen.getByRole('region', { name: `${name} custom artwork` });
-    expect(section).toHaveTextContent('Custom logo: original preserved');
-    expect(section.element().querySelector('svg')).toBeNull();
   }
   expect(screen.getByText(/Temporary candidate: Beaker Empty/)).toBeVisible();
   expect(screen.getByText(/Unconfirmed candidate from silhouette matching/)).toBeVisible();

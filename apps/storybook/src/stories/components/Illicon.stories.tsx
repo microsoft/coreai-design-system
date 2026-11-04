@@ -52,8 +52,9 @@ import { expect } from 'storybook/test';
 import { EmptyState } from '../templates/EmptyState';
 import { IlliconCatalog } from '../../illicons/IlliconCatalog';
 import { ConvertedIllicon } from '../../illicons/ConvertedIllicon';
+import { AiGatewayLogo20, FoundryLogo20 } from '../../illicons/customSvgSources';
 
-const iconOptions = {
+const fluentIconOptions = {
   Agents20: { filled: Agents20Filled, regular: Agents20Regular, nativeSize: 20 },
   Brain24: { filled: Brain24Filled, regular: Brain24Regular, nativeSize: 24 },
   Cube24: { filled: Cube24Filled, regular: Cube24Regular, nativeSize: 24 },
@@ -106,7 +107,7 @@ function IconComparison({
   multiplier,
   radius = 1,
   pitch = 5,
-}: SamplingProps & { icon: FluentIcon; label: string; nativeSize: number }) {
+}: SamplingProps & { icon: FluentIcon | string; label: string; nativeSize: number }) {
   const styles = useComparisonStyles();
   const columns = nativeSize * multiplier;
   const width = columns * pitch;
@@ -116,10 +117,20 @@ function IconComparison({
       <div className={styles.comparison}>
         <div className={styles.example}>
           <Text>Original</Text>
-          <Icon style={{ width, height: width }} aria-label={`Original ${label}`} />
+          {typeof Icon === 'string' ? (
+            <img
+              src={`data:image/svg+xml,${encodeURIComponent(Icon)}`}
+              width={width}
+              height={width}
+              alt={`Original ${label}`}
+            />
+          ) : (
+            <Icon style={{ width, height: width }} aria-label={`Original ${label}`} />
+          )}
           <Text>
             {label}: native {nativeSize} x {nativeSize}
           </Text>
+          {typeof Icon === 'string' ? <Text>Custom monochrome SVG source</Text> : null}
         </div>
         <div className={styles.example}>
           <Text>Illicon</Text>
@@ -172,8 +183,17 @@ export const Default: StoryObj<SamplingProps> = {
   },
 };
 
+const iconOptions = {
+  ...fluentIconOptions,
+  AiGatewayLogo20: { svg: AiGatewayLogo20, nativeSize: 20 },
+  FoundryLogo20: { svg: FoundryLogo20, nativeSize: 20 },
+};
+
 /**
- * Compare Filled and Regular icons at native-size sampling multiples.
+ * Compare Filled and Regular icons or custom monochrome SVG markup at
+ * native-size sampling multiples. AI Gateway and Foundry use their original
+ * 20px SVG strings, not Fluent icon replacements. SVG fill defaults to black;
+ * these sources set it explicitly. Filled/Regular applies only to Fluent icons.
  * Starts with the recommended native 20px source at 2x; other settings are
  * available for visual testing.
  * The multiplier changes occupancy resolution. Radius and pitch only change
@@ -193,11 +213,15 @@ export const OriginalVsIllicon: StoryObj<ComparisonProps> = {
   },
   argTypes: {
     icon: {
-      description: 'Fluent icon and its native 16px, 20px, or 24px dimensions.',
+      description: 'Fluent variant or custom SVG markup, with its native dimensions.',
       control: 'select',
       options: Object.keys(iconOptions),
     },
-    variant: { control: 'select', options: ['Filled', 'Regular'] },
+    variant: {
+      description: 'Applies only to Fluent icons; custom SVG sources keep their authored geometry.',
+      control: 'select',
+      options: ['Filled', 'Regular'],
+    },
     multiplier: {
       description: 'Defaults to the recommended 2x. Other whole-number scales are for comparison.',
       control: 'select',
@@ -214,56 +238,21 @@ export const OriginalVsIllicon: StoryObj<ComparisonProps> = {
     return (
       <IconComparison
         {...args}
-        icon={variant === 'Filled' ? source.filled : source.regular}
-        label={`${icon}${variant}`}
+        icon={'svg' in source ? source.svg : variant === 'Filled' ? source.filled : source.regular}
+        label={'svg' in source ? icon : `${icon}${variant}`}
         nativeSize={source.nativeSize}
       />
     );
   },
   play: async ({ canvas, args }) => {
-    const image = await canvas.findByRole('img', { name: `Illicon ${args.icon}${args.variant}` });
+    const source = iconOptions[args.icon];
+    const label = 'svg' in source ? args.icon : `${args.icon}${args.variant}`;
+    const image = await canvas.findByRole('img', { name: `Illicon ${label}` });
     await expect(image).toBeVisible();
     await expect(image.querySelector('svg')).toHaveAttribute(
       'width',
       String(iconOptions[args.icon].nativeSize * args.multiplier * (args.pitch ?? 5)),
     );
-    await expect(image.querySelector('circle')?.getBoundingClientRect().width).toBe(
-      (args.radius ?? 1) * 2,
-    );
-  },
-};
-
-const StrokedSvgIcon: FluentIcon = (props) => (
-  <svg {...props} role="img" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-    <rect x="4.5" y="4.5" width="15" height="15" rx="2" />
-    <circle cx="12" cy="12" r="4.5" />
-    <path d="M6.5 17.5 17.5 6.5" />
-  </svg>
-);
-
-/**
- * Real 1px SVG strokes, rather than outline-shaped filled paths. Compare
- * rectangles, curves, and a diagonal at 1x, 2x, 3x, or 4x sampling.
- *
- * @summary Convert actual SVG strokes, curves, and diagonal geometry to dots.
- */
-export const StrokedSvg: StoryObj<SamplingProps> = {
-  name: 'Stroked SVG',
-  args: { multiplier: 2, radius: 1, pitch: 5 },
-  argTypes: {
-    multiplier: { control: 'select', options: [1, 2, 3, 4] },
-    radius: { control: { type: 'range', min: 0.5, max: 2, step: 0.5 } },
-    pitch: { control: { type: 'range', min: 4, max: 12, step: 1 } },
-  },
-  parameters: {
-    controls: { disable: false, include: ['multiplier', 'radius', 'pitch'] },
-  },
-  render: (args: SamplingProps) => (
-    <IconComparison {...args} icon={StrokedSvgIcon} label="Stroked SVG" nativeSize={24} />
-  ),
-  play: async ({ canvas, args }) => {
-    const image = await canvas.findByRole('img', { name: 'Illicon Stroked SVG' });
-    await expect(image).toBeVisible();
     await expect(image.querySelector('circle')?.getBoundingClientRect().width).toBe(
       (args.radius ?? 1) * 2,
     );

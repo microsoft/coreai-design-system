@@ -101,12 +101,26 @@ whole pixel, with a minimum of 1. Each output dimension must be 1-256.
 
 The Storybook recreation comparison uses native 20px icons at 2x by default,
 with editable 16px/20px/24px sources and 1x-4x sampling for verification.
-Regular icons usually draw outlines with filled paths, so the separate stroked
-SVG example also tests actual SVG `stroke` geometry.
+Regular icons usually draw outlines with filled paths rather than SVG `stroke`
+attributes.
 
 Sources may be Fluent icon components, React SVG elements, `SVGSVGElement`s, or
 standalone SVG markup. A positive viewBox is required, or numeric/px width and
 height. Fractional dimensions and nonzero viewBox origins are supported.
+
+For custom monochrome source artwork, pass the SVG markup directly:
+
+```ts
+const source = '<svg viewBox="0 0 20 20" fill="#000000"><path d="M4 4h12v12H4z"/></svg>';
+const customGrid = await iconToDotGrid(source, { multiplier: 2 });
+```
+
+SVG defaults to black fill when no fill is specified. Explicit black fill makes
+the source's monochrome intent clear. Keep the background transparent: sampling
+uses alpha, so an opaque white background would also turn on dots. The comparison
+story includes AI Gateway and Foundry as SVG strings, not Fluent replacements.
+For a `.svg` file, load its text with the application's asset tooling and pass
+that markup to the same utility; a file URL is not SVG markup.
 
 ### Raster and SVG behavior
 

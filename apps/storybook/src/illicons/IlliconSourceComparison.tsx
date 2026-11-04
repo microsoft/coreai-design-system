@@ -55,6 +55,7 @@ import {
   type FluentIcon,
 } from '@fluentui/react-icons';
 import { ConvertedIllicon } from './ConvertedIllicon';
+import { AiGatewayLogo20, FoundryLogo20 } from './customSvgSources';
 import { rasterizeIconToDotGrid } from '../../../../packages/react-components/src/illicons/iconToDotGrid';
 
 type NativeIconSize = 16 | 20 | 24;
@@ -159,6 +160,11 @@ export const illiconSourceCandidates: readonly SourceCandidate[] = [
   },
 ];
 
+export const customSvgSourceCandidates = [
+  { id: 'ai-gateway', title: 'AI Gateway', source: AiGatewayLogo20 },
+  { id: 'foundry', title: 'Foundry', source: FoundryLogo20 },
+] as const;
+
 export type IlliconSourceComparisonProps = DotGridRenderOptions & {
   nativeSize?: NativeIconSize;
   multiplier?: number;
@@ -239,7 +245,7 @@ function RasterizedSource({
   radius,
   pitch,
 }: {
-  icon: FluentIcon;
+  icon: Parameters<typeof iconToDotGrid>[0];
   nativeSize: NativeIconSize;
   multiplier: number;
   title: string;
@@ -314,12 +320,17 @@ export function IlliconSourceComparison({
         cells. Other native sizes and multipliers are available here for visual testing.
       </p>
       <p>
-        Originals remain unchanged at 140 x 140px. Generated versions use {columns} x {columns}{' '}
-        cells ({multiplier}x native {nativeSize}px), {radius * 2}px dots, {pitch}px pitch, and{' '}
-        {width} x {width}px output. Canvas raster: {columns} x {columns}px, one pixel per cell at a
-        50% alpha threshold. The actual sampling canvas is shown before thresholding, enlarged{' '}
-        {pitch}x without smoothing on a white background. Gray edge pixels show partial alpha. This
-        compares shapes, not exact designer placement or dot occupancy.
+        Originals remain unchanged at 140 x 140px. Fluent versions use {columns} x {columns} cells (
+        {multiplier}x native {nativeSize}px), {radius * 2}px dots, {pitch}px pitch, and {width} x{' '}
+        {width}px output. Canvas raster: {columns} x {columns}px, one pixel per cell at a 50% alpha
+        threshold. The actual sampling canvas is shown before thresholding, enlarged {pitch}x
+        without smoothing on a white background. Gray edge pixels show partial alpha. This compares
+        shapes, not exact designer placement or dot occupancy.
+      </p>
+      <p>
+        AI Gateway and Foundry are sampled from their authored monochrome SVG strings, not Fluent
+        icons. Their viewBoxes remain 20 x 20 at every native-size setting; the multiplier applies
+        to both SVG and Fluent sources.
       </p>
       {illiconSourceCandidates.map(({ id, title, icons, source, variant = 'Filled', note }) => {
         const Icon = icons[nativeSize];
@@ -354,11 +365,35 @@ export function IlliconSourceComparison({
           </section>
         );
       })}
-      {(['ai-gateway', 'foundry'] as const).map((id) => (
-        <section key={id} aria-label={`${id} custom artwork`}>
-          <h2>{id === 'ai-gateway' ? 'AI Gateway' : 'Foundry'}</h2>
-          <p>Custom logo: original preserved; no Fluent source or generated replacement.</p>
-          {original(id)}
+      {customSvgSourceCandidates.map(({ id, title, source }) => (
+        <section key={id} className={styles.row} aria-label={`${title} source comparison`}>
+          <h2>{title}</h2>
+          <p>Custom SVG source: native 20 x 20, explicit black fill, transparent background.</p>
+          <div className={styles.examples}>
+            <figure className={styles.example}>
+              <figcaption>Original SVG: 140px</figcaption>
+              {original(id)}
+            </figure>
+            <figure className={styles.example}>
+              <figcaption>Custom SVG source</figcaption>
+              <img
+                src={`data:image/svg+xml,${encodeURIComponent(source)}`}
+                width={20 * multiplier * pitch}
+                height={20 * multiplier * pitch}
+                alt={`Custom SVG source ${title}`}
+                className={mergeClasses(styles.original, styles[mode])}
+              />
+            </figure>
+            <RasterizedSource
+              key={multiplier}
+              icon={source}
+              nativeSize={20}
+              multiplier={multiplier}
+              title={title}
+              radius={radius}
+              pitch={pitch}
+            />
+          </div>
         </section>
       ))}
     </div>

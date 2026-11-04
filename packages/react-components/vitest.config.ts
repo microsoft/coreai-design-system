@@ -13,7 +13,12 @@ export default defineConfig({
     dedupe: ['react', 'react-dom'],
   },
   optimizeDeps: {
-    include: ['react/jsx-dev-runtime', 'react-router-dom'],
+    include: [
+      'react/jsx-dev-runtime',
+      'react-router-dom',
+      '@coreai-ds/storybook > @storybook/react-vite',
+      '@coreai-ds/storybook > storybook/test',
+    ],
   },
   test: {
     include: ['src/**/*.test.{ts,tsx}', '../../apps/storybook/src/test/**/*.test.{ts,tsx}'],
