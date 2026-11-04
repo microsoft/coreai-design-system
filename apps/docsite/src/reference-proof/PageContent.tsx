@@ -143,9 +143,7 @@ function ShowcaseToolbar({
             </MenuList>
           </MenuPopover>
         </Menu>
-      ) : (
-        <span className="reference-showcase-toolbar__label">Example: {selectedOption.label}</span>
-      )}
+      ) : null}
       {resources.length ? (
         <span className="reference-showcase-toolbar__actions">
           {resources.map((resource) => (

@@ -648,7 +648,7 @@ export function PageTabs({
           </Tab>
         ))}
       </TabList>
-      {exampleGroup && selectedSampleExample
+      {exampleGroup && selectedSampleExample && exampleGroup.options.length > 1
         ? createPortal(
             <SampleSelector
               group={exampleGroup}
