@@ -1667,11 +1667,11 @@ code:not(pre code) {
   stroke-width: 3px;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: content-connector-trace 500ms linear both;
+  animation: content-connector-trace 250ms linear both;
 }
 
 .content-principle-connector__reveal--branch {
-  animation-duration: 280ms;
+  animation-duration: 140ms;
   animation-timing-function: ease-out;
 }
 

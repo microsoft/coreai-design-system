@@ -77,7 +77,7 @@ export function ContentPrincipleConnector() {
                     animationDelay: `${
                       (Math.max(0, branch.y - 12 - graph.start) /
                         Math.max(1, stemEnd - graph.start)) *
-                      500
+                      250
                     }ms`,
                   }}
                 />
