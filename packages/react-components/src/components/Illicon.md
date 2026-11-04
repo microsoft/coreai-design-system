@@ -45,49 +45,88 @@ neutral foreground color and can be overridden with CSS.
 Conversion is an asynchronous, browser-only preparation step, not part of rendering.
 Import it from the main package alongside the renderer and SVG exporter:
 
+### Recommended standard: native 20px at 2x
+
+For new Fluent-based Illicons, use the actual native **20px icon at 2x**.
+This produces a **40 x 40 canvas and occupancy grid**. Prefer Filled icons;
+use Regular when the illustration needs an outline. Do not resize a 16px or
+24px variant to imitate the 20px source.
+
+Keep the default radius of 1px and pitch of 5px unless the design needs a
+different rendering treatment. This gives a 200 x 200px illustration with 2px
+dots. Save the occupancy after preparation; applications need not run conversion
+each time the illustration renders.
+
 ```ts
-import { Heart24Filled } from '@fluentui/react-icons';
+import { Scales20Filled } from '@fluentui/react-icons';
 import { iconToDotGrid } from '@coreai-ds/react-components';
 
-const heart = await iconToDotGrid(Heart24Filled, { columns: 24 });
-// Save as JSON or reuse the result. Pass heart to <Illicon data={heart} />.
+const scales = await iconToDotGrid(Scales20Filled, { multiplier: 2 });
+// multiplier: 2 is the default, so omitting the options gives the same grid.
+// Save as JSON or reuse the result. Pass scales to <Illicon data={scales} />.
 ```
 
-For Fluent icons, prefer integer multiples of the native SVG dimensions:
+Source coordinates on half-pixels become whole pixels at 2x. Curves and other
+fractional geometry can still anti-alias; this is not a guarantee of sharpness
+for every source.
+
+### Other sampling settings
+
+The converter reads source dimensions from the SVG's `viewBox`, not its component
+name or display size. Without a viewBox it uses numeric/px width and height.
+`multiplier` defaults to 2 and can be any whole number from 1 to 256, provided
+the resulting dimensions fit the 256-cell limit. Other native sizes and
+multipliers remain supported for custom needs and visual testing; they do not
+replace the recommended 20px-at-2x standard:
 
 | Native icon | 1x grid | 2x grid | 3x grid |
 | ----------- | ------- | ------- | ------- |
 | 16 x 16     | 16 x 16 | 32 x 32 | 48 x 48 |
+| 20 x 20     | 20 x 20 | 40 x 40 | 60 x 60 |
 | 24 x 24     | 24 x 24 | 48 x 48 | 72 x 72 |
-
-A 24px icon sampled at 2x produces 48 x 48 cells. With pitch 5, it renders at
-240 x 240 CSS pixels; radius 1 still produces 2px circles.
 
 ```ts
 import { Heart16Regular } from '@fluentui/react-icons';
 
-const multiplier = 2;
-const outline = await iconToDotGrid(Heart16Regular, { columns: 16 * multiplier });
+const outline = await iconToDotGrid(Heart16Regular, { multiplier: 3 });
+// 48 x 48 cells.
 ```
 
-These multiples are guidance, not a restriction. The converter continues to
-accept arbitrary valid grid dimensions for custom artwork or experimentation.
-Use explicit columns for native sizes other than 24; the default remains 24.
-The Storybook comparison offers native 16px, 20px, and 24px Filled/Regular pairs
-with 1x-4x sampling. Regular icons usually draw outlines with filled paths, so
-the separate stroked SVG example also tests actual SVG `stroke` geometry.
+For arbitrary grid sizes, use explicit `columns` and/or `rows` instead of
+`multiplier`. These remain supported; do not combine the two sampling modes.
+With explicit columns, omitted rows follow the source aspect ratio, rounded
+to whole cells. With rows alone, width still defaults to source width times 2.
+Fractional source dimensions times the multiplier are rounded to the nearest
+whole pixel, with a minimum of 1. Each output dimension must be 1-256.
+
+The Storybook recreation comparison uses native 20px icons at 2x by default,
+with editable 16px/20px/24px sources and 1x-4x sampling for verification.
+Regular icons usually draw outlines with filled paths, so the separate stroked
+SVG example also tests actual SVG `stroke` geometry.
 
 Sources may be Fluent icon components, React SVG elements, `SVGSVGElement`s, or
 standalone SVG markup. A positive viewBox is required, or numeric/px width and
 height. Fractional dimensions and nonzero viewBox origins are supported.
 
-`columns` defaults to 24. `rows` defaults to the source aspect ratio, rounded to
-whole cells. Both are limited to 1-256. Explicit rows use the SVG's
-`preserveAspectRatio` behavior to fit the artwork into that viewport. Each cell
-samples alpha at its center using an internal 5-pixel-per-cell raster. This
-sampling detail is unrelated to rendering pitch or circle diameter. `alphaThreshold`
-defaults to 128 (approximately 50% opacity) and accepts integers from 1 to 255.
-The output always retains every requested row and column, even when entirely empty.
+### Raster and SVG behavior
+
+Explicit rows use the SVG's `preserveAspectRatio` behavior to fit the artwork
+into that viewport. The browser
+renders directly into a canvas of `columns` by `rows` pixels, one pixel per cell:
+a 20px icon at 1x uses a 20 x 20 raster; at 2x it uses 40 x 40. There is no larger
+intermediate raster or center-point subsampling. A cell is occupied when its
+pixel alpha reaches `alphaThreshold`, which defaults to 128 (approximately 50%
+coverage/opacity) and accepts integers from 1 to 255. Anti-aliasing and source
+opacity both affect alpha. This sampling is unrelated to rendering pitch or
+circle diameter. The output always retains every requested row and column,
+even when entirely empty.
+
+This differs from the earlier fixed-24-cell default and supersampled center-point
+approach; regenerating data can change grid dimensions and dots near edges or
+thin features. Previously saved data is unchanged. Rasterizing an exported
+dotted SVG is not a lossless grid-data import: small dots may cover less than
+the threshold of a pixel. Reuse saved occupancy
+when exact grid preservation is required.
 
 The browser renders static vector shapes, paths, strokes, transforms, and local
 definitions such as gradients, masks, and clipping paths. External styles are not
