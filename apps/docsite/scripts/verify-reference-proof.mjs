@@ -1010,7 +1010,7 @@ try {
   );
   await page
     .getByRole('navigation', { name: 'Documentation', exact: true })
-    .getByRole('tab', { name: 'Button', exact: true })
+    .getByRole('tab', { name: 'Field', exact: true })
     .click();
   await page.waitForFunction(() => globalThis.document.documentElement.dataset.theme === 'dark');
   assert.equal(await page.locator('#reference-root > .coreai-docsite-provider').count(), 1);
@@ -1033,12 +1033,12 @@ try {
       .setAttribute('data-sidebar-sentinel', 'persistent');
     return globalThis.performance.timeOrigin;
   });
-  await page.locator('#main').getByRole('tab', { name: 'Samples', exact: true }).click();
+  await page.locator('#main').getByRole('tab', { name: 'Guidance', exact: true }).click();
   await page
     .locator('#main')
-    .getByRole('link', { name: 'Setup and dependencies', exact: true })
+    .getByRole('link', { name: 'Dropdown guidance', exact: true })
     .click();
-  await page.getByRole('heading', { name: 'NPM package', exact: true }).waitFor();
+  await page.getByRole('heading', { name: 'Dropdown', exact: true }).waitFor();
   await page.locator('[data-reference-ready="true"]').waitFor();
   assert.equal(
     await page.evaluate(() => globalThis.performance.timeOrigin),
@@ -1046,7 +1046,7 @@ try {
     'Links inside static article content use the same router',
   );
   await page.goBack();
-  await page.getByRole('heading', { name: 'Button', exact: true }).waitFor();
+  await page.getByRole('heading', { name: 'Field', exact: true }).waitFor();
   await page.locator('[data-reference-ready="true"]').waitFor();
   const templates = navigation.getByRole('button', { name: 'Templates', exact: true });
   if ((await templates.getAttribute('aria-expanded')) === 'true') await templates.click();
@@ -1075,7 +1075,7 @@ try {
   );
 
   await page.goBack();
-  await page.getByRole('heading', { name: 'Button', exact: true }).waitFor();
+  await page.getByRole('heading', { name: 'Field', exact: true }).waitFor();
   await page.locator('[data-reference-ready="true"]').waitFor();
   await page.waitForFunction(
     (expected) => Math.abs(globalThis.document.querySelector('.app-page').scrollTop - expected) < 2,
