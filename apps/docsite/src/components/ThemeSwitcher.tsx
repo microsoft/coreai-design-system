@@ -35,7 +35,7 @@ export function ThemeSwitcher({ isApplePlatform }: { isApplePlatform: boolean })
     ['Next page', `${modifierSymbol}↓`, `${modifier} Down arrow`],
     ['Collapse all sections', `${primarySymbol}⇧↑`, `${primary} Shift Up arrow`],
     ['Expand all sections', `${primarySymbol}⇧↓`, `${primary} Shift Down arrow`],
-    ['Switch theme', `${modifierSymbol}M`, `${modifier} M`],
+    ['Switch color mode', `${modifierSymbol}M`, `${modifier} M`],
     ['Search navigation', `${primarySymbol}K`, `${primary} K`],
   ];
 
@@ -81,9 +81,9 @@ export function ThemeSwitcher({ isApplePlatform }: { isApplePlatform: boolean })
             <Tab value="dark">Dark</Tab>
             <Tab value="light">Light</Tab>
           </TabList>
-          <Field className="docsite-settings__brand-field" label="Product color palette">
+          <Field className="docsite-settings__brand-field" label="Theme">
             <Dropdown
-              id="docsite-product-color-palette"
+              id="docsite-theme"
               className="docsite-settings__brand"
               size="medium"
               style={{ width: '100%', minWidth: 0, maxWidth: '100%' }}

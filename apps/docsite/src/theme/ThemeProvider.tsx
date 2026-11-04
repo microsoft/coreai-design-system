@@ -6,6 +6,12 @@ import {
   CoreAIFluentProvider,
   coreaiLightTheme,
   coreaiDarkTheme,
+  coreaiBrandVariants,
+  azureLightTheme,
+  azureDarkTheme,
+  azureBrandVariants,
+  type BrandVariants,
+  type CoreAITheme,
 } from '@coreai-ds/react-components';
 
 export type ThemeMode = 'light' | 'dark';
@@ -15,10 +21,17 @@ export type BrandPreference = 'coreai' | 'azure';
 const STORAGE_KEY = 'coreai-docsite-theme';
 const BRAND_STORAGE_KEY = 'coreai-docsite-brand';
 
+const brands = {
+  coreai: { light: coreaiLightTheme, dark: coreaiDarkTheme, variants: coreaiBrandVariants },
+  azure: { light: azureLightTheme, dark: azureDarkTheme, variants: azureBrandVariants },
+};
+
 interface ThemeContextValue {
   preference: ThemePreference;
   mode: ThemeMode;
   brand: BrandPreference;
+  theme: CoreAITheme;
+  brandVariants: BrandVariants;
   setPreference: (preference: ThemePreference) => void;
   setBrand: (brand: BrandPreference) => void;
 }
@@ -49,6 +62,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [preference, setPreferenceState] = React.useState<ThemePreference>(readStoredPreference);
   const [brand, setBrandState] = React.useState<BrandPreference>(readStoredBrand);
   const mode = preference;
+  const theme = brands[brand][mode];
+  const brandVariants = brands[brand].variants;
 
   React.useEffect(() => {
     const systemTheme = window.matchMedia('(prefers-color-scheme: light)');
@@ -69,6 +84,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     root.classList.add('theme-transitioning');
     root.dataset.theme = mode;
     root.dataset.themePreference = preference;
+    root.dataset.brand = brand;
     root.style.colorScheme = mode;
     let restoreFrame = 0;
     const paintFrame = requestAnimationFrame(() => {
@@ -79,7 +95,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       cancelAnimationFrame(restoreFrame);
       root.classList.remove('theme-transitioning');
     };
-  }, [mode, preference]);
+  }, [mode, preference, brand]);
 
   const setPreference = React.useCallback((next: ThemePreference) => {
     setPreferenceState(next);
@@ -92,11 +108,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const value = React.useMemo<ThemeContextValue>(
-    () => ({ preference, mode, brand, setPreference, setBrand }),
-    [preference, mode, brand, setPreference, setBrand],
+    () => ({ preference, mode, brand, theme, brandVariants, setPreference, setBrand }),
+    [preference, mode, brand, theme, brandVariants, setPreference, setBrand],
   );
-
-  const theme = mode === 'dark' ? coreaiDarkTheme : coreaiLightTheme;
 
   return (
     <ThemeContext.Provider value={value}>

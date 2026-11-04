@@ -6,6 +6,7 @@ import { EffectComposer } from '@react-three/postprocessing';
 import { OrbitControls, RoundedBox } from '@react-three/drei';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import type { Group } from 'three';
+import type { BrandVariants } from '@coreai-ds/react-components';
 import { useThemeMode } from '../theme/ThemeProvider';
 import { PaperDithering } from './paper-dithering';
 import { PaperHeatmap } from './paper-heatmap';
@@ -66,16 +67,22 @@ function useCanvasRuntime() {
   };
 }
 
-function StaticLighting({ monochrome = false }: { monochrome?: boolean }) {
+function StaticLighting({
+  monochrome = false,
+  brandVariants,
+}: {
+  monochrome?: boolean;
+  brandVariants: BrandVariants;
+}) {
   return (
     <>
       <ambientLight intensity={0.22} />
-      <hemisphereLight args={['#FFFFFF', monochrome ? '#090909' : '#09070D', 0.6]} />
+      <hemisphereLight args={['#FFFFFF', monochrome ? '#090909' : brandVariants[10], 0.6]} />
       <pointLight position={[-4.5, 5.5, 8]} intensity={110} distance={24} decay={2} />
       <directionalLight
         position={[4, -3, 2]}
         intensity={0.25}
-        color={monochrome ? '#FFFFFF' : '#D8C9FF'}
+        color={monochrome ? '#FFFFFF' : brandVariants[150]}
       />
       <directionalLight position={[-2, 4, -5]} intensity={0.65} />
     </>
@@ -146,7 +153,7 @@ function LogoCubeMesh({
 }
 
 export function CoreAILogoCube({ monochrome = false }: { monochrome?: boolean }) {
-  const { mode } = useThemeMode();
+  const { mode, brandVariants } = useThemeMode();
   const { containerRef, shouldRender } = useCanvasRuntime();
   const [isReady, setIsReady] = React.useState(false);
   const handleReady = React.useCallback(() => setIsReady(true), []);
@@ -178,7 +185,7 @@ export function CoreAILogoCube({ monochrome = false }: { monochrome?: boolean })
         frameloop={shouldRender ? 'always' : 'never'}
         gl={{ alpha: true, antialias: true }}
       >
-        <StaticLighting monochrome={monochrome} />
+        <StaticLighting monochrome={monochrome} brandVariants={brandVariants} />
         <LogoCubeMesh
           reduceMotion={reduceMotion}
           onReady={handleReady}
@@ -190,7 +197,11 @@ export function CoreAILogoCube({ monochrome = false }: { monochrome?: boolean })
           </EffectComposer>
         ) : (
           <EffectComposer multisampling={0}>
-            <PaperHeatmap reduceMotion={reduceMotion} lightMode={mode === 'light'} />
+            <PaperHeatmap
+              reduceMotion={reduceMotion}
+              lightMode={mode === 'light'}
+              brandVariants={brandVariants}
+            />
             <PaperDithering />
           </EffectComposer>
         )}

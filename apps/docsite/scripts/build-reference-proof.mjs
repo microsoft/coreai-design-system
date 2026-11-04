@@ -440,8 +440,7 @@ export function componentPageGuidanceHtml(page, metadata) {
 
 export function initialThemeStyles(themes, stylesheets) {
   const referencedTokens = [...stylesheets.matchAll(/var\(--([\w-]+)/g)].map((match) => match[1]);
-  function declarations(mode) {
-    const theme = themes[mode];
+  function declarations(theme, mode) {
     const pending = [
       ...referencedTokens,
       'colorNeutralBackground1',
@@ -462,9 +461,14 @@ export function initialThemeStyles(themes, stylesheets) {
       `color-scheme:${mode}`,
     ].join(';');
   }
-  const light = declarations('light');
-  const dark = declarations('dark');
-  return `:root{${light}}:root[data-theme="dark"]{${dark}}@media(prefers-color-scheme:dark){:root:not([data-theme]){${dark}}}`;
+  return Object.entries(themes)
+    .map(([brand, modes]) => {
+      const selector = brand === 'coreai' ? ':root' : `:root[data-brand="${brand}"]`;
+      const light = declarations(modes.light, 'light');
+      const dark = declarations(modes.dark, 'dark');
+      return `${selector}{${light}}${selector}[data-theme="dark"]{${dark}}@media(prefers-color-scheme:dark){${selector}:not([data-theme]){${dark}}}`;
+    })
+    .join('');
 }
 
 function shell(title, body, metadata, assets, navigation, currentPath = '') {
@@ -481,7 +485,12 @@ function shell(title, body, metadata, assets, navigation, currentPath = '') {
 (() => {
   const root = document.documentElement;
   let stored;
-  try { stored = localStorage.getItem('coreai-docsite-theme'); } catch { stored = null; }
+  let brand;
+  try {
+    stored = localStorage.getItem('coreai-docsite-theme');
+    brand = localStorage.getItem('coreai-docsite-brand');
+  } catch { stored = null; brand = null; }
+  root.dataset.brand = brand === 'azure' ? 'azure' : 'coreai';
   root.dataset.theme = stored === 'light' || stored === 'dark'
     ? stored
     : matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
@@ -774,12 +783,16 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
   const entry = Object.values(manifest).find((entry) => entry.isEntry);
   if (!entry) throw new Error('Reference proof bundle has no entry point.');
   const assets = { entry: entry.file, css: entry.css ?? [] };
-  const { coreaiLightTheme, coreaiDarkTheme } = await import('@coreai-ds/react-components');
+  const { coreaiLightTheme, coreaiDarkTheme, azureLightTheme, azureDarkTheme } =
+    await import('@coreai-ds/react-components');
   const stylesheets = await Promise.all(
     assets.css.map((filename) => fs.readFile(path.join(outDir, filename), 'utf8')),
   );
   assets.initialThemeStyles = initialThemeStyles(
-    { light: coreaiLightTheme, dark: coreaiDarkTheme },
+    {
+      coreai: { light: coreaiLightTheme, dark: coreaiDarkTheme },
+      azure: { light: azureLightTheme, dark: azureDarkTheme },
+    },
     stylesheets.join('\n'),
   );
   const write = async (filename, content) => {

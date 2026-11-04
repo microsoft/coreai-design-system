@@ -256,14 +256,17 @@ test('illustration uses Paper dithering and stationary lights without tuning con
     fs.readFile(new URL('apps/docsite/src/styles/docsite.css', repoRoot), 'utf8'),
   ]);
   assert.doesNotMatch(home + styles, /LogoControls|logo-controls/);
-  assert.match(logo, /<StaticLighting monochrome=\{monochrome\} \/>\s*<LogoCubeMesh/);
+  assert.match(
+    logo,
+    /<StaticLighting monochrome=\{monochrome\} brandVariants=\{brandVariants\} \/>\s*<LogoCubeMesh/,
+  );
   assert.doesNotMatch(logo.match(/<group[\s\S]*?<\/group>/)?.[0] ?? '', /StaticLighting/);
   assert.match(logo, /if \(!reduceMotion\) animationTimeRef\.current \+=/);
   assert.match(logo, /scale: 1\.19 \* 1\.25/);
   assert.match(logo, /const rotationSpeed = 0\.18 \* 0\.67 \* 0\.67;/);
   assert.match(
     logo,
-    /<PaperHeatmap reduceMotion=\{reduceMotion\} lightMode=\{mode === 'light'\} \/>\s*<PaperDithering \/>/,
+    /<PaperHeatmap\s+reduceMotion=\{reduceMotion\}\s+lightMode=\{mode === 'light'\}\s+brandVariants=\{brandVariants\}\s*\/>\s*<PaperDithering \/>/,
   );
   assert.doesNotMatch(logo, /ditherFragmentShader|OrderedDither|OutputLevels|bayer4|dotMask/);
   assert.match(adapter, /imageDitheringFragmentShader \} from '@paper-design\/shaders'/);
@@ -295,34 +298,28 @@ test('Paper heatmap prepares live channels and preserves the original cube surfa
   assert.match(source, /vec4\(heat \* surface\.a, surface\.a\)/);
   assert.doesNotMatch(source, /heat \* surface\.rgb|heat \* lighting/);
   assert.match(source, /lessThanEqual\(abs\(heat - u_base\.rgb\), vec3\(0\.012\)\)/);
-  assert.match(source, /pass\.setLightMode\(lightMode\)/);
+  assert.match(source, /pass\.setTheme\(lightMode, brandVariants\)/);
   assert.match(source, /if \(!reduceMotion\) pass\.time\.value \+=/);
   assert.match(source, /pass\.time\.value \+= Math\.min\(delta, 0\.1\) \* 0\.67/);
   assert.match(source, /stage\.dispose\(\)/);
   assert.match(source, /buffer\.dispose\(\)/);
-  assert.equal((source.match(/coreaiDarkTheme\.colorNeutralBackground6/g) ?? []).length, 2);
-  assert.match(source, /coreaiBrandVariants\[80\]/);
-  for (const mode of ['dark', 'light']) {
-    const palette = source
-      .match(new RegExp(`const ${mode}Colors = \\[([\\s\\S]*?)\\n\\];`))[1]
-      .split(',')
-      .map((color) => color.trim())
-      .filter(Boolean);
-    assert.equal(palette.length, 10);
-    assert.equal(
-      palette[0],
-      mode === 'dark'
-        ? 'coreaiDarkTheme.colorNeutralBackground6'
-        : 'coreaiLightTheme.colorNeutralBackground1',
-    );
-    assert.deepEqual(palette.slice(0, 2), Array(2).fill(palette[0]));
-    assert.equal(palette[2], '`${coreaiBrandVariants[140]}1f`');
-    assert.deepEqual(
-      palette.slice(3),
-      [140, 130, 110, 100, 80, 80, 80].map((tone) => `coreaiBrandVariants[${tone}]`),
-    );
-  }
-  assert.doesNotMatch(source, /azureBrandVariants/);
+  assert.match(
+    source,
+    /lightMode\s*\? coreaiLightTheme\.colorNeutralBackground1\s*: coreaiDarkTheme\.colorNeutralBackground6/,
+  );
+  const palette = source
+    .match(/const colors = \[([\s\S]*?)\n\s*\];/)[1]
+    .split(',')
+    .map((color) => color.trim())
+    .filter(Boolean);
+  assert.equal(palette.length, 10);
+  assert.deepEqual(palette.slice(0, 2), ['background', 'background']);
+  assert.equal(palette[2], '`${brandVariants[140]}1f`');
+  assert.deepEqual(
+    palette.slice(3),
+    [140, 130, 110, 100, 80, 80, 80].map((tone) => `brandVariants[${tone}]`),
+  );
+  assert.doesNotMatch(source, /coreaiBrandVariants|azureBrandVariants/);
   assert.doesNotMatch(source, /coreaiDarkTheme\.colorNeutralForeground1/);
   assert.doesNotMatch(source, /coreaiDarkTheme\.colorNeutralForeground[34]/);
   assert.match(source, /u_contour: new Uniform\(1\)/);
@@ -659,10 +656,7 @@ test('settings uses compact Fluent controls with expandable shortcuts', async ()
   assert.match(settings, /<TabList\s+aria-label="Color mode"[\s\S]*Keyboard shortcuts/);
   assert.match(settings, /appearance="elevated"/);
   assert.match(settings, /<Tab value="dark">Dark<\/Tab>\s*<Tab value="light">Light<\/Tab>/);
-  assert.match(
-    settings,
-    /<Field className="docsite-settings__brand-field" label="Product color palette">/,
-  );
+  assert.match(settings, /<Field className="docsite-settings__brand-field" label="Theme">/);
   assert.match(settings, /className="docsite-settings__brand"\s+size="medium"/);
   assert.match(settings, /<Option value="coreai">CoreAI purple<\/Option>/);
   assert.match(settings, /<Option value="azure">Azure blue<\/Option>/);

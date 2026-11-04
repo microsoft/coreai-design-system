@@ -2,11 +2,7 @@
 // Licensed under the MIT license.
 
 import * as React from 'react';
-import {
-  coreaiBrandVariants,
-  coreaiDarkTheme,
-  coreaiLightTheme,
-} from '@coreai-ds/react-components';
+import { coreaiDarkTheme, coreaiLightTheme, type BrandVariants } from '@coreai-ds/react-components';
 import {
   getShaderColorFromString,
   heatmapFragmentShader,
@@ -25,32 +21,6 @@ import {
   type WebGLRenderer,
 } from 'three';
 
-// Cold to hot: theme background, faint lavender, then saturated purple.
-// The first lavender stop's hex alpha (1f) keeps the disappearing edges subtle.
-const darkColors = [
-  coreaiDarkTheme.colorNeutralBackground6,
-  coreaiDarkTheme.colorNeutralBackground6,
-  `${coreaiBrandVariants[140]}1f`,
-  coreaiBrandVariants[140],
-  coreaiBrandVariants[130],
-  coreaiBrandVariants[110],
-  coreaiBrandVariants[100],
-  coreaiBrandVariants[80],
-  coreaiBrandVariants[80],
-  coreaiBrandVariants[80],
-];
-const lightColors = [
-  coreaiLightTheme.colorNeutralBackground1,
-  coreaiLightTheme.colorNeutralBackground1,
-  `${coreaiBrandVariants[140]}1f`,
-  coreaiBrandVariants[140],
-  coreaiBrandVariants[130],
-  coreaiBrandVariants[110],
-  coreaiBrandVariants[100],
-  coreaiBrandVariants[80],
-  coreaiBrandVariants[80],
-  coreaiBrandVariants[80],
-];
 const vertexShader = `
   precision highp float;
   in vec3 position;
@@ -93,9 +63,7 @@ function target() {
 
 export class PaperHeatmapPass extends Pass {
   readonly time = new Uniform(0);
-  private readonly palette = darkColors.map(
-    (color) => new Vector4(...getShaderColorFromString(color)),
-  );
+  private readonly palette = Array.from({ length: 10 }, () => new Vector4());
   private readonly source = target();
   private readonly contour = target();
   private readonly outer = target();
@@ -199,8 +167,23 @@ export class PaperHeatmapPass extends Pass {
     );
   }
 
-  setLightMode(lightMode: boolean) {
-    const colors = lightMode ? lightColors : darkColors;
+  setTheme(lightMode: boolean, brandVariants: BrandVariants) {
+    const background = lightMode
+      ? coreaiLightTheme.colorNeutralBackground1
+      : coreaiDarkTheme.colorNeutralBackground6;
+    // Keep the soft edges and heat distribution when switching brand palettes.
+    const colors = [
+      background,
+      background,
+      `${brandVariants[140]}1f`,
+      brandVariants[140],
+      brandVariants[130],
+      brandVariants[110],
+      brandVariants[100],
+      brandVariants[80],
+      brandVariants[80],
+      brandVariants[80],
+    ];
     this.palette.forEach((color, index) => color.set(...getShaderColorFromString(colors[index])));
   }
 
@@ -267,12 +250,17 @@ export class PaperHeatmapPass extends Pass {
 export function PaperHeatmap({
   reduceMotion,
   lightMode,
+  brandVariants,
 }: {
   reduceMotion: boolean;
   lightMode: boolean;
+  brandVariants: BrandVariants;
 }) {
   const pass = React.useMemo(() => new PaperHeatmapPass(), []);
-  React.useLayoutEffect(() => pass.setLightMode(lightMode), [pass, lightMode]);
+  React.useLayoutEffect(
+    () => pass.setTheme(lightMode, brandVariants),
+    [pass, lightMode, brandVariants],
+  );
   useFrame((_, delta) => {
     if (!reduceMotion) pass.time.value += Math.min(delta, 0.1) * 0.67;
   });

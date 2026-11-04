@@ -453,15 +453,14 @@ function AccessibilityCards() {
 }
 
 export function Colors() {
-  const { mode } = useThemeMode();
-  const [brandId, setBrandId] = React.useState<BrandId>('coreai');
+  const { mode, brand: brandId, setBrand } = useThemeMode();
   const brand = brands[brandId];
   const theme = mode === 'dark' ? brand.darkTheme : brand.lightTheme;
   const surfaceRows = getColorRows(theme, surfaceTokens);
   const textRows = getColorRows(theme, textTokens);
 
   const onBrandSelect = (_event: SelectTabEvent, data: SelectTabData) => {
-    setBrandId(data.value as BrandId);
+    setBrand(data.value as BrandId);
   };
 
   return (

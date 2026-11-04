@@ -14,7 +14,6 @@ import {
   Option,
   SearchBox,
   Text,
-  coreaiBrandVariants,
   coreaiDarkTheme,
   coreaiLightTheme,
   createTableColumn,
@@ -32,6 +31,7 @@ import {
   WeatherSunny16Regular,
 } from '@fluentui/react-icons';
 import type { PageWidgetProps } from './FoundationViews';
+import { useThemeMode } from '../theme/ThemeProvider';
 import './intro-feature-cards.css';
 
 function makeInert(element: HTMLDivElement | null) {
@@ -47,6 +47,7 @@ function SceneCursor({ kind }: { kind: string }) {
 }
 
 function FoundationsScene() {
+  const { brandVariants } = useThemeMode();
   return (
     <div className="intro-foundation-board">
       <div
@@ -80,7 +81,7 @@ function FoundationsScene() {
               style={
                 {
                   '--swatch-index': index - 2,
-                  background: coreaiBrandVariants[step as keyof typeof coreaiBrandVariants],
+                  background: brandVariants[step as keyof typeof brandVariants],
                 } as React.CSSProperties
               }
             >

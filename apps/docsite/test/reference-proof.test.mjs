@@ -41,7 +41,7 @@ test('initial paint uses the active CoreAI tokens, including referenced token al
     colorNeutralBackground6: '#000102',
   };
   const styles = initialThemeStyles(
-    { light, dark },
+    { coreai: { light, dark } },
     'h1{color:var(--colorNeutralForeground1)}main{border-color:var(--colorNeutralStrokeSubtle);color:var(--mf-text-low)}',
   );
   assert.match(styles, /:root\{[^}]*--colorNeutralForeground1:#102030/);
@@ -53,6 +53,43 @@ test('initial paint uses the active CoreAI tokens, including referenced token al
   assert.match(styles, /background:var\(--colorNeutralBackground6\)/);
   assert.match(styles, /@media\(prefers-color-scheme:dark\)\{:root:not\(\[data-theme\]\)/);
   assert.doesNotMatch(styles, /--mf-text-low:|--colorBrandBackground:/);
+});
+
+test('initial paint includes each brand in both color modes and the system fallback', () => {
+  const themes = Object.fromEntries(
+    ['coreai', 'azure'].map((brand) => [
+      brand,
+      Object.fromEntries(
+        ['light', 'dark'].map((mode) => [
+          mode,
+          {
+            colorBrandBackground: `${brand}-${mode}`,
+            colorNeutralBackground1: 'neutral-light',
+            colorNeutralBackground6: 'neutral-dark',
+            colorNeutralForeground2: 'neutral-text',
+          },
+        ]),
+      ),
+    ]),
+  );
+  const styles = initialThemeStyles(themes, 'button{background:var(--colorBrandBackground)}');
+  for (const brand of ['coreai', 'azure']) {
+    const root = brand === 'coreai' ? ':root' : ':root[data-brand="azure"]';
+    const rules = [
+      [root, 'light'],
+      [`${root}[data-theme="dark"]`, 'dark'],
+      [`@media(prefers-color-scheme:dark){${root}:not([data-theme])`, 'dark'],
+    ];
+    for (const [selector, mode] of rules) {
+      const rule = styles.split(`${selector}{`)[1]?.split('}')[0];
+      assert.ok(rule, `${brand} ${mode} selector is present`);
+      assert.ok(rule.includes(`--colorBrandBackground:${brand}-${mode}`));
+      assert.ok(rule.includes('--colorNeutralForeground2:neutral-text'));
+      assert.ok(
+        rule.includes(`background:var(--colorNeutralBackground${mode === 'dark' ? 6 : 1})`),
+      );
+    }
+  }
 });
 
 test('local preview retains lazy chunks for open tabs across rebuilds', async () => {

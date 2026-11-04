@@ -2,17 +2,7 @@
 // Licensed under the MIT license.
 
 import * as React from 'react';
-import {
-  Card,
-  CoreAIFluentProvider,
-  Text,
-  coreaiBrandVariants,
-  azureBrandVariants,
-  coreaiLightTheme,
-  coreaiDarkTheme,
-  azureLightTheme,
-  azureDarkTheme,
-} from '@coreai-ds/react-components';
+import { Card, Text, type BrandVariants, type CoreAITheme } from '@coreai-ds/react-components';
 import { foundationData } from 'virtual:reference-foundation-data';
 import { ExternalIcon } from '../components/Icons';
 import { Section } from '../components/Section';
@@ -24,22 +14,7 @@ export interface PageWidgetProps {
   model: PagePresentation;
 }
 
-const brandSteps = [
-  10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160,
-] as const;
-
-const brands = {
-  coreai: {
-    variants: coreaiBrandVariants,
-    light: coreaiLightTheme,
-    dark: coreaiDarkTheme,
-  },
-  azure: {
-    variants: azureBrandVariants,
-    light: azureLightTheme,
-    dark: azureDarkTheme,
-  },
-} as const;
+const brandSteps = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160] as const;
 
 function sourceDocument(sourceHtml: string) {
   return new DOMParser().parseFromString(sourceHtml, 'text/html');
@@ -49,17 +24,11 @@ function sourceHeading(sourceHtml: string, fallback: string) {
   return sourceDocument(sourceHtml).querySelector('h2')?.textContent?.trim() || fallback;
 }
 
-function getBrandStep(variants: (typeof brands)['coreai']['variants'], value: string) {
+function getBrandStep(variants: BrandVariants, value: string) {
   return brandSteps.find((step) => variants[step] === value);
 }
 
-function PrimaryCards({
-  theme,
-  variants,
-}: {
-  theme: (typeof brands)['coreai']['light'];
-  variants: (typeof brands)['coreai']['variants'];
-}) {
+function PrimaryCards({ theme, variants }: { theme: CoreAITheme; variants: BrandVariants }) {
   const backgroundStep = getBrandStep(variants, theme.colorBrandBackground);
   const foregroundStep = getBrandStep(variants, theme.colorBrandForeground1);
 
@@ -123,7 +92,7 @@ function PrimaryCards({
   );
 }
 
-function ColorScale({ variants }: { variants: (typeof brands)['coreai']['variants'] }) {
+function ColorScale({ variants }: { variants: BrandVariants }) {
   return (
     <div className="color-scale">
       <div className="color-scale__bar">
@@ -146,9 +115,7 @@ function ColorScale({ variants }: { variants: (typeof brands)['coreai']['variant
 }
 
 function ColorsView() {
-  const { mode, brand: brandId } = useThemeMode();
-  const brand = brands[brandId];
-  const theme = brand[mode];
+  const { theme, brandVariants } = useThemeMode();
   const surfaces = foundationData.colors.filter((row) =>
     row.token.startsWith('colorNeutralBackground'),
   );
@@ -199,20 +166,16 @@ function ColorsView() {
   }
 
   return (
-    <CoreAIFluentProvider
-      className="colors-theme-scope reference-color-view"
-      theme={theme}
-      style={{ background: 'transparent' }}
-    >
+    <div className="colors-theme-scope reference-color-view">
       <div className="colors-theme-content">
         <Section title="Brand Color">
-          <PrimaryCards theme={theme} variants={brand.variants} />
-          <ColorScale variants={brand.variants} />
+          <PrimaryCards theme={theme} variants={brandVariants} />
+          <ColorScale variants={brandVariants} />
         </Section>
         <Section title="Surface Colors">{rows(surfaces, true)}</Section>
         <Section title="Text Colors">{rows(foregrounds, false)}</Section>
       </div>
-    </CoreAIFluentProvider>
+    </div>
   );
 }
 
@@ -221,11 +184,7 @@ function DataVisualizationView({ sourceHtml }: PageWidgetProps) {
     <Section title={sourceHeading(sourceHtml, 'Data Visualization')}>
       <div className="stack-table stack-table--outline reference-token-stack">
         {foundationData.dataViz.map((row) => (
-          <div
-            key={row.slot}
-            className="stack-row"
-            data-copy={row.value}
-          >
+          <div key={row.slot} className="stack-row" data-copy={row.value}>
             <div className="dataviz-chip" style={{ background: row.value }}>
               <span>{row.slot}</span>
             </div>
@@ -352,18 +311,8 @@ function ColorAccessibilityView({ sourceHtml }: PageWidgetProps) {
   return (
     <Section title={sourceHeading(sourceHtml, 'Accessibility requirements')}>
       <div className="card-grid theme-dark-only">
-        <AccessibilityCard
-          ratio="4.5:1"
-          label="Normal text"
-          example={rows[0]}
-          light={false}
-        />
-        <AccessibilityCard
-          ratio="3:1"
-          label="Large text and UI"
-          example={rows[1]}
-          light={false}
-        />
+        <AccessibilityCard ratio="4.5:1" label="Normal text" example={rows[0]} light={false} />
+        <AccessibilityCard ratio="3:1" label="Large text and UI" example={rows[1]} light={false} />
       </div>
       <div className="card-grid theme-light-only">
         <AccessibilityCard ratio="4.5:1" label="Normal text" example={rows[2]} light />
