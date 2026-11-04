@@ -13,7 +13,7 @@
   --mf-font-ui: var(--fontFamilyBase);
   --mf-font-code: var(--fontFamilyMonospace);
   --mf-text-strong: var(--colorNeutralForeground1);
-  color: var(--colorNeutralForeground2);
+  color: var(--colorNeutralForeground3);
   font-family: var(--mf-font-ui);
   font-size: var(--fontSizeBase300);
   line-height: var(--lineHeightBase300);
@@ -82,7 +82,7 @@
 }
 
 .reference-shell .page-summary {
-  color: var(--colorNeutralForeground2);
+  color: var(--colorNeutralForeground3);
 }
 
 .reference-shell .page-summary p {
@@ -135,7 +135,7 @@
 }
 
 .work-in-progress p {
-  color: var(--colorNeutralForeground2);
+  color: var(--colorNeutralForeground3);
 }
 
 .work-in-progress img.work-in-progress__fallback {
@@ -453,7 +453,7 @@
 .component-markdown,
 .standalone-guidance {
   min-width: 0;
-  color: var(--colorNeutralForeground2);
+  color: var(--colorNeutralForeground3);
 }
 
 .component-markdown :is(h1, h2, h3, h4, h5, h6):not(.fui-Text),
@@ -559,7 +559,7 @@
 }
 
 .reference-page--compact-guidance .standalone-guidance {
-  color: var(--colorNeutralForeground2);
+  color: var(--colorNeutralForeground3);
   font-size: var(--fontSizeBase300);
   line-height: var(--lineHeightBase300);
 }

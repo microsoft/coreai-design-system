@@ -694,7 +694,7 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
                       <Text as="h3" weight="semibold" foreground={1}>
                         {release.title}
                       </Text>
-                      <Text as="p" foreground={2}>
+                      <Text as="p" foreground={3}>
                         {release.summary}
                       </Text>
                     </div>
@@ -884,7 +884,7 @@ function ContentSectionHeader({ title, description }: { title: string; descripti
         {title}
       </Text>
       {description ? (
-        <Text as="p" className="section-intro" size={300} foreground={2}>
+        <Text as="p" className="section-intro" size={300} foreground={3}>
           {description}
         </Text>
       ) : null}
@@ -970,7 +970,7 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
                         <Text size={400} weight="semibold" foreground={1}>
                           {principle.title}
                         </Text>
-                        <Text size={300} foreground={2}>
+                        <Text size={300} foreground={3}>
                           {principle.description}
                         </Text>
                       </span>
@@ -984,7 +984,7 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
                             Bad
                           </Badge>
                           <div className="content-example__body">
-                            <Text as="p" size={300} foreground={2}>
+                            <Text as="p" size={300} foreground={3}>
                               {principle.bad}
                             </Text>
                           </div>
@@ -994,7 +994,7 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
                             Better
                           </Badge>
                           <div className="content-example__body">
-                            <Text as="p" size={300} foreground={2}>
+                            <Text as="p" size={300} foreground={3}>
                               {principle.better}
                             </Text>
                           </div>

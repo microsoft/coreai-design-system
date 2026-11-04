@@ -147,7 +147,7 @@ function ColorsView() {
               <Text className="stack-row__title" weight="semibold" foreground={1}>
                 {row.name}
               </Text>
-              <Text className="stack-row__desc" foreground={2}>
+              <Text className="stack-row__desc" foreground={3}>
                 {row.description}
               </Text>
             </span>
@@ -192,7 +192,7 @@ function DataVisualizationView({ sourceHtml }: PageWidgetProps) {
               <Text className="stack-row__title" weight="semibold" foreground={1}>
                 {row.label}
               </Text>
-              <Text className="stack-row__desc" foreground={2}>
+              <Text className="stack-row__desc" foreground={3}>
                 {row.description}
               </Text>
             </span>
@@ -279,7 +279,7 @@ function AccessibilityCard({
         <Text className="accessibility-card__ratio" size={500} weight="bold">
           {ratio}
         </Text>
-        <Text className="accessibility-card__label" size={200} foreground={2}>
+        <Text className="accessibility-card__label" size={200} foreground={3}>
           {label}
         </Text>
       </div>
@@ -426,7 +426,7 @@ function TypographyView({ sourceHtml }: PageWidgetProps) {
             <Text className="type-table__preset" font="monospace" size={100} foreground={3}>
               <PairedLabel separator="&">{row.fluent}</PairedLabel>
             </Text>
-            <Text className="type-table__usage" foreground={2}>
+            <Text className="type-table__usage" foreground={3}>
               {row.usage}
             </Text>
           </div>

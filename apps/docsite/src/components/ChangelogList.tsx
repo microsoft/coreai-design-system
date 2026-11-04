@@ -57,7 +57,7 @@ function ReleaseEntry({ entry, compact }: { entry: ChangelogEntry; compact: bool
           <Text as="h3" weight="semibold">
             {entry.title}
           </Text>
-          <Text as="p" foreground={2}>
+          <Text as="p" foreground={3}>
             {entry.summary}
           </Text>
         </div>

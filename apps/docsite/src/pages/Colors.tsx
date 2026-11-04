@@ -205,7 +205,7 @@ function SurfaceTable({ rows }: { rows: ColorRow[] }) {
             <Text className="stack-row__title" weight="semibold">
               {r.name}
             </Text>
-            <Text className="stack-row__desc" foreground={2}>
+            <Text className="stack-row__desc" foreground={3}>
               {r.description}
             </Text>
           </div>
@@ -236,7 +236,7 @@ function TextTable({ rows }: { rows: ColorRow[] }) {
             <Text className="stack-row__title" weight="semibold">
               {r.name}
             </Text>
-            <Text className="stack-row__desc" foreground={2}>
+            <Text className="stack-row__desc" foreground={3}>
               {r.description}
             </Text>
           </div>
@@ -266,7 +266,7 @@ function DataVizTable() {
             <Text className="stack-row__title" weight="semibold">
               {r.label}
             </Text>
-            <Text className="stack-row__desc" foreground={2}>
+            <Text className="stack-row__desc" foreground={3}>
               {r.description}
             </Text>
           </div>
@@ -287,7 +287,7 @@ function RatioCards({ theme }: { theme: CoreAITheme }) {
           <Text className="ratio-card__value" size={700} weight="semibold">
             95%
           </Text>
-          <Text className="ratio-card__label" size={200} foreground={2}>
+          <Text className="ratio-card__label" size={200} foreground={3}>
             Neutral
           </Text>
         </Card>
@@ -306,7 +306,7 @@ function RatioCards({ theme }: { theme: CoreAITheme }) {
           <Text className="ratio-card__value" size={700} weight="semibold">
             5%
           </Text>
-          <Text className="ratio-card__label" size={200} foreground={2}>
+          <Text className="ratio-card__label" size={200} foreground={3}>
             Brand
           </Text>
         </Card>
@@ -370,7 +370,7 @@ function AccessibilityCards() {
             <Text className="accessibility-card__ratio" size={500} weight="bold">
               4.5:1
             </Text>
-            <Text className="accessibility-card__label" size={200} foreground={2}>
+            <Text className="accessibility-card__label" size={200} foreground={3}>
               Normal text
             </Text>
           </div>
@@ -390,7 +390,7 @@ function AccessibilityCards() {
             <Text className="accessibility-card__ratio" size={500} weight="bold">
               3:1
             </Text>
-            <Text className="accessibility-card__label" size={200} foreground={2}>
+            <Text className="accessibility-card__label" size={200} foreground={3}>
               Large text and UI
             </Text>
           </div>
@@ -412,7 +412,7 @@ function AccessibilityCards() {
             <Text className="accessibility-card__ratio" size={500} weight="bold">
               4.5:1
             </Text>
-            <Text className="accessibility-card__label" size={200} foreground={2}>
+            <Text className="accessibility-card__label" size={200} foreground={3}>
               Normal text
             </Text>
           </div>
@@ -432,7 +432,7 @@ function AccessibilityCards() {
             <Text className="accessibility-card__ratio" size={500} weight="bold">
               3:1
             </Text>
-            <Text className="accessibility-card__label" size={200} foreground={2}>
+            <Text className="accessibility-card__label" size={200} foreground={3}>
               Large text and UI
             </Text>
           </div>

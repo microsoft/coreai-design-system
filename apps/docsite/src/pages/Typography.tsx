@@ -126,7 +126,7 @@ export function Typography() {
               <Text className="type-table__preset" font="monospace" size={100} foreground={3}>
                 <PairedLabel separator="&">{row.fluent}</PairedLabel>
               </Text>
-              <Text className="type-table__usage" foreground={2}>
+              <Text className="type-table__usage" foreground={3}>
                 {row.usage}
               </Text>
             </div>

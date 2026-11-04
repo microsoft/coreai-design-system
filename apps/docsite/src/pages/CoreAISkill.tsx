@@ -50,7 +50,7 @@ export function CoreAISkill() {
           <Text as="h2" preset="heading4">
             Install the skill
           </Text>
-          <Text as="p" foreground={2}>
+          <Text as="p" foreground={3}>
             Download <code>SKILL.md</code>, then add it to the consuming repository at{' '}
             <code>.github/skills/coreai-ds-fluentui-react/SKILL.md</code>. Coding agents that
             support workspace skills load it automatically; for other clients, use the equivalent

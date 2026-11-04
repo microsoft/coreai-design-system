@@ -26,6 +26,7 @@ test('initial paint uses the active CoreAI tokens, including referenced token al
   const light = {
     colorNeutralForeground1: '#102030',
     colorNeutralForeground2: '#304050',
+    colorNeutralForeground3: '#506070',
     colorNeutralBackground1: '#f0f1f2',
     colorNeutralBackground4: '#e0e1e2',
     colorNeutralBackground6: '#c0c1c2',
@@ -36,6 +37,7 @@ test('initial paint uses the active CoreAI tokens, including referenced token al
     ...light,
     colorNeutralForeground1: '#f0e0d0',
     colorNeutralForeground2: '#d0c0b0',
+    colorNeutralForeground3: '#a09080',
     colorNeutralBackground1: '#202122',
     colorNeutralBackground4: '#101112',
     colorNeutralBackground6: '#000102',
@@ -46,11 +48,14 @@ test('initial paint uses the active CoreAI tokens, including referenced token al
   );
   assert.match(styles, /:root\{[^}]*--colorNeutralForeground1:#102030/);
   assert.match(styles, /:root\{[^}]*--colorNeutralForeground2:#304050/);
+  assert.match(styles, /:root\{[^}]*--colorNeutralForeground3:#506070/);
   assert.match(styles, /:root\{[^}]*--colorNeutralBackground4:#e0e1e2/);
   assert.match(styles, /:root\[data-theme="dark"\]\{[^}]*--colorNeutralForeground2:#d0c0b0/);
+  assert.match(styles, /:root\[data-theme="dark"\]\{[^}]*--colorNeutralForeground3:#a09080/);
   assert.match(styles, /:root\[data-theme="dark"\]\{[^}]*--colorNeutralBackground4:#101112/);
   assert.match(styles, /background:var\(--colorNeutralBackground1\)/);
   assert.match(styles, /background:var\(--colorNeutralBackground6\)/);
+  assert.match(styles, /color:var\(--colorNeutralForeground3\)/);
   assert.match(styles, /@media\(prefers-color-scheme:dark\)\{:root:not\(\[data-theme\]\)/);
   assert.doesNotMatch(styles, /--mf-text-low:|--colorBrandBackground:/);
 });
@@ -67,6 +72,7 @@ test('initial paint includes each brand in both color modes and the system fallb
             colorNeutralBackground1: 'neutral-light',
             colorNeutralBackground6: 'neutral-dark',
             colorNeutralForeground2: 'neutral-text',
+            colorNeutralForeground3: 'neutral-body',
           },
         ]),
       ),
@@ -85,6 +91,8 @@ test('initial paint includes each brand in both color modes and the system fallb
       assert.ok(rule, `${brand} ${mode} selector is present`);
       assert.ok(rule.includes(`--colorBrandBackground:${brand}-${mode}`));
       assert.ok(rule.includes('--colorNeutralForeground2:neutral-text'));
+      assert.ok(rule.includes('--colorNeutralForeground3:neutral-body'));
+      assert.ok(rule.includes('color:var(--colorNeutralForeground3)'));
       assert.ok(
         rule.includes(`background:var(--colorNeutralBackground${mode === 'dark' ? 6 : 1})`),
       );

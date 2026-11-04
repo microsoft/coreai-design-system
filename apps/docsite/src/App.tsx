@@ -120,7 +120,7 @@ export function App() {
                                 <AccordionPanel>
                                   <div className="faq-answer">
                                     {item.answer.map((paragraph) => (
-                                      <Text as="p" size={300} foreground={2} key={paragraph}>
+                                      <Text as="p" size={300} foreground={3} key={paragraph}>
                                         {paragraph}
                                       </Text>
                                     ))}
@@ -187,7 +187,7 @@ export function App() {
                                     as="p"
                                     id={`resource-${resource.id}-description`}
                                     size={300}
-                                    foreground={2}
+                                    foreground={3}
                                   >
                                     {resource.description}
                                   </Text>

@@ -46,7 +46,7 @@ export function WorkInProgress({ standalone = false }: { standalone?: boolean })
       >
         Page under construction
       </Text>
-      <Text as="p" size={300} foreground={2}>
+      <Text as="p" size={300} foreground={3}>
         We're still working on this page.
       </Text>
       <LinkButton

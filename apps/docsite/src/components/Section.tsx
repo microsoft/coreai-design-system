@@ -21,7 +21,7 @@ export function Section({
         {title}
       </Text>
       {intro && (
-        <Text as="p" className="section-intro" size={300} foreground={2}>
+        <Text as="p" className="section-intro" size={300} foreground={3}>
           {intro}
         </Text>
       )}

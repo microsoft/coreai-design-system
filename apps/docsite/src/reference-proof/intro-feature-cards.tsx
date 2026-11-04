@@ -426,7 +426,7 @@ export function IntroFeatureCards({ sourceHtml }: PageWidgetProps) {
                 <Text as="h3" id={item.id} preset="heading4" foreground={1}>
                   {item.title}
                 </Text>
-                <Text as="p" size={300} foreground={2}>
+                <Text as="p" size={300} foreground={3}>
                   {item.description}
                 </Text>
               </div>

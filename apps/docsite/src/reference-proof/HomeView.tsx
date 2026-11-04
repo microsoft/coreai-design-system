@@ -45,7 +45,7 @@ export default function HomeView({ model, sourceHtml }: PageWidgetProps) {
               {model.title}
             </Text>
           </div>
-          <Text as="p" size={400} foreground={2}>
+          <Text as="p" size={400} foreground={3}>
             <span dangerouslySetInnerHTML={{ __html: model.summaryHtml }} />
           </Text>
         </header>

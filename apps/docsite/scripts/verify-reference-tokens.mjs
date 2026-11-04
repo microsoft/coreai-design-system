@@ -24,13 +24,10 @@ export async function assertReferenceTextTokens(page, label) {
         1,
         '.page-header h1, .home-heading h1, .work-in-progress :is(h1,h2), .component-markdown :is(h1,h2,h3,h4,h5,h6,th), .standalone-guidance :is(h1,h2,h3,h4,h5,h6,th), .reference-color-view h3, .reference-resources-view :is(h2,h3), .reference-faqs-view h2, .reference-changelog-view :is(h2,h3,h4), .package-step__content > h3, .content-page :is(h2,h3), .agent-workflow-view :is(h2,h3), .type-table__example, .example > h2, .reference-template-source > h2',
       ],
-      [
-        2,
-        '.page-summary, .home-heading p, .work-in-progress p, .component-markdown :is(p,li,td), .standalone-guidance :is(p,li,td), .faq-answer :is(p,li), .content-example__body p, .content-guidance-list li, .content-publish-checklist li, .changelog-entry__section li, .resource-card p, .content-step__content > div, .package-step__content > div:not(.fui-CodeBlock), .fui-CodeBlock__pre',
-      ],
+      [2, '.fui-CodeBlock__pre'],
       [
         3,
-        '.reference-footer, .font-card__description, .primary-card--foreground .primary-card__meta, .stack-row__meta .fui-Text, .type-table__preset, .resource-card__destination .fui-Text, .reference-api > details > summary span',
+        '.page-summary, .home-heading p, .work-in-progress p, .component-markdown :is(p,li,td), .standalone-guidance :is(p,li,td), .faq-answer :is(p,li), .content-example__body p, .content-guidance-list li, .content-publish-checklist li, .changelog-entry__section li, .resource-card p, .content-step__content > div, .package-step__content > div:not(.fui-CodeBlock), .reference-footer, .font-card__description, .primary-card--foreground .primary-card__meta, .stack-row__meta .fui-Text, .type-table__preset, .resource-card__destination .fui-Text, .reference-api > details > summary span',
       ],
       [4, '.font-card__token, .font-card__sample-suffix'],
     ];

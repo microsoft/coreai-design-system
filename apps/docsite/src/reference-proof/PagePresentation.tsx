@@ -58,7 +58,7 @@ export function PageHeader({ model }: { model: PagePresentation }) {
         </Text>
         <MarkdownActions markdownUrl={model.markdownUrl} iconOnly />
       </div>
-      <Text as="p" className="page-summary" size={400} foreground={2}>
+      <Text as="p" className="page-summary" size={400} foreground={3}>
         <span dangerouslySetInnerHTML={{ __html: model.summaryHtml }} />
       </Text>
     </>

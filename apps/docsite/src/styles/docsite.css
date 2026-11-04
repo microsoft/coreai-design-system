@@ -43,9 +43,9 @@
   /* ── Neutral foregrounds (theme.ts colorNeutralForeground 1-4) ──── */
   --mf-text-primary: var(--colorNeutralForeground1);
   --mf-text-strong: var(--colorNeutralForeground1);
-  --mf-text-secondary: var(--colorNeutralForeground2);
+  --mf-text-secondary: var(--colorNeutralForeground3);
   --mf-text-muted: var(--colorNeutralForeground3);
-  --mf-text-low: var(--colorNeutralForeground2);
+  --mf-text-low: var(--colorNeutralForeground3);
   --mf-text-faint: var(--colorNeutralForeground3);
   --mf-text-dim: var(--colorNeutralForeground4);
 

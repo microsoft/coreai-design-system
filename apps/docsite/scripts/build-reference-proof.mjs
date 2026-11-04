@@ -446,6 +446,7 @@ export function initialThemeStyles(themes, stylesheets) {
       'colorNeutralBackground1',
       'colorNeutralBackground6',
       'colorNeutralForeground2',
+      'colorNeutralForeground3',
     ];
     const resolved = new Map();
     for (const token of pending) {
@@ -457,7 +458,7 @@ export function initialThemeStyles(themes, stylesheets) {
     return [
       ...[...resolved].map(([token, value]) => `--${token}:${value}`),
       `background:var(--colorNeutralBackground${mode === 'dark' ? 6 : 1})`,
-      'color:var(--colorNeutralForeground2)',
+      'color:var(--colorNeutralForeground3)',
       `color-scheme:${mode}`,
     ].join(';');
   }

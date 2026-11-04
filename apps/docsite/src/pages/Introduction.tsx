@@ -20,7 +20,7 @@ export function Introduction() {
             <Text as="h1" weight="regular" foreground={1}>
               CoreAI Design System
             </Text>
-            <Text as="p" size={400} foreground={2}>
+            <Text as="p" size={400} foreground={3}>
               Shared components, patterns, and tools for building consistent, accessible CoreAI
               experiences.
             </Text>

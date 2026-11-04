@@ -187,7 +187,7 @@ function ExampleComparison({ example }: { example: ContentExample }) {
           {example.firstLabel}
         </Badge>
         <div className="content-example__body">
-          <Text as="p" size={300} foreground={2}>
+          <Text as="p" size={300} foreground={3}>
             {example.first}
           </Text>
         </div>
@@ -218,7 +218,7 @@ function PrincipleList() {
                 <Text size={400} weight="semibold">
                   {principle.title}
                 </Text>
-                <Text size={300} foreground={2}>
+                <Text size={300} foreground={3}>
                   {principle.description}
                 </Text>
               </span>
@@ -233,7 +233,7 @@ function PrincipleList() {
                 <ul className="content-guidance-list">
                   {principle.details.map((detail) => (
                     <li key={detail}>
-                      <Text size={300} foreground={2}>
+                      <Text size={300} foreground={3}>
                         {detail}
                       </Text>
                     </li>
@@ -258,14 +258,14 @@ function StepList({ steps }: { steps: ContentStep[] }) {
             <Text as="h3" weight="semibold">
               {step.title}
             </Text>
-            <Text as="p" size={300} foreground={2}>
+            <Text as="p" size={300} foreground={3}>
               {step.description}
             </Text>
             {step.details ? (
               <ul className="content-guidance-list">
                 {step.details.map((detail) => (
                   <li key={detail}>
-                    <Text size={300} foreground={2}>
+                    <Text size={300} foreground={3}>
                       {detail}
                     </Text>
                   </li>
@@ -292,7 +292,7 @@ function SectionHeader({ title, description }: { title: string; description?: st
         {title}
       </Text>
       {description ? (
-        <Text as="p" className="section-intro" size={300} foreground={2}>
+        <Text as="p" className="section-intro" size={300} foreground={3}>
           {description}
         </Text>
       ) : null}
@@ -316,7 +316,7 @@ function Principles() {
         <ul className="content-publish-checklist">
           {editingChecklist.map((item) => (
             <li key={item}>
-              <Text size={300} foreground={2}>
+              <Text size={300} foreground={3}>
                 {item}
               </Text>
             </li>
