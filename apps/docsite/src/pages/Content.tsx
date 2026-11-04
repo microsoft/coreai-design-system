@@ -11,6 +11,7 @@ import {
   Text,
 } from '@coreai-ds/react-components';
 import { PageLayout } from '../components/PageLayout';
+import { ContentHelpCards } from '../components/content-help-cards';
 
 interface ContentStep {
   title: string;
@@ -54,7 +55,7 @@ const contentDesignSteps: ContentStep[] = [
   },
 ];
 
-const supportSteps: ContentStep[] = [
+const supportSteps = [
   {
     title: 'Use the agent',
     description: 'Start here for lower-risk work that needs a strong first draft.',
@@ -63,6 +64,10 @@ const supportSteps: ContentStep[] = [
       'You want to simplify basic jargon or create realistic stand-in content.',
       'The work does not involve new UI.',
     ],
+    link: {
+      href: 'https://m365.cloud.microsoft/chat/?titleId=T_3e60de43-9ea8-499c-1f68-30bd3ff0e720',
+      label: 'Open the Content Design Copilot',
+    },
   },
   {
     title: 'Join office hours',
@@ -72,6 +77,10 @@ const supportSteps: ContentStep[] = [
       'Review errors and empty states.',
       'Review a flow or mockup.',
     ],
+    link: {
+      href: 'https://microsoft-my.sharepoint.com/:fl:/p/wanggloria/IQC-OJlJkO7oR4bpG3LDAQtCAalezFj8llyuvzuh-NNIGzs?nav=cz0lMkZwZXJzb25hbCUyRndhbmdnbG9yaWFfbWljcm9zb2Z0X2NvbSZkPWIhZXhFV2RJR3FiMDJPYm8wb0dJZnh5aTRibVNfMEhXSklxRjNKc0w0dk1PQkdPT3JOTERHc1FhRkNRVzBoSzh3SSZmPTAxTkhBQ1ZGTjZIQ01VVEVITzVCRFlOMkkzT0xCUUNDMkMmYz0lMkYmZmx1aWQ9MSZhPVRlYW1zJnA9JTQwZmx1aWR4JTJGbG9vcC1wYWdlLWNvbnRhaW5lcg%3D%3D',
+      label: 'Sign up for office hours',
+    },
   },
   {
     title: 'Make a content design request',
@@ -88,7 +97,7 @@ const supportSteps: ContentStep[] = [
       label: 'Open the content design desk',
     },
   },
-];
+] satisfies ContentStep[];
 
 const principles: Principle[] = [
   {
@@ -243,15 +252,12 @@ function PrincipleList() {
   );
 }
 
-function StepList({ steps, numbered = true }: { steps: ContentStep[]; numbered?: boolean }) {
+function StepList({ steps }: { steps: ContentStep[] }) {
   return (
     <div className="content-flow">
       {steps.map((step, index) => (
-        <div
-          className={numbered ? 'content-step' : 'content-step content-step--unnumbered'}
-          key={step.title}
-        >
-          {numbered ? <span className="content-step__number">{index + 1}</span> : null}
+        <div className="content-step" key={step.title}>
+          <span className="content-step__number">{index + 1}</span>
           <div className="content-step__content">
             <Text as="h3" weight="semibold">
               {step.title}
@@ -340,7 +346,13 @@ function Process() {
           title="Get help"
           description="Start with the lightest support option that fits the work. Reach out earlier rather than later."
         />
-        <StepList steps={supportSteps} numbered={false} />
+        <ContentHelpCards
+          items={supportSteps.map(({ title, description, link }) => ({
+            title,
+            description,
+            href: link.href,
+          }))}
+        />
       </section>
     </>
   );

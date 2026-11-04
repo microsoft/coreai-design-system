@@ -1604,10 +1604,6 @@ code:not(pre code) {
   background: transparent;
 }
 
-.content-step--unnumbered {
-  grid-template-columns: minmax(0, 1fr);
-}
-
 .content-step__number,
 .content-principle__number {
   display: flex;
@@ -1745,8 +1741,16 @@ code:not(pre code) {
 
 .content-principle__content > .content-guidance-list {
   position: relative;
-  padding-inline-start: 0;
+  padding-inline-start: 16px;
   list-style: disc;
+}
+
+.content-page .content-help-cards.resources-grid {
+  align-items: stretch;
+}
+
+.content-page .content-help-cards .resource-card {
+  height: 100%;
 }
 
 .content-publish-checklist {

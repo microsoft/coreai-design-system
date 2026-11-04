@@ -96,6 +96,8 @@ Start with the lightest support option that fits the work. Reach out earlier rat
 
 Start here for lower-risk work that needs a strong first draft.
 
+[Open the Content Design Copilot](https://m365.cloud.microsoft/chat/?titleId=T_3e60de43-9ea8-499c-1f68-30bd3ff0e720)
+
 - There are no legal, data security, or Responsible AI implications.
 - You want to simplify basic jargon or create realistic stand-in content.
 - The work does not involve new UI.
@@ -103,6 +105,8 @@ Start here for lower-risk work that needs a strong first draft.
 ### Join office hours
 
 Bring quick questions to the weekly, optional 30-minute content design session.
+
+[Sign up for office hours](https://microsoft-my.sharepoint.com/:fl:/p/wanggloria/IQC-OJlJkO7oR4bpG3LDAQtCAalezFj8llyuvzuh-NNIGzs?nav=cz0lMkZwZXJzb25hbCUyRndhbmdnbG9yaWFfbWljcm9zb2Z0X2NvbSZkPWIhZXhFV2RJR3FiMDJPYm8wb0dJZnh5aTRibVNfMEhXSklxRjNKc0w0dk1PQkdPT3JOTERHc1FhRkNRVzBoSzh3SSZmPTAxTkhBQ1ZGTjZIQ01VVEVITzVCRFlOMkkzT0xCUUNDMkMmYz0lMkYmZmx1aWQ9MSZhPVRlYW1zJnA9JTQwZmx1aWR4JTJGbG9vcC1wYWdlLWNvbnRhaW5lcg%3D%3D)
 
 - Review UI copy and terminology.
 - Review errors and empty states.

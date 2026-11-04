@@ -27,6 +27,7 @@ import { ChevronRight, ExternalIcon } from '../components/Icons';
 import { WorkInProgress } from '../components/work-in-progress';
 import type { PageWidgetProps } from './FoundationViews';
 import { IntroFeatureCards } from './intro-feature-cards';
+import { ContentHelpCards } from '../components/content-help-cards';
 
 interface ResourceItem {
   title: string;
@@ -75,6 +76,7 @@ interface ChangelogRelease {
 
 interface ContentStep {
   title: string;
+  description: string;
   descriptionHtml: string;
   details: string[];
   link?: { href: string; label: string };
@@ -832,9 +834,11 @@ function contentSteps(document: Document, sectionId: string): ContentStep[] {
       const link = body
         .flatMap((element) => [...element.querySelectorAll<HTMLAnchorElement>('a[href]')])
         .at(-1);
+      const description = body.find((element) => element.tagName === 'P');
       return {
         title: heading.textContent?.trim() ?? '',
-        descriptionHtml: body.find((element) => element.tagName === 'P')?.innerHTML ?? '',
+        description: description?.textContent?.trim() ?? '',
+        descriptionHtml: description?.innerHTML ?? '',
         details: body
           .flatMap((element) => [...element.querySelectorAll('li')])
           .map((item) => item.innerHTML),
@@ -844,15 +848,12 @@ function contentSteps(document: Document, sectionId: string): ContentStep[] {
   );
 }
 
-function ContentStepList({ steps, numbered = true }: { steps: ContentStep[]; numbered?: boolean }) {
+function ContentStepList({ steps }: { steps: ContentStep[] }) {
   return (
     <div className="content-flow">
       {steps.map((step, index) => (
-        <div
-          className={numbered ? 'content-step' : 'content-step content-step--unnumbered'}
-          key={step.title}
-        >
-          {numbered ? <span className="content-step__number">{index + 1}</span> : null}
+        <div className="content-step" key={step.title}>
+          <span className="content-step__number">{index + 1}</span>
           <div className="content-step__content">
             <Text as="h3" weight="semibold" foreground={1}>
               {step.title}
@@ -939,7 +940,10 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
       process: contentSteps(document, 'guidance-process-tips'),
       helpDescription:
         helpElements.find((element) => element.tagName === 'P')?.textContent?.trim() ?? '',
-      help: contentSteps(document, 'guidance-get-help'),
+      help: contentSteps(document, 'guidance-get-help').map((step) => {
+        if (!step.link) throw new Error('Missing content help link.');
+        return { title: step.title, description: step.description, href: step.link.href };
+      }),
     };
   }, [sourceHtml]);
   return (
@@ -1010,7 +1014,7 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
       </section>
       <section className="page-section content-section">
         <ContentSectionHeader title="Get help" description={model.helpDescription} />
-        <ContentStepList steps={model.help} numbered={false} />
+        <ContentHelpCards items={model.help} />
       </section>
     </div>
   );
