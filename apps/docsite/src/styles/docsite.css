@@ -1546,7 +1546,7 @@ code:not(pre code) {
 .content-guidance-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacingVerticalXS);
+  gap: 0;
   margin: 0;
   padding-left: var(--spacingHorizontalXXL);
 }
@@ -1638,7 +1638,7 @@ code:not(pre code) {
   min-width: 0;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
+  gap: 0;
 }
 
 .content-step__content h3,
@@ -1764,7 +1764,7 @@ code:not(pre code) {
 .content-publish-checklist {
   display: flex;
   flex-direction: column;
-  gap: var(--spacingVerticalXS);
+  gap: 0;
   padding-left: var(--spacingHorizontalXXL);
 }
 
