@@ -10,7 +10,7 @@
 
 .reference-shell .reference-page-tablist {
   width: 100%;
-  border-block-end: 1px solid color-mix(in srgb, var(--colorNeutralStroke2) 30%, black);
+  border-block-end: 1px solid var(--colorNeutralStroke2);
 }
 
 .reference-page-panel {
