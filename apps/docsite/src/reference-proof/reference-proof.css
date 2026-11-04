@@ -951,6 +951,14 @@
   background: transparent;
 }
 
+.home-prompt-preview .fui-CodeBlock .fui-CodeBlock__pre {
+  max-height: min(55dvh, 480px);
+  overflow-y: auto;
+  padding-inline-end: calc(var(--spacingHorizontalXXL) * 2);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 .reference-shell .home-visual {
   position: absolute;
   inset: 0 0 0 50%;

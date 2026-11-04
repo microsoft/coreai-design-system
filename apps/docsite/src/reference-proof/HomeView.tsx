@@ -2,7 +2,27 @@
 // Licensed under the MIT license.
 
 import * as React from 'react';
-import { Button, LinkButton, Text } from '@coreai-ds/react-components';
+import {
+  Button,
+  CodeBlock,
+  Dialog,
+  DialogActions,
+  DialogBody,
+  DialogContent,
+  DialogSurface,
+  DialogTitle,
+  DialogTrigger,
+  LinkButton,
+  Menu,
+  MenuItem,
+  MenuList,
+  MenuPopover,
+  MenuTrigger,
+  SplitButton,
+  Text,
+  useRestoreFocusTarget,
+  type MenuButtonProps,
+} from '@coreai-ds/react-components';
 import { Copy20Regular } from '@fluentui/react-icons';
 import type { PageWidgetProps } from './FoundationViews';
 
@@ -28,6 +48,7 @@ class GraphicBoundary extends React.Component<{ children: React.ReactNode }, { f
 }
 
 export default function HomeView({ model, sourceHtml }: PageWidgetProps) {
+  const promptMenuFocusTarget = useRestoreFocusTarget();
   const prompt = React.useMemo(
     () =>
       new DOMParser().parseFromString(sourceHtml, 'text/html').querySelector('[data-agent-prompt]')
@@ -51,14 +72,49 @@ export default function HomeView({ model, sourceHtml }: PageWidgetProps) {
         </header>
         <div className="home-agent-content">
           <section className="home-agent-entry" aria-label="Agent resources">
-            <Button
-              appearance="primary"
-              icon={<Copy20Regular aria-hidden="true" />}
-              data-copy={prompt}
-              data-copy-label="starter prompt"
-            >
-              Copy starter prompt
-            </Button>
+            <Dialog>
+              <Menu positioning="below-end">
+                <MenuTrigger disableButtonEnhancement>
+                  {(triggerProps: MenuButtonProps) => (
+                    <SplitButton
+                      appearance="primary"
+                      icon={<Copy20Regular aria-hidden="true" />}
+                      menuButton={{
+                        ...triggerProps,
+                        ...promptMenuFocusTarget,
+                        'aria-label': 'Starter prompt options',
+                      }}
+                      primaryActionButton={{
+                        'data-copy': prompt,
+                        'data-copy-label': 'starter prompt',
+                      }}
+                    >
+                      Copy starter prompt
+                    </SplitButton>
+                  )}
+                </MenuTrigger>
+                <MenuPopover>
+                  <MenuList>
+                    <DialogTrigger disableButtonEnhancement>
+                      <MenuItem>Show starter prompt</MenuItem>
+                    </DialogTrigger>
+                  </MenuList>
+                </MenuPopover>
+              </Menu>
+              <DialogSurface className="home-prompt-preview">
+                <DialogBody>
+                  <DialogTitle>Starter prompt</DialogTitle>
+                  <DialogContent>
+                    <CodeBlock code={prompt} language="text" />
+                  </DialogContent>
+                  <DialogActions>
+                    <DialogTrigger disableButtonEnhancement>
+                      <Button appearance="secondary">Close</Button>
+                    </DialogTrigger>
+                  </DialogActions>
+                </DialogBody>
+              </DialogSurface>
+            </Dialog>
             <LinkButton
               appearance="outline"
               href={new URL('overview/introduction/#guidance-working-with-agents', base).href}
@@ -67,14 +123,6 @@ export default function HomeView({ model, sourceHtml }: PageWidgetProps) {
               Learn more
             </LinkButton>
           </section>
-          {/* <Accordion className="home-agent-preview" collapsible>
-            <AccordionItem value="starter-prompt">
-              <AccordionHeader expandIconPosition="end">Preview the prompt</AccordionHeader>
-              <AccordionPanel>
-                <CodeBlock code={prompt} language="text" />
-              </AccordionPanel>
-            </AccordionItem>
-          </Accordion> */}
         </div>
       </div>
       <div className="home-visual">
