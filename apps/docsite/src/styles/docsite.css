@@ -1709,8 +1709,18 @@ code:not(pre code) {
 }
 
 .content-principle__content {
+  position: relative;
   min-width: 0;
   gap: 24px;
+  padding-inline-start: 24px;
+}
+
+.content-principle__content::before {
+  position: absolute;
+  inset: -2px auto 10px 0;
+  width: 1px;
+  background: color-mix(in srgb, var(--colorBrandStroke1) 50%, var(--colorNeutralBackground1));
+  content: '';
 }
 
 .content-example p,
@@ -1724,30 +1734,112 @@ code:not(pre code) {
 
 .content-example-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 24px;
 }
 
 .content-example {
+  position: relative;
   display: flex;
   min-width: 0;
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
+  padding-inline-start: 20px;
+}
+
+.content-example::before,
+.content-principle__content > .content-guidance-list::before {
+  position: absolute;
+  top: -2px;
+  left: -24px;
+  width: 24px;
+  height: 12px;
+  border-bottom: 1px solid
+    color-mix(
+      in srgb,
+      var(--content-example-accent, var(--colorBrandStroke1)) 50%,
+      var(--colorNeutralBackground1)
+    );
+  border-left: 1px solid
+    color-mix(in srgb, var(--colorBrandStroke1) 50%, var(--colorNeutralBackground1));
+  border-bottom-left-radius: 12px;
+  content: '';
+}
+
+.content-example::after {
+  position: absolute;
+  top: 7px;
+  left: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--content-example-accent);
+  content: '';
+}
+
+.content-page .content-example .fui-Badge {
+  color: var(--content-example-foreground);
+  background: color-mix(in srgb, var(--content-example-accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--content-example-accent) 25%, transparent);
 }
 
 .content-example__body {
+  position: relative;
   width: 100%;
-  padding: 4px 0 4px 12px;
-  border-left: 3px solid;
 }
 
-.content-example--avoid .content-example__body {
-  border-left-color: var(--colorPaletteRedBackground2);
+.content-example__body::before {
+  position: absolute;
+  top: -18px;
+  bottom: 10px;
+  left: -20px;
+  width: 1px;
+  background: color-mix(in srgb, var(--content-example-accent) 50%, var(--colorNeutralBackground1));
+  content: '';
 }
 
-.content-example--prefer .content-example__body {
-  border-left-color: var(--colorPaletteGreenBackground2);
+.content-example--avoid {
+  --content-example-accent: var(--colorPaletteRedBorderActive);
+  --content-example-foreground: var(--colorPaletteRedForeground2);
+}
+
+.content-example--prefer {
+  --content-example-accent: var(--colorPaletteGreenBorderActive);
+  --content-example-foreground: var(--colorPaletteGreenForeground2);
+}
+
+.content-principle__content > .content-guidance-list {
+  position: relative;
+  gap: 12px;
+  padding-inline-start: 20px;
+  list-style: none;
+}
+
+.content-principle__content > .content-guidance-list > li {
+  position: relative;
+}
+
+.content-principle__content > .content-guidance-list > li::before {
+  position: absolute;
+  z-index: 1;
+  top: 8px;
+  left: -22px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--colorBrandStroke1);
+  content: '';
+}
+
+.content-principle__content > .content-guidance-list > li:not(:last-child)::after {
+  position: absolute;
+  top: 10px;
+  bottom: -22px;
+  left: -20px;
+  width: 1px;
+  background: color-mix(in srgb, var(--colorBrandStroke1) 50%, var(--colorNeutralBackground1));
+  content: '';
 }
 
 .content-publish-checklist {
@@ -1755,12 +1847,6 @@ code:not(pre code) {
   flex-direction: column;
   gap: var(--spacingVerticalS);
   padding-left: var(--spacingHorizontalXXL);
-}
-
-@media (max-width: 900px) {
-  .content-example-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 640px) {
@@ -1771,10 +1857,6 @@ code:not(pre code) {
 
   .content-principle-list .fui-AccordionPanel {
     padding: 0 0 24px 44px;
-  }
-
-  .content-example-grid {
-    grid-template-columns: 1fr;
   }
 }
 
