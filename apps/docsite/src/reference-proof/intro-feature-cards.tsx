@@ -417,7 +417,9 @@ export function IntroFeatureCards({ sourceHtml }: PageWidgetProps) {
                 ref={makeInert}
                 data-running={running}
               >
-                <Scene running={running} />
+                <div className="intro-feature-artwork">
+                  <Scene running={running} />
+                </div>
               </div>
               <div className="intro-feature-copy">
                 <Text as="h3" id={item.id} preset="heading4" foreground={1}>

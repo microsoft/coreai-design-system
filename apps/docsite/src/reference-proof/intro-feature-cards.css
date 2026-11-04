@@ -23,8 +23,8 @@
   container-type: inline-size;
   min-width: 0;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--colorNeutralStroke2) 50%, transparent);
-  border-radius: var(--borderRadiusLarge);
+  border: 1px solid color-mix(in srgb, var(--colorNeutralStroke2) 30%, transparent);
+  border-radius: var(--borderRadius3XLarge);
   background: var(--colorNeutralBackground3);
 }
 
@@ -57,13 +57,19 @@
 
 .intro-feature-scene {
   position: relative;
-  height: 260px;
+  height: 276px;
+  padding: 8px;
   isolation: isolate;
   overflow: hidden;
   color: var(--colorNeutralForeground1);
   font-size: 12px;
   line-height: 1.5;
   pointer-events: none;
+}
+
+.intro-feature-artwork {
+  position: relative;
+  height: 100%;
 }
 
 .intro-feature-scene svg {
@@ -264,7 +270,7 @@
   }
   30%,
   80% {
-    transform: translate(232px, 88px);
+    transform: translate(220px, 88px);
   }
 }
 
