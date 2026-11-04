@@ -1551,24 +1551,10 @@ code:not(pre code) {
   padding-left: var(--spacingHorizontalXXL);
 }
 
-.content-page,
-.content-guide,
-.content-principles {
+.content-page {
   display: flex;
   max-width: 960px;
   flex-direction: column;
-}
-
-.content-page {
-  gap: 32px;
-}
-
-.content-tabs {
-  width: fit-content;
-}
-
-.content-guide,
-.content-principles {
   gap: 48px;
 }
 
@@ -1709,8 +1695,7 @@ code:not(pre code) {
 .content-principle__content {
   position: relative;
   min-width: 0;
-  gap: 24px;
-  padding-inline-start: 24px;
+  gap: 16px;
 }
 
 .content-example p,
@@ -1725,7 +1710,7 @@ code:not(pre code) {
 .content-example-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 24px;
+  gap: 16px;
 }
 
 .content-example {
@@ -1734,8 +1719,7 @@ code:not(pre code) {
   min-width: 0;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
-  padding-inline-start: 20px;
+  gap: 4px;
 }
 
 .content-page .content-example .fui-Badge {
@@ -1761,7 +1745,7 @@ code:not(pre code) {
 
 .content-principle__content > .content-guidance-list {
   position: relative;
-  padding-inline-start: 20px;
+  padding-inline-start: 0;
   list-style: disc;
 }
 

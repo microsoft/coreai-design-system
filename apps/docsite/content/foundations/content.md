@@ -72,7 +72,7 @@ If the answer to any question is no, keep editing.
 - Does it sound natural when read aloud?
 - Can everyone understand and use it?
 
-## Do content design
+## Process tips
 
 Move from a realistic first draft to reviewed content in three steps.
 

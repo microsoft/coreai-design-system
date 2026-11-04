@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import * as React from 'react';
 import {
   Accordion,
   AccordionHeader,
@@ -9,11 +8,7 @@ import {
   AccordionPanel,
   Badge,
   Link,
-  Tab,
-  TabList,
   Text,
-  type SelectTabData,
-  type SelectTabEvent,
 } from '@coreai-ds/react-components';
 import { PageLayout } from '../components/PageLayout';
 
@@ -305,7 +300,7 @@ function SectionHeader({ title, description }: { title: string; description?: st
 
 function Principles() {
   return (
-    <div className="content-principles">
+    <>
       <section className="page-section content-section">
         <PrincipleList />
       </section>
@@ -325,19 +320,16 @@ function Principles() {
           ))}
         </ul>
       </section>
-    </div>
+    </>
   );
 }
 
 function Process() {
   return (
-    <div className="content-guide">
-      <section
-        id="do-content-design"
-        className="page-section content-section content-section--primary"
-      >
+    <>
+      <section id="process-tips" className="page-section content-section content-section--primary">
         <SectionHeader
-          title="Do content design"
+          title="Process tips"
           description="Move from a realistic first draft to reviewed content in three steps."
         />
         <StepList steps={contentDesignSteps} />
@@ -350,33 +342,16 @@ function Process() {
         />
         <StepList steps={supportSteps} numbered={false} />
       </section>
-    </div>
+    </>
   );
 }
 
-type ContentView = 'principles' | 'process';
-
 export function Content() {
-  const [view, setView] = React.useState<ContentView>('principles');
-
-  const onViewSelect = (_event: SelectTabEvent, data: SelectTabData) => {
-    setView(data.value as ContentView);
-  };
-
   return (
     <PageLayout id="content">
       <div className="content-page">
-        <TabList
-          aria-label="Content guidance"
-          className="content-tabs"
-          appearance="elevated"
-          selectedValue={view}
-          onTabSelect={onViewSelect}
-        >
-          <Tab value="principles">Principles</Tab>
-          <Tab value="process">Process</Tab>
-        </TabList>
-        {view === 'principles' ? <Principles /> : <Process />}
+        <Principles />
+        <Process />
       </div>
     </PageLayout>
   );

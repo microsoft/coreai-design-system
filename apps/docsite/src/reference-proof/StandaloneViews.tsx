@@ -896,7 +896,6 @@ function ContentSectionHeader({ title, description }: { title: string; descripti
 }
 
 function ContentView({ sourceHtml }: PageWidgetProps) {
-  const [view, setView] = React.useState<'principles' | 'process'>('principles');
   const model = React.useMemo(() => {
     const document = documentFrom(sourceHtml);
     const principles = headingGroups(
@@ -926,7 +925,7 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
       };
     });
     const checklistElements = sectionElements(document, 'guidance-before-you-publish', ['H2']);
-    const processElements = sectionElements(document, 'guidance-do-content-design', ['H2']);
+    const processElements = sectionElements(document, 'guidance-process-tips', ['H2']);
     const helpElements = sectionElements(document, 'guidance-get-help', ['H2']);
     return {
       principles,
@@ -937,7 +936,7 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
         .map((item) => item.textContent?.trim() ?? ''),
       processDescription:
         processElements.find((element) => element.tagName === 'P')?.textContent?.trim() ?? '',
-      process: contentSteps(document, 'guidance-do-content-design'),
+      process: contentSteps(document, 'guidance-process-tips'),
       helpDescription:
         helpElements.find((element) => element.tagName === 'P')?.textContent?.trim() ?? '',
       help: contentSteps(document, 'guidance-get-help'),
@@ -945,101 +944,74 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
   }, [sourceHtml]);
   return (
     <div className="content-page">
-      <TabList
-        aria-label="Content guidance"
-        className="content-tabs"
-        appearance="elevated"
-        selectedValue={view}
-        onTabSelect={(_event, data) => setView(data.value as 'principles' | 'process')}
-      >
-        <Tab value="principles">Principles</Tab>
-        <Tab value="process">Process</Tab>
-      </TabList>
-      {view === 'principles' ? (
-        <div className="content-principles">
-          <section className="page-section content-section">
-            <Accordion className="content-principle-list" multiple collapsible>
-              {model.principles.map((principle, index) => (
-                <AccordionItem
-                  className="content-principle"
-                  key={principle.id}
-                  value={principle.id}
-                >
-                  <AccordionHeader expandIconPosition="end" size="large">
-                    <span className="content-principle__trigger">
-                      <span className="content-principle__number">{index + 1}</span>
-                      <span className="content-principle__heading">
-                        <Text size={400} weight="semibold" foreground={1}>
-                          {principle.title}
+      <section className="page-section content-section">
+        <Accordion className="content-principle-list" multiple collapsible>
+          {model.principles.map((principle, index) => (
+            <AccordionItem className="content-principle" key={principle.id} value={principle.id}>
+              <AccordionHeader expandIconPosition="end" size="large">
+                <span className="content-principle__trigger">
+                  <span className="content-principle__number">{index + 1}</span>
+                  <span className="content-principle__heading">
+                    <Text size={400} weight="semibold" foreground={1}>
+                      {principle.title}
+                    </Text>
+                    <Text size={300} foreground={3}>
+                      {principle.description}
+                    </Text>
+                  </span>
+                </span>
+              </AccordionHeader>
+              <AccordionPanel>
+                <div className="content-principle__content">
+                  <div className="content-example-grid">
+                    <div className="content-example content-example--avoid">
+                      <Badge appearance="filled" color="danger" shape="rounded" size="medium">
+                        Bad
+                      </Badge>
+                      <div className="content-example__body">
+                        <Text as="p" size={300} foreground={3}>
+                          {principle.bad}
                         </Text>
-                        <Text size={300} foreground={3}>
-                          {principle.description}
-                        </Text>
-                      </span>
-                    </span>
-                  </AccordionHeader>
-                  <AccordionPanel>
-                    <div className="content-principle__content">
-                      <div className="content-example-grid">
-                        <div className="content-example content-example--avoid">
-                          <Badge appearance="filled" color="danger" shape="rounded" size="medium">
-                            Bad
-                          </Badge>
-                          <div className="content-example__body">
-                            <Text as="p" size={300} foreground={3}>
-                              {principle.bad}
-                            </Text>
-                          </div>
-                        </div>
-                        <div className="content-example content-example--prefer">
-                          <Badge appearance="filled" color="success" shape="rounded" size="medium">
-                            Better
-                          </Badge>
-                          <div className="content-example__body">
-                            <Text as="p" size={300} foreground={3}>
-                              {principle.better}
-                            </Text>
-                          </div>
-                        </div>
                       </div>
-                      <ul className="content-guidance-list">
-                        {principle.details.map((detail) => (
-                          <li key={detail}>{detail}</li>
-                        ))}
-                      </ul>
                     </div>
-                  </AccordionPanel>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </section>
-          <section className="page-section content-section">
-            <ContentSectionHeader
-              title="Before you publish"
-              description={model.checklistDescription}
-            />
-            <ul className="content-publish-checklist">
-              {model.checklist.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </section>
-        </div>
-      ) : (
-        <div className="content-guide">
-          <section className="page-section content-section content-section--primary">
-            <ContentSectionHeader
-              title="Do content design"
-              description={model.processDescription}
-            />
-            <ContentStepList steps={model.process} />
-          </section>
-          <section className="page-section content-section">
-            <ContentSectionHeader title="Get help" description={model.helpDescription} />
-            <ContentStepList steps={model.help} numbered={false} />
-          </section>
-        </div>
-      )}
+                    <div className="content-example content-example--prefer">
+                      <Badge appearance="filled" color="success" shape="rounded" size="medium">
+                        Better
+                      </Badge>
+                      <div className="content-example__body">
+                        <Text as="p" size={300} foreground={3}>
+                          {principle.better}
+                        </Text>
+                      </div>
+                    </div>
+                  </div>
+                  <ul className="content-guidance-list">
+                    {principle.details.map((detail) => (
+                      <li key={detail}>{detail}</li>
+                    ))}
+                  </ul>
+                </div>
+              </AccordionPanel>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </section>
+      <section className="page-section content-section">
+        <ContentSectionHeader title="Before you publish" description={model.checklistDescription} />
+        <ul className="content-publish-checklist">
+          {model.checklist.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </section>
+      <section className="page-section content-section content-section--primary">
+        <ContentSectionHeader title="Process tips" description={model.processDescription} />
+        <ContentStepList steps={model.process} />
+      </section>
+      <section className="page-section content-section">
+        <ContentSectionHeader title="Get help" description={model.helpDescription} />
+        <ContentStepList steps={model.help} numbered={false} />
+      </section>
     </div>
   );
 }
