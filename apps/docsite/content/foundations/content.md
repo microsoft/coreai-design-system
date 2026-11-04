@@ -68,25 +68,19 @@ Move from a realistic first draft to reviewed content in four steps.
 
 ### Write real content
 
-Start with realistic product language instead of placeholder copy. Get the content as close to real as possible.
+Use realistic product language instead of placeholder copy. Aim for a first draft that is as close to the final content as possible.
 
 ### Refine the draft
 
-Use the Content Design Copilot agent to simplify jargon and move the draft closer to Microsoft voice standards.
+Use the Content Design Copilot agent to simplify jargon. Refine the draft so it follows Microsoft voice standards and sounds natural.
 
 ### Review it in context
 
-Check the content in the full experience, including UI terminology, errors and empty states, and the complete flow or mockup.
+Review the content in a complete flow or mockup. Check UI terminology, errors, and empty states to make sure the words work in context.
 
 ### Before you publish
 
-If the answer to any question is no, keep editing.
-
-- Is the main point first?
-- Is the next action clear?
-- Can I remove any words?
-- Does it sound natural when read aloud?
-- Can everyone understand and use it?
+Put the main point first and make the next action clear. Cut extra words, read it aloud, and check that everyone can understand and use it.
 
 ## Get help
 

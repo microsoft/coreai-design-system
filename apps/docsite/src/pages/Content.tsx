@@ -37,34 +37,26 @@ interface Principle {
   details?: string[];
 }
 
-const editingChecklist = [
-  'Is the main point first?',
-  'Is the next action clear?',
-  'Can I remove any words?',
-  'Does it sound natural when read aloud?',
-  'Can everyone understand and use it?',
-];
-
 const contentDesignSteps: ContentStep[] = [
   {
     title: 'Write real content',
     description:
-      'Start with realistic product language instead of placeholder copy. Get the content as close to real as possible.',
+      'Use realistic product language instead of placeholder copy. Aim for a first draft that is as close to the final content as possible.',
   },
   {
     title: 'Refine the draft',
     description:
-      'Use the Content Design Copilot agent to simplify jargon and move the draft closer to Microsoft voice standards.',
+      'Use the Content Design Copilot agent to simplify jargon. Refine the draft so it follows Microsoft voice standards and sounds natural.',
   },
   {
     title: 'Review it in context',
     description:
-      'Check the content in the full experience, including UI terminology, errors and empty states, and the complete flow or mockup.',
+      'Review the content in a complete flow or mockup. Check UI terminology, errors, and empty states to make sure the words work in context.',
   },
   {
     title: 'Before you publish',
-    description: 'If the answer to any question is no, keep editing.',
-    details: editingChecklist,
+    description:
+      'Put the main point first and make the next action clear. Cut extra words, read it aloud, and check that everyone can understand and use it.',
   },
 ];
 
