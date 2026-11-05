@@ -12,14 +12,24 @@ Source, pull requests, and automation live in
 | Publish package         | [publish-package.yml](../.github/workflows/publish-package.yml)           | See the [release guide](../packages/react-components/RELEASING.md) |
 
 Site deployment and npm publication are independent. Merging to main can deploy
-the sites; it does not publish a package.
+the sites; npm publication additionally requires a package version change,
+successful push CI for that exact commit, and the publishing opt-in.
 
 ## Running and troubleshooting workflows
 
 Open [Actions](https://github.com/microsoft/coreai-design-system/actions), select
 the workflow, and inspect the failed job and step. For Azure or npm manual runs,
 choose `main`; those workflows reject other branches.
+
 The documentation preview instead accepts only `feat/static-storybook-markdown`.
+
+Automatic publishing follows successful **CI** push runs on `main`, not manual CI dispatches.
+Retry publication by rerunning its original failed **Publish npm package** run;
+do not merge an unrelated change to retry a release.
+If the workflow itself needed a fix, use the release guide's
+[manual recovery](../packages/react-components/RELEASING.md#recover-after-a-publishing-workflow-fix)
+on `main` with the original successful CI run ID and exact package/version confirmation.
+
 Disabled workflows must be enabled before they can run. Enabling a workflow alone
 does not satisfy its repository-variable gates.
 
