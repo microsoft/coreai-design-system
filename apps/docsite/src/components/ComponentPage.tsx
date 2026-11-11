@@ -8,12 +8,11 @@ import {
   getComponentSourceUrl,
   type ComponentContent,
   type ComponentSource,
-} from '../data/component-content';
+} from '../data/ComponentContent';
 import { useThemeMode } from '../theme/ThemeProvider';
 import { ExternalIcon, FigmaLogo, FluentLogo, StorybookLogo } from './Icons';
 import { EmbedFrame } from './EmbedFrame';
 import { PageLayout } from './PageLayout';
-import { WorkInProgress } from './work-in-progress';
 import { MarkdownActions } from './MarkdownActions';
 
 function SourceIcon({ source }: { source: ComponentSource }) {
@@ -83,7 +82,6 @@ export function ComponentPage({ content, html }: { content: ComponentContent; ht
       actions={<MarkdownActions markdownUrl={markdownUrl} />}
     >
       <div className="component-guidance">
-        {content.status === 'under-construction' ? <WorkInProgress /> : null}
         {embedUrl ? (
           <section className="component-demo" aria-label={`Interactive ${content.title} example`}>
             {storyOptions && storyOptions.length > 1 ? (

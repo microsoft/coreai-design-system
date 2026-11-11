@@ -4,7 +4,6 @@ title: Tag picker
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '304788:6799'
 summary: >-
   A TagPicker combines a text field and a dropdown giving people a way to select

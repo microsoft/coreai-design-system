@@ -16,7 +16,7 @@ import { Text } from '@coreai-ds/react-components';
 import type { BrandVariants } from '@fluentui/react-components';
 import { PageLayout } from '../components/PageLayout';
 import { Section } from '../components/Section';
-import { dataVizRows, type ColorRow } from '../data/content';
+import { dataVizRows, type ColorRow } from '../data/Content';
 import { useThemeMode } from '../theme/ThemeProvider';
 
 const brandSteps = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160] as const;

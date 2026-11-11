@@ -4,7 +4,6 @@ title: Progress bar
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '39768:210991'
 summary: >-
   Progress bars communicate system information, like how much cloud storage

@@ -21,7 +21,7 @@ Griffel is Fluent UI v9's CSS-in-JS engine. Read the relevant doc below before w
 
 For CSS Modules override/layering work:
 
-1. Read [Styling with CSS Modules](../../../apps/docsite/content/guides/styling-with-css-modules.md).
+1. Read [Styling with CSS Modules](../../../apps/docsite/content/guides/StylingWithCssModules.md).
 2. Use an app-owned renderer through `RendererProvider`; do not patch shared
    `node_modules` or add a global Griffel override.
 3. Preserve buckets and tuple metadata, and create the renderer once above

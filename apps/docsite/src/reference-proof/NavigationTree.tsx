@@ -7,11 +7,10 @@ import {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
-  Tab,
-  TabList,
+  LinkButton,
 } from '@coreai-ds/react-components';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { groupNavigationEntries, normalizeReferencePath } from './navigation.mjs';
+import { useLocation } from 'react-router-dom';
+import { groupNavigationEntries, normalizeReferencePath } from './Navigation.mjs';
 
 export interface NavigationEntry {
   path: string;
@@ -29,7 +28,6 @@ export const NavigationTree = React.forwardRef<
   { entries: NavigationEntry[]; query: string }
 >(function NavigationTree({ entries, query }, ref) {
   const location = useLocation();
-  const navigate = useNavigate();
   const activePath = normalizeReferencePath(location.pathname);
   const groups = groupNavigationEntries(entries);
   const activeGroup =
@@ -77,10 +75,10 @@ export const NavigationTree = React.forwardRef<
           <ul className="app-search-results__list">
             {results.map((entry) => (
               <li key={entry.path}>
-                <button
-                  type="button"
+                <LinkButton
+                  href={`${import.meta.env.BASE_URL}${entry.path.slice(1)}`}
+                  appearance="subtle"
                   className="app-search-result"
-                  onClick={() => navigate(entry.path)}
                 >
                   <span className="app-search-result__title">
                     <HighlightedText text={entry.title} />
@@ -88,7 +86,7 @@ export const NavigationTree = React.forwardRef<
                   <span className="app-search-result__excerpt">
                     <HighlightedText text={entry.summary} />
                   </span>
-                </button>
+                </LinkButton>
               </li>
             ))}
           </ul>
@@ -122,19 +120,19 @@ export const NavigationTree = React.forwardRef<
                   {group.label}
                 </AccordionHeader>
                 <AccordionPanel>
-                  <TabList
-                    vertical
-                    appearance="subtle"
-                    size="medium"
-                    selectedValue={activePath}
-                    onTabSelect={(_event, data) => navigate(String(data.value))}
-                  >
+                  <div className="reference-navigation-links">
                     {items.map((entry) => (
-                      <Tab key={entry.path} value={entry.path}>
+                      <LinkButton
+                        key={entry.path}
+                        href={`${import.meta.env.BASE_URL}${entry.path.slice(1)}`}
+                        appearance="subtle"
+                        className="reference-navigation-link"
+                        aria-current={entry.path === activePath ? 'page' : undefined}
+                      >
                         {entry.title}
-                      </Tab>
+                      </LinkButton>
                     ))}
-                  </TabList>
+                  </div>
                 </AccordionPanel>
               </AccordionItem>
             </Accordion>

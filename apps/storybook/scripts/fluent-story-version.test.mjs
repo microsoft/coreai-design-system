@@ -3,7 +3,7 @@
 
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { assertFluentStoryVersion } from '../../docsite/scripts/sources/fluent-story-version.mjs';
+import { assertFluentStoryVersion } from '../../docsite/scripts/sources/FluentStoryVersion.mjs';
 
 test('accepts only an exact installed and upstream package version match', () => {
   assert.doesNotThrow(() => assertFluentStoryVersion('9.74.9', '9.74.9', '9.74.9'));

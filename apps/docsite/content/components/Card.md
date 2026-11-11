@@ -4,7 +4,6 @@ title: Card
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '1011:48412'
 summary: >-
   A card is a container that holds information and actions related to a single

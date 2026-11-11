@@ -4,7 +4,6 @@ title: Teaching popover
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '131806:454'
 summary: >-
   The Teaching popover component is a versatile tool to help users learn about a

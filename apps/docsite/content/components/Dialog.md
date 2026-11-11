@@ -6,7 +6,6 @@ reference:
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '79014:189219'
 summary: A dialog is a window overlaid on the page to focus a task or message.
 resources:

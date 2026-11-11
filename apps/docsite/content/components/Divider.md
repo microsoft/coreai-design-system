@@ -4,7 +4,6 @@ title: Divider
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '2070:49490'
 summary: >-
   A divider groups sections of content to create visual rhythm and hierarchy.

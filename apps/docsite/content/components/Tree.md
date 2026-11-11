@@ -6,7 +6,6 @@ reference:
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '139584:9'
 summary: >-
   A tree is used to display a hierarchical view of nested data. It's useful for

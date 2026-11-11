@@ -5,8 +5,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import matter from 'gray-matter';
-import { readReferencePages } from '../../docsite/scripts/read-reference-pages.mjs';
-import { publicMarkdown } from '../../docsite/scripts/sources/public-markdown.mjs';
+import { readReferencePages } from '../../docsite/scripts/ReadReferencePages.mjs';
+import { publicMarkdown } from '../../docsite/scripts/sources/PublicMarkdown.mjs';
 
 export const standaloneContentRoot = fileURLToPath(
   new URL('../../docsite/content/', import.meta.url),

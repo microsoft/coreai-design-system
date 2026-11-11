@@ -4,8 +4,8 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { appRoot, generatedRoot } from './generate-component-stories.mjs';
-import { extractStorySource } from '../../docsite/scripts/sources/story-source.mjs';
-import { readStoryDescriptions } from '../../docsite/scripts/sources/story-descriptions.mjs';
+import { extractStorySource } from '../../docsite/scripts/sources/StorySource.mjs';
+import { readStoryDescriptions } from '../../docsite/scripts/sources/StoryDescriptions.mjs';
 
 export function componentStoryDocsProvider(nextStoryDocs) {
   if (!nextStoryDocs) throw new Error('Component story docs require the built-in provider');

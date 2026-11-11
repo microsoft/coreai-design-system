@@ -117,7 +117,7 @@ export default function HomeView({ model, sourceHtml }: PageWidgetProps) {
             </Dialog>
             <LinkButton
               appearance="outline"
-              href={new URL('overview/introduction/#guidance-working-with-agents', base).href}
+              href={new URL('overview/Introduction/#guidance-working-with-agents', base).href}
               role="link"
             >
               Learn more

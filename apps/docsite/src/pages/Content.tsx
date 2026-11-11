@@ -11,8 +11,8 @@ import {
   Text,
 } from '@coreai-ds/react-components';
 import { PageLayout } from '../components/PageLayout';
-import { ContentHelpCards } from '../components/content-help-cards';
-import { ContentPrincipleConnector } from '../components/content-principle-connector';
+import { ContentHelpCards } from '../components/ContentHelpCards';
+import { ContentPrincipleConnector } from '../components/ContentPrincipleConnector';
 
 interface ContentStep {
   title: string;

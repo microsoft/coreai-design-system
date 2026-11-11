@@ -4,7 +4,6 @@ title: Skeleton
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '74734:188193'
 summary: >-
   A skeleton lets people know that a section of content is loading without

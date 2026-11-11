@@ -14,7 +14,7 @@ import {
   Text,
 } from '@coreai-ds/react-components';
 import { PageLayout } from '../components/PageLayout';
-import { siteLinks } from '../data/content';
+import { siteLinks } from '../data/Content';
 
 const installPackages = `npm install @coreai-ds/react-components
 npm install @fluentui/react-components @fluentui/react-icons # peer dependencies as needed`;

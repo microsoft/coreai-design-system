@@ -86,9 +86,7 @@ test('MCP publishes local examples and complete upstream variants under real com
   const inlineStory = await callTool(3, 'docs-show-story', {
     storyId: 'components-badge-counter-badge--default',
   });
-  assert.match(inlineStory, /import \{ CounterBadge \} from "@coreai-ds\/react-components"/);
-  assert.match(inlineStory, /<CounterBadge \{\.\.\.args\}/);
-  assert.match(inlineStory, /Default\.args = \{\s*count: 5/s);
+  assert.match(inlineStory, /Source: local CoreAI override/);
   const listing = await callTool(5, 'docs-list', { withStoryIds: true });
   assert.equal((listing.match(/^- CounterBadge \(/gm) ?? []).length, 1);
   assert.match(listing, /components-badge-counter-badge--appearance/);

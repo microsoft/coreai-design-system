@@ -4,7 +4,6 @@ title: Checkbox
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '116:46757'
 summary: >-
   Checkboxes let people select multiple options from a group or switch a single

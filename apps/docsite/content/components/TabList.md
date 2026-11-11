@@ -4,7 +4,6 @@ title: Tabs
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '7214:136202'
 summary: >-
   A tablist allows people to switch between categories of related information

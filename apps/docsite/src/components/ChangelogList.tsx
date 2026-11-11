@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import { Text } from '@coreai-ds/react-components';
-import { changelogEntries, type ChangelogEntry } from '../data/changelog';
+import { changelogEntries, type ChangelogEntry } from '../data/Changelog';
 import { ChevronRight } from './Icons';
 
 const monthFormatter = new Intl.DateTimeFormat('en-US', {

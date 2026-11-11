@@ -1107,14 +1107,14 @@ test('cleans current built Agent Skill, Theming and template MDX snapshots read-
         assert.ok(markdown.includes('components-coreaifluentprovider--custom-brand-theme'));
         assert.ok(markdown.includes('The theme tokens to apply.'));
         const canonical = await fs.readFile(
-          new URL('../../docsite/content/foundations/theming.md', import.meta.url),
+          new URL('../../docsite/content/foundations/Theming.md', import.meta.url),
           'utf8',
         );
         for (const original of codeBlocks(canonical))
           assert.ok(code.includes(original.value), `Missing canonical Theming code in ${doc.id}`);
       }
       if (doc.id === 'docs-agent-skill--docs') {
-        assert.ok(markdown.includes('Required MCP workflow'));
+        assert.ok(markdown.includes('https://microsoft.github.io/coreai-design-system/llms.txt'));
       }
     }
   });

@@ -4,7 +4,6 @@ title: Toast
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '49507:161985'
 summary: >-
   A toast displays temporary content that can be dismissed by user action or an

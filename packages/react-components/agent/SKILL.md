@@ -10,8 +10,8 @@ description: 'Use when building, styling, reviewing, or debugging React UI with 
 Base URL: https://microsoft.github.io/coreai-design-system/
 
 - Start here: https://microsoft.github.io/coreai-design-system/llms.txt
-- Agent workflow: https://microsoft.github.io/coreai-design-system/guides/agent-workflow.md
-- Package setup: https://microsoft.github.io/coreai-design-system/guides/package.md
+- Agent workflow: https://microsoft.github.io/coreai-design-system/guides/AgentWorkflow.md
+- Package setup: https://microsoft.github.io/coreai-design-system/guides/Package.md
 - Exact routes, examples, source downloads, API membership, and versions:
   https://microsoft.github.io/coreai-design-system/llms/index.json
 
@@ -30,7 +30,7 @@ needed. Do not upload repository content or credentials to read documentation.
    It includes a basic Default example, API summaries, UX guidance, and other examples.
 4. For a known human URL, replace its trailing slash with `.md`, preserving the
    `/coreai-design-system/` prefix. The homepage maps to `index.md`.
-   Example: `components/button/` becomes `components/button.md`.
+   Example: `components/Button/` becomes `components/Button.md`.
 5. Use `llms/index.json` only when you need exact routes, subcomponent membership,
    story IDs, dependencies, or direct source links. Follow published paths instead
    of guessing names from component exports or old story IDs.
@@ -54,11 +54,11 @@ Inspect existing local adapters and repository import rules before adding UI.
 
 Useful direct references:
 
-- Theming: https://microsoft.github.io/coreai-design-system/foundations/theming.md
-- Colors: https://microsoft.github.io/coreai-design-system/foundations/colors.md
-- Typography: https://microsoft.github.io/coreai-design-system/foundations/typography.md
-- CoreAI differences: https://microsoft.github.io/coreai-design-system/guides/variations-from-fluent.md
-- CSS Modules: https://microsoft.github.io/coreai-design-system/guides/styling-with-css-modules.md
+- Theming: https://microsoft.github.io/coreai-design-system/foundations/Theming.md
+- Colors: https://microsoft.github.io/coreai-design-system/foundations/Colors.md
+- Typography: https://microsoft.github.io/coreai-design-system/foundations/Typography.md
+- CoreAI differences: https://microsoft.github.io/coreai-design-system/guides/VariationsFromFluent.md
+- CSS Modules: https://microsoft.github.io/coreai-design-system/guides/StylingWithCssModules.md
 
 ## Templates and design quality
 

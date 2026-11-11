@@ -29,11 +29,10 @@ import {
   DocumentSearch20Regular,
 } from '@fluentui/react-icons';
 import { ChevronRight, ExternalIcon } from '../components/Icons';
-import { WorkInProgress } from '../components/work-in-progress';
 import type { PageWidgetProps } from './FoundationViews';
-import { IntroFeatureCards } from './intro-feature-cards';
-import { ContentHelpCards } from '../components/content-help-cards';
-import { ContentPrincipleConnector } from '../components/content-principle-connector';
+import { IntroFeatureCards } from './IntroFeatureCards';
+import { ContentHelpCards } from '../components/ContentHelpCards';
+import { ContentPrincipleConnector } from '../components/ContentPrincipleConnector';
 
 interface ResourceItem {
   title: string;
@@ -1173,12 +1172,7 @@ function AgentWorkflowView({ sourceHtml }: PageWidgetProps) {
   );
 }
 
-function WorkInProgressView({ model }: PageWidgetProps) {
-  return <WorkInProgress standalone={model.underConstruction} />;
-}
-
 export const standaloneViews: Record<string, React.ComponentType<PageWidgetProps>> = {
-  'work-in-progress': WorkInProgressView,
   resources: ResourcesView,
   includes: IntroFeatureCards,
   'agent-cards': IntroAgentCards,

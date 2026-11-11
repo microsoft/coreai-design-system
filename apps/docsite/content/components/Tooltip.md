@@ -4,7 +4,6 @@ title: Tooltip
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '1011:48417'
 summary: >-
   A tooltip provides supplemental, contextual information elevated near its

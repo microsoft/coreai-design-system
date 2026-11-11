@@ -4,7 +4,6 @@ title: Link
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '2070:49491'
 summary: >-
   Link component does not support breaking and wrapping onto the next line. In

@@ -4,7 +4,6 @@ title: Search box
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '212891:4'
 summary: >-
   Search bars are one of the most used components in the system. It allows the

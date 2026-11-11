@@ -6,7 +6,7 @@ import { Card, Link, Text, type TextProps } from '@coreai-ds/react-components';
 import { PageLayout } from '../components/PageLayout';
 import { Section } from '../components/Section';
 import { ExternalIcon } from '../components/Icons';
-import { typographyRows, siteLinks } from '../data/content';
+import { typographyRows, siteLinks } from '../data/Content';
 
 function FontCard({
   font = 'base',

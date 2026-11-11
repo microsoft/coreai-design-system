@@ -8,8 +8,8 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import type { Group } from 'three';
 import type { BrandVariants } from '@coreai-ds/react-components';
 import { useThemeMode } from '../theme/ThemeProvider';
-import { PaperDithering } from './paper-dithering';
-import { PaperHeatmap } from './paper-heatmap';
+import { PaperDithering } from './PaperDithering';
+import { PaperHeatmap } from './PaperHeatmap';
 
 const logoSettings = {
   scale: 1.19 * 1.25,

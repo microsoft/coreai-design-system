@@ -4,7 +4,6 @@ title: List
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '285738:557'
 summary: >-
   A list is a collection of items or information repeated in a vertical stack.

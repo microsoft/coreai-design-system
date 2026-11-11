@@ -4,7 +4,6 @@ title: Popover
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '1011:48414'
 summary: >-
   A popover is a small surface that appears when someone interacts with a

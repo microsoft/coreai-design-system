@@ -4,7 +4,6 @@ title: Slider
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '5874:120283'
 summary: >-
   A slider lets someone set a value from a given range. Sliders can take

@@ -4,7 +4,6 @@ title: Persona
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '56607:166099'
 summary: >-
   A persona is a representation of a person with additional contextual

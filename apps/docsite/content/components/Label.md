@@ -4,7 +4,6 @@ title: Label
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '2070:49486'
 summary: Labels give a name to a component or group of components.
 resources:

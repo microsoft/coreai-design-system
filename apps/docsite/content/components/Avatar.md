@@ -4,7 +4,6 @@ title: Avatar
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 storybookTitles:
   - Components/Avatar
   - Components/AvatarGroup

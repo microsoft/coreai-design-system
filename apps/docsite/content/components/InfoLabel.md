@@ -4,7 +4,6 @@ title: Info label
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 storybookTitles:
   - Components/InfoLabel
   - Components/InfoButton

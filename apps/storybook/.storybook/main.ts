@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { generateTemplateDocs } from '../scripts/generate-template-docs.mjs';
 import { generateSkillDoc } from '../scripts/generate-skill-doc.mjs';
 import { componentStoryDocsProvider } from '../scripts/component-story-docs.mjs';
-import { publicMarkdown } from '../../docsite/scripts/sources/public-markdown.mjs';
+import { publicMarkdown } from '../../docsite/scripts/sources/PublicMarkdown.mjs';
 import { generatedStoryIndexer } from '../scripts/generate-component-stories.mjs';
 import remarkGfm from 'remark-gfm';
 import {

@@ -6,7 +6,6 @@ reference:
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '2070:49483'
 summary: >-
   A dropdown lets people choose one or more options from a list. It can be used

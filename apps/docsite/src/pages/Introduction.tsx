@@ -5,7 +5,7 @@ import * as React from 'react';
 import { Link, Text } from '@coreai-ds/react-components';
 import { PageLayout } from '../components/PageLayout';
 import { ExternalIcon, FigmaLogo, NpmLogo, StorybookLogo } from '../components/Icons';
-import { siteLinks } from '../data/content';
+import { siteLinks } from '../data/Content';
 
 const CoreAILogoCube = React.lazy(() =>
   import('../components/CoreAILogoCube').then((module) => ({ default: module.CoreAILogoCube })),

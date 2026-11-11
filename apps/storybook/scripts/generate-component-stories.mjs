@@ -4,12 +4,12 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { componentBindings } from '../../docsite/scripts/sources/component-bindings.mjs';
-import { createStoryInventory } from '../../docsite/scripts/sources/story-inventory.mjs';
+import { componentBindings } from '../../docsite/scripts/sources/ComponentBindings.mjs';
+import { createStoryInventory } from '../../docsite/scripts/sources/StoryInventory.mjs';
 import {
   readStoryDescriptions,
   descriptionComment,
-} from '../../docsite/scripts/sources/story-descriptions.mjs';
+} from '../../docsite/scripts/sources/StoryDescriptions.mjs';
 
 export const appRoot = fileURLToPath(new URL('../', import.meta.url));
 export const generatedRoot = path.join(appRoot, '.storybook', '.cache', 'component-stories');

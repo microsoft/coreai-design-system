@@ -4,7 +4,6 @@ title: Badge
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 storybookTitles:
   - Components/Badge/Badge
   - Components/Badge/PresenceBadge

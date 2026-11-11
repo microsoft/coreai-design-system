@@ -4,7 +4,6 @@ title: Page header
 navigation:
   group: Templates
   showInSidebar: true
-status: under-construction
 figmaPreviewUrl: >-
   https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=433307-80738
 figmaPageId: '433307:80738'
@@ -17,6 +16,6 @@ resources:
       https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=433307-80738
 reference:
   standalone: true
-  route: templates/page-header
+  route: templates/PageHeader
   aliases: [/components/page-header/]
 ---

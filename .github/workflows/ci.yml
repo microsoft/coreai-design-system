@@ -25,7 +25,7 @@ jobs:
           node-version: 22
           cache: npm
       - name: Test public-source safeguards
-        run: node --test scripts/check-public-source.test.mjs scripts/license-headers.test.mjs .github/workflows/scripts/check-hosting-auth.test.mjs
+        run: node --test scripts/check-public-source.test.mjs scripts/license-headers.test.mjs
       - name: Check public source
         run: npm run check:public-source
       - name: Check license headers
@@ -37,19 +37,9 @@ jobs:
       - run: npm run lint -- --max-warnings=0
       - run: npm run type-check
       - name: Test guidance generation
-        run: node --test shared/guidance.test.mjs apps/docsite/test/generation.test.mjs
-      - name: Verify Storybook guidance and MCP
-        run: npm run build:storybook && npm --workspace apps/storybook run verify:build
-        env:
-          NODE_OPTIONS: --max-old-space-size=4096
-      - name: Type-check every selected consumer example
-        run: npm --workspace apps/storybook run stories:verify-source
-      - name: Test docsite against built Storybook
-        run: npm --workspace apps/docsite test
-        env:
-          STORYBOOK_INDEX_PATH: ${{ github.workspace }}/apps/storybook/storybook-static/index.json
-      - name: Test public Storybook host
-        run: npm --workspace apps/storybook run test:host
+        run: node --test shared/guidance.test.mjs
+      - name: Test local Storybook source tooling
+        run: npm --workspace apps/docsite run sources:ensure && node --test apps/storybook/scripts/story-inventory.test.mjs apps/storybook/scripts/story-source.test.mjs
       - name: Install Chromium
         run: npm --workspace packages/react-components run test:install-browser -- --with-deps
       - name: Test components

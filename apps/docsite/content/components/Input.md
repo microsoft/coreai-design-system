@@ -4,7 +4,6 @@ title: Input
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '33:559'
 summary: >-
   An input allows people to enter short, free form text data. If you need to

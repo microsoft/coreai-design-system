@@ -4,7 +4,6 @@ title: Spin button
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '36789:211140'
 summary: >-
   A spin button is a specialized input that lets someone easily increase or

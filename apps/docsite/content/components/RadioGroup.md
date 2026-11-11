@@ -4,7 +4,6 @@ title: Radio group
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '2070:49485'
 summary: >-
   Radio groups let people select a single item from a short list. Use them in

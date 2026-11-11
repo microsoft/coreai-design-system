@@ -17,7 +17,6 @@ export interface PagePresentation {
   headingId: string;
   markdownUrl: string;
   home: boolean;
-  underConstruction: boolean;
   resources: PageResource[];
 }
 
@@ -38,7 +37,6 @@ export function readPagePresentation(root: HTMLElement): PagePresentation {
     headingId: header.dataset.headingId,
     markdownUrl: header.dataset.markdownUrl,
     home: header.dataset.home === 'true',
-    underConstruction: header.dataset.underConstruction === 'true',
     resources: [...root.querySelectorAll<HTMLAnchorElement>('[data-page-resources] a')].map(
       (link) => ({
         href: link.href,
@@ -49,7 +47,7 @@ export function readPagePresentation(root: HTMLElement): PagePresentation {
 }
 
 export function PageHeader({ model }: { model: PagePresentation }) {
-  if (model.home || model.underConstruction) return null;
+  if (model.home) return null;
   return (
     <>
       <div className="page-header__title-row">

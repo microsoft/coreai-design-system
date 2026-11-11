@@ -4,8 +4,8 @@
 import * as React from 'react';
 import { ComponentPage } from '../components/ComponentPage';
 import { PageLayout } from '../components/PageLayout';
-import { WorkInProgress } from '../components/work-in-progress';
-import { getComponentContent } from '../data/components';
+import { WorkInProgress } from '../components/WorkInProgress';
+import { getComponentContent } from '../data/Components';
 
 const unfinishedTemplateIds = new Set(['empty-state', 'page-header', 'top-nav']);
 

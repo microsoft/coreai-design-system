@@ -6,7 +6,6 @@ reference:
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 storybookTitles:
   - Components/Button/Button
   - Components/Button/CompoundButton

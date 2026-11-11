@@ -98,7 +98,7 @@ For each affected behavior, determine:
 
 Implementation is primary evidence. Cross-check only relevant entries in
 `packages/react-components/CHANGELOG.md` and the relevant component section of
-`apps/docsite/content/guides/variations-from-fluent.md`. Documentation supports intent but does
+`apps/docsite/content/guides/VariationsFromFluent.md`. Documentation supports intent but does
 not create scope or require tests by itself. Report implementation/documentation mismatches with
 both locations and interpretations; do not resolve them by editing docs or production code.
 

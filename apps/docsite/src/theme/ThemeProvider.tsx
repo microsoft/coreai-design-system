@@ -13,6 +13,7 @@ import {
   type BrandVariants,
   type CoreAITheme,
 } from '@coreai-ds/react-components';
+import { readStoredValue, writeStoredValue } from '../BrowserState.mjs';
 
 export type ThemeMode = 'light' | 'dark';
 export type ThemePreference = ThemeMode;
@@ -39,22 +40,16 @@ interface ThemeContextValue {
 const ThemeContext = React.createContext<ThemeContextValue | undefined>(undefined);
 
 function readStoredPreference(): ThemePreference {
-  if (typeof localStorage !== 'undefined') {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === 'light' || stored === 'dark') {
-      return stored;
-    }
-  }
+  const stored = readStoredValue('localStorage', STORAGE_KEY);
+  if (stored === 'light' || stored === 'dark') return stored;
   return typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: light)').matches
     ? 'light'
     : 'dark';
 }
 
 function readStoredBrand(): BrandPreference {
-  if (typeof localStorage !== 'undefined') {
-    const stored = localStorage.getItem(BRAND_STORAGE_KEY);
-    if (stored === 'coreai' || stored === 'azure') return stored;
-  }
+  const stored = readStoredValue('localStorage', BRAND_STORAGE_KEY);
+  if (stored === 'coreai' || stored === 'azure') return stored;
   return 'coreai';
 }
 
@@ -68,7 +63,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     const systemTheme = window.matchMedia('(prefers-color-scheme: light)');
     const followSystemTheme = () => {
-      const stored = localStorage.getItem(STORAGE_KEY);
+      const stored = readStoredValue('localStorage', STORAGE_KEY);
       if (stored !== 'light' && stored !== 'dark') {
         setPreferenceState(systemTheme.matches ? 'light' : 'dark');
       }
@@ -99,12 +94,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setPreference = React.useCallback((next: ThemePreference) => {
     setPreferenceState(next);
-    localStorage.setItem(STORAGE_KEY, next);
+    writeStoredValue('localStorage', STORAGE_KEY, next);
   }, []);
 
   const setBrand = React.useCallback((next: BrandPreference) => {
     setBrandState(next);
-    localStorage.setItem(BRAND_STORAGE_KEY, next);
+    writeStoredValue('localStorage', BRAND_STORAGE_KEY, next);
   }, []);
 
   const value = React.useMemo<ThemeContextValue>(

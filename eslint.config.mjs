@@ -14,8 +14,10 @@ export default tseslint.config(
   {
     ignores: [
       '**/dist/**',
+      'apps/docsite/dist-reference-proof/**',
       '**/node_modules/**',
       '**/storybook-static/**',
+      '**/.cache/**',
       'apps/prototype/build/**',
       'apps/prototype/.react-router/**',
       'apps/docsite/src/assets/vendor/**',
@@ -50,7 +52,7 @@ export default tseslint.config(
   {
     files: [
       'eslint.config.mjs',
-      'apps/docsite/{build.mjs,server.js}',
+      'apps/docsite/{Build.mjs,Server.js}',
       'apps/prototype/*config.ts',
       'apps/prototype/test/**/*.mjs',
       'apps/docsite/scripts/**/*.{js,mjs}',

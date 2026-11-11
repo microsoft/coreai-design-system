@@ -4,7 +4,6 @@ title: Rating
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '190351:2605'
 summary: >-
   Rating is used to communicate user sentiment. It also allows customers to

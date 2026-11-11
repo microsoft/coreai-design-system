@@ -4,7 +4,6 @@ title: Data grid
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '298485:4122'
 summary: >-
   Presents data in a two-dimensional DataGrid format, arranged in columns and

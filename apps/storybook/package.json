@@ -14,7 +14,7 @@
     "stories:ensure": "npm --workspace @coreai-ds/docsite run sources:ensure",
     "stories:init": "npm --workspace @coreai-ds/docsite run sources:update",
     "stories:update": "npm --workspace @coreai-ds/docsite run sources:update",
-    "stories:inventory": "node ../docsite/scripts/sources/story-inventory.mjs",
+    "stories:inventory": "node ../docsite/scripts/sources/StoryInventory.mjs",
     "stories:generate": "node scripts/generate-component-stories.mjs",
     "test:generated": "node --test scripts/generate-component-stories.test.mjs",
     "test:source": "node --test scripts/story-source.test.mjs",

@@ -13,12 +13,12 @@ import { SearchBox } from '@coreai-ds/react-components';
 import { TabList, Tab, type SelectTabData, type SelectTabEvent } from '@coreai-ds/react-components';
 import { Link } from '@coreai-ds/react-components';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { normalizeRoutePath, pages, sidebarGroups } from '../data/registry';
-import { searchPages } from '../data/search';
-import { siteLinks } from '../data/content';
+import { normalizeRoutePath, pages, sidebarGroups } from '../data/Registry';
+import { searchPages } from '../data/Search';
+import { siteLinks } from '../data/Content';
 import { CoreAILogo, ExternalIcon } from './Icons';
 import { ThemeSwitcher } from './ThemeSwitcher';
-import { useDocsiteInteractions } from '../hooks/useDocsiteInteractions';
+import { useDocsiteInteractions } from '../hooks/UseDocsiteInteractions';
 
 const sidebarStorageKey = 'coreai-docsite-sidebar-collapsed';
 const navigationPages = sidebarGroups.flatMap((group) => group.items);

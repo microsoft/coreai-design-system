@@ -12,7 +12,7 @@ import {
 import { Tab, TabList, type SelectTabData, type SelectTabEvent } from '@coreai-ds/react-components';
 import { Text } from '@coreai-ds/react-components';
 import { PageLayout } from '../components/PageLayout';
-import { siteLinks } from '../data/content';
+import { siteLinks } from '../data/Content';
 
 const vscodeConfig = `{
   "servers": {

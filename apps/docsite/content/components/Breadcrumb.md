@@ -4,7 +4,6 @@ title: Breadcrumb
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '133245:6128'
 summary: >-
   A breadcrumb helps people quickly understand where they are within the

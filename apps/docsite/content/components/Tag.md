@@ -4,7 +4,6 @@ title: Tag
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 storybookTitles:
   - Components/Tag/Tag
   - Components/Tag/InteractionTag

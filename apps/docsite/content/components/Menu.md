@@ -4,7 +4,6 @@ title: Menu
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '1011:48416'
 summary: >-
   A menu is a hidden list of options that is shown when someone interacts with a

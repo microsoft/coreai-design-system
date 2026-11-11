@@ -86,16 +86,14 @@ test('headings and local links agree, and authored HTML cannot execute', () => {
   assert.doesNotMatch(html, /<script/);
 });
 
-test('resource-free guidance omits an empty resources section and preserves status', () => {
+test('resource-free guidance omits an empty resources section', () => {
   const record = {
     title: 'Example',
     summary: 'Summary',
-    status: 'under-construction',
     resources: [],
     body: 'Guidance.',
   };
   const markdown = guidanceMarkdown(record);
-  assert.match(markdown, /## Status\n\nPage under construction\./);
   assert.match(markdown, /Guidance\./);
   assert.doesNotMatch(markdown, /## Resources/);
   assert.match(

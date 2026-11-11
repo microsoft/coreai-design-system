@@ -25,7 +25,6 @@ export async function readGuidance(directory = guidanceDirectory) {
         'title',
         'summary',
         'navigation',
-        'status',
         'storybookTitles',
         'storybookDefaultStory',
         'figmaPageId',
@@ -44,8 +43,6 @@ export async function readGuidance(directory = guidanceDirectory) {
         if (typeof data[key] !== 'string' || !data[key].trim())
           throw new Error(`${name}: ${key} is required.`);
       }
-      if (data.status !== undefined && !['complete', 'under-construction'].includes(data.status))
-        throw new Error(`${name}: invalid status.`);
       if (data.preview !== undefined && !['storybook', 'figma'].includes(data.preview))
         throw new Error(`${name}: invalid preview.`);
       if (

@@ -4,7 +4,6 @@ title: Swatch picker
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '182179:455'
 summary: >-
   A swatch picker lets people choose a color, image, or pattern in graphic and

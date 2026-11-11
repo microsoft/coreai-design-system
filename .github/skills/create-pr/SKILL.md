@@ -20,7 +20,7 @@ PR summary, and do not open the PR if verification is `Blocked` or `Unverified`.
 Before opening a PR, make sure the docs are up to date where relevant:
 
 - **Changelog** — if the change affects `@coreai-ds/react-components`, add an entry under `[Unreleased]` in [CHANGELOG.md](../../../packages/react-components/CHANGELOG.md).
-- **Variations from Fluent** — if the change adds, removes, or alters how a component differs from stock Fluent, update [Variations from Fluent](../../../apps/docsite/content/guides/variations-from-fluent.md).
+- **Variations from Fluent** — if the change adds, removes, or alters how a component differs from stock Fluent, update [Variations from Fluent](../../../apps/docsite/content/guides/VariationsFromFluent.md).
 
 Skip whichever doc doesn't apply (e.g. Storybook-only or docsite-only changes usually need neither).
 Component-test may inspect these files as supporting evidence but does not edit them. If its handoff reports a documentation mismatch, resolve it through this create-pr documentation workflow.

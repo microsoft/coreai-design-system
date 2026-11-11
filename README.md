@@ -10,30 +10,29 @@ Code, issues, pull requests, and GitHub Actions are available at
 Documentation is available under the
 [Creative Commons Attribution 4.0 International license](LICENSE), and source code is available
 under the [MIT license](LICENSE-CODE).
-Use the links below to explore the documentation, Storybook, and read-only MCP endpoint.
+Use the links below to explore the public documentation and npm package.
+Storybook remains available locally for development and testing.
 
 ## Live links
 
-| Resource             | URL                                                                                        |
-| -------------------- | ------------------------------------------------------------------------------------------ |
-| 🏠 Docsite (landing) | https://coreai-ds.azurewebsites.net                                                        |
-| 📚 Storybook         | https://coreai-ds-storybook.azurewebsites.net                                              |
-| 🤖 MCP endpoint      | https://coreai-ds-storybook.azurewebsites.net/mcp                                          |
-| 📦 Package (npm)     | [`@coreai-ds/react-components`](https://www.npmjs.com/package/@coreai-ds/react-components) |
+| Resource         | URL                                                                                        |
+| ---------------- | ------------------------------------------------------------------------------------------ |
+| 🏠 Documentation | https://microsoft.github.io/coreai-design-system/                                          |
+| 📦 Package (npm) | [`@coreai-ds/react-components`](https://www.npmjs.com/package/@coreai-ds/react-components) |
 
 ## Workspaces
 
-| Path                                                   | Package                                       | Purpose                                                                                         |
-| ------------------------------------------------------ | --------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| [apps/docsite](apps/docsite)                           | `@coreai-ds/docsite` (not published to npm)   | Infrastructure scaffold for static docsite build/serve and Azure App Service deployment wiring. |
-| [packages/react-components](packages/react-components) | `@coreai-ds/react-components`                 | The publishable theme package. Drop-in `<CoreAIFluentProvider>` + CoreAI-wrapped components.    |
-| [apps/storybook](apps/storybook)                       | `@coreai-ds/storybook` (not published to npm) | Storybook playground that previews the theme against Fluent UI's canonical stories.             |
-| [apps/prototype](apps/prototype)                       | `@coreai-ds/prototype` (private)              | CoreAI prototype app. See its README for the current migration scope and local setup.           |
+| Path                                                   | Package                                       | Purpose                                                                                      |
+| ------------------------------------------------------ | --------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| [apps/docsite](apps/docsite)                           | `@coreai-ds/docsite` (not published to npm)   | Static human and agent documentation, published through GitHub Pages.                        |
+| [packages/react-components](packages/react-components) | `@coreai-ds/react-components`                 | The publishable theme package. Drop-in `<CoreAIFluentProvider>` + CoreAI-wrapped components. |
+| [apps/storybook](apps/storybook)                       | `@coreai-ds/storybook` (not published to npm) | Storybook playground that previews the theme against Fluent UI's canonical stories.          |
+| [apps/prototype](apps/prototype)                       | `@coreai-ds/prototype` (private)              | CoreAI prototype app. See its README for the current migration scope and local setup.        |
 
 - Consumer + extension guide: [packages/react-components/README.md](packages/react-components/README.md)
-- Storybook, `fluent-stories/`, and the MCP for AI agents (authoring): [apps/storybook/README.md](apps/storybook/README.md)
+- Local Storybook and pinned source examples: [apps/storybook/README.md](apps/storybook/README.md)
 - GitHub Actions workflows and operations: [docs/GITHUB-ACTIONS.md](docs/GITHUB-ACTIONS.md)
-- Azure app + MCP hosting/auth: [docs/CI-CD-SETUP.md](docs/CI-CD-SETUP.md)
+- GitHub Pages hosting setup: [docs/CI-CD-SETUP.md](docs/CI-CD-SETUP.md)
 
 ## Contributing and support
 
@@ -51,13 +50,13 @@ To keep a single source of truth and avoid drift/duplication, every doc in this 
 exactly one of these categories. Before adding new documentation, place it per this table and
 **cross-link** to the owning doc instead of restating its content:
 
-| Category             | Covers                                                                                                                                                                              | Home                                                                                                                                                                                                                                                                                                                                                                                                            |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Operational docs** | Build, release process, CI/CD auth, contribution process/governance, deploy                                                                                                         | Each package/app's own `README.md`, plus additional scoped docs alongside it when a topic needs more depth (e.g. `RELEASING.md`, `CONTRIBUTING.md`) — always specific to the package/app they describe, never a generic repo-wide doc for one workspace's process. Concerns that genuinely span multiple workspaces (e.g. shared CI/CD auth, app hosting) live in the repo-root [`docs/`](docs) folder instead. |
-| **Usage docs**       | Component/theme usage, API behavior, MCP consumption, template-authoring conventions                                                                                                | Storybook docs ([`apps/storybook/src/stories/docs/*.mdx`](apps/storybook/src/stories/docs) "Docs" pages + JSDoc-driven autodocs) — single source, live at the hosted Storybook, and addressable by the MCP tools                                                                                                                                                                                                |
-| **Changelog**        | Version history                                                                                                                                                                     | Each publishable package's own `CHANGELOG.md`                                                                                                                                                                                                                                                                                                                                                                   |
-| **Workflow skills**  | Procedural steps for an agent to execute a task **in this monorepo** (PR/commit conventions, release steps)                                                                         | [`.github/skills/*/SKILL.md`](.github/skills) — numbered steps, checklists only; no conceptual/reference content — link out to whichever doc above owns it                                                                                                                                                                                                                                                      |
-| **Agent skill**      | Distributable, concise operating rules for an agent _consuming_ `@coreai-ds/react-components` (MCP server precedence, component-ID quirks, template-vs-component, offline fallback) | [`packages/react-components/agent/SKILL.md`](packages/react-components/agent/SKILL.md) — ships inside the published npm package (works for consumers outside this monorepo, with no MCP access needed) and is mirrored into a generated Storybook doc page so it's also addressable by the MCP tools; see [apps/storybook/README.md](apps/storybook/README.md#agent-skill-mirror)                               |
+| Category             | Covers                                                                                                      | Home                                                                                                                                                                                                                                                                                                                                                                                                            |
+| -------------------- | ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Operational docs** | Build, release process, CI/CD auth, contribution process/governance, deploy                                 | Each package/app's own `README.md`, plus additional scoped docs alongside it when a topic needs more depth (e.g. `RELEASING.md`, `CONTRIBUTING.md`) — always specific to the package/app they describe, never a generic repo-wide doc for one workspace's process. Concerns that genuinely span multiple workspaces (e.g. shared CI/CD auth, app hosting) live in the repo-root [`docs/`](docs) folder instead. |
+| **Usage docs**       | Component/theme usage, APIs, agent retrieval, and templates                                                 | Canonical Markdown under [`apps/docsite/content/`](apps/docsite/content), published as HTML and Markdown. Local Storybook mirrors canonical documentation rather than owning a second public copy.                                                                                                                                                                                                              |
+| **Changelog**        | Version history                                                                                             | Each publishable package's own `CHANGELOG.md`                                                                                                                                                                                                                                                                                                                                                                   |
+| **Workflow skills**  | Procedural steps for an agent to execute a task **in this monorepo** (PR/commit conventions, release steps) | [`.github/skills/*/SKILL.md`](.github/skills) — numbered steps, checklists only; no conceptual/reference content — link out to whichever doc above owns it                                                                                                                                                                                                                                                      |
+| **Agent skill**      | Concise operating rules for agents consuming the package                                                    | [`packages/react-components/agent/SKILL.md`](packages/react-components/agent/SKILL.md), shipped in npm and published by the docsite. Uses ordinary HTTPS Markdown retrieval, version checks, and explicit offline fallbacks.                                                                                                                                                                                    |
 
 This is distinct from the **Workflow skills** row above: those describe how an agent should
 _contribute to this repo_; the **Agent skill** describes how an agent should _use the package_,
@@ -67,7 +66,7 @@ and travels with it wherever it's installed.
 
 ```bash
 npm install               # bootstrap all workspaces (one root install)
-npm run docsite           # http://localhost:8080
+npm run docsite           # http://127.0.0.1:8081
 npm run storybook         # http://localhost:6006
 ```
 
@@ -93,7 +92,7 @@ Run these from the repo root.
 | `npm run type-check`      | Run `tsc --noEmit` across every workspace.                     |
 | `npm run clean`           | Remove each workspace's build output.                          |
 
-To run a script in just one workspace, use `npm -w <workspace> run <script>` — for example `npm -w packages/react-components run build`. The Storybook app also exposes `stories:init` and `stories:update` for managing the sparse-checked [apps/storybook/fluent-stories/](apps/storybook/fluent-stories/) sibling repo (see [apps/storybook/README.md](apps/storybook/README.md)). The docsite and Storybook (with its self-hosted MCP endpoint) deploy through [GitHub Actions](.github/workflows) to their existing Azure App Services. Deployment is gated and does not change the services' authentication settings. See the [CI/CD guide](docs/CI-CD-SETUP.md) for setup.
+To run a script in just one workspace, use `npm -w <workspace> run <script>` — for example `npm -w packages/react-components run build`. Storybook exposes `stories:init` and `stories:update` for managing the pinned [Fluent checkout](apps/storybook/fluent-stories/). Only the docsite is deployed publicly, through [GitHub Actions](.github/workflows) to GitHub Pages. See the [CI/CD guide](docs/CI-CD-SETUP.md) for setup.
 
 ## Consuming the react package
 
@@ -111,14 +110,11 @@ and the [CI/CD guide](docs/CI-CD-SETUP.md) for repository configuration.
 
 ## Legal
 
-### License and hosted-service terms
+### License and privacy
 
 Documentation is licensed under the
 [Creative Commons Attribution 4.0 International license](LICENSE). Source code is licensed under
 the [MIT license](LICENSE-CODE).
-
-Use of the hosted MCP endpoint is subject to the
-[Microsoft APIs Terms of Use](https://learn.microsoft.com/en-us/legal/microsoft-apis/terms-of-use).
 
 For Microsoft's privacy practices, see the
 [Microsoft Privacy Statement](https://privacy.microsoft.com/privacystatement).

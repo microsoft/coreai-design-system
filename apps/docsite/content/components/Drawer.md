@@ -4,7 +4,6 @@ title: Drawer
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '134794:2279'
 summary: >-
   A drawer is a secondary content surface that slides in from one edge of a

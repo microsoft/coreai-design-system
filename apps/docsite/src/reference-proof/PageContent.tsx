@@ -25,7 +25,7 @@ import {
   type PagePresentation,
 } from './PagePresentation';
 import type { PageWidgetProps } from './FoundationViews';
-import { PageTabs, preparePageTabs, type PageTab, type PageTabTargets } from './page-tabs';
+import { PageTabs, preparePageTabs, type PageTab, type PageTabTargets } from './PageTabs';
 
 const standaloneViewNames = new Set([
   'resources',
@@ -36,7 +36,6 @@ const standaloneViewNames = new Set([
   'package-skill',
   'agent-workflow',
   'content',
-  'work-in-progress',
 ]);
 
 export interface ReferencePage {

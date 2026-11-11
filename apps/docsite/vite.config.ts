@@ -13,9 +13,9 @@ import {
   renderLlmsIndex,
   type ComponentContent,
   type StorybookMarkdownDocument,
-} from './src/data/component-content';
-import { buildSiteRegistry, type SiteRegistry } from './src/data/registry-builder';
-import { generateContent } from './scripts/generate-content.mjs';
+} from './src/data/ComponentContent';
+import { buildSiteRegistry, type SiteRegistry } from './src/data/RegistryBuilder';
+import { generateContent } from './scripts/GenerateContent.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -53,7 +53,7 @@ function readComponentContent(): ComponentContent[] {
 
 function readMergedSiteRegistry() {
   const baseRegistry = JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, 'site-registry.json'), 'utf8'),
+    fs.readFileSync(path.resolve(__dirname, 'SiteRegistry.json'), 'utf8'),
   ) as SiteRegistry;
   return buildSiteRegistry(baseRegistry, readComponentContent());
 }
@@ -89,13 +89,13 @@ const exposeDataFiles: Plugin = {
   buildStart() {
     this.emitFile({
       type: 'asset',
-      fileName: 'site-registry.json',
+      fileName: 'SiteRegistry.json',
       source: JSON.stringify(readMergedSiteRegistry(), null, 2),
     });
     this.emitFile({
       type: 'asset',
-      fileName: 'changelog.json',
-      source: fs.readFileSync(path.resolve(__dirname, 'changelog.json')),
+      fileName: 'Changelog.json',
+      source: fs.readFileSync(path.resolve(__dirname, 'Changelog.json')),
     });
     this.emitFile({
       type: 'asset',
@@ -113,7 +113,7 @@ const serveComponentContent: Plugin = {
         ? new URL(request.url, 'http://localhost')
         : new URL('http://localhost');
       const pathname = requestUrl.pathname;
-      if (pathname === '/site-registry.json' && !requestUrl.searchParams.has('import')) {
+      if (pathname === '/SiteRegistry.json' && !requestUrl.searchParams.has('import')) {
         response.statusCode = 200;
         response.setHeader('Content-Type', 'application/json; charset=utf-8');
         response.setHeader('Cache-Control', 'no-cache');

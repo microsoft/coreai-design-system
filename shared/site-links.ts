@@ -2,17 +2,18 @@
 // Licensed under the MIT license.
 
 const repo = 'https://github.com/microsoft/coreai-design-system';
-const storybook = 'https://coreai-ds-storybook.azurewebsites.net/';
+const docsite = 'https://microsoft.github.io/coreai-design-system/';
+const storybook = 'http://localhost:6006/';
 
 export const siteLinks = {
-  docsite: 'https://coreai-ds.azurewebsites.net/',
+  docsite,
   repo,
   storybook,
   storybookDocs: {
-    variationsFromFluent: `${storybook}?path=/docs/docs-variations-from-fluent--docs`,
-    theming: `${storybook}?path=/docs/docs-theming--docs`,
-    agentSkill: `${storybook}?path=/docs/docs-agent-skill--docs`,
-    mcpSetup: `${storybook}?path=/docs/docs-mcp-setup--docs`,
+    variationsFromFluent: `${docsite}guides/VariationsFromFluent/`,
+    theming: `${docsite}foundations/Theming/`,
+    agentSkill: `${docsite}guides/PackageSkill/`,
+    mcpSetup: `${docsite}guides/UseWithAgents/`,
   },
   mcp: `${storybook}mcp`,
   packageReadme: `${repo}/blob/main/packages/react-components/README.md`,

@@ -4,7 +4,6 @@ title: Field
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '32182:95313'
 summary: >-
   A field is a combination of a label and any form component, like an input,

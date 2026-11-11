@@ -2,7 +2,7 @@
   "name": "coreai-ds-monorepo",
   "version": "0.0.0",
   "private": true,
-  "description": "CoreAI Design System: a Fluent UI React theme package, documentation site, and Storybook with MCP.",
+  "description": "CoreAI Design System: a Fluent UI React package, static documentation, and local Storybook.",
   "workspaces": [
     "packages/*",
     "apps/*"

@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { PageLayout } from '../components/PageLayout';
 import { ChangelogList } from '../components/ChangelogList';
-import { changelogEntries } from '../data/changelog';
+import { changelogEntries } from '../data/Changelog';
 
 export function Changelog() {
   return (
