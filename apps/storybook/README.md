@@ -61,7 +61,7 @@ version at that commit, update both `version` and `ref` in the setup script, and
 automatic selection of the newest or nearest commit.
 
 The 9.74.9 refresh adds Popover `NonInteractiveContent` and Tooltip `OverflowHidden`, with no
-selected story removals. The current catalog has **695 selected stories**: 150 local and 545
+selected story removals. The current catalog has **694 selected stories**: 149 local and 545
 Fluent, with 70 local overrides. All selected examples type-check. CounterBadge uses the
 canonical `Components/Badge/Counter Badge` title so its local Default replaces the upstream
 Default in one catalog instead of publishing a second component.

@@ -99,8 +99,6 @@ to whole cells. With rows alone, width still defaults to source width times 2.
 Fractional source dimensions times the multiplier are rounded to the nearest
 whole pixel, with a minimum of 1. Each output dimension must be 1-256.
 
-The Storybook recreation comparison uses native 20px icons at 2x by default,
-with editable 16px/20px/24px sources and 1x-4x sampling for verification.
 Regular icons usually draw outlines with filled paths rather than SVG `stroke`
 attributes.
 
@@ -164,23 +162,107 @@ and the complete artboard. It uses the same circle positions as `Illicon`. Save 
 copy this markup into design tools; there is no need to maintain a second drawing
 by hand.
 
-## Preserve custom SVG artwork
+## Use your own SVG
 
-Use the separate children mode for trusted inline SVG or an SVG component that
-forwards SVG props. Do not pass raw markup strings to `Illicon`.
+Pass finished artwork as one SVG child. This uses the same inline-SVG rendering
+mode for your own artwork and artwork copied from the shared catalog. You do not
+need to contribute an SVG to this repository before using it in your application.
+Do not pass finished artwork through `iconToDotGrid`: that would sample it again
+and could change its geometry.
+
+### Prepare the artwork
+
+- Keep a `viewBox` with positive width and height. Preserve its aspect ratio,
+  empty borders, paths, circles, transforms, and intentional opacity.
+- Use a transparent background. Remove any artboard-sized background rectangle
+  unless it is part of the illustration.
+- Circles are not required. Figma-exported paths and hybrid geometry are valid.
+- For theme-aware ink, use `fill="currentColor"` and/or `stroke="currentColor"`.
+  Check child shapes for hardcoded paints that override inherited paint.
+  Preserve `fill="none"` on outlines and intentional fixed colors. `Illicon`
+  does not replace colors automatically.
+- Keep the SVG self-contained. Do not depend on external fonts, images, styles,
+  or remote references. Convert text to paths when needed.
+- Only use trusted artwork reviewed with your application code. Inline SVG is
+  React content, not a sanitized file-upload feature. Do not inject untrusted
+  strings with `dangerouslySetInnerHTML`.
+
+Consumer artwork can have its own artboard size. The shared catalog has a
+stricter [SVG contribution contract](../../illicons/README.md#svg-contract),
+including a 140 x 140 artboard.
+
+### Wrap SVG markup in a React component
+
+This works without an SVG loader. Keep your original `.svg` file for editing.
+Copy its geometry into a `.tsx` component and use React attribute names, such as
+`className`, `fillRule`, `clipPath`, and `strokeWidth`, instead of `class`,
+`fill-rule`, `clip-path`, and `stroke-width`.
 
 ```tsx
+import * as React from 'react';
+import { Illicon } from '@coreai-ds/react-components';
+
+function MyIllustrationSvg(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 20" fill="currentColor" {...props}>
+      <circle cx="4.25" cy="5.75" r="1.25" />
+      <path d="M10 2h12v10H10z" fill="none" stroke="currentColor" />
+    </svg>
+  );
+}
+
 <Illicon size={120} aria-label="Custom illustration">
-  <svg viewBox="0 0 40 20" fill="currentColor">
-    <circle cx="4.25" cy="5.75" r="1.25" />
-    <path d="M10 2h12v10H10z" fill="none" stroke="currentColor" />
-  </svg>
-</Illicon>
+  <MyIllustrationSvg />
+</Illicon>;
 ```
 
-Geometry is preserved, including irregular dots and hybrid illustrations.
-Use `currentColor` for theme-controlled fills and strokes; explicit colors stay
-unchanged. Supply either `data` or SVG children, not both. Radius and pitch apply
-only to grid data. Optional `size` applies only to custom SVG and preserves its
-aspect ratio; it does not apply to grids. Custom SVG is trusted React content, not a sanitized upload;
-authors must handle internal IDs correctly when artwork is rendered more than once.
+The child component must forward SVG props to its root `svg`, including
+`className`, `aria-hidden`, and `focusable`. Keep the forwarded props after the
+root defaults so `Illicon` can apply its sizing and accessibility treatment.
+Do not wrap the root SVG in another HTML element.
+
+Alternatively, pass a literal `<svg>...</svg>` child directly. Both forms use
+the same renderer.
+
+### Import an SVG file as a React component
+
+If your app already has an SVG-to-React transform, such as SVGR, import the file
+using that tool's syntax and use the resulting component in the same child slot.
+Configure it to retain the `viewBox`, forward root SVG props, and preserve
+geometry and theme-aware paint. Check that optimization does not remove small
+dots or change their spacing.
+
+SVG import syntax depends on the application's build tooling. A normal asset
+import may return a URL, not a React component. `Illicon` does not load file paths,
+URLs, or raw SVG strings. No special loader is required if you use the `.tsx`
+approach above.
+
+### Size, theme, accessibility, and repeated instances
+
+- Supply either `data` or one SVG child, not both. `radius` and `pitch` apply
+  only to grid data.
+- For SVG children, set a positive `size` for the display width in CSS pixels.
+  Height follows the SVG aspect ratio. The example above renders at 120 x 60px.
+  Size scales finished geometry; it does not change the stored SVG or re-sample it.
+- Ink using `currentColor` follows the theme's neutral foreground. To override
+  it, set CSS `color` on `Illicon`, for example `style={{ color: 'var(--illustration-ink)' }}`.
+  Hardcoded fills and strokes stay unchanged.
+- Put `aria-label` or `aria-labelledby` on `Illicon` for meaningful artwork.
+  Omit both for decorative artwork, such as an illustration beside an equivalent
+  empty-state heading. `Illicon` hides the inner SVG from assistive technology.
+- For SVG definitions referenced by ID, use unique IDs per rendered instance.
+  In a hand-authored component, create an ID with `React.useId()` and use it in
+  both `id` and the matching `href` or `url(#...)` reference. A fixed prefix
+  shared by every instance does not prevent collisions between repeated copies.
+
+Before shipping, render two copies together, check light and dark themes, and
+check the intended display sizes. Confirm the shape, gaps, transparency, and
+accessible name. This inline-SVG path works during server rendering and needs
+no canvas.
+
+### Contribute your SVG to the shared catalog
+
+Use the [artwork contribution guide](../../illicons/README.md#add-artwork)
+for the accepted SVG subset, filename and metadata requirements, validation
+commands, and PR checklist. Submit the standalone SVG and its manifest entry,
+not just the consuming app's React wrapper. Keep finished geometry intact.

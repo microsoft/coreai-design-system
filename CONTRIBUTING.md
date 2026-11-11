@@ -47,6 +47,18 @@ See the root [README](README.md) for the repository layout and additional script
 [contribution and governance guide](packages/react-components/CONTRIBUTING.md). Storybook
 changes should follow the [Storybook authoring guide](apps/storybook/README.md).
 
+## Illicon artwork
+
+To use your own finished SVG in an application, follow
+[Use your own SVG](packages/react-components/src/components/Illicon.md#use-your-own-svg).
+You do not need to contribute it to use it locally.
+
+To add artwork to the shared catalog, follow the
+[Illicon artwork contribution guide](packages/react-components/illicons/README.md#add-artwork)
+for SVG requirements, manifest metadata, creator credit, validation commands,
+and the artwork PR checklist. Submit the standalone SVG and manifest entry;
+do not re-sample finished artwork or hand-edit the generated registry.
+
 ## Pull requests
 
 1. Create a focused branch and keep changes scoped to one problem.

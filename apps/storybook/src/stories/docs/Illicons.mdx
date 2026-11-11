@@ -47,9 +47,62 @@ with **2px dots**. Radius and pitch affect display geometry, not sampling.
 Doubling source coordinates aligns half-pixels to whole pixels, but curves can
 still anti-alias.
 
-**Source Recreation Dev** keeps native 16px, 20px, and 24px selectors, an editable
-multiplier, and the actual canvas for visual verification. These are testing
-alternatives; the recommended standard remains 20px at 2x.
+## Use your own SVG
+
+Finished dot-grid SVGs do not need conversion. Pass one inline SVG, or a React
+component that renders it, as the child of `Illicon`. Paths exported by Figma
+are valid; the artwork does not have to contain literal circles.
+
+```tsx
+import * as React from 'react';
+import { Illicon } from '@coreai-ds/react-components';
+
+function MyIllustrationSvg(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 20" fill="currentColor" {...props}>
+      <circle cx="4.25" cy="5.75" r="1.25" />
+      <path d="M10 2h12v10H10z" fill="none" stroke="currentColor" />
+    </svg>
+  );
+}
+
+<Illicon size={120} aria-label="Custom illustration">
+  <MyIllustrationSvg />
+</Illicon>;
+```
+
+### Consumer SVG requirements
+
+- Keep a positive `viewBox`, transparent background, and self-contained geometry.
+  Preserve paths, circles, transforms, and intentional opacity. Consumer artboards
+  do not need to be 140 x 140.
+- Forward SVG props to the root `svg`, after its defaults. This lets `Illicon`
+  apply `className`, `aria-hidden`, and `focusable`. Use React attribute names,
+  such as `fillRule` and `strokeWidth`, when copying markup into TSX.
+- Use `currentColor` for theme-aware fills and strokes. Check child shapes for
+  hardcoded paints. Preserve `none` on outlines and intentional fixed colors;
+  `Illicon` does not rewrite paint.
+- Use unique IDs per rendered instance for referenced definitions.
+  `React.useId()` can supply an ID for both the definition and its reference.
+  Do not depend on external fonts, images, styles, or remote references.
+- Supply `size` as the display width; height follows the viewBox aspect ratio.
+  The example renders at 120 x 60px. Do not combine SVG children with `data`,
+  `radius`, or `pitch`.
+- Put the accessible name on `Illicon`. Omit `aria-label` and `aria-labelledby`
+  for decorative artwork. The inner SVG is hidden from assistive technology.
+- Only use trusted artwork reviewed with your app code. This is not a sanitized
+  upload API. Check two copies together, light/dark themes, and intended sizes.
+
+An SVG-to-React tool such as SVGR can generate the child component from a file.
+Use your application's import syntax and preserve the viewBox and root prop
+forwarding. A normal `.svg` import may return a URL instead of a component.
+`Illicon` does not accept a file URL or raw markup string as its child.
+The TSX approach above needs no SVG loader and works during server rendering.
+
+Do not pass finished artwork through `iconToDotGrid`. That utility is for
+creating new dot-grid data from a source shape, not importing finished dots.
+See the [component guide](https://github.com/microsoft/coreai-design-system/blob/main/packages/react-components/src/components/Illicon.md#use-your-own-svg)
+for the full workflow.
 
 ## Artwork catalog
 
@@ -62,11 +115,51 @@ The sampling standard does not rewrite existing designer SVGs or custom logos.
 
 ## How to contribute
 
-Submit a new icon or suggest tags for an existing icon in a pull request.
-For new artwork, add the original SVG and an entry in the Illicon catalog's
-`manifest.json`. For tag updates, edit the existing entry's `tags` without changing
-its filename or artwork. Each entry contains only `title`, `file`, `tags`, and
-`author`. Tags are optional search terms, not repetitions of the title.
+You can use your SVG locally without contributing it. To share it with other
+consumers, submit a PR to `microsoft/coreai-design-system`:
 
-Maintainers review artwork and tag changes before they enter the shared catalog.
-Detailed submission guidance is being prepared.
+1. Check for an existing concept and confirm you have the right to contribute
+   the artwork under the repository license.
+2. Save the original standalone SVG in `packages/react-components/illicons/`
+   with a lowercase kebab-case name, such as `trash.svg`. The catalog requires
+   `width="140"`, `height="140"`, and `viewBox="0 0 140 140"`, with a transparent
+   background and monochrome paint. Preserve the finished geometry; do not
+   re-sample it.
+3. Use supported static shapes. The catalog validator is stricter than consumer
+   inline SVG: it rejects scripts, events, external resources, CSS, embedded
+   images, text elements, masks, clipping paths, gradients, and filters.
+   Export unsupported effects as static geometry. Files must be at most 1 MiB
+   and 20,000 elements.
+4. Add a matching entry to `manifest.json`:
+
+```json
+{
+  "title": "Trash",
+  "file": "trash.svg",
+  "tags": ["delete", "remove"],
+  "author": "your-github-handle"
+}
+```
+
+Use unique titles and filenames. Tags are unique lowercase search terms; use
+an empty array when none are needed. Do not repeat the title as a tag.
+
+From the repository root, after development setup, run:
+
+```bash
+npm run illicons:check
+node scripts/generate-illicons.mjs
+npm run storybook
+```
+
+Check **Catalog** search, preview, and Copy SVG. Paste the copied SVG into Figma
+to check the artboard and geometry. Include light/dark screenshots, creator
+credit, the purpose of the illustration, and validation results in the PR.
+Do not hand-edit the generated registry. Complete the required repository checks
+and CLA check; maintainers review the artwork before merge. Package consumers
+receive additions in a published release.
+
+For tag-only changes, edit the existing manifest entry without changing its
+filename or artwork. Follow the
+[artwork contribution guide](https://github.com/microsoft/coreai-design-system/blob/main/packages/react-components/illicons/README.md)
+and [repository PR requirements](https://github.com/microsoft/coreai-design-system/blob/main/CONTRIBUTING.md).

@@ -23,46 +23,33 @@ This standard applies to new source-based generation, not to finished designer
 SVGs. Keep existing artwork and custom logos unchanged unless a replacement has
 been reviewed. The saved-data catalog and its generation workflow remain separate work.
 
-## Source verification
+## Preserve finished artwork
 
-Storybook's **Components / Illicon / Source Recreation Dev** compares the original
-SVGs with candidate Fluent icons and freshly sampled grids. It is a verification
-story, excluded from the component MCP manifest. No original files are replaced.
-It starts with the recommended 20px-at-2x settings. Use the editable
-native-size selector to switch between the actual 16px, 20px, and 24px Fluent
-variants, not scaled copies of one icon. At 2x these produce 32, 40, and 48 cells.
-For the default 20px variant, the 1x-4x controls sample 20, 40, 60, or 80 cells.
-These alternatives are testing controls, not changes to the standard.
-The converter reads the SVG's
-own viewBox and applies the multiplier; the component name is not parsed.
-Radius and pitch affect rendering only; originals stay at their authored 140px
-size. Sampling renders directly at the grid resolution: a 20 x 20 canvas at 1x
-and a 40 x 40 canvas at 2x. Each pixel becomes one dot when its alpha reaches 128; no
-supersampled center point is used.
-The comparison also displays the actual sampling canvas before thresholding,
-enlarged without smoothing to match the output artboard. A fixed white backdrop
-makes the unchanged raster visible in both themes; gray pixels show partial alpha.
-
-Sources use the selected native size and Filled variant, except Cube Regular for Models:
-Agents, Database, Document One Page Multiple, Scales, Globe, Home, Lock Closed,
-Shield, Warning, and the new Code illustration. Models and Shield approximate
-designer-modified originals. `Beaker20Filled` is a temporary Fine-tune candidate
-because Beaker Empty is not available in the installed package. `Fluid20Filled`
-is an unconfirmed Workflows candidate from silhouette matching. AI Gateway and
-Foundry compare the original dotted artwork against their authored monochrome
-20px SVG source strings, the actual sampling canvas, and the recreated dot grid.
-The multiplier applies to these sources; the Fluent native-size selector does
-not change their 20 x 20 viewBoxes. Both comparison stories share the same SVG
-source markup, without Fluent substitutes.
+The existing catalog SVGs are the reviewed artwork, not inputs for another
+conversion pass. Preserve their paths, circles, transforms, and artboards.
+Literal circle elements are not required: paths exported by Figma are valid
+finished geometry. Do not re-sample finished SVGs into dot-grid data.
 
 ## Add artwork
 
-1. Check the catalog for an existing concept.
+You can use your SVG in a consuming app without submitting it here. Follow
+[Use your own SVG](../src/components/Illicon.md#use-your-own-svg) to wrap it in a
+React component and pass it to `Illicon`. To share the artwork with other
+consumers, contribute the original standalone SVG using these steps.
+
+1. Check the catalog for an existing concept. Follow the
+   [repository contribution policy](../../../CONTRIBUTING.md) to create a
+   focused branch. Only submit artwork you have the right to contribute under
+   this repository's license.
 2. Export a transparent, monochrome SVG at `width="140"`, `height="140"` and
    `viewBox="0 0 140 140"`. Keep finished dot geometry unchanged. Check centering,
    visual weight, and family consistency; do not re-sample through a converter.
    When using an export scale control, select 100%, with background and
-   construction-grid options disabled.
+   construction-grid options disabled. For artwork from another artboard size,
+   prepare a reviewed 140 x 140 version in your design tool; do not just change
+   the viewBox numbers and crop or distort the drawing.
+   Follow the [SVG contract](#svg-contract) below. Consumer inline SVG can use
+   features that the catalog validator does not accept.
 3. Save it here as a lowercase kebab-case filename, such as `trash.svg`.
 4. Add an entry to `manifest.json`:
 
@@ -75,14 +62,33 @@ source markup, without Fluent substitutes.
    }
    ```
 
-5. From the repository root, run:
+5. After repository setup, validate the files and regenerate the registry from
+   the repository root:
 
    ```bash
+   npm run illicons:check
+   node scripts/generate-illicons.mjs
    npm run storybook
    ```
 
 6. Open **Components / Illicon / Catalog**. Check search, preview, and Copy SVG.
-   Include light/dark screenshots in your PR.
+   Paste the copied SVG into Figma and confirm the geometry and artboard.
+   Check its consuming-app wrapper using the
+   [inline SVG checklist](../src/components/Illicon.md#size-theme-accessibility-and-repeated-instances),
+   including repeated instances and theme-aware paint.
+7. Open a PR targeting `microsoft/coreai-design-system`. Include:
+   - The illustration's purpose and any related issue.
+   - The standalone SVG and matching manifest entry, with creator credit.
+     Do not hand-edit the generated registry.
+   - Light/dark screenshots at the intended display size and any intentional
+     fixed-color or geometry decisions.
+   - The validation commands run and their results. Follow the repository's
+     required license, formatting, lint, build, and CI checks.
+   - A completed CLA check when requested by the bot.
+
+Maintainers review geometry, theme behavior, metadata, licensing, and family
+consistency before approval. A merged SVG becomes available to package consumers
+through a published release, not immediately on merge.
 
 Storybook startup validates and generates the catalog automatically. If Storybook
 is already running, regenerate after saving the SVG and manifest:
@@ -120,7 +126,17 @@ titles/descriptions, and local `use` references directly to shapes. References
 to groups or other `use` elements are not supported. Files must be regular files,
 at most 1 MiB, and at most 20,000 elements.
 
+The accepted shapes are `path`, `circle`, `ellipse`, `rect`, `line`, `polyline`,
+and `polygon`. Nested SVGs, gradients, masks, clipping paths, filters, animation,
+and text elements are not supported by this catalog validator. Resolve these
+effects into supported static geometry before submitting, and visually check
+the result. Remove XML declarations and DOCTYPE from the exported file.
+
 Supported paints are `none`, `currentColor`, `black`, `white`, and hex colors.
+For theme-aware inline use, make the intended ink `currentColor` in the React
+version. Preserve `none`, opacity, and any intentional fixed paint. A
+`currentColor` inside an SVG displayed as an image does not inherit the consuming
+page's CSS color; the current gallery applies its own preview treatment.
 Transforms and original path/circle geometry are preserved. Export unsupported
 effects as static vector shapes before submitting; the validator never rewrites
 artwork. Automated checks are not a visual or accessibility review: maintainers

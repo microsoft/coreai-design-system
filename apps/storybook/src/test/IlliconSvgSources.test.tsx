@@ -4,14 +4,46 @@
 import * as React from 'react';
 import { composeStories } from '@storybook/react-vite';
 import { iconToDotGrid, dotGridToSvg } from '@coreai-ds/react-components';
+import { Agents20Filled } from '@fluentui/react-icons';
 import { afterEach, expect, test } from 'vitest';
 import { cleanup } from 'vitest-browser-react';
 import { renderCoreAIComponent } from '../../../../packages/react-components/src/test-utils';
+import { ConvertedIllicon } from '../illicons/ConvertedIllicon';
 import * as stories from '../stories/components/Illicon.stories';
 
 const { OriginalVsIllicon } = composeStories(stories);
 
 afterEach(cleanup);
+
+test('changes rendering geometry independently and replaces occupancy when sampling changes', async () => {
+  const screen = await renderCoreAIComponent(
+    <ConvertedIllicon icon={Agents20Filled} aria-label="Sample" />,
+  );
+  const sample = screen.getByRole('img', { name: 'Sample' });
+  await expect.element(sample).toBeVisible();
+  expect(sample.element().querySelector('svg')).toHaveAttribute('width', '200');
+  const circles = sample.element().querySelectorAll('circle').length;
+  await screen.rerender(
+    <ConvertedIllicon icon={Agents20Filled} radius={1.5} pitch={6} aria-label="Sample" />,
+  );
+  expect(sample.element().querySelector('svg')).toHaveAttribute('width', '240');
+  expect(sample.element().querySelectorAll('circle')).toHaveLength(circles);
+  expect(sample.element().querySelector('circle')?.getBoundingClientRect().width).toBe(3);
+  await screen.rerender(
+    <ConvertedIllicon icon={Agents20Filled} multiplier={3} aria-label="Sample" />,
+  );
+  await expect.element(sample).toBeVisible();
+  expect(sample.element().querySelector('svg')).toHaveAttribute('width', '300');
+  expect(sample.element().querySelectorAll('circle').length).toBeGreaterThan(circles);
+});
+
+test('surfaces conversion errors instead of showing an empty success state', async () => {
+  const screen = await renderCoreAIComponent(
+    <ConvertedIllicon icon={Agents20Filled} multiplier={0} />,
+  );
+  await expect.element(screen.getByRole('alert')).toHaveTextContent(/multiplier/);
+  expect(screen.container.querySelector('svg')).toBeNull();
+});
 
 for (const icon of ['AiGatewayLogo20', 'FoundryLogo20'] as const) {
   test(`${icon} samples the authored monochrome SVG, not a Fluent replacement`, async () => {

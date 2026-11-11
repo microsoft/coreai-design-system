@@ -27,7 +27,7 @@ headings in this changelog.
 
 - `Illicon` renders occupancy-only `DotGridData` as theme-aware SVG circles at cells-times-pitch pixel dimensions, with diameter-aware pixel alignment and separate custom inline SVG sizing.
 - `iconToDotGrid` converts static SVG (including local inline CSS masks) and Fluent icons using one canvas pixel per grid cell and an alpha coverage threshold. `dotGridToSvg` exports editable circle-based SVG for Figma. Both are exported from the main package.
-- New Fluent-based Illicons use native 20px icons at 2x as the recommended standard: 40 x 40 cells, rendered at 200 x 200px with the default 2px dots and 5px pitch. Storybook retains other native sizes, multipliers, and actual-canvas previews for verification.
+- New Fluent-based Illicons use native 20px icons at 2x as the recommended standard: 40 x 40 cells, rendered at 200 x 200px with the default 2px dots and 5px pitch. Existing designer SVGs retain their original geometry without re-sampling.
 - A searchable Storybook artwork gallery previews reviewed SVGs and copies their original markup; saved-data catalog integration remains separate.
 - `CopyButton` accepts `copiedMessage` for illustration-specific confirmation in its anchored tooltip.
 

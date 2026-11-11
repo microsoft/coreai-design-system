@@ -241,10 +241,10 @@ test('Illicon docs publish usage stories but exclude manifest-disabled verificat
     'utf8',
   );
   const indexed = loadCsf(generated, { makeTitle: (title) => title }).parse();
-  for (const name of ['StrokedSvg', 'EmptyGridDev']) {
+  for (const name of ['StrokedSvg', 'EmptyGridDev', 'SourceRecreationDev']) {
     assert.equal(indexed._stories[name], undefined);
   }
-  for (const name of ['CustomSvgDev', 'Catalog', 'SourceRecreationDev']) {
+  for (const name of ['CustomSvgDev', 'Catalog']) {
     assert.ok(indexed._stories[name].tags.includes('!manifest'));
   }
   const provider = componentStoryDocsProvider(async () => undefined);

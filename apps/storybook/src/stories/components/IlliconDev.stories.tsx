@@ -4,46 +4,6 @@
 import * as React from 'react';
 import { Illicon, type IlliconProps } from '@coreai-ds/react-components';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import {
-  IlliconSourceComparison,
-  type IlliconSourceComparisonProps,
-} from '../../illicons/IlliconSourceComparison';
-
-/**
- * Recreates catalog concepts from native 20px Fluent source icons at 2x by default.
- * This is the recommended standard; other size and scale choices are verification controls.
- * The native-size selector switches actual Fluent variants between 16, 20, and 24px.
- * Shows the original SVG, source icon, actual sampling canvas before threshold,
- * and sampled grid without replacing assets. Canvas pixels are enlarged without
- * smoothing to make partial alpha coverage visible.
- * Beaker and Workflows are tentative; Cube and Shield omit designer modifications.
- * AI Gateway and Foundry use authored 20px monochrome SVG strings at the same
- * multiplier; their sources are not resized by the Fluent native-size selector.
- * Code is a new Filled illustration.
- *
- * @summary Verification only: compare Fluent source recreations with original artwork.
- */
-export const SourceRecreationDev: StoryObj<IlliconSourceComparisonProps> = {
-  tags: ['!manifest'],
-  args: { nativeSize: 20, multiplier: 2, radius: 1, pitch: 5 },
-  argTypes: {
-    nativeSize: {
-      description:
-        'Select the actual Fluent variant. Custom SVGs keep their native 20px viewBoxes.',
-      control: 'select',
-      options: [16, 20, 24],
-    },
-    multiplier: { control: 'select', options: [1, 2, 3, 4] },
-    radius: { control: { type: 'range', min: 0.5, max: 2, step: 0.5 } },
-    pitch: { control: { type: 'range', min: 4, max: 12, step: 1 } },
-  },
-  parameters: {
-    layout: 'fullscreen',
-    fullBleed: true,
-    controls: { disable: false, include: ['nativeSize', 'multiplier', 'radius', 'pitch'] },
-  },
-  render: (args: IlliconSourceComparisonProps) => <IlliconSourceComparison {...args} />,
-};
 
 /**
  * Verifies preservation of irregular circles, paths, opacity, and mixed SVG
