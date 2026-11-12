@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten experiment layout and unlayered consumer overrides; not an upstream style port.
+ */
+
+.examples {
+  display: grid;
+  gap: 16px;
+  max-width: 1000px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) repeat(2, minmax(180px, 1fr));
+  align-items: center;
+  gap: 16px;
+  min-height: 64px;
+}
+
+.cell {
+  min-width: 0;
+}
+
+.control {
+  display: block;
+  box-sizing: border-box;
+  width: 180px;
+  max-width: 100%;
+  margin-block-start: var(--spacingVerticalXS);
+  font: inherit;
+}
+
+.consumerLabel {
+  color: rgb(20, 90, 160);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 30px;
+}
+
+.consumerRequired {
+  color: rgb(40, 110, 60);
+  font-size: 12px;
+  padding-inline-start: 12px;
+}
+
+.report {
+  display: block;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+  margin-block: 16px;
+}
+
+.playground {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  max-width: 480px;
+}

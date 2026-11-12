@@ -1,0 +1,83 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-toast 9.8.5, useToastTitleStyles.styles.ts.
+ * Local source: [useToastTitleStyles.styles.raw.js](../../../node_modules/@fluentui/react-toast/lib/components/ToastTitle/useToastTitleStyles.styles.raw.js).
+ * Logical padding preserves Griffel's RTL flipping. The public renderer places
+ * media, title, and action in adjacent Toast grid cells.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .ToastTitle {
+    display: flex;
+    grid-column-end: 3;
+    color: var(--colorNeutralForeground1);
+    word-break: break-word;
+
+    &[data-appearance='inverted'] {
+      color: var(--colorNeutralForegroundInverted2);
+    }
+  }
+
+  .ToastTitle__media {
+    display: flex;
+    padding-top: 2px;
+    grid-column-end: 2;
+    padding-inline-end: 8px;
+    font-size: 16px;
+    color: var(--colorNeutralForeground1);
+
+    &[data-appearance='inverted'] {
+      color: var(--colorNeutralForegroundInverted);
+    }
+
+    &[data-intent='info'] {
+      color: var(--colorNeutralForeground2);
+    }
+
+    &[data-intent='success'] {
+      color: var(--colorStatusSuccessForeground1);
+    }
+
+    &[data-intent='warning'] {
+      color: var(--colorStatusWarningForeground1);
+    }
+
+    &[data-intent='error'] {
+      color: var(--colorStatusDangerForeground1);
+    }
+
+    &[data-appearance='inverted'][data-intent='info'] {
+      color: var(--colorNeutralForegroundInverted2);
+    }
+
+    &[data-appearance='inverted'][data-intent='success'] {
+      color: var(--colorStatusSuccessForegroundInverted);
+    }
+
+    &[data-appearance='inverted'][data-intent='warning'] {
+      color: var(--colorStatusWarningForegroundInverted);
+    }
+
+    &[data-appearance='inverted'][data-intent='error'] {
+      color: var(--colorStatusDangerForegroundInverted);
+    }
+  }
+
+  .ToastTitle__action {
+    display: flex;
+    align-items: start;
+    padding-inline-start: 12px;
+    grid-column-end: -1;
+    color: var(--colorBrandForeground1);
+
+    &[data-appearance='inverted'] {
+      color: var(--colorBrandForegroundInverted);
+    }
+  }
+}

@@ -1,0 +1,312 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-switch 9.7.7, useSwitchStyles.styles.ts.
+ * Local source: [useSwitchStyles.styles.raw.js](../../../node_modules/@fluentui/react-switch/lib/components/Switch/useSwitchStyles.styles.raw.js).
+ * Focus dependency: [createFocusOutlineStyle.js](../../../node_modules/@fluentui/react-tabster/lib/focus/createFocusOutlineStyle.js).
+ * Shared Label foundation: [Label.module.css](./Label.module.css), from
+ * [useLabelStyles.styles.raw.js](../../../node_modules/@fluentui/react-label/lib/components/Label/useLabelStyles.styles.raw.js).
+ * Default CircleFilled: @fluentui/react-icons 2.0.343 [circle.js](../../../node_modules/@fluentui/react-icons/lib/atoms/headless-svg/circle.js).
+ * Thumb layout dependencies: [useIconStyles.styles.js](../../../node_modules/@fluentui/react-icons/lib/utils/useIconStyles.styles.js),
+ * [createFluentIcon.styles.js](../../../node_modules/@fluentui/react-icons/lib/utils/createFluentIcon.styles.js),
+ * and [headless/styles.css](../../../node_modules/@fluentui/react-icons/lib/headless/styles.css).
+ * Native :focus-visible replaces the legacy focus-within attribute selector.
+ * Logical input placement/padding and :dir(rtl) preserve Griffel's RTL flipping.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Switch {
+    align-items: flex-start;
+    box-sizing: border-box;
+    display: inline-flex;
+    position: relative;
+
+    &:focus,
+    &:focus-visible {
+      outline-style: none;
+    }
+
+    /* The element with the focus outline needs position: relative so the pseudo-element
+       can be properly positioned. Native input focus-visible supplies keyboard modality. */
+    &:has(> .Switch__input:focus-visible) {
+      border-color: transparent;
+
+      &::after {
+        content: '';
+        position: absolute;
+        pointer-events: none;
+        z-index: 1;
+        border: 2px solid var(--colorStrokeFocus2);
+        border-radius: var(--borderRadiusMedium);
+        inset: -2px;
+      }
+
+      @media (forced-colors: active) {
+        &::after {
+          border-color: Highlight;
+        }
+      }
+    }
+
+    &[data-label-position='above'] {
+      flex-direction: column;
+    }
+
+    &[data-has-label] {
+      &[data-label-position='before'] > .Switch__input {
+        inset-inline-end: 0;
+        top: 0;
+      }
+
+      &[data-label-position='after'] > .Switch__input {
+        inset-inline-start: 0;
+        top: 0;
+      }
+
+      &[data-label-position='above'] {
+        > .Switch__input {
+          bottom: 0;
+          height: calc(20px + var(--spacingVerticalS));
+        }
+
+        &:not([data-size='small']) > .Switch__input {
+          width: 100%;
+        }
+
+        > .Switch__indicator {
+          margin-top: 0;
+        }
+      }
+    }
+
+    &:dir(rtl) > .Switch__input:checked ~ .Switch__indicator > * {
+      transform: translateX(-20px);
+    }
+
+    /* Small size dimensions (from design mockup) */
+    &[data-size='small'] {
+      > .Switch__indicator {
+        font-size: 14px;
+        height: 16px;
+        width: 32px;
+      }
+
+      /* Size is merged after label placement in the source, including label-above width. */
+      > .Switch__input {
+        width: calc(32px + 2 * var(--spacingHorizontalS));
+
+        &:checked ~ .Switch__indicator > * {
+          transform: translateX(16px);
+        }
+      }
+
+      &:dir(rtl) > .Switch__input:checked ~ .Switch__indicator > * {
+        transform: translateX(-16px);
+      }
+
+      > .Switch__label {
+        font-size: var(--fontSizeBase200);
+        line-height: var(--lineHeightBase200);
+        margin-bottom: calc((16px - var(--lineHeightBase200)) / 2);
+        margin-top: calc((16px - var(--lineHeightBase200)) / 2);
+      }
+    }
+  }
+
+  /* Thumb and track sizes used by the component. Medium size dimensions:
+     track 40 × 20px, thumb 18px, with 2px between thumb and track. */
+  .Switch__indicator {
+    border-radius: var(--borderRadiusCircular);
+    border: 1px solid;
+    line-height: 0;
+    box-sizing: border-box;
+    fill: currentColor;
+    flex-shrink: 0;
+    font-size: 18px;
+    height: 20px;
+    margin: var(--spacingVerticalS) var(--spacingHorizontalS);
+    pointer-events: none;
+    transition-duration: var(--durationNormal);
+    transition-timing-function: var(--curveEasyEase);
+    transition-property: background, border, color;
+    width: 40px;
+
+    @media screen and (prefers-reduced-motion: reduce) {
+      transition-duration: 0.01ms;
+    }
+
+    @media (forced-colors: active) {
+      color: CanvasText;
+
+      > i {
+        forced-color-adjust: none;
+      }
+    }
+
+    > * {
+      transition-duration: var(--durationNormal);
+      transition-timing-function: var(--curveEasyEase);
+      transition-property: transform;
+
+      @media screen and (prefers-reduced-motion: reduce) {
+        transition-duration: 0.01ms;
+      }
+    }
+  }
+
+  .Switch__input {
+    box-sizing: border-box;
+    cursor: pointer;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    position: absolute;
+    /* Calculate the width of the hidden input by taking into account the size of
+       the indicator + the padding around it. This is done so that clicking on
+       that "empty space" still toggles the switch. */
+    width: calc(40px + 2 * var(--spacingHorizontalS));
+
+    /* Checked (both enabled and disabled). Native :checked also covers uncontrolled state. */
+    &:checked ~ .Switch__indicator > * {
+      transform: translateX(20px);
+    }
+
+    /* Disabled (both checked and unchecked) */
+    &:disabled,
+    &[aria-disabled='true'] {
+      cursor: default;
+
+      & ~ .Switch__indicator {
+        color: var(--colorNeutralForegroundDisabled);
+      }
+
+      & ~ .Switch__label {
+        cursor: default;
+        color: var(--colorNeutralForegroundDisabled);
+      }
+    }
+
+    /* Enabled and unchecked */
+    &:enabled:not(:checked):not([aria-disabled='true']) {
+      & ~ .Switch__indicator {
+        color: var(--colorNeutralStrokeAccessible);
+        border-color: var(--colorNeutralStrokeAccessible);
+      }
+
+      & ~ .Switch__label {
+        color: var(--colorNeutralForeground1);
+      }
+
+      &:hover ~ .Switch__indicator {
+        color: var(--colorNeutralStrokeAccessibleHover);
+        border-color: var(--colorNeutralStrokeAccessibleHover);
+      }
+
+      &:hover:active ~ .Switch__indicator {
+        color: var(--colorNeutralStrokeAccessiblePressed);
+        border-color: var(--colorNeutralStrokeAccessiblePressed);
+      }
+    }
+
+    /* Enabled and checked */
+    &:enabled:checked:not([aria-disabled='true']) {
+      & ~ .Switch__indicator {
+        background-color: var(--colorCompoundBrandBackground);
+        color: var(--colorNeutralForegroundInverted);
+        border-color: var(--colorTransparentStroke);
+      }
+
+      &:hover ~ .Switch__indicator {
+        background-color: var(--colorCompoundBrandBackgroundHover);
+        border-color: var(--colorTransparentStrokeInteractive);
+      }
+
+      &:hover:active ~ .Switch__indicator {
+        background-color: var(--colorCompoundBrandBackgroundPressed);
+        border-color: var(--colorTransparentStrokeInteractive);
+      }
+    }
+
+    /* Disabled and unchecked */
+    &:disabled:not(:checked) ~ .Switch__indicator,
+    &[aria-disabled='true']:not(:checked) ~ .Switch__indicator {
+      border-color: var(--colorNeutralStrokeDisabled);
+    }
+
+    /* Disabled and checked */
+    &:disabled:checked ~ .Switch__indicator,
+    &[aria-disabled='true']:checked ~ .Switch__indicator {
+      background-color: var(--colorNeutralBackgroundDisabled);
+      border-color: var(--colorTransparentStrokeDisabled);
+    }
+
+    @media (forced-colors: active) {
+      &:disabled,
+      &[aria-disabled='true'] {
+        & ~ .Switch__indicator {
+          color: GrayText;
+          border-color: GrayText;
+        }
+
+        & ~ .Switch__label {
+          color: GrayText;
+        }
+      }
+
+      &:hover,
+      &:hover:active {
+        color: CanvasText;
+      }
+
+      &:enabled:checked:not([aria-disabled='true']) {
+        & ~ .Switch__indicator,
+        &:hover ~ .Switch__indicator,
+        &:hover:active ~ .Switch__indicator {
+          background-color: Highlight;
+          color: Canvas;
+        }
+      }
+    }
+  }
+
+  /* Label is a component with its own visual foundation. Switch adds only its layout
+     and small-size typography, rather than a second Label reset. */
+  .Switch__label {
+    cursor: pointer;
+    /* Use a (negative) margin to account for the difference between the track's height
+       and the label's line height. This prevents the label from expanding the height
+       of the switch, but preserves line height if the label wraps. */
+    margin-bottom: calc((20px - var(--lineHeightBase300)) / 2);
+    margin-top: calc((20px - var(--lineHeightBase300)) / 2);
+    padding: var(--spacingVerticalS) var(--spacingHorizontalS);
+  }
+
+  .Switch[data-label-position='above'] > .Switch__label {
+    padding-top: var(--spacingVerticalXS);
+    padding-bottom: var(--spacingVerticalXS);
+    width: 100%;
+  }
+
+  .Switch[data-label-position='after'] > .Switch__label {
+    padding-inline-start: var(--spacingHorizontalXS);
+  }
+
+  .Switch[data-label-position='before'] > .Switch__label {
+    padding-inline-end: var(--spacingHorizontalXS);
+  }
+
+  /* Only the default glyph receives this class. Consumer indicator children are unchanged. */
+  .Switch__thumb {
+    display: inline;
+    line-height: 0;
+
+    @media (forced-colors: active) {
+      forced-color-adjust: auto;
+    }
+  }
+}

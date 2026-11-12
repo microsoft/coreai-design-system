@@ -1,0 +1,74 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten experimental comparison/consumer layout; not an upstream style port.
+ */
+
+.comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.column {
+  min-width: 0;
+  min-height: 428px;
+}
+
+.heading {
+  font-size: 14px;
+  line-height: 20px;
+  margin-block: 0 12px;
+}
+
+.pointerRest {
+  display: block;
+  margin-block: 12px;
+  padding: 8px;
+}
+
+.glyph {
+  display: inline;
+  line-height: 0;
+}
+
+.report {
+  height: 320px;
+  box-sizing: border-box;
+  overflow: auto;
+  margin-block: 16px;
+  padding: 12px;
+  border: 1px solid var(--colorNeutralStroke2);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.flow {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+}
+
+.consumerSurface {
+  border: 3px solid var(--colorBrandStroke1);
+  border-radius: 3px;
+  padding: 8px;
+}
+
+.consumerItem {
+  border-radius: 2px;
+  min-height: 40px;
+}
+
+.consumerIcon {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+}
+
+.consumerHeader {
+  font-weight: var(--fontWeightRegular);
+}

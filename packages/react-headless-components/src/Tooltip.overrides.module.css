@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI source: [Overlay.styles.ts](../../react-components/src/components/Overlay.styles.ts).
+ * Fluent baseline: @fluentui/react-tooltip 9.10.8,
+ * [useTooltipStyles.styles.raw.js](../../../node_modules/@fluentui/react-tooltip/lib/components/Tooltip/useTooltipStyles.styles.raw.js).
+ * Reuse the completed defaults-gated surface/arrow border bridge. Its native data-arrow
+ * selector deliberately does not copy Overlay's accidental first-div beak selector.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .Tooltip__content {
+    composes: PopoverSurface from './PopoverSurface.overrides.module.css';
+  }
+}

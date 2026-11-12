@@ -1,0 +1,44 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten experiment layout; not an upstream style port.
+ */
+
+.examples {
+  display: grid;
+  gap: 16px;
+  max-width: 1080px;
+  overflow-x: auto;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) repeat(2, 280px);
+  align-items: center;
+  gap: 16px;
+  min-height: 48px;
+}
+
+.cell {
+  min-width: 0;
+  padding: 12px;
+}
+
+/* Explicit control dimensions keep thumb geometry deterministic. */
+.horizontal {
+  width: 240px;
+}
+
+.vertical {
+  height: 180px;
+}
+
+.playground {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  max-width: 480px;
+}

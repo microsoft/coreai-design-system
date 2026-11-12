@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI source: [Overlay.styles.ts](../../react-components/src/components/Overlay.styles.ts),
+ * reference commit a8a84a1. The shared override adds the floating-surface and arrow border,
+ * gated by CoreAI component defaults. There are no CoreAI Popover prop defaults.
+ * Fluent baseline: @fluentui/react-popover 9.14.10,
+ * [usePopoverSurfaceStyles.styles.raw.js](../../../node_modules/@fluentui/react-popover/lib/components/PopoverSurface/usePopoverSurfaceStyles.styles.raw.js).
+ * Arrow baseline: @fluentui/react-positioning 9.23.4,
+ * [createArrowStyles.js](../../../node_modules/@fluentui/react-positioning/lib/createArrowStyles.js).
+ * Target the public arrow element rather than the legacy first-div selector.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .PopoverSurface {
+    border: var(--strokeWidthThin) solid var(--colorNeutralStroke3);
+
+    & > [data-arrow]::before {
+      border: var(--strokeWidthThin) solid var(--colorNeutralStroke3);
+    }
+  }
+}

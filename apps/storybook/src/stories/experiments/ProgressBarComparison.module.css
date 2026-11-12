@@ -1,0 +1,75 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten experiment layout and unlayered consumer overrides; not an upstream style port.
+ */
+
+.examples {
+  display: grid;
+  gap: 16px;
+  max-width: 1080px;
+  overflow-x: auto;
+}
+
+.row {
+  display: grid;
+  /* Equal whole-pixel columns avoid rounding differences between paired percentage-width bars. */
+  grid-template-columns: minmax(180px, 1fr) repeat(2, 280px);
+  align-items: center;
+  gap: 16px;
+  min-height: 48px;
+}
+
+.cell {
+  min-width: 0;
+  padding: 12px;
+}
+
+.consumerRoot {
+  --fui-ProgressBar--thickness: 10px;
+  height: 10px;
+  border-radius: 1px;
+  background-color: rgb(220, 230, 240);
+}
+
+.consumerBar {
+  background-color: rgb(20, 80, 120);
+  border-radius: 0;
+  transition-duration: 0.6s;
+}
+
+.animatedChild {
+  animation: consumerPulse 800ms linear infinite;
+}
+
+@keyframes consumerPulse {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.report {
+  display: block;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+  margin-block: 16px;
+}
+
+.playground {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  max-width: 480px;
+}
+
+.upload {
+  display: grid;
+  gap: 12px;
+  width: 280px;
+}

@@ -1,0 +1,109 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten shared-fixture layout and consumer examples; not a Fluent port.
+ */
+
+.comparison,
+.flow {
+  display: grid;
+  width: 100%;
+  gap: var(--spacingVerticalM);
+}
+
+.controls,
+.navigation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacingHorizontalS);
+}
+
+.inlineFrame {
+  display: flex;
+  width: 100%;
+  height: 360px;
+  overflow: hidden;
+  outline: 1px solid var(--colorNeutralStroke3);
+}
+
+.bottomFrame {
+  flex-direction: column-reverse;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: var(--spacingHorizontalL);
+  overflow: auto;
+}
+
+.navigationDrawer {
+  --fui-Drawer--size: min(240px, 60%);
+}
+
+.nonModalOutsideAction {
+  position: fixed;
+  inset-inline-start: var(--spacingHorizontalXS);
+  inset-block-end: var(--spacingVerticalXS);
+  box-sizing: border-box;
+  width: 40px;
+}
+
+.copy {
+  margin: 0;
+}
+
+.longCopy,
+.form,
+.bodyContent {
+  display: grid;
+  gap: var(--spacingVerticalM);
+}
+
+.report {
+  display: block;
+  width: 100%;
+  height: 24rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+}
+
+.formResult {
+  min-height: 3rem;
+  white-space: pre-wrap;
+}
+
+.consumerSurface {
+  width: 280px;
+  border: 3px dashed rgb(98, 42, 139);
+  border-radius: 3px;
+  background-color: rgb(237, 232, 247);
+}
+
+.consumerBody {
+  padding: 9px;
+  color: rgb(80, 40, 120);
+}
+
+.consumerHeader {
+  padding: 12px;
+}
+
+.consumerTitle {
+  font-size: 22px;
+  line-height: 28px;
+}
+
+.consumerNavigation {
+  margin: 0;
+}
+
+.consumerFooter {
+  padding: 11px;
+  gap: 11px;
+}

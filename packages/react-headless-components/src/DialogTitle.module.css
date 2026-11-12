@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-dialog 9.18.6,
+ * [useDialogTitleStyles.styles.raw.js](../../../node_modules/@fluentui/react-dialog/lib/components/DialogTitle/useDialogTitleStyles.styles.raw.js).
+ * Pure subtitle1 typography source: @fluentui/tokens 1.0.0-alpha.24,
+ * [typographyStyles.js](../../../node_modules/@fluentui/tokens/lib/global/typographyStyles.js),
+ * re-exported by @fluentui/react-theme 9.2.2. No styled Text preset is imported.
+ * Grid placement belongs to the current native DialogHeader, not the removed
+ * legacy Title.action slot. There are no CoreAI DialogTitle overrides.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .DialogTitle {
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase500);
+    font-weight: var(--fontWeightSemibold);
+    line-height: var(--lineHeightBase500);
+    margin: 0;
+    min-width: 0;
+  }
+}

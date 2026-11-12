@@ -1,0 +1,61 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten experiment layout and deliberate consumer cascade examples; not a Fluent style port.
+ */
+
+.examples {
+  display: grid;
+  gap: 20px;
+  overflow: auto;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 180px 340px 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+.cell {
+  min-width: 0;
+}
+
+.report {
+  display: block;
+  min-height: 100px;
+  margin-top: 20px;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+}
+
+.form {
+  display: grid;
+  gap: 16px;
+  max-width: 420px;
+}
+
+.consumerField {
+  row-gap: 9px;
+}
+
+.consumerLabel {
+  color: rgb(90 40 130);
+  margin-bottom: 7px;
+}
+
+.consumerMessage {
+  color: rgb(20 90 60);
+  padding-inline-start: 23px;
+}
+
+.consumerIcon {
+  margin-inline-end: 8px;
+}
+
+.consumerHint {
+  font-weight: 600;
+}

@@ -1,0 +1,57 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI source: [FileUpload.tsx](../../react-components/src/components/FileUpload.tsx).
+ * This is a CoreAI-only composition; react-dropzone owns its native behavior.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .FileUpload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacingVerticalXS);
+    box-sizing: border-box;
+    min-height: 120px;
+    padding: var(--spacingVerticalL);
+    border-radius: var(--borderRadiusXLarge);
+    border: var(--strokeWidthThin) dashed var(--colorNeutralStroke1);
+    background-color: var(--colorNeutralBackground3);
+    outline-style: none;
+
+    /* Visual state classes had one-class specificity; keep focus/hover precedence. */
+    &:where([data-drag-active]) {
+      border: var(--strokeWidthThin) solid var(--colorBrandStroke1);
+      background-color: var(--colorBrandBackground2);
+    }
+
+    &:not([data-disabled]) {
+      cursor: pointer;
+
+      &:hover {
+        background-color: var(--colorNeutralBackground3Hover);
+      }
+
+      &:active {
+        background-color: var(--colorNeutralBackground3Pressed);
+      }
+    }
+
+    &:where([data-disabled]) {
+      cursor: not-allowed;
+      border: var(--strokeWidthThin) dashed var(--colorNeutralStrokeDisabled);
+      background-color: var(--colorNeutralBackgroundDisabled);
+      color: var(--colorNeutralForegroundDisabled);
+    }
+
+    &:focus-visible {
+      border: var(--strokeWidthThin) solid var(--colorStrokeFocus2);
+    }
+  }
+}

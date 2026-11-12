@@ -1,0 +1,119 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-avatar 9.11.9 at reference ee9b499.
+ * Local source: [useAvatarGroupItemStyles.styles.raw.js](../../../node_modules/@fluentui/react-avatar/lib/components/AvatarGroupItem/useAvatarGroupItemStyles.styles.raw.js).
+ * Source: https://unpkg.com/@fluentui/react-avatar@9.11.9/lib/components/AvatarGroupItem/useAvatarGroupItemStyles.styles.raw.js
+ * Avatar/PresenceBadge visuals are supplied by the completed local slot adapters.
+ * The real AvatarGroupItem composes Fluent Avatar, not CoreAI's standalone neutral wrapper.
+ * The implementation bridge for that default interaction is in AvatarGroupItem.overrides.module.css.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .AvatarGroupItem {
+    align-items: center;
+    display: inline-flex;
+    flex-shrink: 0;
+    position: relative;
+
+    &[data-overflow] {
+      padding: var(--spacingVerticalXS) var(--spacingHorizontalXS);
+    }
+
+    &:not([data-overflow]) {
+      border-radius: var(--borderRadiusCircular);
+
+      & > .AvatarGroupItem__avatar {
+        position: absolute;
+      }
+    }
+
+    &[data-layout='pie'] {
+      --fui-AvatarGroupItem-divider-width: var(--fui-AvatarGroup-outline-width);
+
+      position: absolute;
+
+      & > .AvatarGroupItem__avatar {
+        border-radius: 0;
+      }
+
+      /* Count item siblings, not native inline tooltip/popover surfaces of the same tag. */
+      /* Two slices: first and second of two items. */
+      &:nth-child(1 of .AvatarGroupItem):nth-last-child(2 of .AvatarGroupItem) {
+        clip-path: inset(0 calc(25% + (var(--fui-AvatarGroupItem-divider-width) / 2)) 0 25%);
+        inset-inline-start: -25%;
+      }
+
+      &:nth-child(2 of .AvatarGroupItem):nth-last-child(1 of .AvatarGroupItem) {
+        clip-path: inset(0 25% 0 calc(25% + (var(--fui-AvatarGroupItem-divider-width) / 2)));
+        inset-inline-start: 25%;
+      }
+
+      /* Three slices: first, second, and third of three items. */
+      &:nth-child(1 of .AvatarGroupItem):nth-last-child(3 of .AvatarGroupItem) {
+        clip-path: inset(0 calc(25% + (var(--fui-AvatarGroupItem-divider-width) / 2)) 0 25%);
+        inset-inline-start: -25%;
+      }
+
+      &:nth-child(2 of .AvatarGroupItem):nth-last-child(2 of .AvatarGroupItem) {
+        /* These two items are scaled by 0.5, so the divider width is not halved. */
+        clip-path: inset(
+          0 0 var(--fui-AvatarGroupItem-divider-width) var(--fui-AvatarGroupItem-divider-width)
+        );
+        inset-inline-start: 50%;
+        transform: scale(0.5);
+        transform-origin: 0 0;
+      }
+
+      &:nth-child(3 of .AvatarGroupItem):nth-last-child(1 of .AvatarGroupItem) {
+        clip-path: inset(
+          var(--fui-AvatarGroupItem-divider-width) 0 0 var(--fui-AvatarGroupItem-divider-width)
+        );
+        inset-inline-start: 50%;
+        top: 50%;
+        transform: scale(0.5);
+        transform-origin: 0 0;
+      }
+
+      &:dir(rtl) {
+        &:nth-child(1 of .AvatarGroupItem):nth-last-child(2 of .AvatarGroupItem),
+        &:nth-child(1 of .AvatarGroupItem):nth-last-child(3 of .AvatarGroupItem) {
+          clip-path: inset(0 25% 0 calc(25% + (var(--fui-AvatarGroupItem-divider-width) / 2)));
+        }
+
+        &:nth-child(2 of .AvatarGroupItem):nth-last-child(1 of .AvatarGroupItem) {
+          clip-path: inset(0 calc(25% + (var(--fui-AvatarGroupItem-divider-width) / 2)) 0 25%);
+        }
+
+        &:nth-child(2 of .AvatarGroupItem):nth-last-child(2 of .AvatarGroupItem) {
+          clip-path: inset(
+            0 var(--fui-AvatarGroupItem-divider-width) var(--fui-AvatarGroupItem-divider-width) 0
+          );
+          inset-inline-start: 0;
+        }
+
+        &:nth-child(3 of .AvatarGroupItem):nth-last-child(1 of .AvatarGroupItem) {
+          clip-path: inset(
+            var(--fui-AvatarGroupItem-divider-width) var(--fui-AvatarGroupItem-divider-width) 0 0
+          );
+          inset-inline-start: 0;
+        }
+      }
+    }
+  }
+
+  .AvatarGroupItem__overflowLabel {
+    margin-inline-start: var(--spacingHorizontalS);
+    color: var(--colorNeutralForeground1);
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+  }
+}

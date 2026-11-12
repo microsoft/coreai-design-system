@@ -36,6 +36,8 @@ jobs:
       - run: npm run format:check
       - run: npm run lint -- --max-warnings=0
       - run: npm run type-check
+      - name: Verify experimental headless package
+        run: npm --workspace packages/react-headless-components run test:package
       - name: Test guidance generation
         run: node --test shared/guidance.test.mjs apps/docsite/test/generation.test.mjs
       - name: Verify Storybook guidance and MCP
@@ -54,3 +56,5 @@ jobs:
         run: npm --workspace packages/react-components run test:install-browser -- --with-deps
       - name: Test components
         run: npm --workspace packages/react-components test
+      - name: Test headless components
+        run: npm --workspace packages/react-headless-components test

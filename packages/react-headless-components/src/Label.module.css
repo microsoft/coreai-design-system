@@ -1,0 +1,61 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-label 9.4.6, useLabelStyles.styles.ts.
+ * Local source: [useLabelStyles.styles.raw.js](../../../node_modules/@fluentui/react-label/lib/components/Label/useLabelStyles.styles.raw.js).
+ * Logical required-indicator padding preserves Griffel's RTL flipping.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the label */
+  .Label {
+    font-family: var(--fontFamilyBase);
+    color: var(--colorNeutralForeground1);
+
+    &[data-size='small'] {
+      font-size: var(--fontSizeBase200);
+      line-height: var(--lineHeightBase200);
+    }
+
+    &[data-size='medium'] {
+      font-size: var(--fontSizeBase300);
+      line-height: var(--lineHeightBase300);
+    }
+
+    &[data-size='large'] {
+      font-size: var(--fontSizeBase400);
+      line-height: var(--lineHeightBase400);
+      font-weight: var(--fontWeightSemibold);
+    }
+
+    &[data-weight='semibold'] {
+      font-weight: var(--fontWeightSemibold);
+    }
+
+    &[data-disabled] {
+      color: var(--colorNeutralForegroundDisabled);
+
+      .Label__required {
+        color: var(--colorNeutralForegroundDisabled);
+      }
+
+      @media (forced-colors: active) {
+        color: GrayText;
+
+        .Label__required {
+          color: GrayText;
+        }
+      }
+    }
+  }
+
+  .Label__required {
+    color: var(--colorPaletteRedForeground3);
+    padding-inline-start: var(--spacingHorizontalXS);
+  }
+}

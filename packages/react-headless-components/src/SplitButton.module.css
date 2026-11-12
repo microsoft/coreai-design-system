@@ -1,0 +1,100 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-button 9.11.1.
+ * Local source: [useSplitButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-button/lib/components/SplitButton/useSplitButtonStyles.styles.raw.js).
+ * Delegated MenuButton source: [useMenuButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-button/lib/components/MenuButton/useMenuButtonStyles.styles.raw.js).
+ * Inherited Button baseline: [useButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-button/lib/components/Button/useButtonStyles.styles.raw.js).
+ * Typed public slot render adapters reuse the completed Button and MenuButton components.
+ * CoreAI defaults/override: [SplitButton.ts](../../react-components/src/components/SplitButton.ts)
+ * and [Button.styles.ts](../../react-components/src/components/Button.styles.ts), reference 66f1b04.
+ * Native :focus-visible replaces legacy focus selectors; joined corners/seams are logical for RTL.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .SplitButton {
+    /* Base styles */
+    display: inline-flex;
+    justify-content: stretch;
+    position: relative;
+    vertical-align: middle;
+
+    & > .SplitButton__primaryActionButton[data-shape] {
+      border-start-end-radius: 0;
+      border-end-end-radius: 0;
+    }
+
+    & > .SplitButton__menuButton[data-size][data-shape] {
+      border-inline-start-width: 0;
+      border-start-start-radius: 0;
+      border-end-start-radius: 0;
+      /* WCAG minimum pointer target size for immediately adjacent targets:
+       * https://w3c.github.io/wcag/guidelines/22/#target-size-minimum
+       */
+      min-width: 24px;
+    }
+
+    /* Appearance variations */
+    &[data-appearance='primary'] > .SplitButton__primaryActionButton[data-size][data-shape] {
+      border-inline-end-color: var(--colorNeutralStrokeOnBrand);
+    }
+
+    &:is([data-appearance='subtle'], [data-appearance='transparent'])
+      > .SplitButton__primaryActionButton[data-size][data-shape] {
+      border-inline-end-color: var(--colorTransparentBackground);
+    }
+
+    &:is([data-appearance='subtle'], [data-appearance='transparent']):hover
+      > .SplitButton__primaryActionButton[data-size][data-shape] {
+      border-inline-end-color: var(--colorTransparentBackgroundHover);
+    }
+
+    &:is([data-appearance='subtle'], [data-appearance='transparent']):is(
+        :hover:active,
+        :active:focus-visible
+      )
+      > .SplitButton__primaryActionButton[data-size][data-shape] {
+      border-inline-end-color: var(--colorTransparentBackgroundPressed);
+    }
+
+    /* Disabled styles */
+    &:is([data-disabled], [data-disabled-focusable])[data-appearance]
+      > .SplitButton__primaryActionButton[data-size][data-shape] {
+      border-inline-end-color: var(--colorNeutralStrokeDisabled);
+    }
+
+    /* High contrast styles */
+    @media (forced-colors: active) {
+      &[data-appearance='primary'] > .SplitButton__primaryActionButton[data-size][data-shape] {
+        border-inline-end-color: HighlightText;
+      }
+
+      &[data-appearance='primary']:is(:hover, :active:focus-visible)
+        > .SplitButton__primaryActionButton[data-size][data-shape] {
+        border-inline-end-color: Highlight;
+      }
+
+      &:is([data-disabled], [data-disabled-focusable])[data-appearance]
+        > .SplitButton__primaryActionButton[data-size][data-shape] {
+        border-inline-end-color: GrayText;
+      }
+    }
+  }
+
+  .SplitButton__primaryActionButton {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  .SplitButton__menuButton {
+    border-inline-start-width: 0;
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+  }
+}

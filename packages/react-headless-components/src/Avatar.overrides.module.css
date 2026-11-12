@@ -1,0 +1,34 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI source: [Avatar.tsx](../../react-components/src/components/Avatar.tsx) at 86a8705.
+ * Fluent baseline: @fluentui/react-avatar 9.11.9
+ * [useAvatarStyles.styles.raw.js](../../../node_modules/@fluentui/react-avatar/lib/components/Avatar/useAvatarStyles.styles.raw.js).
+ * CoreAI changes only neutral initials/icon backgrounds, not the native image.
+ * These wrapper features remain enabled when component defaults are disabled.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .Avatar {
+    /* A nested Avatar must not inherit another Avatar's CoreAI neutral override. */
+    --coreai-Avatar-background: initial;
+
+    &[data-color='neutral'] {
+      --coreai-Avatar-background: var(--colorNeutralBackground4);
+    }
+
+    &[data-color='neutral-alt'] {
+      --coreai-Avatar-background: var(--colorNeutralBackground1);
+    }
+  }
+
+  .Avatar__initials,
+  .Avatar__icon {
+    background-color: var(--coreai-Avatar-background, var(--fui-Avatar-background));
+  }
+}

@@ -1,0 +1,98 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Native checkmark visual bridge, not an additional CoreAI List override.
+ * List baseline: @fluentui/react-list 9.7.0 [useListItemStyles.styles.raw.js](../../../node_modules/@fluentui/react-list/lib/components/ListItem/useListItemStyles.styles.raw.js).
+ * Current input/gridcell contract: @fluentui/react-headless-components-preview 0.3.2 [renderListItem.js](../../../node_modules/@fluentui/react-headless-components-preview/lib/components/List/ListItem/renderListItem.js).
+ * Reuses [Checkbox.module.css](./Checkbox.module.css), ported from @fluentui/react-checkbox 9.6.6 [useCheckboxStyles.styles.raw.js](../../../node_modules/@fluentui/react-checkbox/lib/components/Checkbox/useCheckboxStyles.styles.raw.js).
+ * Mask: Checkmark12Filled, @fluentui/react-icons 2.0.343 [checkmark.js](../../../node_modules/@fluentui/react-icons/lib/atoms/headless-svg/checkmark.js).
+ * The native input remains the checkmark slot; no Checkbox component or selection model is substituted.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+.ListItem__checkmark {
+  composes: Checkbox__indicator from './Checkbox.module.css';
+}
+
+@layer coreai-overrides {
+  .ListItem__checkmark {
+    --fui-Checkbox__indicator--color: var(--colorNeutralForeground3);
+    appearance: none;
+    align-self: center;
+    pointer-events: auto;
+    cursor: inherit;
+    margin: 4px;
+
+    &::before {
+      content: '';
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+      background-color: currentColor;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M9.76 3.2c.3.29.32.76.04 1.06l-4.25 4.5a.75.75 0 0 1-1.08.02L2.22 6.53a.75.75 0 0 1 1.06-1.06l1.7 1.7L8.7 3.24a.75.75 0 0 1 1.06-.04'/%3E%3C/svg%3E")
+        center / contain no-repeat;
+      visibility: hidden;
+    }
+
+    &:checked {
+      --fui-Checkbox__indicator--backgroundColor: var(--colorCompoundBrandBackground);
+      --fui-Checkbox__indicator--color: var(--colorNeutralForegroundInverted);
+      --fui-Checkbox__indicator--borderColor: var(--colorCompoundBrandBackground);
+
+      &::before {
+        visibility: visible;
+      }
+    }
+
+    &:not(:disabled) {
+      &:hover {
+        --fui-Checkbox__indicator--borderColor: var(--colorNeutralStrokeAccessibleHover);
+
+        &:checked {
+          --fui-Checkbox__indicator--backgroundColor: var(--colorCompoundBrandBackgroundHover);
+          --fui-Checkbox__indicator--borderColor: var(--colorCompoundBrandBackgroundHover);
+        }
+      }
+
+      &:active {
+        --fui-Checkbox__indicator--borderColor: var(--colorNeutralStrokeAccessiblePressed);
+
+        &:checked {
+          --fui-Checkbox__indicator--backgroundColor: var(--colorCompoundBrandBackgroundPressed);
+          --fui-Checkbox__indicator--borderColor: var(--colorCompoundBrandBackgroundPressed);
+        }
+      }
+    }
+
+    &:disabled {
+      cursor: default;
+      --fui-Checkbox__indicator--backgroundColor: transparent;
+      --fui-Checkbox__indicator--borderColor: var(--colorNeutralStrokeDisabled);
+      --fui-Checkbox__indicator--color: var(--colorNeutralForegroundDisabled);
+
+      @media (forced-colors: active) {
+        --fui-Checkbox__indicator--color: GrayText;
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colorStrokeFocus2);
+      outline-offset: 4px;
+      border-radius: var(--borderRadiusSmall);
+
+      @media (forced-colors: active) {
+        outline-color: Highlight;
+      }
+    }
+  }
+
+  /* The current public renderer adds a grid cell around its native checkmark. */
+  [data-list] > [data-navigable] > [role='gridcell']:has(> .ListItem__checkmark) {
+    display: inline-flex;
+    align-self: center;
+  }
+}

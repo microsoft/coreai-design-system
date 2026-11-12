@@ -1,0 +1,25 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-menu 9.25.8, useMenuListStyles.styles.ts.
+ * Local source: [useMenuListStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuList/useMenuListStyles.styles.raw.js).
+ * There are no CoreAI MenuList overrides or defaults.
+ * Arrow navigation belongs to the current native focusgroup contract and a consumer polyfill.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .MenuList {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    &[data-menu-context] {
+      height: 100%;
+    }
+  }
+}

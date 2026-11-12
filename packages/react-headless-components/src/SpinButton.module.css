@@ -1,0 +1,310 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-spinbutton 9.6.8, useSpinButtonStyles.styles.raw.js.
+ * Local source: [useSpinButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-spinbutton/lib/components/SpinButton/useSpinButtonStyles.styles.raw.js).
+ * This source owns its input and repeat-button styling; it does not delegate to Input or Button.
+ * Glyph forced-colors source: @fluentui/react-icons 2.0.343,
+ * [createFluentIcon.styles.js](../../../node_modules/@fluentui/react-icons/lib/utils/createFluentIcon.styles.js).
+ * CoreAI provenance: [SpinButton.ts](../../react-components/src/components/SpinButton.ts) and
+ * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts) at a8a84a1.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ * Horizontal spacing and button corners are logical for RTL. Focus uses native :focus-within.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .SpinButton {
+    --fui-spinbutton-button-hover-background: var(--colorSubtleBackgroundHover);
+    --fui-spinbutton-button-pressed-background: var(--colorSubtleBackgroundPressed);
+
+    display: inline-grid;
+    grid-template-columns: 1fr 24px;
+    grid-template-rows: 1fr 1fr;
+    column-gap: var(--spacingHorizontalXS);
+    row-gap: 0;
+    position: relative;
+    isolation: isolate;
+    vertical-align: middle;
+    background-color: var(--colorNeutralBackground1);
+    min-height: 32px;
+    padding-block: 0;
+    padding-inline: var(--spacingHorizontalMNudge) 0;
+    border-radius: var(--borderRadiusMedium);
+
+    /* Apply the border on ::before; ::after is used for selection.
+     * Placing the border above content keeps the buttons visually aligned at high zoom
+     * and fractional OS zoom levels (e.g. 150% on Windows in Firefox).
+     * This is most noticeable on the default outline appearance.
+     */
+    &::before {
+      content: '';
+      box-sizing: border-box;
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+      border: 1px solid var(--colorNeutralStroke1);
+      border-bottom-color: var(--colorNeutralStrokeAccessible);
+      border-radius: var(--borderRadiusMedium);
+    }
+
+    &::after {
+      box-sizing: border-box;
+      content: '';
+      position: absolute;
+      inset-inline: 0;
+      bottom: 0;
+      z-index: 20;
+      /* Maintaining the correct corner radius:
+       * Use the whole radius as the height and round only the bottom corners.
+       * max() keeps the focus border visible even when borderRadiusMedium is 0.
+       */
+      height: max(2px, var(--borderRadiusMedium));
+      border-bottom-left-radius: var(--borderRadiusMedium);
+      border-bottom-right-radius: var(--borderRadiusMedium);
+      /* Flat 2px border: clip the little "horns" from border-bottom.
+       * A border rather than a gradient also lets consumers override its color.
+       */
+      border-bottom: 2px solid var(--colorCompoundBrandStroke);
+      clip-path: inset(calc(100% - 2px) 0 0 0);
+      /* Animation for focus OUT. Retain the source's delay declaration and browser fallback. */
+      transform: scaleX(0);
+      transition-property: transform;
+      transition-duration: var(--durationUltraFast);
+      transition-delay: var(--curveAccelerateMid);
+    }
+
+    &:focus-within {
+      outline: 2px solid transparent;
+
+      &::after {
+        /* Animation for focus IN. */
+        transform: scaleX(1);
+        transition-property: transform;
+        transition-duration: var(--durationNormal);
+        transition-delay: var(--curveDecelerateMid);
+      }
+    }
+
+    &:focus-within:active::after {
+      /* A second click while the field is already focused. */
+      border-bottom-color: var(--colorCompoundBrandStrokePressed);
+    }
+
+    &[data-size='small'] {
+      min-height: 24px;
+      font-family: var(--fontFamilyBase);
+      font-size: var(--fontSizeBase200);
+      font-weight: var(--fontWeightRegular);
+      line-height: var(--lineHeightBase200);
+      padding-inline-start: var(--spacingHorizontalS);
+
+      /* Padding values do not match the design specs numerically, but align visually.
+       * The 16px artwork is inset, and fractional design values are rounded by hand.
+       */
+      & > .SpinButton__incrementButton {
+        padding-block: 3px 0;
+        padding-inline: 4px 6px;
+        height: 12px;
+      }
+
+      & > .SpinButton__decrementButton {
+        padding-block: 0 3px;
+        padding-inline: 4px 6px;
+        height: 12px;
+      }
+    }
+
+    &[data-appearance='underline']::before {
+      border-width: 0 0 1px;
+      border-radius: var(--borderRadiusNone);
+    }
+
+    &[data-appearance='filled-darker'],
+    &[data-appearance='filled-lighter'] {
+      &::before {
+        border: 1px solid var(--colorTransparentStroke);
+      }
+    }
+
+    &[data-appearance='filled-darker'] {
+      --fui-spinbutton-button-hover-background: var(--colorNeutralBackground3Hover);
+      --fui-spinbutton-button-pressed-background: var(--colorNeutralBackground3Pressed);
+
+      background-color: var(--colorNeutralBackground3);
+    }
+
+    &[data-appearance='filled-lighter'] {
+      --fui-spinbutton-button-hover-background: var(--colorNeutralBackground1Hover);
+      --fui-spinbutton-button-pressed-background: var(--colorNeutralBackground1Pressed);
+
+      background-color: var(--colorNeutralBackground1);
+    }
+
+    &:not([data-disabled]) {
+      &[data-appearance='outline'] {
+        &:hover::before {
+          border-color: var(--colorNeutralStroke1Hover);
+          border-bottom-color: var(--colorNeutralStrokeAccessibleHover);
+        }
+
+        &:active::before,
+        &:focus-within::before {
+          border-color: var(--colorNeutralStroke1Pressed);
+          border-bottom-color: var(--colorNeutralStrokeAccessiblePressed);
+        }
+      }
+
+      &[data-appearance='underline'] {
+        &:hover::before {
+          border-bottom-color: var(--colorNeutralStrokeAccessibleHover);
+        }
+
+        &:active::before,
+        &:focus-within::before {
+          border-bottom-color: var(--colorNeutralStrokeAccessiblePressed);
+        }
+
+        &::after {
+          border-radius: var(--borderRadiusNone);
+        }
+      }
+
+      &[data-appearance='filled-darker'],
+      &[data-appearance='filled-lighter'] {
+        &:hover::before,
+        &:focus-within::before {
+          /* Also handles the pressed border color (:active). */
+          border-color: var(--colorTransparentStrokeInteractive);
+        }
+      }
+
+      /* Only aria-invalid=true is red; the hook retains spelling/grammar values. */
+      &[data-invalid='']:not(:focus-within)::before,
+      &[data-invalid='']:hover:not(:focus-within)::before {
+        border-color: var(--colorPaletteRedBorder2);
+      }
+    }
+
+    &[data-disabled] {
+      cursor: not-allowed;
+      background-color: var(--colorTransparentBackground);
+
+      &::before {
+        border-color: var(--colorNeutralStrokeDisabled);
+
+        @media (forced-colors: active) {
+          border-color: GrayText;
+        }
+      }
+
+      & > .SpinButton__input {
+        color: var(--colorNeutralForegroundDisabled);
+        cursor: not-allowed;
+        background-color: var(--colorTransparentBackground);
+
+        &::placeholder {
+          color: var(--colorNeutralForegroundDisabled);
+        }
+      }
+    }
+
+    &[data-spin-state='up'] > .SpinButton__incrementButton:enabled,
+    &[data-spin-state='down'] > .SpinButton__decrementButton:enabled {
+      color: var(--colorNeutralForeground3Pressed);
+      background-color: var(--fui-spinbutton-button-pressed-background);
+    }
+
+    @media screen and (prefers-reduced-motion: reduce) {
+      &::after,
+      &:focus-within::after {
+        transition-duration: 0.01ms;
+        transition-delay: 0.01ms;
+      }
+    }
+  }
+
+  .SpinButton__input {
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+    outline-style: none;
+    border: 0;
+    padding: 0;
+    color: var(--colorNeutralForeground1);
+    /* Literal transparent always lets the root color show through. */
+    background-color: transparent;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    width: 100%;
+
+    &::placeholder {
+      color: var(--colorNeutralForeground4);
+      opacity: 1;
+    }
+  }
+
+  .SpinButton__incrementButton,
+  .SpinButton__decrementButton {
+    display: inline-flex;
+    width: 24px;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    position: absolute;
+    outline-style: none;
+    height: 16px;
+    /* Literal transparent always lets the root color show through. */
+    background-color: transparent;
+    color: var(--colorNeutralForeground3);
+    grid-column-start: 2;
+    border-radius: 0;
+    padding: 0 5px;
+
+    &:active {
+      outline-style: none;
+    }
+
+    &:enabled {
+      &:hover {
+        cursor: pointer;
+        color: var(--colorNeutralForeground3Hover);
+        background-color: var(--fui-spinbutton-button-hover-background);
+      }
+
+      &:active {
+        color: var(--colorNeutralForeground3Pressed);
+        background-color: var(--fui-spinbutton-button-pressed-background);
+      }
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      color: var(--colorNeutralForegroundDisabled);
+    }
+
+    @media (forced-colors: active) {
+      & > svg[data-fui-icon] {
+        forced-color-adjust: auto;
+      }
+    }
+  }
+
+  .SpinButton__incrementButton {
+    grid-row-start: 1;
+    border-start-end-radius: var(--borderRadiusMedium);
+    padding-block: 4px 1px;
+  }
+
+  .SpinButton__decrementButton {
+    grid-row-start: 2;
+    border-end-end-radius: var(--borderRadiusMedium);
+    padding-block: 1px 4px;
+  }
+}

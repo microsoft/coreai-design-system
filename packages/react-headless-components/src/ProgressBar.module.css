@@ -1,0 +1,129 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-progress 9.5.7, useProgressBarStyles.styles.ts.
+ * Local source: [useProgressBarStyles.styles.raw.js](../../../node_modules/@fluentui/react-progress/lib/components/ProgressBar/useProgressBarStyles.styles.raw.js).
+ * Motion source: [progressBarMotions.js](../../../node_modules/@fluentui/react-progress/lib/components/ProgressBar/progressBarMotions.js), @fluentui/react-progress 9.5.7.
+ * Motion curve: [motionTokens.js](../../../node_modules/@fluentui/react-motion/lib/motions/motionTokens.js), @fluentui/react-motion 9.16.5.
+ * CSS keyframes replace the visual motion slot, which the current headless props do not expose.
+ * Native :dir() mirrors the gradient; upstream motion translates physically in both directions.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot. */
+  .ProgressBar {
+    --fui-ProgressBar--thickness: 2px;
+    --fui-ProgressBar--barColor: var(--colorCompoundBrandBackground);
+    display: block;
+    background-color: var(--colorNeutralBackground6);
+    width: 100%;
+    height: var(--fui-ProgressBar--thickness);
+    overflow: hidden;
+    border-radius: var(--borderRadiusMedium);
+
+    &[data-shape='square'] {
+      border-radius: var(--borderRadiusNone);
+    }
+
+    &[data-thickness='large'] {
+      --fui-ProgressBar--thickness: 4px;
+    }
+
+    &:not([data-indeterminate]) {
+      &[data-color='error'] {
+        --fui-ProgressBar--barColor: var(--colorPaletteRedBackground3);
+      }
+
+      &[data-color='warning'] {
+        --fui-ProgressBar--barColor: var(--colorPaletteDarkOrangeBackground3);
+      }
+
+      &[data-color='success'] {
+        --fui-ProgressBar--barColor: var(--colorPaletteGreenBackground3);
+      }
+    }
+
+    &[data-nonzero-determinate] .ProgressBar__bar {
+      transition-property: width;
+      transition-duration: 0.3s;
+      transition-timing-function: ease;
+    }
+
+    &[data-indeterminate] .ProgressBar__bar {
+      max-width: 33%;
+      position: relative;
+      background-image: linear-gradient(
+        to right,
+        var(--colorNeutralBackground6) 0%,
+        var(--colorTransparentBackground) 50%,
+        var(--colorNeutralBackground6) 100%
+      );
+      animation-name: progressBarIndeterminate;
+      animation-duration: 3s;
+      animation-iteration-count: infinite;
+      animation-timing-function: cubic-bezier(0, 0, 1, 1);
+      animation-fill-mode: forwards;
+
+      &:dir(rtl) {
+        background-image: linear-gradient(
+          to left,
+          var(--colorNeutralBackground6) 0%,
+          var(--colorTransparentBackground) 50%,
+          var(--colorNeutralBackground6) 100%
+        );
+      }
+
+      @media screen and (prefers-reduced-motion: reduce) {
+        /* Reduced motion: use a full-width bar and pulse opacity instead of sliding. */
+        max-width: 100%;
+        animation-name: progressBarIndeterminateReduced;
+      }
+    }
+
+    @media screen and (forced-colors: active) {
+      background-color: CanvasText;
+    }
+  }
+
+  /* Styles for the ProgressBar bar. */
+  .ProgressBar__bar {
+    border-radius: inherit;
+    height: 100%;
+    background-color: var(--fui-ProgressBar--barColor);
+
+    @media screen and (forced-colors: active) {
+      background-color: Highlight;
+    }
+  }
+
+  /* Translate percentages are relative to the element's own width, not the container's.
+   * The indeterminate bar is ~33% the width of its container, so:
+   * translate: -100% === left: -33% (one bar-width off-screen to the left)
+   * translate: 300% === left: 100% (3 × bar-width ≈ full container width, off-screen right).
+   */
+  @keyframes progressBarIndeterminate {
+    from {
+      translate: -100%;
+    }
+    to {
+      translate: 300%;
+    }
+  }
+
+  @keyframes progressBarIndeterminateReduced {
+    0% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.2;
+    }
+  }
+}

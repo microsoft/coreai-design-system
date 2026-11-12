@@ -1,0 +1,51 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-drawer 9.13.5:
+ * [drawerSeparatorStyles.js](../../../node_modules/@fluentui/react-drawer/lib/shared/drawerSeparatorStyles.js).
+ * Selection/placement:
+ * [useDrawerHeaderStyles.styles.raw.js](../../../node_modules/@fluentui/react-drawer/lib/components/DrawerHeader/useDrawerHeaderStyles.styles.raw.js)
+ * and [useDrawerFooterStyles.styles.raw.js](../../../node_modules/@fluentui/react-drawer/lib/components/DrawerFooter/useDrawerFooterStyles.styles.raw.js).
+ * The public Drawer context and body hook remain the only scroll-state owners.
+ * CoreAI reference ebb5a9e has no Drawer separator overrides.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .DrawerHeader:not([data-scroll-state='none'])::after,
+  .DrawerFooter:not([data-scroll-state='none'])::before {
+    height: 1px;
+    position: absolute;
+    inset-inline: 0;
+    opacity: 0;
+    background-color: var(--colorNeutralStroke1);
+    transition-duration: var(--durationNormal);
+    transition-property: opacity;
+    transition-timing-function: var(--curveEasyEase);
+    content: '';
+  }
+
+  .DrawerHeader::after {
+    bottom: 0;
+  }
+
+  .DrawerFooter::before {
+    top: 0;
+  }
+
+  .DrawerHeader:is([data-scroll-state='middle'], [data-scroll-state='bottom'])::after,
+  .DrawerFooter:is([data-scroll-state='middle'], [data-scroll-state='top'])::before {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .DrawerHeader:not([data-scroll-state='none'])::after,
+    .DrawerFooter:not([data-scroll-state='none'])::before {
+      transition-duration: 0ms;
+    }
+  }
+}

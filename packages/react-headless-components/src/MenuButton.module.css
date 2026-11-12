@@ -1,0 +1,108 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-button 9.11.1.
+ * Local source: [useMenuButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-button/lib/components/MenuButton/useMenuButtonStyles.styles.raw.js).
+ * Inherited Button baseline: [useButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-button/lib/components/Button/useButtonStyles.styles.raw.js).
+ * [Button.module.css](./Button.module.css) supplies the delegated root/icon baseline.
+ * CoreAI defaults/override: [MenuButton.ts](../../react-components/src/components/MenuButton.ts)
+ * and [Button.styles.ts](../../react-components/src/components/Button.styles.ts), reference 66f1b04.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .MenuButton {
+    composes: Button from './Button.module.css';
+
+    /* Appearance variations. Hover/press continue to use the delegated Button rules. */
+    &[data-open][data-appearance]:not(:hover, :active:focus-visible) {
+      background-color: var(--colorNeutralBackground1Selected);
+      color: var(--colorNeutralForeground1Selected);
+
+      &:not(:focus-visible) {
+        border-color: var(--colorNeutralStroke1Selected);
+      }
+
+      &[data-appearance='outline'] {
+        background-color: var(--colorTransparentBackground);
+      }
+
+      &[data-appearance='primary'] {
+        background-color: var(--colorBrandBackgroundSelected);
+        color: var(--colorNeutralForegroundOnBrand);
+
+        &:not(:focus-visible) {
+          border-color: transparent;
+        }
+      }
+
+      &[data-appearance='subtle'] {
+        background-color: var(--colorSubtleBackgroundSelected);
+        color: var(--colorNeutralForeground2Selected);
+
+        &:not(:focus-visible) {
+          border-color: transparent;
+        }
+      }
+
+      &[data-appearance='transparent'] {
+        background-color: var(--colorTransparentBackgroundSelected);
+        color: var(--colorNeutralForeground2BrandSelected);
+
+        &:not(:focus-visible) {
+          border-color: transparent;
+        }
+      }
+    }
+
+    &[data-open][data-appearance='outline']:not(:focus-visible) {
+      border-width: var(--strokeWidthThicker);
+    }
+
+    &:not([data-icon-only]) .MenuButton__menuIcon {
+      margin-inline-start: var(--spacingHorizontalXS);
+    }
+
+    &[data-size='large'] .MenuButton__menuIcon {
+      font-size: 16px;
+      height: 16px;
+      width: 16px;
+      line-height: var(--lineHeightBase400);
+    }
+
+    /* High contrast styles */
+    @media (forced-colors: active) {
+      &[data-open]:hover .MenuButton__icon {
+        color: Highlight;
+      }
+    }
+  }
+
+  .MenuButton__icon {
+    composes: Button__icon from './Button.module.css';
+  }
+
+  .MenuButton__menuIcon {
+    /* Base and size styles */
+    font-size: 12px;
+    height: 12px;
+    width: 12px;
+    line-height: var(--lineHeightBase200);
+  }
+}
+
+/* Preserve the completed Button's narrow exception for existing unlayered bundled icons. */
+.MenuButton[data-open] .MenuButton__icon {
+  :global(.fui-Icon-filled) {
+    display: inline;
+  }
+
+  :global(.fui-Icon-regular) {
+    display: none;
+  }
+}

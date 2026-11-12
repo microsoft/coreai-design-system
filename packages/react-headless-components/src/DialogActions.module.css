@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-dialog 9.18.6,
+ * [useDialogActionsStyles.styles.raw.js](../../../node_modules/@fluentui/react-dialog/lib/components/DialogActions/useDialogActionsStyles.styles.raw.js).
+ * Constants: [constants.js](../../../node_modules/@fluentui/react-dialog/lib/contexts/constants.js).
+ * Visual position/fluid props are removed before the public headless hook.
+ * Placement targets the native surface grid, not a legacy body wrapper.
+ * There are no CoreAI DialogActions defaults or style overrides.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .DialogActions {
+    gap: 8px;
+    height: fit-content;
+    box-sizing: border-box;
+    display: flex;
+    grid-row: 3 / 3;
+
+    &[data-position='end'] {
+      justify-self: end;
+      grid-column: 2 / 4;
+    }
+
+    &[data-position='start'] {
+      justify-self: start;
+      grid-column: 1 / 2;
+    }
+
+    &[data-position='start'][data-fluid] {
+      grid-column-end: 4;
+    }
+
+    &[data-position='end'][data-fluid] {
+      grid-column-start: 1;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .DialogActions {
+      flex-direction: column;
+      justify-self: stretch;
+
+      &[data-position='end'] {
+        grid-column-start: 1;
+        grid-row: 4 / auto;
+        justify-self: stretch;
+      }
+
+      &[data-position='start'] {
+        grid-column-end: 4;
+        grid-row: 3 / auto;
+        justify-self: stretch;
+      }
+    }
+  }
+}

@@ -1,0 +1,263 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-combobox 9.17.7.
+ * Local source: [useDropdownStyles.styles.raw.js](../../../node_modules/@fluentui/react-combobox/lib/components/Dropdown/useDropdownStyles.styles.raw.js).
+ * Popup foundation: [useListboxStyles.styles.raw.js](../../../node_modules/@fluentui/react-combobox/lib/components/Listbox/useListboxStyles.styles.raw.js),
+ * reused through the family Listbox adapter. CoreAI deviations are in Dropdown.overrides.module.css.
+ * Former Portal provider typography: @fluentui/react-provider 9.22.23,
+ * [useFluentProviderStyles.styles.raw.js](../../../node_modules/@fluentui/react-provider/lib/components/FluentProvider/useFluentProviderStyles.styles.raw.js).
+ * Public headless 0.3.2 owns native hiding, placement, active descendants, and dismissal.
+ * Clear-button focus uses native :focus-visible instead of legacy Tabster attributes.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Dropdown {
+    --fui-dropdown-icon-size: 20px;
+    --fui-dropdown-icon-margin: var(--spacingHorizontalXXS);
+
+    border-radius: var(--borderRadiusMedium);
+    box-sizing: border-box;
+    display: inline-flex;
+    min-width: 250px;
+    position: relative;
+    vertical-align: middle;
+
+    /* Windows high contrast mode focus indicator. */
+    &:focus-within {
+      outline: 2px solid transparent;
+    }
+
+    /* Bottom focus border, shared with Input, Select, and SpinButton. */
+    &::after {
+      box-sizing: border-box;
+      content: '';
+      position: absolute;
+      inset-inline: -1px;
+      bottom: -1px;
+      height: max(var(--strokeWidthThick), var(--borderRadiusMedium));
+      border-bottom-left-radius: var(--borderRadiusMedium);
+      border-bottom-right-radius: var(--borderRadiusMedium);
+      border-bottom: var(--strokeWidthThick) solid var(--colorCompoundBrandStroke);
+      clip-path: inset(calc(100% - 2px) 0 0 0);
+      transform: scaleX(0);
+      transition-property: transform;
+      transition-duration: var(--durationUltraFast);
+      transition-delay: var(--curveAccelerateMid);
+    }
+
+    &:focus-within::after {
+      transform: scaleX(1);
+      transition-duration: var(--durationNormal);
+      transition-delay: var(--curveDecelerateMid);
+    }
+
+    &:focus-within:active::after {
+      border-bottom-color: var(--colorCompoundBrandStrokePressed);
+    }
+
+    &:has(.Dropdown__clearButton:focus)::after {
+      border-bottom-color: initial;
+      transform: scaleX(0);
+    }
+
+    &[data-control-size='small'] {
+      --fui-dropdown-icon-size: 16px;
+    }
+
+    &[data-control-size='large'] {
+      --fui-dropdown-icon-size: 24px;
+      --fui-dropdown-icon-margin: var(--spacingHorizontalSNudge);
+    }
+
+    &[data-appearance='outline'] {
+      background-color: var(--colorNeutralBackground1);
+      border: var(--strokeWidthThin) solid var(--colorNeutralStroke1);
+      border-bottom-color: var(--colorNeutralStrokeAccessible);
+
+      &:not([data-disabled]) {
+        &:hover {
+          border-color: var(--colorNeutralStroke1Hover);
+          border-bottom-color: var(--colorNeutralStrokeAccessibleHover);
+        }
+
+        &:active,
+        &:focus-within {
+          border-color: var(--colorNeutralStroke1Pressed);
+          border-bottom-color: var(--colorNeutralStrokeAccessiblePressed);
+        }
+      }
+    }
+
+    &[data-appearance='underline'] {
+      background-color: var(--colorTransparentBackground);
+      border-bottom: var(--strokeWidthThin) solid var(--colorNeutralStrokeAccessible);
+      border-radius: 0;
+    }
+
+    &[data-appearance='filled-lighter'] {
+      background-color: var(--colorNeutralBackground1);
+      border: var(--strokeWidthThin) solid var(--colorTransparentStroke);
+    }
+
+    &[data-appearance='filled-darker'] {
+      background-color: var(--colorNeutralBackground3);
+      border: var(--strokeWidthThin) solid var(--colorTransparentStroke);
+    }
+
+    &[data-invalid]:not(
+        [data-invalid='false'],
+        [data-invalid='grammar'],
+        [data-invalid='spelling']
+      ) {
+      &:not(:focus-within),
+      &:hover:not(:focus-within) {
+        border-color: var(--colorPaletteRedBorder2);
+      }
+
+      &[data-appearance='underline'] {
+        &:not(:focus-within),
+        &:hover:not(:focus-within) {
+          border-color: initial;
+          border-bottom-color: var(--colorPaletteRedBorder2);
+        }
+      }
+    }
+
+    &[data-disabled][data-appearance] {
+      cursor: not-allowed;
+      background-color: var(--colorTransparentBackground);
+      border-color: var(--colorNeutralStrokeDisabled);
+
+      @media (forced-colors: active) {
+        border-color: GrayText;
+      }
+    }
+
+    @media screen and (prefers-reduced-motion: reduce) {
+      &::after,
+      &:focus-within::after {
+        transition-duration: 0.01ms;
+        transition-delay: 0.01ms;
+      }
+    }
+  }
+
+  .Dropdown__button {
+    align-items: center;
+    background-color: var(--colorTransparentBackground);
+    border: none;
+    box-sizing: border-box;
+    color: var(--colorNeutralForeground1);
+    column-gap: var(--spacingHorizontalXXS);
+    cursor: pointer;
+    display: grid;
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+    grid-template-columns: [content] 1fr [icon] auto [end];
+    justify-content: space-between;
+    text-align: left;
+    width: 100%;
+    padding-block: 5px;
+    padding-inline: calc(var(--spacingHorizontalMNudge) + var(--spacingHorizontalXXS))
+      var(--spacingHorizontalMNudge);
+
+    &:focus {
+      outline-style: none;
+    }
+
+    &:dir(rtl) {
+      text-align: right;
+    }
+
+    &[data-size='small'] {
+      font-size: var(--fontSizeBase200);
+      line-height: var(--lineHeightBase200);
+      padding-block: 3px;
+      padding-inline: calc(var(--spacingHorizontalSNudge) + var(--spacingHorizontalXXS))
+        var(--spacingHorizontalSNudge);
+    }
+
+    &[data-size='large'] {
+      column-gap: var(--spacingHorizontalSNudge);
+      font-size: var(--fontSizeBase400);
+      line-height: var(--lineHeightBase400);
+      padding-block: 7px;
+      padding-inline: calc(var(--spacingHorizontalM) + var(--spacingHorizontalSNudge))
+        var(--spacingHorizontalM);
+    }
+
+    &[data-placeholder] {
+      color: var(--colorNeutralForeground4);
+    }
+
+    &:disabled {
+      color: var(--colorNeutralForegroundDisabled);
+      cursor: not-allowed;
+    }
+  }
+
+  .Dropdown__expandIcon,
+  .Dropdown__clearButton {
+    box-sizing: border-box;
+    color: var(--colorNeutralStrokeAccessible);
+    display: block;
+    font-size: var(--fui-dropdown-icon-size);
+    grid-column: icon / end;
+    margin-inline-start: var(--fui-dropdown-icon-margin);
+
+    /* SVG display:block avoids extra inline space after the glyph. */
+    & svg {
+      display: block;
+    }
+
+    &[data-disabled] {
+      color: var(--colorNeutralForegroundDisabled);
+    }
+  }
+
+  .Dropdown__expandIcon[data-clearable],
+  .Dropdown__clearButton:not([data-clearable]) {
+    display: none;
+  }
+
+  .Dropdown__clearButton {
+    align-self: center;
+    background-color: var(--colorTransparentBackground);
+    border: none;
+    cursor: pointer;
+    height: fit-content;
+    margin-block: 0;
+    margin-inline-end: var(--spacingHorizontalMNudge);
+    padding: 0;
+    position: relative;
+
+    &:focus-visible {
+      outline: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+      outline-offset: -2px;
+      border-radius: var(--borderRadiusMedium);
+      z-index: 1;
+    }
+  }
+
+  .Dropdown__listbox {
+    box-sizing: border-box;
+    box-shadow: var(--shadow16);
+    border-radius: var(--borderRadiusMedium);
+    max-height: 80vh;
+
+    &[popover][data-size] {
+      /* Native descendants inherit Button chrome unless the former provider boundary is explicit. */
+      color: var(--colorNeutralForeground1);
+      font-weight: var(--fontWeightRegular);
+    }
+  }
+}

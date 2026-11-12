@@ -1,0 +1,26 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Required native-popover bridge for headless 0.3.2, not a CoreAI visual deviation.
+ * Current behavior source: [useToaster.js](../../../node_modules/@fluentui/react-headless-components-preview/lib/components/Toast/Toaster/useToaster.js).
+ * Fluent baseline: @fluentui/react-toast 9.8.5,
+ * [useToasterStyles.styles.raw.js](../../../node_modules/@fluentui/react-toast/lib/components/Toaster/useToasterStyles.styles.raw.js).
+ * Remove only the browser's popover box defaults. Native open/closed display and
+ * top-layer promotion remain owned by the public headless hook and browser.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .Toaster {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    overflow: visible;
+    color: inherit;
+    background: transparent;
+  }
+}

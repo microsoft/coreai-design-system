@@ -1,0 +1,159 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Fluent baseline: @fluentui/react-card 9.7.4.
+ * Local source: [useCardStyles.styles.raw.js](../../../node_modules/@fluentui/react-card/lib/components/Card/useCardStyles.styles.raw.js).
+ * CoreAI source: [Card.styles.ts](../../react-components/src/components/Card.styles.ts) and [Card.tsx](../../react-components/src/components/Card.tsx), reference commit 53ebde2.
+ * The floating-action wrapper applies independently of the component-defaults opt-out.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .Card {
+    text-decoration: none; /* Native Card roots are divs in the current public contract. */
+    box-shadow: unset;
+    border: var(--strokeWidthThin) solid transparent;
+
+    &:hover,
+    &:active {
+      box-shadow: unset;
+    }
+
+    /* This resets the outline pseudo-border so we can use a normal border. */
+    &::after,
+    &::before {
+      content: unset;
+    }
+
+    /* CoreAI preserves Text colors: the baseline's currentColor rule is not selected. */
+    &[data-size='small'],
+    &[data-size='medium'] {
+      --fui-Card--border-radius: var(--borderRadiusXLarge);
+    }
+
+    &[data-size='large'] {
+      --fui-Card--border-radius: var(--borderRadius2XLarge);
+    }
+
+    &[data-appearance='filled'] {
+      background-color: var(--colorNeutralBackground1);
+
+      &[data-interactive]:hover {
+        background-color: var(--colorNeutralBackground1Hover);
+      }
+
+      &[data-selected]:hover {
+        background-color: var(--colorNeutralBackground1Selected);
+      }
+
+      &[data-interactive]:active {
+        background-color: var(--colorNeutralBackground1Pressed);
+      }
+    }
+
+    &[data-appearance='filled-alternative'] {
+      background-color: var(--colorNeutralBackground3);
+
+      &[data-interactive]:hover {
+        background-color: var(--colorNeutralBackground2Hover);
+      }
+
+      &[data-selected]:hover {
+        background-color: var(--colorNeutralBackground2Selected);
+      }
+
+      &[data-interactive]:active {
+        background-color: var(--colorNeutralBackground2Pressed);
+      }
+    }
+
+    &[data-appearance='outline'] {
+      border: var(--strokeWidthThin) solid var(--colorNeutralStroke1);
+      background-color: transparent;
+
+      &[data-interactive]:hover {
+        background-color: var(--colorNeutralBackground1Hover);
+      }
+
+      &[data-interactive]:active {
+        background-color: var(--colorNeutralBackground1Pressed);
+      }
+    }
+
+    &[data-appearance='subtle'] {
+      background-color: transparent;
+
+      &[data-interactive]:hover {
+        /* Matches side-nav hover weight instead of Fluent's colorSubtleBackgroundHover. */
+        background-color: var(--colorNeutralBackground3Hover);
+      }
+
+      &[data-interactive]:active {
+        background-color: var(--colorSubtleBackgroundPressed);
+      }
+    }
+
+    &[data-interactive] {
+      cursor: pointer;
+    }
+
+    &[data-selected] {
+      background-color: var(--colorInteractiveBackgroundSelected);
+      border-color: var(--colorNeutralStroke1Selected);
+    }
+
+    &[data-appearance][data-disabled] {
+      border-color: var(--colorNeutralStrokeDisabled);
+
+      &:hover,
+      &:active {
+        background-color: var(--colorNeutralBackgroundDisabled);
+      }
+
+      &[data-appearance='outline']:hover,
+      &[data-appearance='outline']:active {
+        background-color: var(--colorTransparentBackground);
+      }
+    }
+  }
+
+  @media (forced-colors: active) {
+    .Card[data-appearance][data-interactive]:hover,
+    .Card[data-appearance][data-interactive]:active,
+    .Card[data-appearance][data-selected] {
+      background-color: Highlight;
+      color: HighlightText;
+    }
+  }
+
+  .CardFloatingAction {
+    --fui-Card--floatingAction-width: 28px;
+
+    &[data-floating-action-position='left'] {
+      /* Preserve the source paddingLeft's Griffel RTL mapping independently of the physical rail. */
+      padding-inline-start: calc(var(--fui-Card--floatingAction-width) + var(--fui-Card--size));
+    }
+
+    &[data-floating-action-position='right'] > .CardFloatingAction__slot {
+      /* CoreAI's inset shorthand keeps this public position physical in RTL, too. */
+      inset: 0 0 0 auto;
+      align-items: end;
+    }
+
+    &[data-floating-action-position='left'] > .CardFloatingAction__slot {
+      inset: 0 auto 0 0;
+    }
+  }
+
+  .CardFloatingAction__slot {
+    display: flex;
+    flex-direction: column;
+    padding: 6px 4px;
+    width: var(--fui-Card--floatingAction-width);
+    box-sizing: border-box;
+  }
+}

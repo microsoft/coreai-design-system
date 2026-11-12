@@ -1,0 +1,69 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported directly from @fluentui/react-tag-picker 9.10.5.
+ * Local source: [useTagPickerInputStyles.styles.raw.js](../../../node_modules/@fluentui/react-tag-picker/lib/components/TagPickerInput/useTagPickerInputStyles.styles.raw.js).
+ * Source: https://unpkg.com/@fluentui/react-tag-picker@9.10.5/lib/components/TagPickerInput/useTagPickerInputStyles.styles.raw.js
+ * CoreAI has no TagPickerInput defaults or style overrides.
+ * The public headless 0.3.2 hook writes --fluent-TagPickerInput__width. Its exact behavior-owned
+ * name is retained; no second measurement or query controller is added.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .TagPickerInput {
+    background-color: var(--colorTransparentBackground);
+    border: none;
+    box-sizing: border-box;
+    color: var(--colorNeutralForeground1);
+    flex-grow: 1;
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+    max-width: 100%;
+    min-width: 24px;
+    padding-block: var(--spacingVerticalSNudge);
+    padding-inline: 0;
+    /* By default width is 0. The current hook stretches it when text overflows;
+     * see upstream setTagPickerInputStretchStyle for the measurement contract. */
+    width: var(--fluent-TagPickerInput__width, 0px);
+
+    &:focus {
+      outline-style: none;
+    }
+
+    &::placeholder {
+      color: var(--colorNeutralForeground4);
+      opacity: 1;
+    }
+
+    &::after {
+      visibility: hidden;
+      white-space: pre-wrap;
+    }
+
+    &[data-size='large'] {
+      padding-block: var(--spacingVerticalMNudge);
+    }
+
+    &[data-size='extra-large'] {
+      padding-block: var(--spacingVerticalM);
+    }
+
+    &[data-disabled] {
+      color: var(--colorNeutralForegroundDisabled);
+      background-color: var(--colorTransparentBackground);
+      cursor: not-allowed;
+
+      &::placeholder {
+        color: var(--colorNeutralForegroundDisabled);
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Baseline: @fluentui/react-accordion 9.12.5.
+ * Local source: [useAccordionItemStyles.styles.raw.js](../../../node_modules/@fluentui/react-accordion/lib/components/AccordionItem/useAccordionItemStyles.styles.raw.js).
+ * The upstream hook only adds the unstyled fui-AccordionItem marker; there are no CSS rules to port.
+ */
+
+@layer fluent-components, coreai-overrides;

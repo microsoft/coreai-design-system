@@ -1,0 +1,74 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-drawer 9.13.5:
+ * [useDrawerBaseStyles.styles.raw.js](../../../node_modules/@fluentui/react-drawer/lib/shared/useDrawerBaseStyles.styles.raw.js).
+ * Convenience-wrapper marker:
+ * [useDrawerStyles.styles.raw.js](../../../node_modules/@fluentui/react-drawer/lib/components/Drawer/useDrawerStyles.styles.raw.js).
+ * CoreAI reference ebb5a9e exports Drawer unchanged from Fluent; there are no
+ * Drawer prop defaults or custom style hooks in
+ * [index.ts](../../react-components/src/index.ts) or the provider's override map.
+ * Display belongs to each native surface: a common display rule would unhide
+ * closed native dialogs/popovers. Logical edges retain Fluent's RTL flipping.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Default shared styles for the Drawer component */
+  .Drawer {
+    --fui-Drawer--size: 320px;
+
+    overflow: hidden;
+    width: var(--fui-Drawer--size);
+    max-width: 100vw;
+    height: auto;
+    max-height: 100vh;
+    max-height: 100dvh;
+    box-sizing: border-box;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    background-color: var(--colorNeutralBackground1);
+    color: var(--colorNeutralForeground1);
+
+    /* Positioning */
+    &[data-position='start'] {
+      border-inline-end: var(--strokeWidthThin) solid var(--colorTransparentStroke);
+      inset-inline-start: 0;
+      inset-inline-end: auto;
+    }
+
+    &[data-position='end'] {
+      border-inline-start: var(--strokeWidthThin) solid var(--colorTransparentStroke);
+      inset-inline-end: 0;
+      inset-inline-start: auto;
+    }
+
+    &[data-position='bottom'] {
+      bottom: 0;
+      top: auto;
+    }
+
+    /* Sizes */
+    &[data-size='medium'] {
+      --fui-Drawer--size: 592px;
+    }
+
+    &[data-size='large'] {
+      --fui-Drawer--size: 940px;
+    }
+
+    &[data-size='full'] {
+      --fui-Drawer--size: 100vw;
+    }
+
+    /* Sizes for position bottom */
+    &[data-position='bottom'][data-size='full'] {
+      --fui-Drawer--size: 100%;
+    }
+  }
+}

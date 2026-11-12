@@ -1,0 +1,42 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-menu 9.25.8, useMenuSplitGroupStyles.styles.ts.
+ * Local source: [useMenuSplitGroupStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuSplitGroup/useMenuSplitGroupStyles.styles.raw.js).
+ * There are no CoreAI MenuSplitGroup overrides or defaults.
+ * The current public context supplies split-item alignment but no multiline mutation.
+ * Native :has() resolves this visual-only layout from owned item slots, without extra state.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* TODO - remove the use of nested combinators to style child menu items. */
+  .MenuSplitGroup {
+    display: flex;
+
+    & > [data-menu-item]:nth-of-type(1) {
+      flex: 1;
+    }
+
+    & > [data-menu-item]:nth-of-type(2) {
+      border-start-start-radius: 0;
+      border-end-start-radius: 0;
+      padding-inline-start: 0;
+
+      &::before {
+        content: '';
+        width: var(--strokeWidthThin);
+        height: 20px;
+        background-color: var(--colorNeutralStroke1);
+      }
+    }
+
+    &:has(> [data-menu-item][data-multiline]) > [data-menu-item]:nth-of-type(2) {
+      align-self: center;
+    }
+  }
+}

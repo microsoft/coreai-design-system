@@ -1,0 +1,42 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-dialog 9.18.6,
+ * [useDialogContentStyles.styles.raw.js](../../../node_modules/@fluentui/react-dialog/lib/components/DialogContent/useDialogContentStyles.styles.raw.js).
+ * The actual headless 0.3.2 facade names its scrollable content DialogBody and
+ * does not export DialogContent. This is a semantic migration, not a second
+ * legacy body/content wrapper or a private hook.
+ * Pure body1 typography source: @fluentui/tokens 1.0.0-alpha.24,
+ * [typographyStyles.js](../../../node_modules/@fluentui/tokens/lib/global/typographyStyles.js),
+ * re-exported by @fluentui/react-theme 9.2.2. No styled Text preset is imported.
+ * CoreAI deviations: [Dialog.styles.ts](../../react-components/src/components/Dialog.styles.ts),
+ * reference commit 1cabc6b, are isolated in DialogBody.overrides.module.css.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .DialogBody {
+    padding: var(--strokeWidthThick);
+    margin: calc(var(--strokeWidthThick) * -1);
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+    overflow-y: auto;
+    min-height: 32px;
+    min-width: 0;
+    box-sizing: border-box;
+    grid-row: 2 / 2;
+    grid-column: 1 / -1;
+  }
+
+  @media screen and (max-height: 359px) {
+    .DialogBody {
+      overflow-y: unset;
+    }
+  }
+}

@@ -6,6 +6,9 @@
     "allowJs": true,
     "paths": {
       "@coreai-ds/react-components": ["../../packages/react-components/src/index.ts"],
+      "@coreai-ds/react-headless-components": [
+        "../../packages/react-headless-components/src/index.ts"
+      ],
       "@coreai-ds/react-components/fonts/*": ["../../packages/react-components/src/fonts/*"]
     }
   },

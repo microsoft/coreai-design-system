@@ -1,0 +1,312 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-datepicker-compat 0.6.41 raw styles (not installed locally):
+ * https://unpkg.com/@fluentui/react-datepicker-compat@0.6.41/lib/components/DatePicker/useDatePickerStyles.styles.raw.js
+ * The v9 field is an Input, so the field chrome follows the local Input port,
+ * [Input.module.css](./Input.module.css), from @fluentui/react-input 9.8.8
+ * [useInputStyles.styles.raw.js](../../../node_modules/@fluentui/react-input/lib/components/Input/useInputStyles.styles.raw.js).
+ * The popup surface follows the local [PopoverSurface.module.css](./PopoverSurface.module.css) port.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ * Headless differences: the non-editable field is a native button rather than a read-only input,
+ * and the popup is a native top-layer popover; the positioning hook owns inset, margin and anchoring.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .DatePicker {
+    --fui-input-root-padding: var(--spacingHorizontalMNudge);
+    --fui-input-slot-padding: var(--spacingHorizontalXXS);
+    --fui-input-combined-padding: var(--spacingHorizontalM);
+    --fui-input-icon-size: 20px;
+
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: var(--spacingHorizontalXXS);
+    border-radius: var(--borderRadiusMedium);
+    position: relative;
+    box-sizing: border-box;
+    vertical-align: middle;
+    min-height: 32px;
+    cursor: pointer;
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+    background-color: var(--colorNeutralBackground1);
+    border: 1px solid var(--colorNeutralStroke1);
+    border-bottom-color: var(--colorNeutralStrokeAccessible);
+
+    &::after {
+      box-sizing: border-box;
+      content: '';
+      position: absolute;
+      inset-inline: -1px;
+      bottom: -1px;
+      height: max(2px, var(--borderRadiusMedium));
+      border-bottom-left-radius: var(--borderRadiusMedium);
+      border-bottom-right-radius: var(--borderRadiusMedium);
+      border-bottom: 2px solid var(--colorCompoundBrandStroke);
+      clip-path: inset(calc(100% - 2px) 0 0 0);
+      transform: scaleX(0);
+      transition-property: transform;
+      transition-duration: var(--durationUltraFast);
+      transition-delay: var(--curveAccelerateMid);
+      pointer-events: none;
+    }
+
+    &:focus-within {
+      outline: 2px solid transparent;
+
+      &::after {
+        transform: scaleX(1);
+        transition-property: transform;
+        transition-duration: var(--durationNormal);
+        transition-delay: var(--curveDecelerateMid);
+      }
+    }
+
+    &:focus-within:active::after {
+      border-bottom-color: var(--colorCompoundBrandStrokePressed);
+    }
+
+    &[data-size='small'] {
+      --fui-input-root-padding: var(--spacingHorizontalSNudge);
+      --fui-input-combined-padding: var(--spacingHorizontalS);
+      --fui-input-icon-size: 16px;
+
+      min-height: 24px;
+      font-size: var(--fontSizeBase200);
+      line-height: var(--lineHeightBase200);
+    }
+
+    &[data-size='large'] {
+      --fui-input-root-padding: var(--spacingHorizontalM);
+      --fui-input-slot-padding: var(--spacingHorizontalSNudge);
+      --fui-input-combined-padding: calc(
+        var(--spacingHorizontalM) + var(--spacingHorizontalSNudge)
+      );
+      --fui-input-icon-size: 24px;
+
+      min-height: 40px;
+      font-size: var(--fontSizeBase400);
+      line-height: var(--lineHeightBase400);
+      gap: var(--spacingHorizontalSNudge);
+    }
+
+    /* The editable field keeps the icon outside the input, like Input contentAfter. */
+    &[data-editable] {
+      padding-inline-end: var(--fui-input-root-padding);
+      cursor: text;
+    }
+
+    &[data-appearance='underline'] {
+      background-color: var(--colorTransparentBackground);
+      border-radius: 0;
+      border-top-style: none;
+      border-inline-style: none;
+
+      &::after {
+        inset-inline: 0;
+      }
+    }
+
+    &[data-appearance='filled-darker'],
+    &[data-appearance='filled-lighter'] {
+      border-color: var(--colorTransparentStroke);
+    }
+
+    &[data-appearance='filled-darker'] {
+      background-color: var(--colorNeutralBackground3);
+    }
+
+    &[data-appearance='filled-lighter'] {
+      background-color: var(--colorNeutralBackground1);
+    }
+
+    &:not([data-disabled]) {
+      &[data-appearance='outline'] {
+        &:hover {
+          border-color: var(--colorNeutralStroke1Hover);
+          border-bottom-color: var(--colorNeutralStrokeAccessibleHover);
+        }
+
+        &:active,
+        &:focus-within {
+          border-color: var(--colorNeutralStroke1Pressed);
+          border-bottom-color: var(--colorNeutralStrokeAccessiblePressed);
+        }
+      }
+
+      &[data-appearance='underline'] {
+        &:hover {
+          border-bottom-color: var(--colorNeutralStrokeAccessibleHover);
+        }
+
+        &:active,
+        &:focus-within {
+          border-bottom-color: var(--colorNeutralStrokeAccessiblePressed);
+        }
+
+        &::after {
+          border-radius: 0;
+        }
+      }
+
+      &[data-appearance='filled-darker'],
+      &[data-appearance='filled-lighter'] {
+        &:hover,
+        &:focus-within {
+          border-color: var(--colorTransparentStrokeInteractive);
+        }
+      }
+
+      &[data-invalid]:not(:focus-within),
+      &[data-invalid]:hover:not(:focus-within) {
+        border-color: var(--colorPaletteRedBorder2);
+      }
+    }
+
+    &[data-placeholder] .DatePicker__displayValue {
+      color: var(--colorNeutralForeground4);
+    }
+
+    &[data-disabled] {
+      cursor: not-allowed;
+      background-color: var(--colorTransparentBackground);
+      border-color: var(--colorNeutralStrokeDisabled);
+
+      &::after {
+        content: unset;
+      }
+
+      &:focus-within {
+        outline-style: none;
+      }
+
+      .DatePicker__input,
+      .DatePicker__trigger,
+      .DatePicker__displayValue,
+      .DatePicker__icon {
+        color: var(--colorNeutralForegroundDisabled);
+        cursor: not-allowed;
+      }
+
+      .DatePicker__input::placeholder {
+        color: var(--colorNeutralForegroundDisabled);
+      }
+
+      @media (forced-colors: active) {
+        border-color: GrayText;
+      }
+    }
+
+    @media screen and (prefers-reduced-motion: reduce) {
+      &::after,
+      &:focus-within::after {
+        transition-duration: 0.01ms;
+        transition-delay: 0.01ms;
+      }
+    }
+  }
+
+  .DatePicker__input,
+  .DatePicker__trigger {
+    align-self: stretch;
+    box-sizing: border-box;
+    flex-grow: 1;
+    min-width: 0;
+    margin: 0;
+    border-style: none;
+    padding-block: 0;
+    color: var(--colorNeutralForeground1);
+    background-color: transparent;
+    outline-style: none;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+  }
+
+  .DatePicker__input {
+    padding-inline: var(--fui-input-combined-padding) var(--fui-input-slot-padding);
+
+    &::placeholder {
+      color: var(--colorNeutralForeground4);
+      opacity: 1;
+    }
+  }
+
+  .DatePicker__trigger {
+    display: flex;
+    align-items: center;
+    gap: var(--spacingHorizontalXXS);
+    padding-inline: var(--fui-input-combined-padding) var(--fui-input-root-padding);
+    cursor: inherit;
+    text-align: start;
+  }
+
+  .DatePicker__displayValue {
+    flex-grow: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .DatePicker__icon {
+    box-sizing: border-box;
+    display: flex;
+    flex-shrink: 0;
+    color: var(--colorNeutralForeground3);
+
+    & > svg {
+      font-size: var(--fui-input-icon-size);
+    }
+
+    &[role='button'] {
+      cursor: pointer;
+    }
+  }
+
+  .DatePicker__errorMessage {
+    margin-block-start: var(--spacingVerticalXXS);
+    color: var(--colorPaletteRedForeground1);
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase200);
+    line-height: var(--lineHeightBase200);
+
+    &:empty {
+      margin: 0;
+    }
+  }
+
+  .DatePicker__popupSurface {
+    box-sizing: border-box;
+    padding: 0;
+    overflow: visible;
+    color: var(--colorNeutralForeground1);
+    background-color: var(--colorNeutralBackground1);
+    border-radius: var(--borderRadiusMedium);
+    border: 1px solid var(--colorTransparentStroke);
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+    filter: drop-shadow(0 0 2px var(--colorNeutralShadowAmbient))
+      drop-shadow(0 8px 16px var(--colorNeutralShadowKey));
+
+    &:focus-visible {
+      outline: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+    }
+
+    &::backdrop {
+      background-color: transparent;
+    }
+  }
+}

@@ -1,0 +1,75 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-card 9.7.4, useCardHeaderStyles.styles.ts.
+ * Local source: [useCardHeaderStyles.styles.raw.js](../../../node_modules/@fluentui/react-card/lib/components/CardHeader/useCardHeaderStyles.styles.raw.js).
+ * CoreAI re-exports CardHeader without additional defaults or style overrides at reference commit 53ebde2.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .CardHeader {
+    --fui-CardHeader--gap: 12px;
+
+    display: flex;
+    align-items: center;
+
+    &[data-has-description] {
+      display: grid;
+      grid-auto-columns: min-content 1fr min-content;
+
+      & > .CardHeader__image {
+        grid-column-start: 1;
+        grid-row-start: span 2;
+      }
+
+      & > .CardHeader__header {
+        grid-column-start: 2;
+        grid-row-start: 1;
+      }
+
+      & > .CardHeader__description {
+        grid-column-start: 2;
+        grid-row-start: 2;
+      }
+
+      & > .CardHeader__action {
+        grid-column-start: 3;
+        grid-row-start: span 2;
+      }
+    }
+
+    &:not([data-has-description]) > .CardHeader__header {
+      flex-grow: 1;
+    }
+  }
+
+  .CardHeader__image {
+    display: inline-flex;
+    margin-inline-end: var(--fui-CardHeader--gap);
+  }
+
+  .CardHeader__header,
+  .CardHeader__description {
+    display: flex;
+  }
+
+  .CardHeader__action {
+    margin-inline-start: var(--fui-CardHeader--gap);
+
+    /* When selected/hovered, Card has custom high-contrast color and background styles.
+       Ensure action buttons adopt those colors and remain visible in forced-colors mode. */
+    @media (forced-colors: active) {
+      & :global(.fui-Button),
+      & :global(.fui-Link) {
+        border-color: currentcolor;
+        color: currentcolor;
+        outline-color: currentcolor;
+      }
+    }
+  }
+}

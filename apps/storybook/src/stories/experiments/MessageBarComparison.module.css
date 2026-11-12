@@ -1,0 +1,122 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten shared-fixture layout and unlayered consumer examples; not a Fluent port.
+ */
+
+.examples,
+.flow,
+.form {
+  display: grid;
+  gap: var(--spacingVerticalM);
+  min-width: 0;
+}
+
+.examples {
+  overflow-x: auto;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: var(--spacingHorizontalL);
+  min-width: 0;
+}
+
+.caseName {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.cell {
+  min-width: 0;
+}
+
+.fixture {
+  width: 100%;
+}
+
+.truncatedBody {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacingHorizontalM);
+}
+
+.notifications {
+  min-height: 80px;
+  min-width: 0;
+}
+
+.reflowViewport {
+  overflow: auto;
+}
+
+.resizeArea {
+  width: 900px;
+
+  &[data-compact] {
+    width: 260px;
+  }
+}
+
+.consumerRoot {
+  padding-inline-start: 17px;
+  border: 3px solid rgb(98, 42, 139);
+  border-radius: 3px;
+  background-color: rgb(237, 232, 247);
+}
+
+.consumerIcon {
+  color: rgb(80, 40, 120);
+  margin-inline-end: 11px;
+  font-size: 18px;
+}
+
+.consumerBody {
+  padding-inline-end: 19px;
+  font-size: 13px;
+  line-height: 19px;
+}
+
+.consumerTitle {
+  font-weight: 400;
+}
+
+.consumerActions {
+  column-gap: 7px;
+  padding-inline-end: 17px;
+}
+
+.consumerContainer {
+  padding-inline-end: 9px;
+}
+
+.consumerLink {
+  color: rgb(80, 40, 120);
+}
+
+.report {
+  display: block;
+  margin-block: var(--spacingVerticalL);
+  max-height: 32rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+}
+
+@media (max-width: 720px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

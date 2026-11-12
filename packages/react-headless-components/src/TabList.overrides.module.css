@@ -1,0 +1,61 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI source: [TabList.tsx](../../react-components/src/components/TabList.tsx).
+ * Fluent baseline: @fluentui/react-tabs 9.12.6.
+ * Local baseline: [useTabListStyles.styles.raw.js](../../../node_modules/@fluentui/react-tabs/lib/components/TabList/useTabListStyles.styles.raw.js)
+ * and [useTabStyles.styles.raw.js](../../../node_modules/@fluentui/react-tabs/lib/components/Tab/useTabStyles.styles.raw.js).
+ * Headless behavior: @fluentui/react-headless-components-preview 0.3.2 /tab-list.
+ * See README.md and the repository MIT license (LICENSE-CODE).
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .TabList {
+    /* Overrides the appearance="filled-circular" container styles. */
+    &[data-appearance='elevated'] {
+      gap: var(--spacingVerticalXXS) var(--spacingHorizontalXXS);
+      padding: var(--spacingVerticalXXS) var(--spacingHorizontalXXS);
+      border-radius: var(--borderRadiusLarge);
+      background-color: var(--colorNeutralBackground3);
+      color: var(--colorNeutralForeground2);
+    }
+  }
+
+  .TabList__tab {
+    &:is(a) {
+      text-decoration: none;
+    }
+
+    &[data-coreai-elevated] {
+      border-radius: var(--borderRadiusMedium);
+      background-color: transparent;
+
+      /* Separate exclusions retain the actual CoreAI interaction-selector specificity. */
+      &:not([disabled]):not([aria-disabled='true']) {
+        &:hover {
+          background-color: var(--colorInteractiveBackgroundHover);
+          color: var(--colorNeutralForeground1);
+        }
+
+        &:active {
+          background-color: var(--colorInteractiveBackgroundPressed);
+          color: var(--colorNeutralForeground1);
+        }
+      }
+
+      &[aria-selected='true'] {
+        &,
+        &:hover,
+        &:active {
+          background-color: var(--colorInteractiveBackgroundSelected);
+          color: var(--colorNeutralForeground1);
+        }
+      }
+    }
+  }
+}

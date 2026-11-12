@@ -1,0 +1,24 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI source: [Button.styles.ts](../../react-components/src/components/Button.styles.ts), reference 66f1b04.
+ * Fluent source: @fluentui/react-button 9.11.1,
+ * [useSplitButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-button/lib/components/SplitButton/useSplitButtonStyles.styles.raw.js).
+ * Inherited MenuButton baseline: [useMenuButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-button/lib/components/MenuButton/useMenuButtonStyles.styles.raw.js).
+ * Inherited Button baseline: [useButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-button/lib/components/Button/useButtonStyles.styles.raw.js).
+ * Preserve Fluent's joined menu target after the CoreAI standalone Button minimum is layered.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .SplitButton {
+    &[data-size] > .SplitButton__menuButton {
+      min-width: 24px;
+    }
+  }
+}

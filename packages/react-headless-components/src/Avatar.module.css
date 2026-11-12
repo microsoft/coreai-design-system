@@ -1,0 +1,554 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported directly from @fluentui/react-avatar 9.11.9 at reference 86a8705.
+ * Local source: [useAvatarStyles.styles.raw.js](../../../node_modules/@fluentui/react-avatar/lib/components/Avatar/useAvatarStyles.styles.raw.js).
+ * Source: https://unpkg.com/@fluentui/react-avatar@9.11.9/lib/components/Avatar/useAvatarStyles.styles.raw.js
+ * Default glyph baseline: @fluentui/react-icons 2.0.343
+ * [useIconStyles.styles.raw.js](../../../node_modules/@fluentui/react-icons/lib/utils/useIconStyles.styles.raw.js).
+ * [createFluentIcon.styles.raw.js](../../../node_modules/@fluentui/react-icons/lib/utils/createFluentIcon.styles.raw.js).
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ * Logical positioning and :dir() preserve Griffel's RTL badge placement and mask cutout.
+ * Avatar's native image slot does not delegate to react-image's styling foundation.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Avatar {
+    --fui-Avatar-size: 32px;
+    --fui-Avatar-icon-size: 20px;
+    --fui-Avatar-foreground: var(--colorNeutralForeground3);
+    --fui-Avatar-background: var(--colorNeutralBackground6);
+    --fui-Avatar-ring-color: var(--colorBrandStroke1);
+    --fui-Avatar-ringWidth: initial;
+    --fui-Avatar-badge-mask: none;
+
+    display: inline-block;
+    flex-shrink: 0;
+    position: relative;
+    vertical-align: middle;
+    border-radius: var(--borderRadiusCircular);
+    font-family: var(--fontFamilyBase);
+    font-weight: var(--fontWeightSemibold);
+    font-size: var(--fontSizeBase300);
+    width: var(--fui-Avatar-size);
+    height: var(--fui-Avatar-size);
+
+    /* ::before is the ring, and ::after is the shadow.
+     * These are not displayed by default; the active-appearance rules set content: "".
+     */
+    &::before,
+    &::after {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      margin: calc(-2 * var(--fui-Avatar-ringWidth, 0px));
+      border-radius: inherit;
+      transition-property: margin, opacity;
+      transition-timing-function: var(--curveEasyEaseMax), var(--curveLinear);
+      transition-duration: var(--durationUltraSlow), var(--durationSlower);
+
+      @media screen and (prefers-reduced-motion: reduce) {
+        transition-duration: 0.01ms;
+      }
+    }
+
+    &::before {
+      border-style: solid;
+      border-width: var(--fui-Avatar-ringWidth);
+    }
+
+    &[data-size='16'] {
+      --fui-Avatar-size: 16px;
+      --fui-Avatar-icon-size: 12px;
+    }
+
+    &[data-size='20'] {
+      --fui-Avatar-size: 20px;
+      --fui-Avatar-icon-size: 16px;
+    }
+
+    &[data-size='24'] {
+      --fui-Avatar-size: 24px;
+      --fui-Avatar-icon-size: 16px;
+    }
+
+    &[data-size='28'] {
+      --fui-Avatar-size: 28px;
+    }
+
+    &[data-size='36'] {
+      --fui-Avatar-size: 36px;
+    }
+
+    &[data-size='40'] {
+      --fui-Avatar-size: 40px;
+    }
+
+    &[data-size='48'] {
+      --fui-Avatar-size: 48px;
+      --fui-Avatar-icon-size: 24px;
+    }
+
+    &[data-size='56'] {
+      --fui-Avatar-size: 56px;
+      --fui-Avatar-icon-size: 28px;
+    }
+
+    &[data-size='64'] {
+      --fui-Avatar-size: 64px;
+      --fui-Avatar-icon-size: 32px;
+    }
+
+    &[data-size='72'] {
+      --fui-Avatar-size: 72px;
+      --fui-Avatar-icon-size: 32px;
+    }
+
+    &[data-size='96'] {
+      --fui-Avatar-size: 96px;
+      --fui-Avatar-icon-size: 48px;
+    }
+
+    &[data-size='120'] {
+      --fui-Avatar-size: 120px;
+      --fui-Avatar-icon-size: 48px;
+    }
+
+    &[data-size='128'] {
+      --fui-Avatar-size: 128px;
+      --fui-Avatar-icon-size: 48px;
+    }
+
+    &[data-size='16'],
+    &[data-size='20'],
+    &[data-size='24'] {
+      font-size: var(--fontSizeBase100);
+    }
+
+    &[data-size='28'] {
+      font-size: var(--fontSizeBase200);
+    }
+
+    &[data-size='48'],
+    &[data-size='56'] {
+      font-size: var(--fontSizeBase400);
+    }
+
+    &[data-size='64'],
+    &[data-size='72'],
+    &[data-size='96'] {
+      font-size: var(--fontSizeBase500);
+    }
+
+    &[data-size='120'],
+    &[data-size='128'] {
+      font-size: var(--fontSizeBase600);
+    }
+
+    &[data-shape='square'] {
+      border-radius: var(--borderRadiusMedium);
+
+      &[data-size='16'],
+      &[data-size='20'],
+      &[data-size='24'] {
+        border-radius: var(--borderRadiusSmall);
+      }
+
+      &[data-size='56'],
+      &[data-size='64'],
+      &[data-size='72'] {
+        border-radius: var(--borderRadiusLarge);
+      }
+
+      &[data-size='96'],
+      &[data-size='120'],
+      &[data-size='128'] {
+        border-radius: var(--borderRadiusXLarge);
+      }
+    }
+
+    &[data-has-badge] {
+      --fui-Avatar-badgeAlign: right;
+      /* Punch out a circle larger than the badge by badgeGap, leaving a transparent gap.
+       * The image, icon, and initials share this cutout; the ring also offsets its margin.
+       * radial-gradient has no anti-aliasing. Fade from transparent to opaque over half a pixel.
+       */
+      --fui-Avatar-badge-mask: radial-gradient(
+        circle at bottom var(--fui-Avatar-badgeRadius) var(--fui-Avatar-badgeAlign)
+          var(--fui-Avatar-badgeRadius),
+        transparent calc(var(--fui-Avatar-badgeRadius) + var(--fui-Avatar-badgeGap) - 0.25px),
+        white calc(var(--fui-Avatar-badgeRadius) + var(--fui-Avatar-badgeGap) + 0.25px)
+      );
+
+      /* Split alignment out of mask-image so it can flip with direction. */
+      &:dir(rtl) {
+        --fui-Avatar-badgeAlign: left;
+      }
+
+      &[data-badge-size='tiny'] {
+        --fui-Avatar-badgeRadius: 3px;
+        --fui-Avatar-badgeGap: var(--strokeWidthThin);
+      }
+
+      &[data-badge-size='extra-small'] {
+        --fui-Avatar-badgeRadius: 5px;
+        --fui-Avatar-badgeGap: var(--strokeWidthThin);
+      }
+
+      &[data-badge-size='small'] {
+        --fui-Avatar-badgeRadius: 6px;
+        --fui-Avatar-badgeGap: var(--strokeWidthThin);
+      }
+
+      &[data-badge-size='medium'] {
+        --fui-Avatar-badgeRadius: 8px;
+        --fui-Avatar-badgeGap: var(--strokeWidthThin);
+      }
+
+      &[data-badge-size='large'] {
+        --fui-Avatar-badgeRadius: 10px;
+        --fui-Avatar-badgeGap: var(--strokeWidthThick);
+      }
+
+      &[data-badge-size='extra-large'] {
+        --fui-Avatar-badgeRadius: 14px;
+        --fui-Avatar-badgeGap: var(--strokeWidthThick);
+      }
+    }
+
+    &[data-active='active'],
+    &[data-active='inactive'] {
+      transform: perspective(1px);
+      transition-property: transform, opacity;
+      transition-duration: var(--durationUltraSlow), var(--durationFaster);
+      transition-timing-function: var(--curveEasyEaseMax), var(--curveLinear);
+
+      @media screen and (prefers-reduced-motion: reduce) {
+        transition-duration: 0.01ms;
+      }
+
+      &[data-active-appearance='ring'],
+      &[data-active-appearance='ring-shadow'] {
+        --fui-Avatar-ringWidth: var(--strokeWidthThick);
+
+        &[data-size='56'],
+        &[data-size='64'] {
+          --fui-Avatar-ringWidth: var(--strokeWidthThicker);
+        }
+
+        &[data-size='72'],
+        &[data-size='96'],
+        &[data-size='120'],
+        &[data-size='128'] {
+          --fui-Avatar-ringWidth: var(--strokeWidthThickest);
+        }
+
+        /* Show the ::before pseudo-element, which is the ring. */
+        &::before {
+          content: '';
+          color: var(--fui-Avatar-ring-color);
+        }
+
+        &[data-has-badge]::before {
+          /* Center the cutout at the badge radius, including the ring's 2 * ringWidth margin. */
+          mask-image: radial-gradient(
+            circle at bottom calc(var(--fui-Avatar-badgeRadius) + 2 * var(--fui-Avatar-ringWidth))
+              var(--fui-Avatar-badgeAlign)
+              calc(var(--fui-Avatar-badgeRadius) + 2 * var(--fui-Avatar-ringWidth)),
+            transparent calc(var(--fui-Avatar-badgeRadius) + var(--fui-Avatar-badgeGap) - 0.25px),
+            white calc(var(--fui-Avatar-badgeRadius) + var(--fui-Avatar-badgeGap) + 0.25px)
+          );
+        }
+      }
+
+      &[data-active-appearance='shadow'],
+      &[data-active-appearance='ring-shadow'] {
+        /* Show the ::after pseudo-element, which is the shadow. */
+        &::after {
+          content: '';
+          box-shadow: var(--shadow8);
+        }
+
+        &[data-size='16']::after,
+        &[data-size='20']::after,
+        &[data-size='24']::after,
+        &[data-size='28']::after {
+          box-shadow: var(--shadow4);
+        }
+
+        &[data-size='56']::after,
+        &[data-size='64']::after {
+          box-shadow: var(--shadow16);
+        }
+
+        &[data-size='72']::after,
+        &[data-size='96']::after,
+        &[data-size='120']::after,
+        &[data-size='128']::after {
+          box-shadow: var(--shadow28);
+        }
+      }
+    }
+
+    /* Inactive overrides the active-appearance rules and must follow them. */
+    &[data-active='inactive'] {
+      opacity: 0.8;
+      transform: scale(0.875);
+      transition-timing-function: var(--curveDecelerateMin), var(--curveLinear);
+
+      &::before,
+      &::after {
+        margin: 0;
+        opacity: 0;
+        transition-timing-function: var(--curveDecelerateMin), var(--curveLinear);
+      }
+    }
+
+    &[data-color='brand'] {
+      --fui-Avatar-foreground: var(--colorNeutralForegroundStaticInverted);
+      --fui-Avatar-background: var(--colorBrandBackgroundStatic);
+    }
+
+    &[data-color='dark-red'] {
+      --fui-Avatar-foreground: var(--colorPaletteDarkRedForeground2);
+      --fui-Avatar-background: var(--colorPaletteDarkRedBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteDarkRedBorderActive);
+    }
+
+    &[data-color='cranberry'] {
+      --fui-Avatar-foreground: var(--colorPaletteCranberryForeground2);
+      --fui-Avatar-background: var(--colorPaletteCranberryBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteCranberryBorderActive);
+    }
+
+    &[data-color='red'] {
+      --fui-Avatar-foreground: var(--colorPaletteRedForeground2);
+      --fui-Avatar-background: var(--colorPaletteRedBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteRedBorderActive);
+    }
+
+    &[data-color='pumpkin'] {
+      --fui-Avatar-foreground: var(--colorPalettePumpkinForeground2);
+      --fui-Avatar-background: var(--colorPalettePumpkinBackground2);
+      --fui-Avatar-ring-color: var(--colorPalettePumpkinBorderActive);
+    }
+
+    &[data-color='peach'] {
+      --fui-Avatar-foreground: var(--colorPalettePeachForeground2);
+      --fui-Avatar-background: var(--colorPalettePeachBackground2);
+      --fui-Avatar-ring-color: var(--colorPalettePeachBorderActive);
+    }
+
+    &[data-color='marigold'] {
+      --fui-Avatar-foreground: var(--colorPaletteMarigoldForeground2);
+      --fui-Avatar-background: var(--colorPaletteMarigoldBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteMarigoldBorderActive);
+    }
+
+    &[data-color='gold'] {
+      --fui-Avatar-foreground: var(--colorPaletteGoldForeground2);
+      --fui-Avatar-background: var(--colorPaletteGoldBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteGoldBorderActive);
+    }
+
+    &[data-color='brass'] {
+      --fui-Avatar-foreground: var(--colorPaletteBrassForeground2);
+      --fui-Avatar-background: var(--colorPaletteBrassBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteBrassBorderActive);
+    }
+
+    &[data-color='brown'] {
+      --fui-Avatar-foreground: var(--colorPaletteBrownForeground2);
+      --fui-Avatar-background: var(--colorPaletteBrownBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteBrownBorderActive);
+    }
+
+    &[data-color='forest'] {
+      --fui-Avatar-foreground: var(--colorPaletteForestForeground2);
+      --fui-Avatar-background: var(--colorPaletteForestBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteForestBorderActive);
+    }
+
+    &[data-color='seafoam'] {
+      --fui-Avatar-foreground: var(--colorPaletteSeafoamForeground2);
+      --fui-Avatar-background: var(--colorPaletteSeafoamBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteSeafoamBorderActive);
+    }
+
+    &[data-color='dark-green'] {
+      --fui-Avatar-foreground: var(--colorPaletteDarkGreenForeground2);
+      --fui-Avatar-background: var(--colorPaletteDarkGreenBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteDarkGreenBorderActive);
+    }
+
+    &[data-color='light-teal'] {
+      --fui-Avatar-foreground: var(--colorPaletteLightTealForeground2);
+      --fui-Avatar-background: var(--colorPaletteLightTealBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteLightTealBorderActive);
+    }
+
+    &[data-color='teal'] {
+      --fui-Avatar-foreground: var(--colorPaletteTealForeground2);
+      --fui-Avatar-background: var(--colorPaletteTealBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteTealBorderActive);
+    }
+
+    &[data-color='steel'] {
+      --fui-Avatar-foreground: var(--colorPaletteSteelForeground2);
+      --fui-Avatar-background: var(--colorPaletteSteelBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteSteelBorderActive);
+    }
+
+    &[data-color='blue'] {
+      --fui-Avatar-foreground: var(--colorPaletteBlueForeground2);
+      --fui-Avatar-background: var(--colorPaletteBlueBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteBlueBorderActive);
+    }
+
+    &[data-color='royal-blue'] {
+      --fui-Avatar-foreground: var(--colorPaletteRoyalBlueForeground2);
+      --fui-Avatar-background: var(--colorPaletteRoyalBlueBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteRoyalBlueBorderActive);
+    }
+
+    &[data-color='cornflower'] {
+      --fui-Avatar-foreground: var(--colorPaletteCornflowerForeground2);
+      --fui-Avatar-background: var(--colorPaletteCornflowerBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteCornflowerBorderActive);
+    }
+
+    &[data-color='navy'] {
+      --fui-Avatar-foreground: var(--colorPaletteNavyForeground2);
+      --fui-Avatar-background: var(--colorPaletteNavyBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteNavyBorderActive);
+    }
+
+    &[data-color='lavender'] {
+      --fui-Avatar-foreground: var(--colorPaletteLavenderForeground2);
+      --fui-Avatar-background: var(--colorPaletteLavenderBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteLavenderBorderActive);
+    }
+
+    &[data-color='purple'] {
+      --fui-Avatar-foreground: var(--colorPalettePurpleForeground2);
+      --fui-Avatar-background: var(--colorPalettePurpleBackground2);
+      --fui-Avatar-ring-color: var(--colorPalettePurpleBorderActive);
+    }
+
+    &[data-color='grape'] {
+      --fui-Avatar-foreground: var(--colorPaletteGrapeForeground2);
+      --fui-Avatar-background: var(--colorPaletteGrapeBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteGrapeBorderActive);
+    }
+
+    &[data-color='lilac'] {
+      --fui-Avatar-foreground: var(--colorPaletteLilacForeground2);
+      --fui-Avatar-background: var(--colorPaletteLilacBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteLilacBorderActive);
+    }
+
+    &[data-color='pink'] {
+      --fui-Avatar-foreground: var(--colorPalettePinkForeground2);
+      --fui-Avatar-background: var(--colorPalettePinkBackground2);
+      --fui-Avatar-ring-color: var(--colorPalettePinkBorderActive);
+    }
+
+    &[data-color='magenta'] {
+      --fui-Avatar-foreground: var(--colorPaletteMagentaForeground2);
+      --fui-Avatar-background: var(--colorPaletteMagentaBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteMagentaBorderActive);
+    }
+
+    &[data-color='plum'] {
+      --fui-Avatar-foreground: var(--colorPalettePlumForeground2);
+      --fui-Avatar-background: var(--colorPalettePlumBackground2);
+      --fui-Avatar-ring-color: var(--colorPalettePlumBorderActive);
+    }
+
+    &[data-color='beige'] {
+      --fui-Avatar-foreground: var(--colorPaletteBeigeForeground2);
+      --fui-Avatar-background: var(--colorPaletteBeigeBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteBeigeBorderActive);
+    }
+
+    &[data-color='mink'] {
+      --fui-Avatar-foreground: var(--colorPaletteMinkForeground2);
+      --fui-Avatar-background: var(--colorPaletteMinkBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteMinkBorderActive);
+    }
+
+    &[data-color='platinum'] {
+      --fui-Avatar-foreground: var(--colorPalettePlatinumForeground2);
+      --fui-Avatar-background: var(--colorPalettePlatinumBackground2);
+      --fui-Avatar-ring-color: var(--colorPalettePlatinumBorderActive);
+    }
+
+    &[data-color='anchor'] {
+      --fui-Avatar-foreground: var(--colorPaletteAnchorForeground2);
+      --fui-Avatar-background: var(--colorPaletteAnchorBackground2);
+      --fui-Avatar-ring-color: var(--colorPaletteAnchorBorderActive);
+    }
+  }
+
+  .Avatar__image {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    object-fit: cover;
+    vertical-align: top;
+    color: var(--fui-Avatar-foreground);
+    background-color: var(--fui-Avatar-background);
+    mask-image: var(--fui-Avatar-badge-mask);
+  }
+
+  .Avatar__icon,
+  .Avatar__initials {
+    position: absolute;
+    box-sizing: border-box;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    width: 100%;
+    height: 100%;
+    line-height: 1;
+    border: var(--strokeWidthThin) solid var(--colorTransparentStroke);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    user-select: none;
+    border-radius: inherit;
+    color: var(--fui-Avatar-foreground);
+    background-color: var(--fui-Avatar-background);
+    mask-image: var(--fui-Avatar-badge-mask);
+  }
+
+  .Avatar__icon {
+    font-size: var(--fui-Avatar-icon-size);
+  }
+
+  .Avatar__badge {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-end: 0;
+  }
+
+  .Avatar__glyph {
+    display: inline;
+    line-height: 0;
+
+    /* Browsers set SVG forced-color-adjust to preserve-parent-color, which does not
+     * override internally defined icon colors in high contrast mode.
+     */
+    @media (forced-colors: active) {
+      forced-color-adjust: auto;
+    }
+  }
+}

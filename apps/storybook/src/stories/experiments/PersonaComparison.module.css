@@ -1,0 +1,78 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten experimental fixture and comparison layout; not an upstream style port.
+ */
+
+.examples {
+  display: grid;
+  gap: 12px;
+  min-width: 760px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) repeat(2, minmax(260px, 1fr));
+  align-items: start;
+  gap: 16px;
+  padding-block: 8px;
+  border-block-end: 1px solid var(--colorNeutralStroke2);
+}
+
+.cell {
+  min-width: 0;
+  padding: 8px;
+}
+
+.report {
+  display: block;
+  white-space: pre-wrap;
+  margin-block: 12px;
+}
+
+.playground {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  padding: 8px;
+}
+
+.actions {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  & > label {
+    display: grid;
+    gap: 4px;
+  }
+}
+
+.consumerPersona {
+  display: grid;
+  justify-items: center;
+  padding: 6px;
+  border: 2px solid rgb(35, 95, 155);
+}
+
+.consumerAvatar {
+  border-radius: 3px;
+  margin-inline-end: 14px;
+}
+
+.consumerPrimary {
+  color: rgb(35, 95, 155);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.consumerSecondary {
+  color: rgb(130, 45, 80);
+  font-size: 13px;
+  margin-block-start: 2px;
+}

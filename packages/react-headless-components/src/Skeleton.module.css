@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-skeleton 9.7.7, useSkeletonStyles.styles.ts.
+ * Local source: [useSkeletonStyles.styles.raw.js](../../../node_modules/@fluentui/react-skeleton/lib/components/Skeleton/useSkeletonStyles.styles.raw.js).
+ * CoreAI has no Skeleton defaults or style overrides.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Apply styling to the Skeleton slots based on the state. */
+  .Skeleton {
+    &[data-as='span'] {
+      display: block;
+    }
+  }
+}

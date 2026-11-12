@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported directly from @fluentui/react-badge 9.5.7.
+ * Local source: [useCounterBadgeStyles.styles.raw.js](../../../node_modules/@fluentui/react-badge/lib/components/CounterBadge/useCounterBadgeStyles.styles.raw.js).
+ * Inherited baseline: [useBadgeStyles.styles.raw.js](../../../node_modules/@fluentui/react-badge/lib/components/Badge/useBadgeStyles.styles.raw.js), reused through Badge.module.css.
+ * Source: https://unpkg.com/@fluentui/react-badge@9.5.7/lib/components/CounterBadge/useCounterBadgeStyles.styles.raw.js
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ * Hidden state comes from the current public headless hook, including numeric zero children.
+ * CoreAI adds no CounterBadge defaults or CSS overrides.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .CounterBadge {
+    &[data-dot] {
+      min-width: auto;
+      width: 6px;
+      height: 6px;
+      padding: 0;
+    }
+
+    &[data-hidden] {
+      display: none;
+    }
+  }
+}

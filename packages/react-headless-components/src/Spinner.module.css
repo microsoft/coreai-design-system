@@ -1,0 +1,315 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-spinner 9.8.7, useSpinnerStyles.styles.ts.
+ * Local source: [useSpinnerStyles.styles.raw.js](../../../node_modules/@fluentui/react-spinner/lib/components/Spinner/useSpinnerStyles.styles.raw.js).
+ * Inherited Label foundation: [useLabelStyles.styles.raw.js](../../../node_modules/@fluentui/react-label/lib/components/Label/useLabelStyles.styles.raw.js), @fluentui/react-label 9.4.6.
+ * Native :dir() selectors and mirrored keyframes preserve Griffel's RTL flipping.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+    gap: 8px;
+    overflow: hidden;
+    min-width: min-content;
+
+    &[data-label-position='above'],
+    &[data-label-position='below'] {
+      flex-direction: column;
+    }
+
+    &[data-size='extra-tiny'] .Spinner__spinner {
+      width: 16px;
+      height: 16px;
+      --fui-Spinner--strokeWidth: var(--strokeWidthThick);
+    }
+
+    &[data-size='tiny'] .Spinner__spinner {
+      width: 20px;
+      height: 20px;
+      --fui-Spinner--strokeWidth: var(--strokeWidthThick);
+    }
+
+    &[data-size='extra-small'] .Spinner__spinner {
+      width: 24px;
+      height: 24px;
+      --fui-Spinner--strokeWidth: var(--strokeWidthThick);
+    }
+
+    &[data-size='small'] .Spinner__spinner {
+      width: 28px;
+      height: 28px;
+      --fui-Spinner--strokeWidth: var(--strokeWidthThick);
+    }
+
+    &[data-size='medium'] .Spinner__spinner {
+      width: 32px;
+      height: 32px;
+      --fui-Spinner--strokeWidth: var(--strokeWidthThicker);
+    }
+
+    &[data-size='large'] .Spinner__spinner {
+      width: 36px;
+      height: 36px;
+      --fui-Spinner--strokeWidth: var(--strokeWidthThicker);
+    }
+
+    &[data-size='extra-large'] .Spinner__spinner {
+      width: 40px;
+      height: 40px;
+      --fui-Spinner--strokeWidth: var(--strokeWidthThicker);
+    }
+
+    &[data-size='huge'] .Spinner__spinner {
+      width: 44px;
+      height: 44px;
+      --fui-Spinner--strokeWidth: var(--strokeWidthThickest);
+    }
+
+    &[data-size='extra-tiny'] .Spinner__label,
+    &[data-size='tiny'] .Spinner__label,
+    &[data-size='extra-small'] .Spinner__label,
+    &[data-size='small'] .Spinner__label {
+      font-family: var(--fontFamilyBase);
+      font-size: var(--fontSizeBase300);
+      font-weight: var(--fontWeightRegular);
+      line-height: var(--lineHeightBase300);
+    }
+
+    &[data-size='medium'] .Spinner__label,
+    &[data-size='large'] .Spinner__label,
+    &[data-size='extra-large'] .Spinner__label {
+      font-family: var(--fontFamilyBase);
+      font-size: var(--fontSizeBase400);
+      font-weight: var(--fontWeightSemibold);
+      line-height: var(--lineHeightBase400);
+    }
+
+    &[data-size='huge'] .Spinner__label {
+      font-family: var(--fontFamilyBase);
+      font-size: var(--fontSizeBase500);
+      font-weight: var(--fontWeightSemibold);
+      line-height: var(--lineHeightBase500);
+    }
+
+    &[data-appearance='inverted'] {
+      .Spinner__spinner {
+        background-color: var(--colorNeutralStrokeAlpha2);
+        color: var(--colorNeutralStrokeOnBrand2);
+      }
+
+      .Spinner__label {
+        color: var(--colorNeutralForegroundStaticInverted);
+
+        /* Disabled Label's forced-colors rule survives the upstream class merge. */
+        @media (forced-colors: active) {
+          &[data-disabled] {
+            color: GrayText;
+          }
+        }
+      }
+    }
+  }
+
+  .Spinner__spinner {
+    position: relative;
+    flex-shrink: 0;
+    /* Use a mask to create the ring shape of the spinner. */
+    mask-image: radial-gradient(
+      closest-side,
+      transparent calc(100% - var(--fui-Spinner--strokeWidth) - 1px),
+      white calc(100% - var(--fui-Spinner--strokeWidth)) calc(100% - 1px),
+      transparent 100%
+    );
+    background-color: var(--colorBrandStroke2Contrast);
+    color: var(--colorBrandStroke1);
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-name: spinnerRotation;
+
+    &:dir(rtl) {
+      animation-name: spinnerRotationRtl;
+    }
+
+    @media screen and (forced-colors: active) {
+      &,
+      .Spinner[data-appearance='inverted'] & {
+        background-color: HighlightText;
+        color: Highlight;
+        forced-color-adjust: none;
+      }
+    }
+
+    @media screen and (prefers-reduced-motion: reduce) {
+      animation-duration: 1.8s;
+    }
+  }
+
+  /* The spinner tail is rendered using two 135deg arc segments, behind a 105deg arc mask.
+   * The segments are rotated out from behind the mask to expand the visible arc from
+   * 30deg (min) to 255deg (max), and then back behind the mask again to shrink the arc.
+   * The tail and spinner itself also have 360deg rotation animations for the spin.
+   */
+  .Spinner__spinnerTail {
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 100%;
+    mask-image: conic-gradient(transparent 105deg, white 105deg);
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: var(--curveEasyEase);
+    animation-name: tailRotation;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      display: block;
+      width: 100%;
+      height: 100%;
+      animation: inherit;
+      background-image: conic-gradient(currentcolor 135deg, transparent 135deg);
+    }
+
+    &::before {
+      animation-name: beforeArc;
+    }
+
+    &::after {
+      animation-name: afterArc;
+    }
+
+    &:dir(rtl) {
+      mask-image: conic-gradient(white 255deg, transparent 255deg);
+      animation-name: tailRotationRtl;
+
+      &::before,
+      &::after {
+        background-image: conic-gradient(transparent 225deg, currentcolor 225deg);
+      }
+
+      &::before {
+        animation-name: beforeArcRtl;
+      }
+
+      &::after {
+        animation-name: afterArcRtl;
+      }
+    }
+
+    @media screen and (prefers-reduced-motion: reduce) {
+      animation-iteration-count: 0;
+      background-image: conic-gradient(transparent 120deg, currentcolor 360deg);
+
+      &::before,
+      &::after {
+        content: none;
+      }
+
+      &:dir(rtl) {
+        background-image: conic-gradient(currentcolor 0deg, transparent 240deg);
+      }
+    }
+  }
+
+  @keyframes spinnerRotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes spinnerRotationRtl {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(-360deg);
+    }
+  }
+
+  @keyframes tailRotation {
+    0% {
+      transform: rotate(-135deg);
+    }
+    50% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(225deg);
+    }
+  }
+
+  @keyframes tailRotationRtl {
+    0% {
+      transform: rotate(135deg);
+    }
+    50% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(-225deg);
+    }
+  }
+
+  @keyframes beforeArc {
+    0% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(105deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  @keyframes beforeArcRtl {
+    0% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(-105deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  @keyframes afterArc {
+    0% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(225deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  @keyframes afterArcRtl {
+    0% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(-225deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+}

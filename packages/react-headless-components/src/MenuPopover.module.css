@@ -1,0 +1,35 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-menu 9.25.8, useMenuPopoverStyles.styles.ts.
+ * Local source: [useMenuPopoverStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuPopover/useMenuPopoverStyles.styles.raw.js).
+ * CoreAI source: [Overlay.styles.ts](../../react-components/src/components/Overlay.styles.ts),
+ * reference commit ebb5a9e; deviations are separate in MenuPopover.overrides.module.css.
+ * The current headless 0.3.2 hook owns native popovers and CSS anchors.
+ * No Portal, motion, positioner, or unconditional display rule is restored.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .MenuPopover {
+    border-radius: var(--borderRadiusMedium);
+    background-color: var(--colorNeutralBackground1);
+    color: var(--colorNeutralForeground1);
+    box-sizing: border-box;
+    min-width: 138px;
+    max-width: 300px;
+    overflow-x: hidden;
+    width: max-content;
+    box-shadow: var(--shadow16);
+    padding: 4px;
+    border: 1px solid var(--colorTransparentStroke);
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+  }
+}

@@ -1,0 +1,32 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-drawer 9.13.5:
+ * [useDrawerBodyStyles.styles.raw.js](../../../node_modules/@fluentui/react-drawer/lib/components/DrawerBody/useDrawerBodyStyles.styles.raw.js).
+ * CoreAI reference ebb5a9e has no DrawerBody overrides or prop defaults.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot */
+  .DrawerBody {
+    padding: 0 var(--spacingHorizontalXXL);
+    flex: 1;
+    align-self: stretch;
+    position: relative;
+    z-index: 1;
+    overflow: auto;
+
+    &:last-child {
+      padding-bottom: calc(var(--spacingHorizontalXXL) + 1px);
+    }
+
+    &:first-child {
+      padding-top: calc(var(--spacingHorizontalXXL) + 1px);
+    }
+  }
+}

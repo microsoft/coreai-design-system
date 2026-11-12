@@ -1,0 +1,33 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten comparison-consumer layout and override fixtures.
+ */
+
+.examples {
+  display: grid;
+  gap: 16px;
+  overflow: auto;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 180px 280px 280px;
+  gap: 24px;
+  align-items: center;
+}
+
+.parking {
+  width: 10px;
+  height: 10px;
+}
+
+.consumer {
+  min-height: 144px;
+  border-radius: 3px;
+  background-color: rgb(235 240 245);
+  color: rgb(20 30 40);
+}

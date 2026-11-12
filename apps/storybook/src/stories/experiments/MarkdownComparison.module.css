@@ -1,0 +1,82 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Shared comparison layout and ordinary consumer CSS; not component style sources.
+ */
+
+.examples {
+  display: grid;
+  gap: 24px;
+  max-width: 1200px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.6fr) repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 16px;
+}
+
+.cell {
+  min-width: 0;
+}
+
+.parking {
+  width: 24px;
+  height: 24px;
+}
+
+.extensionHeading {
+  font-variant: small-caps;
+}
+
+.extensionLink {
+  text-decoration: underline dotted;
+}
+
+.consumerRoot {
+  color: rgb(20, 90, 160);
+  font-size: 17px;
+  line-height: 25px;
+}
+
+.consumerRoot h2 {
+  color: rgb(120, 40, 100);
+  font-size: 21px;
+}
+
+.consumerRoot table {
+  border-collapse: collapse;
+}
+
+.consumerRoot code {
+  font-size: 13px;
+}
+
+.report {
+  display: block;
+  min-height: 48px;
+  max-height: 360px;
+  overflow: auto;
+  margin-block: 16px;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+}
+
+.flow {
+  display: grid;
+  gap: 16px;
+  max-width: 720px;
+}
+
+.flow label {
+  display: grid;
+  gap: 4px;
+}
+
+.flow textarea {
+  min-height: 160px;
+}

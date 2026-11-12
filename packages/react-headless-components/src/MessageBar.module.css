@@ -1,0 +1,85 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-message-bar 9.7.9, useMessageBarStyles.styles.ts.
+ * Local source: [useMessageBarStyles.styles.raw.js](../../../node_modules/@fluentui/react-message-bar/lib/components/MessageBar/useMessageBarStyles.styles.raw.js).
+ * The current headless 0.3.2 facade delegates behavior to this same installed version.
+ * Logical spacing retains Griffel's RTL flipping; the public hook owns automatic reflow.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .MessageBar {
+    white-space: nowrap;
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    grid-template-rows: 1fr;
+    grid-template-areas: 'icon body secondaryActions actions';
+    padding-inline-start: var(--spacingHorizontalM);
+    border: var(--strokeWidthThin) solid var(--colorNeutralStroke1);
+    border-radius: var(--borderRadiusMedium);
+    align-items: center;
+    min-height: 36px;
+    box-sizing: border-box;
+    background-color: var(--colorNeutralBackground3);
+
+    &[data-layout='multiline'] {
+      white-space: normal;
+      align-items: start;
+      padding-top: var(--spacingVerticalMNudge);
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas:
+        'icon body actions'
+        'secondaryActions secondaryActions secondaryActions';
+    }
+
+    &[data-shape='square'] {
+      border-radius: 0;
+    }
+
+    &[data-intent='error'] {
+      background-color: var(--colorStatusDangerBackground1);
+      border-color: var(--colorStatusDangerBorder1);
+    }
+
+    &[data-intent='warning'] {
+      background-color: var(--colorStatusWarningBackground1);
+      border-color: var(--colorStatusWarningBorder1);
+    }
+
+    &[data-intent='success'] {
+      background-color: var(--colorStatusSuccessBackground1);
+      border-color: var(--colorStatusSuccessBorder1);
+    }
+  }
+
+  .MessageBar__icon {
+    grid-area: icon;
+    font-size: var(--fontSizeBase500);
+    margin-inline-end: var(--spacingHorizontalS);
+    color: var(--colorNeutralForeground3);
+    display: flex;
+    align-items: center;
+
+    &[data-intent='error'] {
+      color: var(--colorStatusDangerForeground1);
+    }
+
+    &[data-intent='warning'] {
+      color: var(--colorStatusWarningForeground3);
+    }
+
+    &[data-intent='success'] {
+      color: var(--colorStatusSuccessForeground1);
+    }
+  }
+
+  .MessageBar__bottomReflowSpacer {
+    margin-bottom: var(--spacingVerticalS);
+    grid-area: secondaryActions;
+  }
+}

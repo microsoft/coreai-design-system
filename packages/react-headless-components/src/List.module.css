@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-list 9.7.0.
+ * Local source: [useListStyles.styles.raw.js](../../../node_modules/@fluentui/react-list/lib/components/List/useListStyles.styles.raw.js).
+ * CoreAI reexports List without additional defaults or style overrides.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .List {
+    padding: 0;
+    margin: 0;
+    text-indent: 0;
+    list-style-type: none;
+  }
+}

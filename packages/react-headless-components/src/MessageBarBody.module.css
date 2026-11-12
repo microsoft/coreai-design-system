@@ -1,0 +1,24 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-message-bar 9.7.9, useMessageBarBodyStyles.styles.ts.
+ * Local source: [useMessageBarBodyStyles.styles.raw.js](../../../node_modules/@fluentui/react-message-bar/lib/components/MessageBarBody/useMessageBarBodyStyles.styles.raw.js).
+ * CoreAI re-exports MessageBarBody unchanged. The public renderer supplies inline Link context.
+ * Logical spacing retains Griffel's RTL flipping.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .MessageBarBody {
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+    grid-area: body;
+    padding-inline-end: var(--spacingHorizontalM);
+  }
+}

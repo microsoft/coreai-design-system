@@ -1,0 +1,19 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI source at df8917195abb529e5239d5490cdfede15dbe578a:
+ * [public exports](../../react-components/src/index.ts) re-export Fluent Checkbox unchanged;
+ * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts) registers no Checkbox or Label override.
+ * [CoreAIFluentProvider.tsx](../../react-components/src/contexts/CoreAIFluentProvider.tsx) does not add Checkbox defaults.
+ * Fluent baseline: @fluentui/react-checkbox 9.6.6,
+ * [useCheckboxStyles.styles.raw.js](../../../node_modules/@fluentui/react-checkbox/lib/components/Checkbox/useCheckboxStyles.styles.raw.js).
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  /* No CoreAI-specific Checkbox styles or prop defaults. */
+}

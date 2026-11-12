@@ -1,0 +1,57 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-drawer 9.13.5:
+ * [useInlineDrawerStyles.styles.raw.js](../../../node_modules/@fluentui/react-drawer/lib/components/InlineDrawer/useInlineDrawerStyles.styles.raw.js).
+ * Shared sizing/positioning: [useDrawerBaseStyles.styles.raw.js](../../../node_modules/@fluentui/react-drawer/lib/shared/useDrawerBaseStyles.styles.raw.js).
+ * Native closed-state visibility keeps mounted content out of focus/accessibility
+ * while retaining the current zero-width/zero-height inline layout. The public
+ * headless renderer owns immediate unmountOnClose, not a legacy motion controller.
+ * CoreAI reference ebb5a9e has no Drawer visual overrides or prop defaults.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot */
+  .InlineDrawer {
+    composes: Drawer from './Drawer.module.css';
+
+    position: relative;
+    display: flex;
+
+    /* Separator */
+    &[data-position='start'][data-separator] {
+      border-inline-end: 1px solid var(--colorNeutralBackground3);
+    }
+
+    &[data-position='end'][data-separator] {
+      border-inline-start: 1px solid var(--colorNeutralBackground3);
+    }
+
+    &[data-position='bottom'][data-separator] {
+      border-block-start: 1px solid var(--colorNeutralBackground3);
+    }
+
+    /* Positioning */
+    &[data-position='bottom'] {
+      width: 100%;
+      height: var(--fui-Drawer--size);
+    }
+
+    /* Animation exit states: native headless has no default legacy motion. */
+    &[data-position]:not([data-open]) {
+      visibility: hidden;
+      width: 0;
+      border: none;
+    }
+
+    &[data-position='bottom']:not([data-open]) {
+      width: 100%;
+      height: 0;
+    }
+  }
+}

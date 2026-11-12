@@ -1,0 +1,26 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-accordion 9.12.5.
+ * Local source: [useAccordionPanelStyles.styles.raw.js](../../../node_modules/@fluentui/react-accordion/lib/components/AccordionPanel/useAccordionPanelStyles.styles.raw.js).
+ * Current visibility contract: [useAccordionPanel.js](../../../node_modules/@fluentui/react-headless-components-preview/lib/components/Accordion/AccordionPanel/useAccordionPanel.js)
+ * and [renderAccordionPanel.js](../../../node_modules/@fluentui/react-headless-components-preview/lib/components/Accordion/AccordionPanel/renderAccordionPanel.js) in headless 0.3.2.
+ * The hook keeps closed panels mounted, requests inert, and sets tabIndex=-1.
+ * React DOM 18.3.1 omits the boolean inert attribute; CSS hides closed panels without a compatibility shim or legacy collapseMotion slot.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot */
+  .AccordionPanel {
+    margin: 0 var(--spacingHorizontalM);
+
+    &:not([data-open]) {
+      display: none;
+    }
+  }
+}

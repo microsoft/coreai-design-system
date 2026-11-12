@@ -1,0 +1,190 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported directly from @fluentui/react-tags 9.9.8.
+ * Local source: [useInteractionTagSecondaryStyles.styles.raw.js](../../../node_modules/@fluentui/react-tags/lib/components/InteractionTagSecondary/useInteractionTagSecondaryStyles.styles.raw.js).
+ * Source: https://unpkg.com/@fluentui/react-tags@9.9.8/lib/components/InteractionTagSecondary/useInteractionTagSecondaryStyles.styles.raw.js
+ * CoreAI source: [Tag.styles.ts](../../react-components/src/components/Tag.styles.ts);
+ * the defaults-gated non-outline border/spacing adjustment is in the separate override module.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ * Native :focus-visible replaces legacy focus attributes. No motion is defined upstream.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .InteractionTagSecondary {
+    /* Reset default button style. */
+    font-family: inherit;
+    padding: 0 5px;
+    appearance: button;
+    text-align: unset;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    border: var(--strokeWidthThin) solid var(--colorTransparentStroke);
+    /* Divider. */
+    border-inline-start-color: var(--colorNeutralStroke1);
+    border-start-start-radius: var(--borderRadiusNone);
+    border-end-start-radius: var(--borderRadiusNone);
+    border-start-end-radius: var(--borderRadiusMedium);
+    border-end-end-radius: var(--borderRadiusMedium);
+    font-size: 20px;
+    background-color: var(--colorNeutralBackground3);
+    color: var(--colorNeutralForeground2);
+
+    &:focus-visible {
+      outline: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+    }
+
+    &[data-shape='circular'] {
+      border-start-end-radius: var(--borderRadiusCircular);
+      border-end-end-radius: var(--borderRadiusCircular);
+    }
+
+    &[data-size='small'] {
+      font-size: 16px;
+      padding-inline: 3px;
+    }
+
+    &[data-size='extra-small'] {
+      font-size: 12px;
+      position: relative;
+
+      @media (forced-colors: none) {
+        &::before,
+        &::after {
+          content: '';
+          position: absolute;
+          height: 2px;
+          inset-inline-start: 0;
+          width: 100%;
+        }
+
+        &::before {
+          bottom: 100%;
+        }
+
+        &::after {
+          top: 100%;
+        }
+      }
+    }
+
+    &:not([data-disabled]) {
+      &:is([data-appearance='filled'], [data-appearance='brand']) {
+        border-top-width: 0;
+        border-bottom-width: 0;
+      }
+
+      &:hover {
+        cursor: pointer;
+        background-color: var(--colorNeutralBackground3Hover);
+        color: var(--colorNeutralForeground2BrandHover);
+      }
+
+      &:active {
+        background-color: var(--colorNeutralBackground3Pressed);
+        color: var(--colorNeutralForeground2BrandPressed);
+      }
+
+      &[data-appearance='outline'] {
+        background-color: var(--colorSubtleBackground);
+        border-color: var(--colorNeutralStroke1);
+
+        &:hover {
+          background-color: var(--colorSubtleBackgroundHover);
+          color: var(--colorNeutralForeground2BrandHover);
+        }
+
+        &:active {
+          background-color: var(--colorSubtleBackgroundPressed);
+          color: var(--colorNeutralForeground2BrandPressed);
+        }
+      }
+
+      &[data-appearance='brand'] {
+        background-color: var(--colorBrandBackground2);
+        color: var(--colorBrandForeground2);
+        border-inline-start-color: var(--colorBrandStroke2);
+
+        &:hover {
+          background-color: var(--colorBrandBackground2Hover);
+          color: var(--colorCompoundBrandForeground1Hover);
+        }
+
+        &:active {
+          background-color: var(--colorBrandBackground2Pressed);
+          color: var(--colorCompoundBrandForeground1Pressed);
+        }
+      }
+
+      &[data-selected] {
+        background: var(--colorBrandBackground);
+        color: var(--colorNeutralForegroundOnBrand);
+        border-color: var(--colorBrandStroke1);
+        /* Divider. */
+        border-inline-start-color: var(--colorNeutralStrokeOnBrand2);
+
+        &:hover {
+          background-color: var(--colorBrandBackgroundHover);
+          color: var(--colorNeutralForegroundOnBrand);
+        }
+
+        &:active {
+          background-color: var(--colorBrandBackgroundPressed);
+          color: var(--colorNeutralForegroundOnBrand);
+        }
+      }
+    }
+
+    &[data-disabled] {
+      cursor: not-allowed;
+      background-color: var(--colorNeutralBackgroundDisabled);
+      color: var(--colorNeutralForegroundDisabled);
+      border-color: var(--colorTransparentStrokeDisabled);
+      border-inline-start-color: var(--colorNeutralStrokeDisabled);
+
+      &[data-appearance='outline'] {
+        background-color: var(--colorSubtleBackground);
+        border-color: var(--colorNeutralStrokeDisabled);
+      }
+    }
+
+    @media (forced-colors: active) {
+      &:not([data-disabled]) {
+        &:is([data-appearance='filled'], [data-appearance='brand']) {
+          border-top-width: var(--strokeWidthThin);
+          border-bottom-width: var(--strokeWidthThin);
+        }
+
+        &[data-appearance]:is(:hover, :active) {
+          background-color: HighlightText;
+        }
+
+        &[data-selected] {
+          forced-color-adjust: none;
+          background-color: Highlight;
+          color: HighlightText;
+
+          &:is(:hover, :active) {
+            background-color: Highlight;
+            color: HighlightText;
+          }
+        }
+      }
+    }
+  }
+
+  .InteractionTagSecondary__glyph {
+    display: inline;
+    line-height: 0;
+
+    @media (forced-colors: active) {
+      forced-color-adjust: auto;
+    }
+  }
+}

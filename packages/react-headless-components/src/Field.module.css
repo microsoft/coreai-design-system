@@ -1,0 +1,119 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-field 9.5.6, useFieldStyles.styles.ts.
+ * Local source: [useFieldStyles.styles.raw.js](../../../node_modules/@fluentui/react-field/lib/components/Field/useFieldStyles.styles.raw.js).
+ * Inherited Label source: @fluentui/react-label 9.4.6,
+ * [useLabelStyles.styles.raw.js](../../../node_modules/@fluentui/react-label/lib/components/Label/useLabelStyles.styles.raw.js).
+ * Label styling is reused through the completed Label's public render adapter.
+ * CoreAI has no Field defaults or style overrides at reference commit 9c7a515;
+ * [index.ts](../../react-components/src/index.ts) re-exports Fluent Field unchanged.
+ * Logical spacing retains Griffel's RTL flipping.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Field {
+    /* Size of the icon in the validation message. */
+    --fui-Field--validation-icon-size: 12px;
+
+    display: grid;
+
+    &[data-orientation='horizontal'] {
+      /* The label takes the entire first column; the last row is slack space
+       * in case the label is taller than the rest of the content. */
+      grid-template-columns: 33% 1fr;
+      grid-template-rows: auto auto auto 1fr;
+
+      /* Without a label, padding replaces its column so auto-flow and alignment survive. */
+      &:not([data-has-label]) {
+        padding-inline-start: 33%;
+        grid-template-columns: 1fr;
+      }
+
+      & > .Field__label {
+        padding-block: var(--spacingVerticalSNudge);
+        margin-inline-end: var(--spacingHorizontalM);
+        grid-row: 1 / -1;
+      }
+
+      &[data-size='small'] > .Field__label {
+        padding-block: var(--spacingVerticalXS);
+      }
+
+      &[data-size='large'] > .Field__label {
+        /* Center the label in the Input's 40px height:
+         * (40px - lineHeightBase400) / 2 = 9px; there is no 9px padding token. */
+        padding-block: 9px;
+      }
+    }
+
+    &[data-orientation='vertical'] > .Field__label {
+      padding-block: var(--spacingVerticalXXS);
+      margin-bottom: var(--spacingVerticalXXS);
+    }
+
+    &[data-orientation='vertical'][data-size='large'] > .Field__label {
+      padding-block: 1px;
+      margin-bottom: var(--spacingVerticalXS);
+    }
+  }
+
+  .Field__label {
+    max-width: max-content;
+    max-height: max-content;
+  }
+
+  .Field__validationMessage,
+  .Field__hint {
+    margin-top: var(--spacingVerticalXXS);
+    color: var(--colorNeutralForeground3);
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase200);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase200);
+  }
+
+  .Field__validationMessage {
+    &[data-validation-state='error'] {
+      color: var(--colorPaletteRedForeground1);
+    }
+
+    &[data-has-icon] {
+      /* A gutter lets multiple lines line up to the right of the icon. */
+      padding-inline-start: calc(
+        var(--fui-Field--validation-icon-size) + var(--spacingHorizontalXS)
+      );
+    }
+  }
+
+  .Field__validationMessageIcon {
+    display: inline-block;
+    font-size: var(--fui-Field--validation-icon-size);
+    /* Negative margin puts the icon in the validation message's gutter. */
+    margin-inline-start: calc(
+      0px - var(--fui-Field--validation-icon-size) - var(--spacingHorizontalXS)
+    );
+    margin-inline-end: var(--spacingHorizontalXS);
+    /* Zero line-height prevents vertical-align from affecting the text's line height. */
+    line-height: 0;
+    /* Shift the inline icon down to align with the text (effectively top padding). */
+    vertical-align: -1px;
+
+    &[data-validation-state='error'] {
+      color: var(--colorPaletteRedForeground1);
+    }
+
+    &[data-validation-state='warning'] {
+      color: var(--colorPaletteDarkOrangeForeground1);
+    }
+
+    &[data-validation-state='success'] {
+      color: var(--colorPaletteGreenForeground1);
+    }
+  }
+}

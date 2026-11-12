@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node", "vite/client"],
+    "paths": {
+      "@coreai-ds/react-components": ["../react-components/src/index.ts"],
+      "@coreai-ds/react-headless-components": ["./src/index.ts"]
+    }
+  },
+  "include": ["src/**/*", "vite.config.ts", "vitest.config.ts"]
+}

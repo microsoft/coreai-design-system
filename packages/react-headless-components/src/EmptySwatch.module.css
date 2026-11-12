@@ -1,0 +1,45 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-swatch-picker 9.6.3, useEmptySwatchStyles.styles.ts.
+ * Local source: [useEmptySwatchStyles.styles.raw.js](../../../node_modules/@fluentui/react-swatch-picker/lib/components/EmptySwatch/useEmptySwatchStyles.styles.raw.js).
+ * The native button retains its own keyboard focus indicator.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .EmptySwatch {
+    background-color: var(--colorTransparentBackground);
+    border: 1px dashed var(--colorNeutralForeground4);
+    width: 28px;
+    height: 28px;
+    border-radius: var(--borderRadiusNone);
+
+    &[data-size='extra-small'] {
+      width: 20px;
+      height: 20px;
+    }
+
+    &[data-size='small'] {
+      width: 24px;
+      height: 24px;
+    }
+
+    &[data-size='large'] {
+      width: 32px;
+      height: 32px;
+    }
+
+    &[data-shape='rounded'] {
+      border-radius: var(--borderRadiusMedium);
+    }
+
+    &[data-shape='circular'] {
+      border-radius: var(--borderRadiusCircular);
+    }
+  }
+}

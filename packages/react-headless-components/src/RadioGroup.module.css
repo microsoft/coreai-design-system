@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-radio 9.6.7, useRadioGroupStyles.styles.ts.
+ * Local source: [useRadioGroupStyles.styles.raw.js](../../../node_modules/@fluentui/react-radio/lib/components/RadioGroup/useRadioGroupStyles.styles.raw.js).
+ * Layout is visual only; native named radio inputs own keyboard navigation and selection.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .RadioGroup {
+    display: flex;
+    align-items: flex-start;
+
+    &[data-layout='vertical'] {
+      flex-direction: column;
+    }
+  }
+}

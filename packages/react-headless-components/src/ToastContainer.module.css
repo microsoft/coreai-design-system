@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-toast 9.8.5, useToastContainerStyles.styles.ts.
+ * Local source: [useToastContainerStyles.styles.raw.js](../../../node_modules/@fluentui/react-toast/lib/components/ToastContainer/useToastContainerStyles.styles.raw.js).
+ * Native :focus-visible replaces the legacy Tabster focus indicator.
+ * The current public Toaster hook creates its own public ToastContainer children,
+ * without slot markers or a container slot. Its public container root is always
+ * a div. A scoped direct-div selector shares this foundation even when callers
+ * override its ARIA role, without replacing children, timers, or controller APIs.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .ToastContainer,
+  .Toaster__containers > div {
+    box-sizing: border-box;
+    margin-top: 16px;
+    pointer-events: all;
+    border-radius: var(--borderRadiusMedium);
+    outline-style: none;
+
+    &:focus-visible {
+      outline: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+    }
+  }
+}

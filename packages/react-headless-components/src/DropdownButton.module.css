@@ -1,0 +1,82 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Inherited Fluent Button baseline: @fluentui/react-button 9.11.1,
+ * [useButtonStyles.styles.raw.js](../../../node_modules/@fluentui/react-button/lib/components/Button/useButtonStyles.styles.raw.js),
+ * reused through [Button.module.css](./Button.module.css).
+ * Inherited Dropdown/Listbox baseline: @fluentui/react-combobox 9.17.7,
+ * [useDropdownStyles.styles.raw.js](../../../node_modules/@fluentui/react-combobox/lib/components/Dropdown/useDropdownStyles.styles.raw.js)
+ * and [useListboxStyles.styles.raw.js](../../../node_modules/@fluentui/react-combobox/lib/components/Listbox/useListboxStyles.styles.raw.js).
+ * Popup provider typography: @fluentui/react-provider 9.22.23,
+ * [useFluentProviderStyles.styles.raw.js](../../../node_modules/@fluentui/react-provider/lib/components/FluentProvider/useFluentProviderStyles.styles.raw.js).
+ * CoreAI provenance: [DropdownButton.tsx](../../react-components/src/components/DropdownButton.tsx) at 1cabc6b.
+ * Popup foreground: [globalStyles.ts](../../react-components/src/theme/globalStyles.ts) at 1cabc6b.
+ * This is CoreAI's Button-chrome-on-Dropdown-root surface, not a second selection implementation.
+ * Native :focus-visible on the actual trigger replaces the legacy focus attribute.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .DropdownButton {
+    composes: Button from './Button.module.css';
+  }
+}
+
+@layer coreai-overrides {
+  /* Resolved-state specificity protects derived resets from later composed Button sheets. */
+  .DropdownButton.DropdownButton[data-size] {
+    min-width: unset;
+    padding: 0;
+    overflow: hidden;
+
+    &::before,
+    &::after {
+      content: unset;
+    }
+
+    &:has(> :global(.fui-Dropdown__button):focus-visible) {
+      outline: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+      outline-offset: -2px;
+      box-shadow: 0 0 0 var(--strokeWidthThin) var(--colorStrokeFocus2) inset;
+      z-index: 1;
+    }
+
+    &[data-appearance='secondary'] {
+      background-color: var(--colorNeutralBackground1);
+      border: var(--strokeWidthThin) solid var(--colorNeutralStroke1);
+
+      &[data-disabled] {
+        background-color: var(--colorNeutralBackgroundDisabled);
+        border-color: var(--colorNeutralStrokeDisabled);
+      }
+    }
+
+    &[data-appearance='outline'] {
+      background-color: transparent;
+      border: var(--strokeWidthThin) solid var(--colorNeutralStroke1);
+
+      &[data-disabled] {
+        border-color: var(--colorNeutralStrokeDisabled);
+      }
+    }
+
+    &[data-disabled][data-appearance='primary'] {
+      background-color: var(--colorNeutralBackgroundDisabled);
+      border-color: transparent;
+    }
+
+    &[data-disabled]:is([data-appearance='subtle'], [data-appearance='transparent']) {
+      background-color: var(--colorTransparentBackground);
+      border-color: transparent;
+    }
+
+    &[data-appearance='transparent']:is(:hover, :active) * {
+      color: inherit;
+    }
+  }
+}

@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported directly from @fluentui/react-tag-picker 9.10.5.
+ * Local source: [useTagPickerOptionStyles.styles.raw.js](../../../node_modules/@fluentui/react-tag-picker/lib/components/TagPickerOption/useTagPickerOptionStyles.styles.raw.js).
+ * Inherited source: [useOptionStyles.styles.raw.js](../../../node_modules/@fluentui/react-combobox/lib/components/Option/useOptionStyles.styles.raw.js)
+ * in @fluentui/react-combobox 9.17.7, reused from the completed Option CSS.
+ * CoreAI has no TagPickerOption defaults or style overrides. The public 0.3.2 renderer has no
+ * checkIcon slot; its current disabled/selected/active-descendant contract remains authoritative.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+.TagPickerOption {
+  composes: Option from './Option.module.css';
+}
+
+@layer fluent-components {
+  .TagPickerOption[data-has-secondary-content] {
+    /* Resolved-state specificity protects this grid from later composed Option sheets. */
+    display: grid;
+    grid-template-columns: auto 1fr;
+  }
+
+  .TagPickerOption__secondaryContent {
+    grid-column-start: 2;
+    grid-row-start: 2;
+    font-size: var(--fontSizeBase200);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase200);
+  }
+
+  .TagPickerOption__media {
+    grid-row-start: span 2;
+  }
+}

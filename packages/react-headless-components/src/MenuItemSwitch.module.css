@@ -1,0 +1,105 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-menu 9.25.8, useMenuItemSwitchStyles.styles.ts.
+ * Local source: [useMenuItemSwitchStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuItemSwitch/useMenuItemSwitchStyles.styles.raw.js).
+ * Inherited foundation: [useMenuItemStyles.styles.raw.js](../../../node_modules/@fluentui/react-menu/lib/components/MenuItem/useMenuItemStyles.styles.raw.js),
+ * shared through MenuVisualStyles.ts and MenuItem.module.css.
+ * This source does not delegate to Switch's style hook; its independent span track/hover
+ * contract is not replaced with the completed Switch's native-input foundation.
+ * Default CircleFilled: @fluentui/react-icons 2.0.343,
+ * [circle.js](../../../node_modules/@fluentui/react-icons/lib/atoms/headless-svg/circle.js).
+ * Glyph display/forced-color dependencies:
+ * [useIconStyles.styles.js](../../../node_modules/@fluentui/react-icons/lib/utils/useIconStyles.styles.js),
+ * [createFluentIcon.styles.js](../../../node_modules/@fluentui/react-icons/lib/utils/createFluentIcon.styles.js).
+ * There are no CoreAI MenuItemSwitch overrides or defaults.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Thumb and track sizes used by the component: 2px clearance, 20px x 40px track. */
+  .MenuItemSwitch__switchIndicator {
+    border-radius: var(--borderRadiusCircular);
+    border: var(--strokeWidthThin) solid var(--colorNeutralStrokeAccessible);
+    line-height: 0;
+    box-sizing: border-box;
+    fill: currentColor;
+    flex-shrink: 0;
+    font-size: 18px;
+    height: 20px;
+    width: 40px;
+    margin-inline-end: var(--spacingHorizontalXS);
+    transition-duration: var(--durationNormal);
+    transition-timing-function: var(--curveEasyEase);
+    transition-property: background, border, color;
+    color: var(--colorNeutralStrokeAccessible);
+
+    &:hover {
+      color: var(--colorNeutralStrokeAccessibleHover);
+      border-color: var(--colorNeutralStrokeAccessibleHover);
+    }
+
+    &:hover:active {
+      color: var(--colorNeutralStrokeAccessiblePressed);
+      border-color: var(--colorNeutralStrokeAccessiblePressed);
+    }
+
+    @media screen and (prefers-reduced-motion: reduce) {
+      transition-duration: 0.01ms;
+    }
+  }
+
+  .MenuItemSwitch__thumb {
+    display: inline;
+    line-height: 0;
+    transition-duration: var(--durationNormal);
+    transition-timing-function: var(--curveEasyEase);
+    transition-property: transform;
+
+    @media screen and (prefers-reduced-motion: reduce) {
+      transition-duration: 0.01ms;
+    }
+
+    @media (forced-colors: active) {
+      forced-color-adjust: auto;
+    }
+  }
+
+  [data-menu-item][data-checked] > .MenuItemSwitch__switchIndicator {
+    background-color: var(--colorCompoundBrandBackground);
+    color: var(--colorNeutralForegroundInverted);
+    border-color: var(--colorTransparentStroke);
+
+    & > .MenuItemSwitch__thumb,
+    & > :global(.fui-MenuItemSwitch__switchIndicator__circleFilled) {
+      transform: translateX(20px);
+    }
+
+    &:dir(rtl) {
+      & > .MenuItemSwitch__thumb,
+      & > :global(.fui-MenuItemSwitch__switchIndicator__circleFilled) {
+        transform: translateX(-20px);
+      }
+    }
+
+    &:hover {
+      color: var(--colorNeutralForegroundInverted);
+      background-color: var(--colorCompoundBrandBackgroundHover);
+      border-color: var(--colorTransparentStrokeInteractive);
+    }
+
+    &:hover:active {
+      color: var(--colorNeutralForegroundInverted);
+      background-color: var(--colorCompoundBrandBackgroundPressed);
+      border-color: var(--colorTransparentStrokeInteractive);
+    }
+  }
+
+  [data-menu-item][data-multiline] > .MenuItemSwitch__switchIndicator {
+    align-self: center;
+  }
+}

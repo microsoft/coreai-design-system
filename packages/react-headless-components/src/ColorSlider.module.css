@@ -1,0 +1,171 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-color-picker 9.3.3.
+ * Local source: [useColorSliderStyles.styles.raw.js](../../../node_modules/@fluentui/react-color-picker/lib/components/ColorSlider/useColorSliderStyles.styles.raw.js).
+ * The public hook owns the resolved --fui-Slider-* variables and data-channel/orientation.
+ * Logical horizontal thumb placement replaces Griffel's RTL mirroring.
+ * Native vertical range direction stays rtl in both text directions, keeping max at
+ * the top instead of mirroring the input independently of its rail and thumb.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot */
+  .ColorSlider {
+    --fui-Slider__thumb--size: 20px;
+    --fui-Slider__rail--size: 20px;
+    --fui-ColorSlider__thumb--progress: var(--fui-Slider--progress);
+
+    position: relative;
+    display: inline-grid;
+    touch-action: none;
+    align-items: center;
+    justify-items: center;
+    min-height: 32px;
+
+    &[data-orientation='horizontal'] {
+      min-width: 200px;
+      /* 3x3 grid: rail and thumb in [2,2], input stretching across all cells. */
+      grid-template-rows: 1fr var(--fui-Slider__thumb--size) 1fr;
+      grid-template-columns: 1fr 100% 1fr;
+    }
+
+    &[data-orientation='vertical'] {
+      min-height: 280px;
+      /* 3x3 grid: rail and thumb in [2,2], input stretching across all cells. */
+      grid-template-rows: 1fr 100% 1fr;
+      grid-template-columns: 1fr var(--fui-Slider__thumb--size) 1fr;
+    }
+  }
+
+  /* Styles for the rail slot */
+  .ColorSlider__rail {
+    pointer-events: none;
+    grid-area: 2 / 2 / 2 / 2;
+    position: relative;
+    forced-color-adjust: none;
+    outline: 1px solid var(--colorTransparentStroke);
+    border-radius: var(--borderRadiusMedium);
+
+    &::before {
+      content: '';
+      position: absolute;
+    }
+
+    .ColorSlider[data-shape='square'] > & {
+      border-radius: var(--borderRadiusNone);
+    }
+
+    .ColorSlider[data-channel='hue'] > & {
+      background-image: linear-gradient(
+        var(--fui-Slider--direction),
+        red,
+        fuchsia,
+        blue,
+        aqua,
+        lime,
+        yellow,
+        red
+      );
+    }
+
+    .ColorSlider[data-channel='saturation'] > &,
+    .ColorSlider[data-channel='value'] > & {
+      background-image: linear-gradient(
+        var(--fui-Slider--direction),
+        var(--fui-Slider__rail--color),
+        var(--fui-Slider__rail--color-low)
+      );
+    }
+
+    .ColorSlider[data-orientation='horizontal'] > & {
+      width: 100%;
+      height: var(--fui-Slider__rail--size);
+
+      &::before {
+        inset-inline: -1px;
+        height: var(--fui-Slider__rail--size);
+      }
+    }
+
+    .ColorSlider[data-orientation='vertical'] > & {
+      width: var(--fui-Slider__rail--size);
+      height: 100%;
+
+      &::before {
+        width: var(--fui-Slider__rail--size);
+        inset-block: -1px 1px;
+      }
+    }
+  }
+
+  /* Styles for the thumb slot */
+  .ColorSlider__thumb {
+    grid-area: 2 / 2 / 2 / 2;
+    position: absolute;
+    width: var(--fui-Slider__thumb--size);
+    height: var(--fui-Slider__thumb--size);
+    pointer-events: none;
+    outline-style: none;
+    forced-color-adjust: none;
+    border-radius: var(--borderRadiusCircular);
+    border: var(--strokeWidthThin) solid var(--colorNeutralForeground4);
+    box-shadow: var(--shadow4);
+    background-color: var(--fui-Slider__thumb--color);
+
+    &::before {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--borderRadiusCircular);
+      box-sizing: border-box;
+      content: '';
+      border: var(--strokeWidthThick) solid var(--colorNeutralBackground1);
+    }
+
+    .ColorSlider[data-orientation='horizontal'] > & {
+      transform: translateX(-50%);
+      inset-inline-start: var(--fui-ColorSlider__thumb--progress);
+
+      &:dir(rtl) {
+        transform: translateX(50%);
+      }
+    }
+
+    .ColorSlider[data-orientation='vertical'] > & {
+      transform: translateY(50%);
+      inset-block-end: var(--fui-ColorSlider__thumb--progress);
+    }
+  }
+
+  /* Styles for the input slot */
+  .ColorSlider__input {
+    cursor: pointer;
+    opacity: 0;
+    grid-area: 1 / 1 / -1 / -1;
+    padding: 0;
+    margin: 0;
+
+    &:focus-visible ~ .ColorSlider__thumb {
+      border: 2px solid var(--colorStrokeFocus2);
+      outline: var(--strokeWidthThick) solid var(--colorTransparentStroke);
+      border-radius: var(--borderRadiusCircular);
+    }
+
+    .ColorSlider[data-orientation='horizontal'] > & {
+      height: var(--fui-Slider__thumb--size);
+      width: 100%;
+    }
+
+    .ColorSlider[data-orientation='vertical'] > & {
+      height: 100%;
+      width: var(--fui-Slider__thumb--size);
+      writing-mode: vertical-lr;
+      direction: rtl;
+    }
+  }
+}

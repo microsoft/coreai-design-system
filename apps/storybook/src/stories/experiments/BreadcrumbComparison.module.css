@@ -1,0 +1,84 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten comparison layout, supplied glyphs, and unlayered consumer examples; not a Fluent port.
+ */
+
+.examples {
+  display: grid;
+  gap: var(--spacingVerticalM);
+  overflow-x: auto;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.6fr) repeat(2, minmax(280px, 1fr));
+  align-items: center;
+  gap: var(--spacingHorizontalL);
+  min-height: 48px;
+}
+
+.row > div {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.calendarGlyph {
+  display: inline-flex;
+
+  :global(.fui-Icon-filled) {
+    display: none;
+  }
+}
+
+.consumerRoot {
+  padding: 7px;
+  border: 1px solid rgb(80, 90, 130);
+}
+
+.consumerList {
+  column-gap: 9px;
+}
+
+.consumerItem {
+  color: rgb(70, 40, 120);
+}
+
+.consumerButton {
+  min-width: 110px;
+  height: 38px;
+  padding: 9px;
+  border-radius: 3px;
+  color: rgb(30, 70, 120);
+}
+
+.consumerIcon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  margin-inline-end: 9px;
+}
+
+.consumerDivider {
+  font-size: 22px;
+  color: rgb(100, 40, 80);
+}
+
+.report {
+  display: block;
+  max-height: 32rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-family: var(--fontFamilyMonospace);
+  margin-block: var(--spacingVerticalL);
+}
+
+.flow {
+  display: grid;
+  justify-items: start;
+  gap: var(--spacingVerticalM);
+}

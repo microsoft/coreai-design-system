@@ -1,0 +1,76 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten comparison layout and consumer-priority fixtures, not a Fluent style port.
+ */
+
+.examples {
+  display: grid;
+  gap: 12px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) repeat(2, minmax(200px, 2fr));
+  align-items: center;
+  gap: 20px;
+}
+
+.report {
+  display: block;
+  white-space: pre-wrap;
+  margin-block: 12px;
+}
+
+.flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.consumerRoot {
+  min-width: 120px;
+  border-radius: 3px;
+}
+
+.consumerIcon {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+}
+
+/* Model the existing bundled-icon contract with the public, style-free glyph entries. */
+.bundledIcon {
+  display: contents;
+}
+
+.filledGlyph {
+  display: none;
+}
+
+.regularGlyph {
+  display: inline;
+}
+
+.menuSurface {
+  padding: 8px;
+  border: 1px solid var(--colorNeutralStroke1);
+  border-radius: var(--borderRadiusMedium);
+  background: var(--colorNeutralBackground1);
+  color: var(--colorNeutralForeground1);
+  box-shadow: var(--shadow8);
+}
+
+.menuItem {
+  display: block;
+  padding: 8px;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--colorStrokeFocus2);
+  }
+}

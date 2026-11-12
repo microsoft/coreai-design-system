@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-toast 9.8.5, useToastBodyStyles.styles.ts.
+ * Local source: [useToastBodyStyles.styles.raw.js](../../../node_modules/@fluentui/react-toast/lib/components/ToastBody/useToastBodyStyles.styles.raw.js).
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .ToastBody {
+    grid-column: 2 / 3;
+    padding-top: 6px;
+    font-size: var(--fontSizeBase300);
+    line-height: var(--lineHeightBase300);
+    font-weight: var(--fontWeightRegular);
+    color: var(--colorNeutralForeground1);
+    word-break: break-word;
+
+    &[data-appearance='inverted'] {
+      color: var(--colorNeutralForegroundInverted2);
+    }
+  }
+
+  .ToastBody__subtitle {
+    padding-top: 4px;
+    grid-column: 2 / 3;
+    font-size: var(--fontSizeBase200);
+    line-height: var(--fontSizeBase200);
+    font-weight: var(--fontWeightRegular);
+    color: var(--colorNeutralForeground2);
+
+    &[data-appearance='inverted'] {
+      color: var(--colorNeutralForegroundInverted2);
+    }
+  }
+}

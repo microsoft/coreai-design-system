@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI source: [globalStyles.ts](../../react-components/src/theme/globalStyles.ts).
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .CoreAIFluentProvider {
+    color: var(--colorNeutralForeground2); /* not 1 - that is for headings */
+    scrollbar-width: thin;
+    scrollbar-color: var(--colorNeutralStroke1) transparent;
+
+    /* Apply to descendants so 1em uses each element's own font size. */
+    & :where(*) {
+      /* Font-size threshold: at this size and above, tracking stays at 0.01em. */
+      --fui-tracking-threshold: 18px;
+      /* Add 0.007em of tracking per pixel below the threshold. */
+      --fui-tracking-ramp: 0.007;
+
+      /* Divide the size difference by 1px, scale it, and convert back to em.
+       * max() enforces a 0.01em minimum; smaller fonts have no upper limit.
+       * Approximate: 10px 0.066em, 12px 0.052em, 14px 0.038em, 16px 0.024em, 18px+ 0.01em.
+       */
+      letter-spacing: max(
+        0.01em,
+        calc((0.01 + (var(--fui-tracking-threshold) - 1em) / 1px * var(--fui-tracking-ramp)) * 1em)
+      );
+    }
+
+    & * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--colorNeutralStroke1) transparent;
+    }
+  }
+}

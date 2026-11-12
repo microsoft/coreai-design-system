@@ -1,0 +1,38 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported directly from @fluentui/react-tag-picker 9.10.5.
+ * Local source: [useTagPickerGroupStyles.styles.raw.js](../../../node_modules/@fluentui/react-tag-picker/lib/components/TagPickerGroup/useTagPickerGroupStyles.styles.raw.js).
+ * Inherited source: [useTagGroupStyles.styles.raw.js](../../../node_modules/@fluentui/react-tags/lib/components/TagGroup/useTagGroupStyles.styles.raw.js)
+ * in @fluentui/react-tags 9.9.8, reused from the completed TagGroup CSS.
+ * CoreAI has no TagPickerGroup defaults or style overrides. Tag visual inheritance reuses
+ * the completed TagGroupVisualContext; behavior stays in the public headless 0.3.2 context.
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+.TagPickerGroup {
+  composes: TagGroup from './TagGroup.module.css';
+}
+
+@layer fluent-components {
+  .TagPickerGroup[data-picker-size] {
+    box-sizing: border-box;
+    cursor: text;
+    flex-wrap: wrap;
+    /* TagGroup's column-gap survives the upstream TagPicker gap shorthand. */
+    row-gap: var(--spacingHorizontalXS);
+    padding-block: var(--spacingVerticalSNudge);
+    padding-inline: 0;
+
+    &[data-picker-size='large'],
+    &[data-picker-size='extra-large'] {
+      row-gap: var(--spacingHorizontalSNudge);
+      padding-block: var(--spacingVerticalS);
+    }
+  }
+}

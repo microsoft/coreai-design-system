@@ -1,0 +1,240 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-radio 9.6.7, useRadioStyles.styles.ts.
+ * Local source: [useRadioStyles.styles.raw.js](../../../node_modules/@fluentui/react-radio/lib/components/Radio/useRadioStyles.styles.raw.js).
+ * Label's foundation is reused: @fluentui/react-label 9.4.6
+ * [useLabelStyles.styles.raw.js](../../../node_modules/@fluentui/react-label/lib/components/Label/useLabelStyles.styles.raw.js)
+ * via [Label.module.css](./Label.module.css), not duplicated.
+ * Focus reference: @fluentui/react-tabster 9.26.19
+ * [createFocusOutlineStyle.js](../../../node_modules/@fluentui/react-tabster/lib/focus/createFocusOutlineStyle.js).
+ * Native :focus-visible replaces legacy focus attributes; logical spacing preserves RTL.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Radio {
+    display: inline-flex;
+    position: relative;
+
+    &:focus,
+    &:focus-visible {
+      outline-style: none;
+    }
+
+    /* The element with the focus outline needs position: relative so that the
+     * pseudo-element can be properly positioned.
+     */
+    &:focus-visible,
+    &:has(:focus-visible) {
+      border-color: transparent;
+
+      &::after {
+        content: '';
+        position: absolute;
+        pointer-events: none;
+        z-index: 1;
+        /* FIXME: tokens.strokeWidthThick causes some weird bugs. */
+        border: 2px solid var(--colorStrokeFocus2);
+        border-radius: var(--borderRadiusMedium);
+        inset: -2px;
+      }
+
+      @media (forced-colors: active) {
+        &::after {
+          border-color: Highlight;
+        }
+      }
+    }
+
+    &[data-label-position='below'] {
+      flex-direction: column;
+      align-items: center;
+
+      .Radio__input {
+        width: 100%;
+        height: calc(16px + 2 * var(--spacingVerticalS));
+      }
+
+      .Radio__label {
+        padding-block-start: var(--spacingVerticalXS);
+        text-align: center;
+      }
+    }
+
+    &[data-label-position='after'] .Radio__label {
+      padding-inline-start: var(--spacingHorizontalXS);
+      /* Use a (negative) margin to account for the difference between the indicator's height
+       * and the label's line height. This prevents the label from expanding the height of
+       * the Radio, but preserves line height if the label wraps.
+       */
+      margin-block: calc((16px - var(--lineHeightBase300)) / 2);
+    }
+
+    /* If the indicator has no children, use the ::after pseudo-element for the checked state. */
+    &:not([data-custom-indicator]) .Radio__input:checked ~ .Radio__indicator::after {
+      content: '';
+    }
+
+    /* If the indicator has a child, hide it until the radio is checked. */
+    &[data-custom-indicator] .Radio__input:not(:checked) ~ .Radio__indicator > * {
+      opacity: 0;
+    }
+  }
+
+  .Radio__input {
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0;
+    /* The indicator size is used by the indicator and label styles. */
+    width: calc(16px + 2 * var(--spacingHorizontalS));
+    height: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    opacity: 0;
+
+    &:enabled {
+      cursor: pointer;
+
+      & ~ .Radio__label {
+        cursor: pointer;
+      }
+    }
+
+    /* Colors for the unchecked state */
+    &:enabled:not(:checked) {
+      & ~ .Radio__label {
+        color: var(--colorNeutralForeground3);
+      }
+
+      & ~ .Radio__indicator {
+        border-color: var(--colorNeutralStrokeAccessible);
+
+        @media (forced-colors: active) {
+          border-color: ButtonBorder;
+        }
+      }
+
+      &:hover {
+        & ~ .Radio__label {
+          color: var(--colorNeutralForeground2);
+        }
+
+        & ~ .Radio__indicator {
+          border-color: var(--colorNeutralStrokeAccessibleHover);
+        }
+      }
+
+      &:hover:active {
+        & ~ .Radio__label {
+          color: var(--colorNeutralForeground1);
+        }
+
+        & ~ .Radio__indicator {
+          border-color: var(--colorNeutralStrokeAccessiblePressed);
+        }
+      }
+    }
+
+    /* Colors for the checked state */
+    &:enabled:checked {
+      & ~ .Radio__label {
+        color: var(--colorNeutralForeground1);
+      }
+
+      & ~ .Radio__indicator {
+        border-color: var(--colorCompoundBrandStroke);
+        color: var(--colorCompoundBrandForeground1);
+
+        @media (forced-colors: active) {
+          border-color: Highlight;
+          color: Highlight;
+
+          &::after {
+            background-color: Highlight;
+          }
+        }
+      }
+
+      &:hover {
+        & ~ .Radio__indicator {
+          border-color: var(--colorCompoundBrandStrokeHover);
+          color: var(--colorCompoundBrandForeground1Hover);
+        }
+      }
+
+      &:hover:active {
+        & ~ .Radio__indicator {
+          border-color: var(--colorCompoundBrandStrokePressed);
+          color: var(--colorCompoundBrandForeground1Pressed);
+        }
+      }
+    }
+
+    /* Colors for the disabled state */
+    &:disabled {
+      & ~ .Radio__label {
+        color: var(--colorNeutralForegroundDisabled);
+        cursor: default;
+
+        @media (forced-colors: active) {
+          color: GrayText;
+        }
+      }
+
+      & ~ .Radio__indicator {
+        border-color: var(--colorNeutralStrokeDisabled);
+        color: var(--colorNeutralForegroundDisabled);
+
+        @media (forced-colors: active) {
+          border-color: GrayText;
+          color: GrayText;
+
+          &::after {
+            background-color: GrayText;
+          }
+        }
+      }
+    }
+  }
+
+  .Radio__indicator {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    font-size: 12px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: var(--strokeWidthThin) solid;
+    border-radius: var(--borderRadiusCircular);
+    margin: var(--spacingVerticalS) var(--spacingHorizontalS);
+    fill: currentColor;
+    pointer-events: none;
+
+    &::after {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: var(--borderRadiusCircular);
+      /* Use a transform to avoid pixel rounding errors at 125% DPI.
+       * https://github.com/microsoft/fluentui/issues/30025
+       */
+      transform: scale(0.625);
+      background-color: currentColor;
+    }
+  }
+
+  /* Label supplies its own visual foundation; Radio adds only its layout. */
+  .Radio > .Radio__label {
+    align-self: center;
+    padding: var(--spacingVerticalS) var(--spacingHorizontalS);
+  }
+}

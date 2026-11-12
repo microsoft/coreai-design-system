@@ -1,0 +1,219 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Fluent baseline: @fluentui/react-divider 9.7.6, useDividerStyles.styles.ts.
+ * Local source: [useDividerStyles.styles.raw.js](../../../node_modules/@fluentui/react-divider/lib/components/Divider/useDividerStyles.styles.raw.js).
+ * Used by the Fluent-compatible DividerLabeled export, not CoreAI's contentless hr.
+ * CoreAI differences are separately attributed in Divider.overrides.module.css.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Divider {
+    --fui-divider-content-spacing: 12px;
+    --fui-divider-inset-spacing: 12px;
+    --fui-divider-start-end-length: 8px;
+
+    /* Base styles */
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    position: relative;
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase200);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase200);
+    text-align: center;
+
+    &::before,
+    &::after {
+      box-sizing: border-box;
+      display: flex;
+      flex-grow: 1;
+    }
+
+    /* Alignment variations */
+    &[data-align-content='start']::after,
+    &[data-align-content='center']::before,
+    &[data-align-content='center']::after,
+    &[data-align-content='end']::before {
+      content: '';
+    }
+
+    /* Appearance variations */
+    &[data-appearance='brand'] {
+      color: var(--colorBrandForeground1);
+
+      &::before,
+      &::after {
+        border-color: var(--colorBrandStroke1);
+      }
+    }
+
+    &[data-appearance='default'] {
+      color: var(--colorNeutralForeground2);
+
+      &::before,
+      &::after {
+        border-color: var(--colorNeutralStroke2);
+      }
+    }
+
+    &[data-appearance='subtle'] {
+      color: var(--colorNeutralForeground3);
+
+      &::before,
+      &::after {
+        border-color: var(--colorNeutralStroke3);
+      }
+    }
+
+    &[data-appearance='strong'] {
+      color: var(--colorNeutralForeground1);
+
+      &::before,
+      &::after {
+        border-color: var(--colorNeutralStroke1);
+      }
+    }
+
+    &[data-orientation='horizontal'] {
+      /* Base styles */
+      width: 100%;
+
+      &::before,
+      &::after {
+        border-top-style: solid;
+        border-top-width: var(--strokeWidthThin);
+        min-width: var(--fui-divider-start-end-length);
+      }
+
+      /* Inset styles */
+      &[data-inset] {
+        padding-inline: var(--fui-divider-inset-spacing);
+      }
+
+      /* Alignment variations */
+      &[data-align-content='start'] {
+        text-align: start;
+
+        &::before {
+          content: '';
+          margin-inline-end: var(--fui-divider-content-spacing);
+          max-width: var(--fui-divider-start-end-length);
+        }
+
+        &::after {
+          margin-inline-start: var(--fui-divider-content-spacing);
+        }
+      }
+
+      &[data-align-content='center'] {
+        text-align: center;
+
+        &::before {
+          margin-inline-end: var(--fui-divider-content-spacing);
+        }
+
+        &::after {
+          margin-inline-start: var(--fui-divider-content-spacing);
+        }
+      }
+
+      &[data-align-content='end'] {
+        text-align: end;
+
+        &::before {
+          margin-inline-end: var(--fui-divider-content-spacing);
+        }
+
+        &::after {
+          content: '';
+          margin-inline-start: var(--fui-divider-content-spacing);
+          max-width: var(--fui-divider-start-end-length);
+        }
+      }
+    }
+
+    &[data-orientation='vertical'] {
+      /* Base styles */
+      flex-direction: column;
+      min-height: 20px;
+
+      &::before,
+      &::after {
+        border-inline-end-style: solid;
+        border-inline-end-width: var(--strokeWidthThin);
+        min-height: var(--fui-divider-start-end-length);
+      }
+
+      /* Inset styles */
+      &[data-inset] {
+        margin-block: var(--fui-divider-inset-spacing);
+      }
+
+      /* With children styles */
+      &[data-has-content] {
+        min-height: 84px;
+      }
+
+      /* Alignment variations */
+      &[data-align-content='start'] {
+        &::before {
+          content: '';
+          margin-block-end: var(--fui-divider-content-spacing);
+          max-height: var(--fui-divider-start-end-length);
+        }
+
+        &::after {
+          margin-block-start: var(--fui-divider-content-spacing);
+        }
+      }
+
+      &[data-align-content='center'] {
+        &::before {
+          margin-block-end: var(--fui-divider-content-spacing);
+        }
+
+        &::after {
+          margin-block-start: var(--fui-divider-content-spacing);
+        }
+      }
+
+      &[data-align-content='end'] {
+        &::before {
+          margin-block-end: var(--fui-divider-content-spacing);
+        }
+
+        &::after {
+          content: '';
+          margin-block-start: var(--fui-divider-content-spacing);
+          max-height: var(--fui-divider-start-end-length);
+        }
+      }
+    }
+
+    /* Childless styles apply last, as in the original style-selection hook. */
+    &[data-orientation]:not([data-has-content]) {
+      &::before {
+        margin-block-end: 0;
+        margin-inline-end: 0;
+      }
+
+      &::after {
+        margin-inline-start: 0;
+        margin-block-start: 0;
+      }
+    }
+  }
+
+  /* Fluent gives this slot a marker, but no intrinsic style declarations. */
+  .Divider__wrapper {
+  }
+}
