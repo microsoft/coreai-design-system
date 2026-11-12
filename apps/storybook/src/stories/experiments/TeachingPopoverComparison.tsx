@@ -397,7 +397,7 @@ export function TeachingPopoverNativeFlow() {
       <button type="button">Before teaching content</button>
       <TeachingPopover
         open={open}
-        trapFocus
+        inertTrapFocus
         positioning={{ position: 'below', offset: 12 }}
         onOpenChange={(event, data) => {
           const type = data.type ?? event.type;

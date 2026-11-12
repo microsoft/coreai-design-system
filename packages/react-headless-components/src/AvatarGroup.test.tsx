@@ -443,7 +443,7 @@ function NativeFixture({
   autoFocus = false,
   disabled = false,
   ...props
-}: Pick<AvatarGroupPopoverProps, 'defaultOpen' | 'open' | 'onOpenChange' | 'trapFocus'> & {
+}: Pick<AvatarGroupPopoverProps, 'defaultOpen' | 'open' | 'onOpenChange' | 'inertTrapFocus'> & {
   raw?: boolean;
   autoFocus?: boolean;
   disabled?: boolean;
@@ -560,7 +560,7 @@ test('native overflow and content buttons do not submit their owner form, while 
 
 test('native modal overflow focuses its first action, prevents outside focus and restores the trigger', async () => {
   const changes = vi.fn<NonNullable<AvatarGroupPopoverProps['onOpenChange']>>();
-  const screen = await renderCoreAIComponent(<NativeFixture trapFocus onOpenChange={changes} />);
+  const screen = await renderCoreAIComponent(<NativeFixture inertTrapFocus onOpenChange={changes} />);
   const trigger = screen.getByRole('button', { name: 'More people' });
   const outside = screen.getByRole('button', { name: 'After people' }).element();
   await userEvent.click(trigger);
@@ -878,8 +878,8 @@ test('the public current item/popover contract stays assignable without private 
     Pick<RawAvatarGroupItemProps, 'name' | 'active' | 'activeAppearance'>
   >();
   expectTypeOf<
-    Pick<AvatarGroupPopoverProps, 'trapFocus' | 'onOpenChange' | 'positioning'>
+    Pick<AvatarGroupPopoverProps, 'inertTrapFocus' | 'onOpenChange' | 'positioning'>
   >().toEqualTypeOf<
-    Pick<RawAvatarGroupPopoverProps, 'trapFocus' | 'onOpenChange' | 'positioning'>
+    Pick<RawAvatarGroupPopoverProps, 'inertTrapFocus' | 'onOpenChange' | 'positioning'>
   >();
 });

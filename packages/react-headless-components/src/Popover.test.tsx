@@ -234,7 +234,6 @@ test('preserves the pinned public native surface, refs, context helpers, and beh
       keyof PopoverProps,
       | 'inline'
       | 'mountNode'
-      | 'inertTrapFocus'
       | 'legacyTrapFocus'
       | 'surfaceMotion'
       | 'closeOnScroll'
@@ -427,10 +426,10 @@ test('uncontrolled click/toggle state, ids, ARIA, and callback event identity re
   const surface = screen.getByRole('group', { name: 'Native popover' });
   await expect.element(surface).toBeVisible();
   await expect.element(trigger).toHaveAttribute('aria-expanded', 'true');
-  await expect.element(trigger).toHaveAttribute('aria-haspopup', 'true');
+  await expect.element(trigger).not.toHaveAttribute('aria-haspopup');
   await expect.element(trigger).toHaveAttribute('aria-details', 'native-details');
+  await expect.element(trigger).toHaveAttribute('aria-controls', 'native-details');
   await expect.element(surface).toHaveAttribute('id', 'native-details');
-  await expect.element(trigger).not.toHaveAttribute('aria-controls');
   await expect.element(surface).not.toHaveAttribute('aria-modal');
   expect(surface.element().matches(':popover-open')).toBe(true);
   expect(
@@ -578,9 +577,9 @@ test('controlled owner state follows trigger, context close, native Escape, and 
   ]);
 });
 
-test('trapFocus uses showModal, native inertness, transparent backdrop, and spec focus restoration', async () => {
+test('inertTrapFocus uses showModal, native inertness, transparent backdrop, and spec focus restoration', async () => {
   const changes = vi.fn<NonNullable<PopoverProps['onOpenChange']>>();
-  const screen = await render(<NativeFixture trapFocus onOpenChange={changes} />);
+  const screen = await render(<NativeFixture inertTrapFocus onOpenChange={changes} />);
   const trigger = screen.getByRole('button', { name: 'Native popover trigger' });
   const outside = requireHTMLElement(
     screen.getByRole('button', { name: 'Outside native popover' }).element(),
@@ -701,7 +700,7 @@ test('hover opens across the trigger/surface boundary and leaves through the cur
   );
 });
 
-// Pinned 0.3.2 waits for pointerup after contextmenu. Windows Chromium emits
+// 0.4.1 still waits for pointerup after contextmenu. Windows Chromium emits
 // pointerup first; the controlled native context-menu case below is safe usage.
 // This Browser Mode project runs Chromium. Only Windows uses expected-failure
 // semantics; other platforms must pass the same first-right-click assertion.

@@ -297,7 +297,7 @@ test('all 13 public member props and current ref/context contracts match the ins
   expect(useMenuSplitGroupContextValues).toBe(primitive.useMenuSplitGroupContextValues);
 });
 
-test('cold first-open and reopening use native autofocus, CSS anchors, closed-state hiding and Escape restoration', async () => {
+test('cold first-open and reopening focus the first item on show, use CSS anchors, closed-state hiding and Escape restoration', async () => {
   const changes = vi.fn<NonNullable<MenuProps['onOpenChange']>>();
   const screen = await render(
     <CoreAIFluentProvider>
@@ -315,7 +315,8 @@ test('cold first-open and reopening use native autofocus, CSS anchors, closed-st
     const first = screen.getByRole('menuitem', { name: 'New file', exact: true });
     await expect.element(first).toHaveFocus();
     await expect.poll(() => html(first).tabIndex).toBe(0);
-    expect(html(first).hasAttribute('autofocus')).toBe(true);
+    // 0.4.1 focuses the first enabled item when the popover is shown instead of setting autofocus.
+    expect(html(first).hasAttribute('autofocus')).toBe(false);
     expect(html(first).hasAttribute('focusgroupstart')).toBe(true);
     await expect.element(screen.getByRole('menu')).toHaveAttribute('focusgroup', 'menu block wrap');
     await expect
@@ -439,7 +440,7 @@ for (const controlled of [true, false]) {
   });
 }
 
-test('defaultOpen uses the native autofocus path without consumer-controlled open state', async () => {
+test('defaultOpen focuses the first item on show without consumer-controlled open state', async () => {
   const screen = await render(
     <CoreAIFluentProvider>
       <MenuSelectionFlow controlled={false} defaultOpen />
@@ -454,7 +455,7 @@ test('defaultOpen uses the native autofocus path without consumer-controlled ope
   await expectClosed(popup);
 });
 
-test('native initial autofocus skips an aria-disabled first item while polyfilled Home still allows disabled focus', async () => {
+test('initial focus on show skips an aria-disabled first item while polyfilled Home still allows disabled focus', async () => {
   const clicked = vi.fn<NonNullable<MenuItemProps['onClick']>>();
   const screen = await render(
     <CoreAIFluentProvider>

@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI sources: [index.ts](../../react-components/src/index.ts) re-exports Fluent Tree;
+ * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts) registers no Tree override.
+ * Fluent baseline: @fluentui/react-tree 9.17.1.
+ * CoreAI adds no Tree defaults or style overrides. This layer is intentionally empty.
+ */
+
+@layer fluent-components, coreai-overrides;

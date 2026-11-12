@@ -8,17 +8,28 @@ the public render function. It does not call Fluent's Griffel styling hook.
 
 ## Migration scope
 
-The pinned headless `0.3.2` visual catalog is implemented: 143 distinct upstream component exports across
-51 supported component entry points, including behavior-only roots and triggers. The
-[public exports](./src/index.ts) are the supported experimental surface, not a production release.
+The headless `0.4.1` visual catalog includes the previously supported component exports plus the
+new Calendar, DatePicker, RangeSlider, and Tree families. The [public exports](./src/index.ts) are
+the supported experimental surface, not a production release.
 
-DataGrid, Table, Tree, and the standard Carousel family remain deferred because this pinned package
-does not publish them. Smaller old exports such as MessageBarGroup and ToastTrigger likewise have
-no current facade. The deprecated CoreAI Nav and old typography-preset components are not recreated.
+DataGrid, Table, and the standard Carousel family remain deferred because this pinned package does
+not publish them. Smaller old exports such as MessageBarGroup and ToastTrigger likewise have no
+current facade. The deprecated CoreAI Nav and old typography-preset components are not recreated.
 Text is a local typography component, not a component we expect headless to publish.
 Style-free overflow, positioning, and utility APIs do not need visual ports or blanket re-exports.
 This coverage does not claim exhaustive visual parity or a Griffel-free application that also
 imports old styled components.
+
+Tree actions require the consumer's focusgroup polyfill where native support is unavailable. Nested
+multiselect Tree checked state must be controlled; the headless API does not provide
+`defaultCheckedItems` or calculate mixed parent state.
+
+Known upstream package-check blocker: `@fluentui/react-tree@9.17.1`'s `useTreeItemLayout` dev-only
+ref assertion references `useTreeItemLayout_unstable.name`, retaining its styled hook in
+development and library-mode consumer bundles. This pulls Griffel, Tabster, and a non-headless icon
+into the complete bundle, so `test:package` remains failing until the upstream issue is fixed. The
+same reference is removed from production bundles by dead-code elimination. See the accompanying
+Fluent UI bug report draft.
 
 ## Run
 
@@ -130,7 +141,7 @@ internal helper filenames. This boundary is reported rather than patched or repl
   [Input styles in react-input 9.8.8](https://unpkg.com/@fluentui/react-input@9.8.8/lib/components/Input/useInputStyles.styles.raw.js)
   and [Textarea styles in react-textarea 9.7.8](https://unpkg.com/@fluentui/react-textarea@9.7.8/lib/components/Textarea/useTextareaStyles.styles.raw.js).
   Their base styles live in the corresponding component CSS Modules, separately from CoreAI
-  overrides and prop defaults. Headless remains pinned to `0.3.2`.
+  overrides and prop defaults. Headless was pinned to `0.3.2` for these batches and is now pinned to `0.4.1`.
 - The next batch uses
   [Label styles in react-label 9.4.6](https://unpkg.com/@fluentui/react-label@9.4.6/lib/components/Label/useLabelStyles.styles.raw.js)
   and [Image styles in react-image 9.4.6](https://unpkg.com/@fluentui/react-image@9.4.6/lib/components/Image/useImageStyles.styles.raw.js).
@@ -350,7 +361,7 @@ contracts remain intact; no second numeric state or compatibility reset model is
 
 Popover uses native popovers/dialogs, modal focus, and CSS anchors instead of the legacy portal
 and positioning pipeline. Arrows are surface-centered unless the caller supplies offsets.
-Headless `0.3.2` has a first-right-click `openOnContext` timing defect on Windows Chromium; one
+Headless `0.3.2` through `0.4.1` has a first-right-click `openOnContext` timing defect on Windows Chromium; one
 platform-scoped expected-failure regression records it. The controlled native-context-menu
 example is verified and adds no compatibility behavior to the component.
 
@@ -360,6 +371,11 @@ Use RatingDisplay for read-only output; no wrapper-specific read-only behavior i
 InfoButton root render-function children hit the pinned public trigger's Fragment guard in both
 headless and this wrapper; use ordinary root content. Field's control-children render function and
 the other tested label/info/surface slot renderers remain supported. No trigger workaround is added.
+Since headless `0.4.0`, InfoButton and InfoLabel surfaces are non-modal `role="note"` popovers;
+`inertTrapFocus` (renamed from `trapFocus`) opts into a modal `<dialog>`. Popover-family triggers
+expose `aria-controls` while open and `aria-haspopup="dialog"` only with `inertTrapFocus`. Native
+`method="dialog"` closes report `onOpenChange` with `open: false`, and the non-modal Dialog/Drawer
+`dialog.show()` fallback was removed: browsers without the Popover API need a consumer polyfill.
 Tooltip exposes current trigger/content refs, not an invented component-root ref. Its native
 controlled-dismissal and placement-observer boundaries remain intact. The default positioning
 offset is zero; callers own any arrow gap rather than inheriting the old positioning pipeline.
@@ -437,6 +453,12 @@ post-removal focus restoration remain consumer-owned rather than adding a legacy
 ## Conversion workflow
 
 ### API policy
+
+The goal is to adopt the headless components and port the old Griffel styles into CSS Modules,
+not to reproduce Fluent v9's API. Support every new and changed API the installed headless
+package provides, including renamed props, new components, and new exports. Retain old Fluent or
+CoreAI APIs only where that is reasonable and does not conflict with the headless contract.
+Backward compatibility with Fluent v9 is not a requirement.
 
 Use current, supported public APIs from the installed headless package. Fluent v9 style sources
 are a visual reference, not a template for component behavior or compatibility plumbing.

@@ -105,7 +105,7 @@ export function DialogComparisonWithReport({
     <div className={styles.comparison}>
       <p>
         This native migration uses DialogHeader / DialogTitle, a scrollable DialogBody, and
-        DialogActions directly inside the native surface. Headless 0.3.2 has no DialogContent,
+        DialogActions directly inside the native surface. Headless 0.4.1 has no DialogContent,
         Title.action, backdrop slot, or public DialogProvider. The old reference suppresses its
         default non-modal close glyph; the explicit header-close fixture uses the completed Button
         and public trigger in both implementations.
@@ -135,8 +135,8 @@ export function DialogComparisonWithReport({
         behavior is added to the component.
       </p>
       <p>
-        Modal/alert surfaces require native dialog support. Non-modal surfaces use the Popover API,
-        with the installed hook&apos;s dialog.show() fallback when it is absent. Products supporting
+        Modal/alert surfaces require native dialog support. Non-modal surfaces use the Popover API;
+        0.4.1 has no dialog.show() fallback when it is absent. Products supporting
         older browsers must load their platform polyfills before rendering. Dialog does not require
         a focusgroup or CSS-anchor polyfill. The default has no animation, so reduced motion needs
         no animation fallback; consumer motion must respect that preference.

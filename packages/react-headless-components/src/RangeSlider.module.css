@@ -1,0 +1,285 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-range-slider-preview 0.1.0, useRangeSliderStyles.styles.ts.
+ * Local source: [useRangeSliderStyles.styles.raw.js](../../../node_modules/@fluentui/react-range-slider-preview/lib/components/RangeSlider/useRangeSliderStyles.styles.raw.js).
+ * Focus dependency: [createFocusOutlineStyle.js](../../../node_modules/@fluentui/react-tabster/lib/focus/createFocusOutlineStyle.js).
+ * Sizes, colors, rail, and thumb geometry intentionally match Slider.module.css.
+ * The public headless hook supplies resolved --fui-RangeSlider--start-progress,
+ * --fui-RangeSlider--end-progress, --fui-RangeSlider--steps-percent, and
+ * --fui-RangeSlider--direction. Do not normalize them again.
+ * The thumb's focus-within indicator becomes :has(> input:focus-visible), so pointer
+ * focus does not draw a ring. Per-thumb disabled styles use the headless data-disabled.
+ * The wrapper's data-thumbs-overlap mirrors v9's `value.start === value.end` guard
+ * for raising the data-active thumb.
+ * Logical thumb positioning and :dir(rtl) replace Griffel's automatic RTL flipping.
+ * Modern vertical range inputs use writing-mode directly; the legacy sideways-lr
+ * feature probe and -webkit-appearance: slider-vertical fallback are not needed.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  /* Styles for the root slot */
+  .RangeSlider {
+    --fui-RangeSlider__thumb--size: 20px;
+    --fui-RangeSlider__inner-thumb--radius: 6px;
+    --fui-RangeSlider__rail--size: 4px;
+
+    position: relative;
+    display: inline-grid;
+    touch-action: none;
+    align-items: center;
+    justify-items: center;
+    min-height: 32px;
+
+    &[data-size='small'] {
+      --fui-RangeSlider__thumb--size: 16px;
+      --fui-RangeSlider__inner-thumb--radius: 5px;
+      --fui-RangeSlider__rail--size: 2px;
+
+      min-height: 24px;
+    }
+
+    &:not([data-vertical]) {
+      min-width: 120px;
+      grid-template-rows: 1fr var(--fui-RangeSlider__thumb--size) 1fr;
+      grid-template-columns: 1fr calc(100% - var(--fui-RangeSlider__thumb--size)) 1fr;
+    }
+
+    &[data-vertical] {
+      min-height: 120px;
+      grid-template-rows: 1fr calc(100% - var(--fui-RangeSlider__thumb--size)) 1fr;
+      grid-template-columns: 1fr var(--fui-RangeSlider__thumb--size) 1fr;
+    }
+
+    &:not([data-disabled]) {
+      cursor: pointer;
+
+      --fui-RangeSlider__rail--color: var(--colorNeutralStrokeAccessible);
+      --fui-RangeSlider__progress--color: var(--colorCompoundBrandBackground);
+      --fui-RangeSlider__thumb--color: var(--colorCompoundBrandBackground);
+
+      &:hover {
+        --fui-RangeSlider__thumb--color: var(--colorCompoundBrandBackgroundHover);
+        --fui-RangeSlider__progress--color: var(--colorCompoundBrandBackgroundHover);
+      }
+
+      &:active {
+        --fui-RangeSlider__thumb--color: var(--colorCompoundBrandBackgroundPressed);
+        --fui-RangeSlider__progress--color: var(--colorCompoundBrandBackgroundPressed);
+      }
+
+      @media (forced-colors: active) {
+        --fui-RangeSlider__rail--color: CanvasText;
+        --fui-RangeSlider__thumb--color: Highlight;
+        --fui-RangeSlider__progress--color: Highlight;
+
+        &:hover {
+          --fui-RangeSlider__thumb--color: Highlight;
+          --fui-RangeSlider__progress--color: Highlight;
+        }
+      }
+    }
+
+    &[data-disabled] {
+      cursor: default;
+
+      --fui-RangeSlider__thumb--color: var(--colorNeutralForegroundDisabled);
+      --fui-RangeSlider__rail--color: var(--colorNeutralBackgroundDisabled);
+      --fui-RangeSlider__progress--color: var(--colorNeutralForegroundDisabled);
+
+      @media (forced-colors: active) {
+        --fui-RangeSlider__rail--color: GrayText;
+        --fui-RangeSlider__thumb--color: GrayText;
+        --fui-RangeSlider__progress--color: GrayText;
+      }
+    }
+
+    &:not([data-vertical]):dir(rtl) > .RangeSlider__thumb {
+      transform: translateX(50%);
+    }
+  }
+
+  /* Styles for the rail slot */
+  .RangeSlider__rail {
+    border-radius: var(--borderRadiusXLarge);
+    pointer-events: none;
+    grid-area: 2 / 2 / 2 / 2;
+    position: relative;
+    forced-color-adjust: none;
+    /* The progress segment runs between the two thumbs. */
+    background-image: linear-gradient(
+      var(--fui-RangeSlider--direction),
+      var(--fui-RangeSlider__rail--color) 0%,
+      var(--fui-RangeSlider__rail--color) var(--fui-RangeSlider--start-progress),
+      var(--fui-RangeSlider__progress--color) var(--fui-RangeSlider--start-progress),
+      var(--fui-RangeSlider__progress--color) var(--fui-RangeSlider--end-progress),
+      var(--fui-RangeSlider__rail--color) var(--fui-RangeSlider--end-progress)
+    );
+    outline: 1px solid var(--colorTransparentStroke);
+
+    &::before {
+      content: '';
+      position: absolute;
+      background-image: repeating-linear-gradient(
+        var(--fui-RangeSlider--direction),
+        #0000 0%,
+        #0000 calc(var(--fui-RangeSlider--steps-percent) - 1px),
+        var(--colorNeutralBackground1) calc(var(--fui-RangeSlider--steps-percent) - 1px),
+        var(--colorNeutralBackground1) var(--fui-RangeSlider--steps-percent)
+      );
+
+      @media (forced-colors: active) {
+        background-image: repeating-linear-gradient(
+          var(--fui-RangeSlider--direction),
+          #0000 0%,
+          #0000 calc(var(--fui-RangeSlider--steps-percent) - 1px),
+          HighlightText calc(var(--fui-RangeSlider--steps-percent) - 1px),
+          HighlightText var(--fui-RangeSlider--steps-percent)
+        );
+      }
+    }
+
+    .RangeSlider:not([data-vertical]) > & {
+      width: 100%;
+      height: var(--fui-RangeSlider__rail--size);
+
+      &::before {
+        inset-inline: -1px;
+        height: var(--fui-RangeSlider__rail--size);
+      }
+    }
+
+    .RangeSlider[data-vertical] > & {
+      width: var(--fui-RangeSlider__rail--size);
+      height: 100%;
+
+      &::before {
+        width: var(--fui-RangeSlider__rail--size);
+        inset-block: -1px;
+      }
+    }
+  }
+
+  /* Styles shared by the startThumb and endThumb slots */
+  .RangeSlider__thumb {
+    grid-area: 2 / 2 / 2 / 2;
+    position: absolute;
+    width: var(--fui-RangeSlider__thumb--size);
+    height: var(--fui-RangeSlider__thumb--size);
+    pointer-events: auto;
+    outline-style: none;
+    forced-color-adjust: none;
+    border-radius: var(--borderRadiusCircular);
+    box-shadow: 0 0 0 calc(var(--fui-RangeSlider__thumb--size) * 0.2) var(--colorNeutralBackground1)
+      inset;
+    background-color: var(--fui-RangeSlider__thumb--color);
+
+    &::before {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--borderRadiusCircular);
+      box-sizing: border-box;
+      content: '';
+      border: calc(var(--fui-RangeSlider__thumb--size) * 0.05) solid var(--colorNeutralStroke1);
+    }
+
+    /* Applied per thumb, so one disabled thumb looks disabled while the other stays enabled. */
+    &[data-disabled] {
+      --fui-RangeSlider__thumb--color: var(--colorNeutralForegroundDisabled);
+
+      &::before {
+        border-color: var(--colorNeutralForegroundDisabled);
+      }
+
+      @media (forced-colors: active) {
+        --fui-RangeSlider__thumb--color: GrayText;
+      }
+    }
+
+    /* createFocusOutlineStyle({ selector: 'focus-within', outlineOffset: 0 }). */
+    &:has(> .RangeSlider__input:focus-visible) {
+      border-color: transparent;
+
+      &::after {
+        content: '';
+        position: absolute;
+        pointer-events: none;
+        z-index: 1;
+        border: 2px solid var(--colorStrokeFocus2);
+        border-radius: var(--borderRadiusMedium);
+        inset: -2px;
+      }
+
+      @media (forced-colors: active) {
+        &::after {
+          border-color: Highlight;
+        }
+      }
+    }
+
+    .RangeSlider[data-thumbs-overlap] > &[data-active] {
+      z-index: 1;
+    }
+
+    .RangeSlider:not([data-vertical]) > & {
+      transform: translateX(-50%);
+      inset-inline-start: var(--fui-RangeSlider__thumb--position);
+    }
+
+    .RangeSlider[data-vertical] > & {
+      transform: translateY(50%);
+      bottom: var(--fui-RangeSlider__thumb--position);
+    }
+  }
+
+  /* Keep each thumb within the rail: at 0% or 100% the thumb center sits one inner radius in. */
+  .RangeSlider__startThumb {
+    --fui-RangeSlider__thumb--position: clamp(
+      var(--fui-RangeSlider__inner-thumb--radius),
+      var(--fui-RangeSlider--start-progress),
+      calc(100% - var(--fui-RangeSlider__inner-thumb--radius))
+    );
+  }
+
+  .RangeSlider__endThumb {
+    --fui-RangeSlider__thumb--position: clamp(
+      var(--fui-RangeSlider__inner-thumb--radius),
+      var(--fui-RangeSlider--end-progress),
+      calc(100% - var(--fui-RangeSlider__inner-thumb--radius))
+    );
+  }
+
+  /* Styles for the startInput and endInput slots */
+  .RangeSlider__input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    color: transparent;
+    caret-color: transparent;
+    outline-style: none;
+    appearance: none;
+    opacity: 0;
+    cursor: pointer;
+    /* The root's pointer handlers own all pointer interaction. */
+    pointer-events: none;
+
+    .RangeSlider__thumb[data-disabled] > & {
+      cursor: default;
+    }
+
+    .RangeSlider[data-vertical] & {
+      writing-mode: vertical-lr;
+      direction: rtl;
+    }
+  }
+}

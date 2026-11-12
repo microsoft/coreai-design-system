@@ -223,7 +223,7 @@ test('retains current optional-button resolution without inventing behavior for 
   ).toHaveAccessibleName('Explicit button information');
 });
 
-test('keeps required/status descriptions and generated popup ownership through native open and Escape', async () => {
+test('keeps required/status descriptions and a self-named note without generated ownership through native open and Escape', async () => {
   const screen = await render(
     <CoreAIFluentProvider>
       <InfoLabelHelpFlow />
@@ -244,19 +244,16 @@ test('keeps required/status descriptions and generated popup ownership through n
   await expect.element(note).toBeVisible();
   await expect.element(note).toHaveFocus();
   const surface = note.element();
-  expect(surface).toBeInstanceOf(HTMLDialogElement);
+  expect(surface).toBeInstanceOf(HTMLDivElement);
   expect(surface.matches(':popover-open')).toBe(true);
   expect(trigger.element()).toHaveAttribute('aria-details', surface.id);
-  expect(trigger.element().closest('.fui-InfoLabel')).toHaveAttribute('aria-owns', surface.id);
+  expect(trigger.element().closest('.fui-InfoLabel')).not.toHaveAttribute('aria-owns');
   expect(surface).toHaveAttribute('aria-labelledby', surface.id);
   expect(surface).toHaveAccessibleName('Use a stable project name. Naming guide');
   await userEvent.tab();
   expect(screen.getByRole('link', { name: 'Naming guide' }).element()).toHaveFocus();
   await userEvent.keyboard('{Escape}');
   await expect.poll(() => surface.isConnected).toBe(false);
-  await expect
-    .poll(() => trigger.element().closest('.fui-InfoLabel')?.hasAttribute('aria-owns'))
-    .toBe(false);
   expect(
     screen.getByRole('status', { name: 'InfoLabel callback count' }).element().textContent,
   ).toBe('2');

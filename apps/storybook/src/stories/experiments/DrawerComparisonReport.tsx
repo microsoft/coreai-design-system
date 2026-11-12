@@ -98,7 +98,7 @@ export function DrawerComparisonWithReport({
   return (
     <div className={styles.comparison}>
       <p>
-        Drawer uses the installed public headless 0.3.2 facade. OverlayDrawer is a controlled native
+        Drawer uses the public headless 0.4.1 facade. OverlayDrawer is a controlled native
         dialog; InlineDrawer stays in page flow. There are no Drawer CoreAI defaults or overrides.
         Size and inline separator are visual props, removed before the hooks. DrawerHeaderTitle
         retains its actual heading/action slots and composes the completed DialogTitle typography
@@ -117,14 +117,14 @@ export function DrawerComparisonWithReport({
         viewport edges. This exact old positioning difference is reported, not recreated.
       </p>
       <p>
-        Modal/alert drawers require native dialog support. Non-modal drawers use the Popover API,
-        with the installed dialog.show() fallback. Focus trapping, inertness, restoration, native
+        Modal/alert drawers require native dialog support. Non-modal drawers use the Popover API;
+        0.4.1 has no dialog.show() fallback. Focus trapping, inertness, restoration, native
         cancel, and top-layer nesting remain browser-owned. Drawers need neither a focusgroup nor an
         anchor-positioning polyfill; any older-browser platform polyfill is consumer-owned.
         OverlayDrawer has no defaultOpen, appearance, orientation, or backdrop props in this facade.
         Kept-mounted inline content collapses and becomes visibility-hidden; local state survives.
-        For forms that close a drawer, use controlled onSubmit: bare method=&quot;dialog&quot;
-        retains the inherited native-close versus controlled-open state boundary.
+        For forms that close a drawer, prefer controlled onSubmit: bare method=&quot;dialog&quot;
+        closes natively and reports onOpenChange(false); a still-true controlled open stays closed.
       </p>
       <div className={styles.controls}>
         <label htmlFor={selectId}>Drawer visual fixture</label>

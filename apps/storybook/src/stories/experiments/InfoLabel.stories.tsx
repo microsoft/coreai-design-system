@@ -30,7 +30,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Current public headless 0.3.2 InfoLabel hook/renderer with react-infolabel 9.4.27 visual selection, completed Label 9.4.6 styling, and native Popover composition. CoreAI has no InfoLabel defaults or style overrides. The label is the primary slot and forward-ref target; className/style remain on the root span. Public slot render adapters preserve HeadlessLabel/HeadlessInfoButton element metadata without registry mutation or casts. An internal styled base retains the current InfoButton contract and generated label/self-reference naming, while the public standalone InfoButton retains CoreAI’s required-name union and primitive naming. Required indicators remain inside the label, before its sibling information button. Current truthy info resolution and slot overrides are preserved. Native Popover/dialog/CSS-anchor polyfills are consumer-owned on older browsers; there is no Tabster, Portal, JS positioning fallback, or focusgroup requirement.',
+          'Public headless 0.4.1 InfoLabel hook/renderer with react-infolabel 9.4.27 visual selection, completed Label 9.4.6 styling, and native Popover composition. CoreAI has no InfoLabel defaults or style overrides. The label is the primary slot and forward-ref target; className/style remain on the root span. Public slot render adapters preserve HeadlessLabel/HeadlessInfoButton element metadata without registry mutation or casts. An internal styled base retains the current InfoButton contract and generated label/self-reference naming without generated aria-owns ownership, while the public standalone InfoButton retains CoreAI’s required-name union and primitive naming. Required indicators remain inside the label, before its sibling information button. Current truthy info resolution and slot overrides are preserved. Native Popover/dialog/CSS-anchor polyfills are consumer-owned on older browsers; there is no Tabster, Portal, JS positioning fallback, or focusgroup requirement.',
       },
     },
   },
@@ -121,7 +121,7 @@ export const RequiredLabelAndNativeHelp: Story = {
       const note = canvas.getByRole('note');
       await expect(note).toHaveFocus();
       await expect(note.matches(':popover-open')).toBe(true);
-      await expect(trigger.closest('.fui-InfoLabel')).toHaveAttribute('aria-owns', note.id);
+      await expect(trigger.closest('.fui-InfoLabel')).not.toHaveAttribute('aria-owns');
     });
     await userEvent.tab();
     await expect(canvas.getByRole('link', { name: 'Naming guide' })).toHaveFocus();
@@ -129,7 +129,6 @@ export const RequiredLabelAndNativeHelp: Story = {
     canvas.getByRole('note').hidePopover();
     await waitFor(async () => {
       await expect(canvas.queryByRole('note')).toBeNull();
-      await expect(trigger.closest('.fui-InfoLabel')).not.toHaveAttribute('aria-owns');
     });
     await expect(
       canvas.getByRole('status', { name: 'InfoLabel callback count' }),

@@ -1,0 +1,346 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-tree 9.17.1, useTreeItemLayoutStyles.styles.ts.
+ * Local source: [useTreeItemLayoutStyles.styles.raw.js](../../../node_modules/@fluentui/react-headless-components-preview/node_modules/@fluentui/react-tree/lib/components/TreeItemLayout/useTreeItemLayoutStyles.styles.raw.js).
+ * Default chevron and rotation: [TreeItemChevron.js](../../../node_modules/@fluentui/react-headless-components-preview/node_modules/@fluentui/react-tree/lib/components/TreeItemChevron.js).
+ * Selector visuals: [Checkbox.module.css](./Checkbox.module.css) and [Radio.module.css](./Radio.module.css).
+ * Leaf/branch indentation and the chevron's open rotation read the parent TreeItem's
+ * headless data-item-type and data-open; size and appearance come from data attributes
+ * the wrapper sets from the root tree context.
+ * The inline chevron transform becomes CSS: rotate(90deg) when open, rotate(180deg) when
+ * closed in RTL, with durationNormal/curveEasyEaseMax.
+ * v9 renders the selector as a Fluent Checkbox or Radio. The headless selector is a bare
+ * native input, so it is drawn with appearance: none to match the CoreAI indicator.
+ * Logical properties replace Griffel's automatic RTL flipping.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .TreeItemLayout {
+    display: flex;
+    align-items: center;
+    min-height: 32px;
+    box-sizing: border-box;
+    grid-area: layout;
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+
+    [data-item-type='leaf'] > & {
+      padding-inline-start: calc(var(--fluent-TreeItem--level, 1) * var(--spacingHorizontalXXL));
+    }
+
+    [data-item-type='branch'] > & {
+      padding-inline-start: calc(
+        (var(--fluent-TreeItem--level, 1) - 1) * var(--spacingHorizontalXXL)
+      );
+    }
+
+    &[data-size='small'] {
+      min-height: 24px;
+      font-size: var(--fontSizeBase200);
+      line-height: var(--lineHeightBase200);
+    }
+
+    &:hover {
+      color: var(--colorNeutralForeground2Hover);
+      background-color: var(--colorSubtleBackgroundHover);
+
+      .TreeItemLayout__expandIcon {
+        color: var(--colorNeutralForeground3Hover);
+      }
+    }
+
+    &:active {
+      color: var(--colorNeutralForeground2Pressed);
+      background-color: var(--colorSubtleBackgroundPressed);
+
+      .TreeItemLayout__expandIcon {
+        color: var(--colorNeutralForeground3Pressed);
+      }
+    }
+
+    &[data-appearance='subtle-alpha'] {
+      &:hover {
+        background-color: var(--colorSubtleBackgroundLightAlphaHover);
+      }
+
+      &:active {
+        background-color: var(--colorSubtleBackgroundLightAlphaPressed);
+      }
+    }
+
+    &[data-appearance='transparent'] {
+      background-color: var(--colorTransparentBackground);
+
+      &:hover {
+        background-color: var(--colorTransparentBackgroundHover);
+      }
+
+      &:active {
+        background-color: var(--colorTransparentBackgroundPressed);
+      }
+    }
+  }
+
+  .TreeItemLayout__actions {
+    display: flex;
+    margin-inline-start: auto;
+    position: relative;
+    z-index: 1;
+    grid-area: aside;
+    padding: 0 var(--spacingHorizontalS);
+  }
+
+  .TreeItemLayout__aside {
+    display: flex;
+    margin-inline-start: auto;
+    align-items: center;
+    z-index: 0;
+    grid-area: aside;
+    padding: 0 var(--spacingHorizontalM);
+    gap: var(--spacingHorizontalXS);
+  }
+
+  .TreeItemLayout__expandIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    box-sizing: border-box;
+    color: var(--colorNeutralForeground3);
+    flex: 0 0 auto;
+    padding: var(--spacingVerticalXS) 0;
+  }
+
+  .TreeItemLayout__chevron {
+    transform: rotate(0deg);
+    transition: transform var(--durationNormal, 200ms)
+      var(--curveEasyEaseMax, cubic-bezier(0.8, 0, 0.2, 1));
+
+    &:dir(rtl) {
+      transform: rotate(180deg);
+    }
+
+    [data-open] > .TreeItemLayout > .TreeItemLayout__expandIcon > & {
+      transform: rotate(90deg);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition-duration: 0.01ms;
+    }
+  }
+
+  .TreeItemLayout__main {
+    padding: 0 var(--spacingHorizontalXXS);
+  }
+
+  .TreeItemLayout__iconBefore,
+  .TreeItemLayout__iconAfter {
+    display: flex;
+    align-items: center;
+    color: var(--colorNeutralForeground2);
+    line-height: var(--lineHeightBase500);
+    font-size: var(--fontSizeBase500);
+  }
+
+  .TreeItemLayout__iconBefore {
+    padding-inline-end: var(--spacingHorizontalXS);
+
+    .TreeItemLayout[data-size='small'] > & {
+      padding-inline-end: var(--spacingHorizontalXXS);
+    }
+  }
+
+  .TreeItemLayout__iconAfter {
+    padding-inline-start: var(--spacingHorizontalXS);
+
+    .TreeItemLayout[data-size='small'] > & {
+      padding-inline-start: var(--spacingHorizontalXXS);
+    }
+  }
+
+  /* Native checkbox or radio drawn as the CoreAI Checkbox/Radio indicator. */
+  .TreeItemLayout__selector {
+    --fui-TreeItemLayout__selector--borderColor: var(--colorNeutralStrokeAccessible);
+    --fui-TreeItemLayout__selector--backgroundColor: transparent;
+    --fui-TreeItemLayout__selector--color: transparent;
+
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    width: 16px;
+    height: 16px;
+    margin: var(--spacingVerticalS) var(--spacingHorizontalS);
+    padding: 0;
+    appearance: none;
+    cursor: pointer;
+    background-color: var(--fui-TreeItemLayout__selector--backgroundColor);
+    border: var(--strokeWidthThin) solid var(--fui-TreeItemLayout__selector--borderColor);
+    border-radius: var(--borderRadiusSmall);
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 12px;
+      height: 12px;
+      background-color: var(--fui-TreeItemLayout__selector--color);
+      mask-position: center;
+      mask-repeat: no-repeat;
+      mask-size: 12px 12px;
+    }
+
+    &:focus,
+    &:focus-visible {
+      outline-style: none;
+    }
+
+    &:hover {
+      --fui-TreeItemLayout__selector--borderColor: var(--colorNeutralStrokeAccessibleHover);
+    }
+
+    &:hover:active {
+      --fui-TreeItemLayout__selector--borderColor: var(--colorNeutralStrokeAccessiblePressed);
+    }
+
+    &[type='checkbox'] {
+      /* Checkmark12Filled and Square12Filled from @fluentui/react-icons. */
+      &:checked {
+        --fui-TreeItemLayout__selector--backgroundColor: var(--colorCompoundBrandBackground);
+        --fui-TreeItemLayout__selector--borderColor: var(--colorCompoundBrandBackground);
+        --fui-TreeItemLayout__selector--color: var(--colorNeutralForegroundInverted);
+
+        &::after {
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M9.76 3.2c.3.29.32.76.04 1.06l-4.25 4.5a.75.75 0 0 1-1.08.02L2.22 6.53a.75.75 0 0 1 1.06-1.06l1.7 1.7L8.7 3.24a.75.75 0 0 1 1.06-.04'/%3E%3C/svg%3E");
+        }
+
+        &:hover {
+          --fui-TreeItemLayout__selector--backgroundColor: var(--colorCompoundBrandBackgroundHover);
+          --fui-TreeItemLayout__selector--borderColor: var(--colorCompoundBrandBackgroundHover);
+        }
+
+        &:hover:active {
+          --fui-TreeItemLayout__selector--backgroundColor: var(
+            --colorCompoundBrandBackgroundPressed
+          );
+          --fui-TreeItemLayout__selector--borderColor: var(--colorCompoundBrandBackgroundPressed);
+        }
+      }
+
+      &:indeterminate {
+        --fui-TreeItemLayout__selector--backgroundColor: transparent;
+        --fui-TreeItemLayout__selector--borderColor: var(--colorCompoundBrandStroke);
+        --fui-TreeItemLayout__selector--color: var(--colorCompoundBrandForeground1);
+
+        &::after {
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4c0-1.1.9-2 2-2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z'/%3E%3C/svg%3E");
+        }
+
+        &:hover {
+          --fui-TreeItemLayout__selector--borderColor: var(--colorCompoundBrandStrokeHover);
+          --fui-TreeItemLayout__selector--color: var(--colorCompoundBrandForeground1Hover);
+        }
+
+        &:hover:active {
+          --fui-TreeItemLayout__selector--borderColor: var(--colorCompoundBrandStrokePressed);
+          --fui-TreeItemLayout__selector--color: var(--colorCompoundBrandForeground1Pressed);
+        }
+      }
+    }
+
+    &[type='radio'] {
+      border-radius: var(--borderRadiusCircular);
+
+      &::after {
+        width: 16px;
+        height: 16px;
+        border-radius: var(--borderRadiusCircular);
+        /* Use a transform to avoid pixel rounding errors at 125% DPI. */
+        transform: scale(0.625);
+      }
+
+      &:checked {
+        --fui-TreeItemLayout__selector--borderColor: var(--colorCompoundBrandStroke);
+        --fui-TreeItemLayout__selector--color: var(--colorCompoundBrandForeground1);
+
+        &:hover {
+          --fui-TreeItemLayout__selector--borderColor: var(--colorCompoundBrandStrokeHover);
+          --fui-TreeItemLayout__selector--color: var(--colorCompoundBrandForeground1Hover);
+        }
+
+        &:hover:active {
+          --fui-TreeItemLayout__selector--borderColor: var(--colorCompoundBrandStrokePressed);
+          --fui-TreeItemLayout__selector--color: var(--colorCompoundBrandForeground1Pressed);
+        }
+      }
+    }
+
+    /* [type] raises specificity above the checked and hover rules. */
+    &[type]:disabled {
+      cursor: default;
+
+      &,
+      &:hover,
+      &:hover:active {
+        --fui-TreeItemLayout__selector--borderColor: var(--colorNeutralStrokeDisabled);
+        --fui-TreeItemLayout__selector--backgroundColor: transparent;
+      }
+
+      &:checked,
+      &:indeterminate {
+        --fui-TreeItemLayout__selector--color: var(--colorNeutralForegroundDisabled);
+      }
+    }
+
+    @media (forced-colors: active) {
+      forced-color-adjust: none;
+
+      &[type] {
+        &,
+        &:hover,
+        &:hover:active {
+          --fui-TreeItemLayout__selector--borderColor: ButtonBorder;
+        }
+
+        &:checked,
+        &:indeterminate {
+          &,
+          &:hover,
+          &:hover:active {
+            --fui-TreeItemLayout__selector--borderColor: Highlight;
+            --fui-TreeItemLayout__selector--color: Highlight;
+          }
+        }
+
+        &[type='checkbox']:checked {
+          &,
+          &:hover,
+          &:hover:active {
+            --fui-TreeItemLayout__selector--backgroundColor: Highlight;
+            --fui-TreeItemLayout__selector--color: HighlightText;
+          }
+        }
+
+        &:disabled {
+          &,
+          &:hover,
+          &:checked,
+          &:indeterminate {
+            --fui-TreeItemLayout__selector--borderColor: GrayText;
+            --fui-TreeItemLayout__selector--backgroundColor: transparent;
+            --fui-TreeItemLayout__selector--color: GrayText;
+          }
+        }
+      }
+    }
+  }
+}

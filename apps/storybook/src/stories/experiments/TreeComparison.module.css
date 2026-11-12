@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Handwritten experiment layout; not an upstream style port.
+ */
+
+.examples {
+  display: grid;
+  gap: 16px;
+  max-width: 1080px;
+  overflow-x: auto;
+}
+
+.neutral {
+  justify-self: start;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) repeat(2, 320px);
+  align-items: start;
+  gap: 16px;
+}
+
+.cell {
+  min-width: 0;
+  padding: 8px;
+}

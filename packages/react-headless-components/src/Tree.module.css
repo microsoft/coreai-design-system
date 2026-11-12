@@ -1,0 +1,25 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-tree 9.17.1, useTreeStyles.styles.ts.
+ * Local source: [useTreeStyles.styles.raw.js](../../../node_modules/@fluentui/react-headless-components-preview/node_modules/@fluentui/react-tree/lib/components/Tree/useTreeStyles.styles.raw.js).
+ * The headless hook sets data-navigation-mode only on the root tree, so its absence
+ * replaces v9's `state.level > 1` subtree check.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Tree {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--spacingVerticalXXS);
+
+    &:not([data-navigation-mode]) {
+      padding-top: var(--spacingVerticalXXS);
+    }
+  }
+}

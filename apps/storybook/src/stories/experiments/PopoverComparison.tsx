@@ -200,10 +200,10 @@ function CloseFromContext() {
 }
 
 export function PopoverControlledFlow({
-  trapFocus = false,
+  inertTrapFocus = false,
   onOpenChange,
 }: {
-  trapFocus?: boolean;
+  inertTrapFocus?: boolean;
   onOpenChange?: PopoverProps['onOpenChange'];
 }) {
   const [open, setOpen] = React.useState(false);
@@ -213,10 +213,10 @@ export function PopoverControlledFlow({
       <button type="button">Before access details</button>
       <Popover
         open={open}
-        trapFocus={trapFocus}
+        inertTrapFocus={inertTrapFocus}
         withArrow
         positioning={{ position: 'below', offset: 10 }}
-        id={trapFocus ? 'modal-access-details' : 'access-details'}
+        id={inertTrapFocus ? 'modal-access-details' : 'access-details'}
         onOpenChange={(event, data) => {
           setOpen(data.open);
           setEvents((previous) => [...previous, `${data.type}:${data.open ? 'open' : 'closed'}`]);
@@ -225,18 +225,18 @@ export function PopoverControlledFlow({
       >
         <PopoverTrigger disableButtonEnhancement>
           <Button as="button" type="button">
-            {trapFocus ? 'Open modal access details' : 'Open access details'}
+            {inertTrapFocus ? 'Open modal access details' : 'Open access details'}
           </Button>
         </PopoverTrigger>
         <PopoverSurface
           className={styles.surface}
           aria-label="Atlas access details"
-          aria-describedby={trapFocus ? 'modal-access-description' : 'access-description'}
+          aria-describedby={inertTrapFocus ? 'modal-access-description' : 'access-description'}
         >
           <div className={styles.content}>
             <p
               className={styles.text}
-              id={trapFocus ? 'modal-access-description' : 'access-description'}
+              id={inertTrapFocus ? 'modal-access-description' : 'access-description'}
             >
               Editors can update the Atlas project.
             </p>

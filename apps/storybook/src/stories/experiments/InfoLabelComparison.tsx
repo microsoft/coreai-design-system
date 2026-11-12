@@ -188,7 +188,7 @@ export function InfoLabelComparisonWithReport({
     <div ref={ref}>
       <p>
         InfoLabel preserves its label ref, native association, required indicator ordering,
-        generated information-button name, and current popup ownership. Label and InfoButton
+        generated information-button name, and self-named help note without generated ownership. Label and InfoButton
         foundations are reused through typed public slot render functions that retain the actual
         headless primitive metadata. The standalone CoreAI InfoButton&apos;s stricter public naming
         contract is not imposed on InfoLabel&apos;s internally generated button.

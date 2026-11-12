@@ -330,7 +330,7 @@ export function AvatarGroupPeopleFlow({ modal = false }: { modal?: boolean }) {
           <AvatarGroupPopover
             open={open}
             count={overflowItems.length}
-            trapFocus={modal}
+            inertTrapFocus={modal}
             onOpenChange={(event, data) => {
               setEvents((previous) => [
                 ...previous,

@@ -30,8 +30,8 @@
     "test:package": "npm run build && node scripts/verify-package.mjs"
   },
   "dependencies": {
-    "@fluentui/react-headless-components-preview": "0.3.2",
-    "@fluentui/react-icons": "2.0.343",
+    "@fluentui/react-headless-components-preview": "0.4.1",
+    "@fluentui/react-icons": "2.0.345",
     "@fluentui/react-shared-contexts": "9.26.4",
     "@fluentui/react-theme": "9.2.2",
     "@fluentui/react-utilities": "9.27.0",

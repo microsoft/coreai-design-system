@@ -495,7 +495,7 @@ test('non-modal div surfaces preserve native links, ARIA relationships, outside 
   expect(trigger.element()).toBe(triggerRef.current);
   expect(surface.element() instanceof HTMLDivElement).toBe(true);
   expect(surface.element().matches(':popover-open')).toBe(true);
-  expect(trigger.element().getAttribute('aria-controls')).toBeNull();
+  expect(trigger.element().getAttribute('aria-controls')).toBe(surface.element().id);
   expect(trigger.element().getAttribute('aria-details')).toBe(surface.element().id);
   await userEvent.click(screen.getByRole('link', { name: 'Help destination', exact: true }));
   expect(location.hash).toBe('#teaching-native-link');
@@ -746,7 +746,7 @@ for (const implementation of ['raw', 'styled'] as const) {
   const FooterButton =
     implementation === 'raw' ? RawFooterButton : TeachingPopoverCarouselFooterButton;
 
-  test(`${implementation}: controlled content updates during outside clicks retain the inherited native-close boundary`, async () => {
+  test(`${implementation}: controlled content updates during outside clicks light-dismiss and reopen with updated content`, async () => {
     function OutsideUpdates() {
       const [open, setOpen] = React.useState(false);
       const [version, setVersion] = React.useState(0);
@@ -788,9 +788,14 @@ for (const implementation of ['raw', 'styled'] as const) {
     const trigger = screen.getByRole('button', { name: 'Open outside update guide', exact: true });
     await userEvent.click(trigger);
     const surface = screen.getByRole('group', { name: 'Outside update guide', exact: true });
+    await expect.element(surface).toBeVisible();
+    // 0.4.1 light-dismisses on any outside click, including one that also updates content,
+    // and unmounts the surface a microtask after the native close.
     await userEvent.click(
       screen.getByRole('button', { name: 'Update outside content', exact: true }),
     );
+    await expect.element(surface).not.toBeInTheDocument();
+    await userEvent.click(trigger);
     await settleTeachingPopoverStyles(surface.element());
     await expect
       .element(screen.getByRole('heading', { name: 'Content version 1', exact: true }))

@@ -98,7 +98,7 @@ export function TeachingPopoverComparisonWithReport({
   return (
     <div>
       <p>
-        The pinned 0.3.2 facade publishes the complete TeachingPopover and carousel family.
+        The 0.4.1 facade publishes the complete TeachingPopover and carousel family.
         Surfaces, title/header/body/footer slots, media ratios, action buttons, navigation, page
         count, arrow pseudo-elements and dimensions are bounded comparisons. Native top-layer and
         anchor contracts are reported separately. Arrow gap/centering differences use the completed
@@ -116,7 +116,7 @@ export function TeachingPopoverComparisonWithReport({
         added.
       </p>
       <p>
-        Native TeachingPopover defaults to non-modal behavior; set trapFocus explicitly for a modal
+        Native TeachingPopover defaults to non-modal behavior; set inertTrapFocus explicitly for a modal
         dialog. Title dismiss buttons inherit aria-hidden=true from the pinned hook: the title-only
         fixture explicitly supplies aria-hidden=false and a label. CarouselNav publishes ordinary
         tab stops, with no focusgroup or legacy arrow-navigation manager. Native Tab navigation is

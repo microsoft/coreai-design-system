@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * CoreAI sources: [index.ts](../../react-components/src/index.ts) exports no DatePicker, and
+ * [styleHooks.ts](../../react-components/src/contexts/styleHooks.ts) registers no DatePicker override.
+ * The popup surface adopts CoreAI's shared floating-surface border from
+ * [Overlay.styles.ts](../../react-components/src/components/Overlay.styles.ts), reference commit a8a84a1,
+ * as PopoverSurface.overrides.module.css does, gated by CoreAI component defaults.
+ * Fluent baseline: @fluentui/react-datepicker-compat 0.6.41 raw styles, see DatePicker.module.css.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer coreai-overrides {
+  .DatePicker__popupSurface {
+    border: var(--strokeWidthThin) solid var(--colorNeutralStroke3);
+  }
+}

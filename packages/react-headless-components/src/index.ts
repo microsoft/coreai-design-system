@@ -36,6 +36,26 @@ export {
   type DateTimePickerValidationResultData,
 } from './DateTimePicker.js';
 export {
+  DatePicker,
+  datePickerClassNames,
+  defaultFormatDate,
+  defaultParseDate,
+} from './DatePicker.js';
+export type {
+  DatePickerProps,
+  DatePickerButtonProps,
+  DatePickerInputProps,
+  DatePickerComponent,
+  DatePickerCalendarProps,
+  DatePickerDateChangeData,
+  DatePickerErrorMessageData,
+  DatePickerErrorType,
+  DatePickerOpenChangeData,
+  DatePickerSlots,
+  DatePickerState,
+  DatePickerValidationResultData,
+} from './DatePicker.js';
+export {
   createDarkTheme,
   createHighContrastTheme,
   createLightTheme,
@@ -159,6 +179,47 @@ export {
   type BreadcrumbItemSlots,
 } from './BreadcrumbItem.js';
 export { Button, buttonClassNames, type ButtonProps } from './Button.js';
+export {
+  Calendar,
+  CalendarDay,
+  CalendarMonth,
+  CalendarYear,
+  calendarClassNames,
+  calendarDayClassNames,
+  calendarMonthClassNames,
+  calendarYearClassNames,
+  CalendarProvider,
+  calendarFormatters,
+  createCalendarDateTimeFormatter,
+  useCalendarContext,
+} from './Calendar.js';
+export type {
+  CalendarDayCellData,
+  CalendarDayHandle,
+  CalendarDayProps,
+  CalendarDaySlots,
+  CalendarDayState,
+  CalendarFormatters,
+  CalendarLayout,
+  CalendarMonthHandle,
+  CalendarMonthProps,
+  CalendarMonthSlots,
+  CalendarMonthState,
+  CalendarNavigateData,
+  CalendarProps,
+  CalendarSelectDateData,
+  CalendarSlots,
+  CalendarState,
+  CalendarView,
+  CalendarViewChangeData,
+  CalendarYearHandle,
+  CalendarYearProps,
+  CalendarYearSlots,
+  CalendarYearState,
+  DateRangeType,
+  DayOfWeek,
+  FirstWeekOfYear,
+} from './Calendar.js';
 export {
   Card,
   cardClassNames,
@@ -679,6 +740,16 @@ export {
   type RadioGroupSlots,
 } from './RadioGroup.js';
 export {
+  RangeSlider,
+  rangeSliderClassNames,
+  type RangeSliderOnChangeData,
+  type RangeSliderProps,
+  type RangeSliderSlots,
+  type RangeSliderState,
+  type RangeSliderThumbDataAttributes,
+  type RangeSliderValue,
+} from './RangeSlider.js';
+export {
   Rating,
   ratingClassNames,
   type RatingColor,
@@ -1081,3 +1152,48 @@ export {
   type TooltipState,
   type TooltipTriggerProps,
 } from './Tooltip.js';
+export {
+  Tree,
+  treeClassNames,
+  useSubtreeContext,
+  useTreeContext,
+  type SubtreeContextValue,
+  type TreeAppearance,
+  type TreeCheckedChangeData,
+  type TreeCheckedChangeEvent,
+  type TreeContextValue,
+  type TreeContextValues,
+  type TreeNavigationData,
+  type TreeNavigationDataParam,
+  type TreeNavigationEvent,
+  type TreeNavigationMode,
+  type TreeOpenChangeData,
+  type TreeOpenChangeEvent,
+  type TreeProps,
+  type TreeSelectionValue,
+  type TreeSize,
+  type TreeSlots,
+  type TreeState,
+} from './Tree.js';
+export {
+  TreeItem,
+  treeItemClassNames,
+  useTreeItemContext,
+  type TreeItemContextValues,
+  type TreeItemOpenChangeData,
+  type TreeItemOpenChangeEvent,
+  type TreeItemProps,
+  type TreeItemSlots,
+  type TreeItemState,
+  type TreeItemType,
+  type TreeItemValue,
+} from './TreeItem.js';
+export {
+  TreeItemLayout,
+  treeItemLayoutClassNames,
+  type TreeItemLayoutActionSlotProps,
+  type TreeItemLayoutActionVisibilityChangeData,
+  type TreeItemLayoutProps,
+  type TreeItemLayoutSlots,
+  type TreeItemLayoutState,
+} from './TreeItemLayout.js';

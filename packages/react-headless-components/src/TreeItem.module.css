@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-tree 9.17.1, useTreeItemStyles.styles.ts.
+ * Local source: [useTreeItemStyles.styles.raw.js](../../../node_modules/@fluentui/react-headless-components-preview/node_modules/@fluentui/react-tree/lib/components/TreeItem/useTreeItemStyles.styles.raw.js).
+ * Focus dependency: [createCustomFocusIndicatorStyle.js](../../../node_modules/@fluentui/react-tabster/lib/focus/createCustomFocusIndicatorStyle.js).
+ * The --fluent-TreeItem--level indentation token is set inline by TreeItem.tsx for every
+ * level instead of v9's ten static level classes plus inline fallback.
+ * Native :focus-visible replaces the Tabster focus-visible attribute; the indicator is drawn
+ * on the item's own layout, as in v9.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .TreeItem {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    background-color: var(--colorSubtleBackground);
+    color: var(--colorNeutralForeground2);
+    padding-inline-end: var(--spacingHorizontalNone);
+
+    &:focus,
+    &:focus-visible {
+      outline-style: none;
+    }
+
+    &:focus-visible > :global(.fui-TreeItemLayout) {
+      border-radius: var(--borderRadiusMedium);
+      outline: 2px solid var(--colorStrokeFocus2);
+    }
+  }
+}

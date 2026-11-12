@@ -14,7 +14,7 @@ import {
   type ForwardRefComponent,
   type Slot,
 } from '@fluentui/react-utilities';
-import { IconDirectionContextProvider } from '@fluentui/react-icons/providers';
+import { IconDirectionContextProvider } from '@fluentui/react-icons/headless';
 import { ComponentDefaultsProvider } from './ComponentDefaultsContext.js';
 import { FluentThemeModeProvider } from './FluentThemeModeContext.js';
 import { coreaiLightTheme, type CoreAITheme } from './theme.js';
@@ -73,7 +73,7 @@ export const CoreAIFluentProvider: ForwardRefComponent<CoreAIFluentProviderProps
       }
       return result;
     }, [mergedTheme]);
-    const state = useProvider({ dir, targetDocument }, ref);
+    const state = useProvider({ dir, targetDocument });
     const contexts = useProviderContextValues(state);
     state.root.children = (
       <CoreAIThemeContext.Provider value={mergedTheme}>

@@ -716,23 +716,28 @@ test('open-change preventDefault and native cancel preserve controlled native st
   await expect.element(trigger).toHaveFocus();
 });
 
-test('the installed non-modal dialog.show fallback stays styled without a library polyfill', async () => {
+// 0.4.1 removed the non-modal dialog.show() fallback: without the Popover API (or a polyfill)
+// the manual top layer only warns, so the wrapper must not add its own fallback.
+test('without the Popover API a non-modal drawer stays hidden and warns instead of falling back to dialog.show', async () => {
   const prototype = HTMLDialogElement.prototype;
   const showDescriptor = Object.getOwnPropertyDescriptor(prototype, 'showPopover');
   const hideDescriptor = Object.getOwnPropertyDescriptor(prototype, 'hidePopover');
   Object.defineProperty(prototype, 'showPopover', { configurable: true, value: undefined });
   Object.defineProperty(prototype, 'hidePopover', { configurable: true, value: undefined });
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
   try {
     const screen = await render(<NativeFixture modalType="non-modal" />);
     await userEvent.click(screen.getByRole('button', { name: 'Native drawer trigger' }));
     const surface = requireDialog(screen.getByTestId('native-drawer').element());
-    expect(surface.open).toBe(true);
+    await expect
+      .poll(() => warn.mock.calls.some(([message]) => /Popover API is not supported/.test(message)))
+      .toBe(true);
+    expect(surface.open).toBe(false);
     expect(surface.matches(':modal')).toBe(false);
     expect(surface.matches(':popover-open')).toBe(false);
-    expect(getComputedStyle(surface).display).toBe('flex');
-    await userEvent.click(screen.getByRole('button', { name: 'Close native drawer' }));
-    await expect.poll(() => surface.isConnected).toBe(false);
+    expect(getComputedStyle(surface).display).toBe('none');
   } finally {
+    warn.mockRestore();
     await cleanup();
     if (showDescriptor) Object.defineProperty(prototype, 'showPopover', showDescriptor);
     else Reflect.deleteProperty(prototype, 'showPopover');
@@ -920,7 +925,7 @@ test('real native form validation, FormData and the external footer submitter re
   await expect.element(trigger).toHaveFocus();
 });
 
-test('bare method=dialog keeps the inherited native-close versus controlled-open boundary', async () => {
+test('bare method=dialog reports the native close and stays closed while open remains controlled', async () => {
   const changes = vi.fn<NonNullable<OverlayDrawerProps['onOpenChange']>>();
   const closes = vi.fn<NonNullable<OverlayDrawerProps['onClose']>>();
   const screen = await render(
@@ -946,10 +951,13 @@ test('bare method=dialog keeps the inherited native-close versus controlled-open
   await userEvent.click(screen.getByRole('button', { name: 'Finish bare form' }));
   await expect.poll(() => surface.open).toBe(false);
   expect(surface.returnValue).toBe('saved');
+  // 0.4.1 reports the native close; a still-controlled `open` keeps the browser-closed surface hidden.
   expect(surface.hasAttribute('data-open')).toBe(true);
   expect(getComputedStyle(surface).display).toBe('none');
-  expect(changes).not.toHaveBeenCalled();
+  expect(changes.mock.calls.map(([, data]) => data.open)).toEqual([false]);
   await expect.poll(() => closes.mock.calls.length).toBe(1);
+  await new Promise((resolve) => setTimeout(resolve, 50));
+  expect(surface.open).toBe(false);
 });
 
 test('nested native Popover/Dialog preserve top-layer order, Escape isolation and focus restoration', async () => {

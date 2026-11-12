@@ -885,7 +885,7 @@ test('required native controls prevent submission until valid without closing th
   expect(nativeInput instanceof HTMLInputElement && nativeInput.validity.valueMissing).toBe(true);
 });
 
-test('native method=dialog keeps the current public close/state boundary rather than a wrapper shim', async () => {
+test('native method=dialog closes through onOpenChange and the public state without a wrapper shim', async () => {
   const changes = vi.fn<NonNullable<DialogProps['onOpenChange']>>();
   const closes = vi.fn<NonNullable<DialogSurfaceProps['onClose']>>();
   function StateProbe() {
@@ -916,8 +916,10 @@ test('native method=dialog keeps the current public close/state boundary rather 
   await expect.poll(() => root.open).toBe(false);
   expect(root.returnValue).toBe('saved');
   expect(getComputedStyle(root).display).toBe('none');
-  expect(root.querySelector('output')?.textContent).toBe('true');
-  expect(changes).not.toHaveBeenCalled();
+  await expect.poll(() => root.querySelector('output')?.textContent).toBe('false');
+  expect(changes.mock.calls.map(([, data]) => [data.type, data.open])).toEqual([
+    ['surfaceToggle', false],
+  ]);
   await expect.poll(() => closes.mock.calls.length).toBe(1);
 });
 

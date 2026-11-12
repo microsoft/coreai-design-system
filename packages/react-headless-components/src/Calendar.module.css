@@ -1,0 +1,582 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+/*
+ * Ported from @fluentui/react-calendar-compat 0.4.8 raw styles (not installed locally):
+ * https://unpkg.com/@fluentui/react-calendar-compat@0.4.8/lib/components/Calendar/useCalendarStyles.styles.raw.js
+ * https://unpkg.com/@fluentui/react-calendar-compat@0.4.8/lib/components/CalendarDay/useCalendarDayStyles.styles.raw.js
+ * https://unpkg.com/@fluentui/react-calendar-compat@0.4.8/lib/components/CalendarDayGrid/useCalendarDayGridStyles.styles.raw.js
+ * https://unpkg.com/@fluentui/react-calendar-compat@0.4.8/lib/components/CalendarPicker/useCalendarPickerStyles.styles.raw.js
+ * The repository LICENSE-CODE and this package's README.md contain the MIT license.
+ * Headless differences: the roving tab stop is the grid cell (td or div[role=gridcell]), so the
+ * focus outline is drawn on the cell. Selection, today, bounds and month membership come from
+ * data attributes rather than generated classes. The v9 slide/fade transitions are not ported.
+ * Physical spacing is expressed logically for RTL; focus uses native :focus-visible.
+ */
+
+@layer fluent-components, coreai-overrides;
+
+@layer fluent-components {
+  .Calendar {
+    display: inline-grid;
+    grid-template-columns: auto;
+    align-items: start;
+    position: relative;
+    box-sizing: border-box;
+    color: var(--colorNeutralForeground1);
+    font-family: var(--fontFamilyBase);
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightRegular);
+    line-height: var(--lineHeightBase300);
+
+    &[data-side-by-side] {
+      grid-template-columns: auto auto auto;
+
+      & > .CalendarDay,
+      & > .Calendar__divider {
+        grid-row: span 2;
+      }
+    }
+
+    /* Week, work week and month selections highlight the whole range, not each day. */
+    &:not([data-date-range-type='day']) .CalendarDay__body td[role='gridcell'] {
+      &[data-selected] {
+        border-radius: 0;
+        background-color: var(--colorBrandBackgroundInvertedSelected);
+        color: var(--colorNeutralForeground1Static);
+
+        & > button {
+          background-color: transparent;
+          border-color: transparent;
+        }
+
+        &:not(:has(+ td[data-selected])) {
+          border-start-end-radius: var(--borderRadiusMedium);
+          border-end-end-radius: var(--borderRadiusMedium);
+        }
+      }
+
+      &:not([data-selected]) + td[data-selected],
+      &:first-of-type[data-selected] {
+        border-start-start-radius: var(--borderRadiusMedium);
+        border-end-start-radius: var(--borderRadiusMedium);
+      }
+
+      &[data-range-hovered]:not([data-selected]) {
+        background-color: var(--colorBrandBackgroundInvertedHover);
+      }
+
+      &[data-range-pressed] {
+        background-color: var(--colorBrandBackgroundInvertedPressed);
+      }
+
+      @media (forced-colors: active) {
+        &[data-selected] {
+          background-color: Highlight;
+          color: HighlightText;
+          forced-color-adjust: none;
+        }
+      }
+    }
+  }
+
+  .Calendar__liveRegion {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .Calendar__divider {
+    align-self: stretch;
+    border-inline-end: 1px solid var(--colorNeutralStroke2);
+  }
+
+  .Calendar__monthPickerWrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .Calendar__goToTodayButton {
+    grid-column: -2 / -1;
+    justify-self: end;
+    height: 30px;
+    margin-block: 3px var(--spacingVerticalS);
+    margin-inline-end: 16px;
+    padding-block: 0;
+    padding-inline: 4px;
+    border: none;
+    border-radius: var(--borderRadiusMedium);
+    background-color: transparent;
+    color: var(--colorNeutralForeground1);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: var(--fontSizeBase200);
+    line-height: 30px;
+    overflow: hidden;
+    white-space: nowrap;
+
+    &:hover {
+      color: var(--colorBrandForeground1);
+    }
+
+    &:hover:active {
+      color: var(--colorBrandForeground2);
+    }
+
+    &:focus-visible {
+      outline: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+    }
+
+    &:disabled,
+    &[aria-disabled='true'] {
+      color: var(--colorNeutralForegroundDisabled);
+      cursor: default;
+      pointer-events: none;
+    }
+
+    @media (forced-colors: active) {
+      &:disabled,
+      &[aria-disabled='true'] {
+        color: GrayText;
+      }
+    }
+  }
+
+  /* Day picker */
+
+  .CalendarDay {
+    --fui-CalendarDay--width: 196px;
+
+    box-sizing: content-box;
+    width: var(--fui-CalendarDay--width);
+    padding: 12px;
+
+    &:has(.CalendarDay__body th) {
+      --fui-CalendarDay--width: 226px;
+    }
+  }
+
+  .CalendarDay__header {
+    display: inline-flex;
+    position: relative;
+    width: 100%;
+    height: 28px;
+  }
+
+  .CalendarDay__heading {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    min-width: 0;
+    padding-block: 0;
+    padding-inline: 10px 4px;
+    border: none;
+    border-radius: var(--borderRadiusMedium);
+    background-color: transparent;
+    color: var(--colorNeutralForeground1);
+    font-family: inherit;
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightSemibold);
+    line-height: 28px;
+    text-align: start;
+    overflow: hidden;
+    white-space: nowrap;
+
+    & > span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &:is(button) {
+      cursor: pointer;
+
+      &:hover {
+        background-color: var(--colorBrandBackgroundInvertedHover);
+        color: var(--colorBrandForegroundOnLightHover);
+      }
+
+      &:hover:active {
+        background-color: var(--colorBrandBackgroundInvertedPressed);
+        color: var(--colorBrandForegroundOnLightPressed);
+      }
+
+      &:focus-visible {
+        outline: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+      }
+    }
+  }
+
+  .CalendarDay__navigation {
+    display: inline-flex;
+    align-self: flex-end;
+  }
+
+  .CalendarDay__navigationButton,
+  .CalendarPicker__navigationButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: var(--borderRadiusMedium);
+    background-color: transparent;
+    color: var(--colorNeutralForeground3);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: var(--fontSizeBase200);
+    overflow: hidden;
+
+    &:hover {
+      background-color: var(--colorBrandBackgroundInvertedHover);
+      color: var(--colorNeutralForeground1Static);
+    }
+
+    &:hover:active {
+      background-color: var(--colorBrandBackgroundInvertedPressed);
+    }
+
+    &:focus-visible {
+      outline: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+    }
+
+    &:disabled,
+    &[aria-disabled='true'] {
+      background-color: transparent;
+      color: var(--colorNeutralForegroundDisabled);
+      cursor: default;
+      pointer-events: none;
+    }
+
+    @media (forced-colors: active) {
+      &:disabled,
+      &[aria-disabled='true'] {
+        color: GrayText;
+      }
+    }
+  }
+
+  .CalendarDay__grid {
+    box-sizing: border-box;
+    width: var(--fui-CalendarDay--width);
+    margin-block: 4px 10px;
+    margin-inline: auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: var(--fontSizeBase200);
+    text-align: center;
+
+    & th[role='columnheader'] {
+      height: 28px;
+      padding: 0;
+      color: var(--colorNeutralForeground1);
+      font-size: var(--fontSizeBase200);
+      font-weight: var(--fontWeightRegular);
+      line-height: 28px;
+      text-align: center;
+    }
+
+    & th:not([role='columnheader']) {
+      width: 28px;
+      padding: 0;
+    }
+  }
+
+  .CalendarDay__body {
+    & th[scope='row'] {
+      box-sizing: border-box;
+      height: 28px;
+      padding: 0;
+      border-inline-end: 1px solid var(--colorNeutralStroke2);
+      background-color: transparent;
+      color: var(--colorNeutralForeground4);
+      font-size: var(--fontSizeBase200);
+      font-weight: var(--fontWeightRegular);
+    }
+
+    & td[role='gridcell'] {
+      position: relative;
+      box-sizing: border-box;
+      height: 28px;
+      padding: 2px;
+      border-radius: var(--borderRadiusMedium);
+      color: var(--colorNeutralForeground1);
+      font-size: var(--fontSizeBase200);
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+        outline-offset: calc(-1 * var(--strokeWidthThick));
+      }
+
+      & > button {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        border: 1px solid transparent;
+        border-radius: var(--borderRadiusMedium);
+        background-color: transparent;
+        color: inherit;
+        cursor: inherit;
+        font-family: inherit;
+        font-size: var(--fontSizeBase200);
+        font-weight: inherit;
+        line-height: 24px;
+        outline: none;
+
+        & > span:first-child {
+          position: relative;
+        }
+      }
+
+      &:hover > button {
+        background-color: var(--colorBrandBackgroundInvertedHover);
+      }
+
+      &:hover:active > button {
+        background-color: var(--colorBrandBackgroundInvertedPressed);
+      }
+
+      &[data-outside-month] {
+        color: var(--colorNeutralForeground4);
+      }
+
+      &[data-selected] > button {
+        background-color: var(--colorBrandBackgroundInvertedSelected);
+        border-color: var(--colorBrandStroke1);
+        color: var(--colorNeutralForeground1Static);
+      }
+
+      &[data-today] {
+        color: var(--colorNeutralForegroundOnBrand);
+        font-weight: var(--fontWeightSemibold);
+
+        & > button::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          margin: auto;
+          width: 20px;
+          height: 20px;
+          border-radius: 100%;
+          background-color: var(--colorBrandBackground);
+        }
+      }
+
+      &[data-outside-bounds] {
+        color: var(--colorNeutralForegroundDisabled);
+        cursor: default;
+        pointer-events: none;
+
+        & > button {
+          background-color: transparent;
+        }
+      }
+
+      /* The marker is the second span; the first carries the day number. */
+      & > button > span[aria-hidden] {
+        position: absolute;
+        inset-block-end: 1px;
+        inset-inline-start: 0;
+        inset-inline-end: 0;
+        margin-inline: auto;
+        width: 4px;
+        height: 4px;
+        border-radius: 100%;
+        background-color: var(--colorBrandForeground2);
+      }
+
+      &[data-today] > button > span[aria-hidden] {
+        background-color: var(--colorNeutralForegroundOnBrand);
+      }
+
+      @media (forced-colors: active) {
+        &[data-selected] > button {
+          background-color: Highlight;
+          color: HighlightText;
+          forced-color-adjust: none;
+        }
+
+        &[data-today] > button::before {
+          background-color: WindowText;
+        }
+
+        &[data-today] {
+          color: Window;
+        }
+
+        &[data-outside-bounds] {
+          color: GrayText;
+        }
+      }
+    }
+  }
+
+  /* Month and year pickers */
+
+  .CalendarPicker {
+    box-sizing: content-box;
+    width: 196px;
+    padding: 12px;
+    overflow: hidden;
+    font-size: var(--fontSizeBase200);
+
+    /* CalendarMonth renders CalendarYear inside its own padded root. */
+    & .CalendarYear {
+      padding: 0;
+    }
+  }
+
+  .CalendarPicker__header {
+    display: flex;
+    height: 28px;
+  }
+
+  .CalendarPicker__heading {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    min-width: 0;
+    padding-block: 0;
+    padding-inline: 10px 4px;
+    border: none;
+    border-radius: var(--borderRadiusMedium);
+    background-color: transparent;
+    color: inherit;
+    font-family: inherit;
+    font-size: var(--fontSizeBase300);
+    font-weight: var(--fontWeightSemibold);
+    line-height: 28px;
+    text-align: start;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:is(button) {
+      cursor: pointer;
+
+      &:hover {
+        background-color: var(--colorBrandBackgroundInvertedHover);
+        color: var(--colorBrandForegroundOnLightHover);
+      }
+
+      &:hover:active {
+        background-color: var(--colorBrandBackgroundInvertedPressed);
+        color: var(--colorBrandForegroundOnLightPressed);
+      }
+
+      &:focus-visible {
+        outline: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+      }
+    }
+  }
+
+  .CalendarPicker__navigation {
+    display: flex;
+    align-items: center;
+  }
+
+  .CalendarPicker__navigationButton {
+    color: var(--colorNeutralForeground1);
+  }
+
+  .CalendarPicker__grid {
+    margin-block-start: 4px;
+
+    & > [role='row'] {
+      display: flex;
+      justify-content: space-between;
+      margin-block-end: 16px;
+
+      &:last-child {
+        margin-block-end: 0;
+      }
+    }
+
+    & [role='gridcell'] {
+      border-radius: var(--borderRadiusMedium);
+      color: var(--colorNeutralForeground3);
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: var(--strokeWidthThick) solid var(--colorStrokeFocus2);
+      }
+
+      & > button {
+        box-sizing: border-box;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border: none;
+        border-radius: var(--borderRadiusMedium);
+        background-color: transparent;
+        color: inherit;
+        cursor: inherit;
+        font-family: inherit;
+        font-size: var(--fontSizeBase200);
+        line-height: 40px;
+        outline: none;
+      }
+
+      &:hover > button {
+        background-color: var(--colorBrandBackgroundInvertedHover);
+        color: var(--colorNeutralForeground1Static);
+      }
+
+      &:hover:active > button {
+        background-color: var(--colorBrandBackgroundInvertedPressed);
+      }
+
+      &[data-selected] > button {
+        background-color: var(--colorBrandBackgroundInvertedSelected);
+        color: var(--colorNeutralForeground1Static);
+        font-weight: var(--fontWeightSemibold);
+      }
+
+      &[data-current] > button {
+        background-color: var(--colorBrandBackground);
+        color: var(--colorNeutralForegroundOnBrand);
+        font-weight: var(--fontWeightSemibold);
+      }
+
+      &[data-outside-bounds] {
+        color: var(--colorNeutralForegroundDisabled);
+        cursor: default;
+        pointer-events: none;
+
+        & > button {
+          background-color: transparent;
+        }
+      }
+
+      @media (forced-colors: active) {
+        &[data-selected] > button,
+        &[data-current] > button {
+          background-color: Highlight;
+          color: HighlightText;
+          forced-color-adjust: none;
+        }
+
+        &[data-outside-bounds] {
+          color: GrayText;
+        }
+      }
+    }
+  }
+}

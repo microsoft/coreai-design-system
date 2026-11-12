@@ -94,7 +94,7 @@ for (const [mode, theme] of [
         example.popoverSize ?? (example.size === 'large' ? 'medium' : 'small'),
       );
       expect(differences.filter((difference) => difference.kind === 'unexpected')).toEqual([]);
-      expect(headless.surface).toBeInstanceOf(HTMLDialogElement);
+      expect(headless.surface).toBeInstanceOf(HTMLDivElement);
       expect(headless.surface.matches(':popover-open')).toBe(true);
       expect(headless.surface.getBoundingClientRect().height).toBeGreaterThan(0);
       expect(getComputedStyle(headless.surface).getPropertyValue('position-anchor')).not.toBe(
@@ -405,12 +405,12 @@ test('uses native keyboard-focus styling with the same bounded outline geometry'
   expect(getComputedStyle(headless, '::after').borderTopWidth).toBe('2px');
 });
 
-test('retains the current native modal dialog, focus containment, Escape, and trigger restoration', async () => {
+test('inertTrapFocus switches the surface to a native modal dialog with focus containment, Escape, and trigger restoration', async () => {
   const screen = await render(
     <CoreAIFluentProvider>
       <InfoButton
         aria-label="Modal information"
-        popover={{ trapFocus: true }}
+        popover={{ inertTrapFocus: true }}
         info={{
           'aria-label': 'Modal project information',
           children: (
@@ -427,12 +427,12 @@ test('retains the current native modal dialog, focus containment, Escape, and tr
   const trigger = screen.getByRole('button', { name: 'Modal information', exact: true });
   const outside = screen.getByRole('button', { name: 'Outside modal information' }).element();
   await trigger.click();
-  const note = screen.getByRole('note', { name: 'Modal project information' });
-  await expect.element(note).toHaveFocus();
-  const surface = note.element();
-  expect(note.element()).toBeInstanceOf(HTMLDialogElement);
-  expect(note.element().matches(':modal')).toBe(true);
-  expect(note.element()).toHaveAttribute('open');
+  const modal = screen.getByRole('dialog', { name: 'Modal project information' });
+  await expect.element(modal).toHaveFocus();
+  const surface = modal.element();
+  expect(surface).toBeInstanceOf(HTMLDialogElement);
+  expect(surface.matches(':modal')).toBe(true);
+  expect(surface).toHaveAttribute('open');
   await userEvent.tab();
   expect(screen.getByRole('button', { name: 'Modal action' }).element()).toHaveFocus();
   await userEvent.tab();
