@@ -1,6 +1,6 @@
 {
   "name": "@coreai-ds/docsite",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "description": "Static CoreAI documentation with React examples and Markdown references.",
   "type": "module",
@@ -15,11 +15,14 @@
     "sources:ensure": "node scripts/sources/SetupFluentStories.mjs --if-missing",
     "sources:update": "node scripts/sources/SetupFluentStories.mjs",
     "catalog:init": "node scripts/InitializeReferenceCatalog.mjs",
+    "check:versions": "node scripts/DocumentationVersion.mjs",
+    "sync:versions": "node scripts/DocumentationVersion.mjs --sync",
+    "version": "npm run sync:versions",
     "verify": "node scripts/VerifyDocsite.mjs",
     "preview": "node scripts/ServeDocsite.mjs",
     "start": "npm run preview",
     "test": "node --test test/*.test.mjs",
-    "type-check": "npm run generate:content && tsc --noEmit",
+    "type-check": "npm run check:versions && npm run generate:content && tsc --noEmit",
     "clean": "rimraf dist .cache/reference-proof content/generated"
   },
   "dependencies": {

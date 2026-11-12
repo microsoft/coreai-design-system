@@ -113,22 +113,30 @@ versions. No login, special protocol, or client configuration is needed.
 See [Build with your agent](https://microsoft.github.io/coreai-design-system/guides/UseWithAgents/)
 for a starter prompt.
 
-For repeated work, optionally install [agent/SKILL.md](agent/SKILL.md) as a
-reviewable file in the consuming repository, such as
+Install the [current skill](https://microsoft.github.io/coreai-design-system/source/package/SKILL.md)
+as a reviewable file before CoreAI UI work, or update an older copy already in
+the consuming repository, such as
 `.github/skills/coreai-ds-fluentui-react/SKILL.md`. Other clients can use their
 supported skills directory, such as
 `.agents/skills/coreai-ds-fluentui-react/SKILL.md` or
-`.claude/skills/coreai-ds-fluentui-react/SKILL.md`. Before writing it, an agent
-must show the destination and proposed changes and obtain approval. Preserve
-existing repository-specific instructions rather than overwriting them.
+`.claude/skills/coreai-ds-fluentui-react/SKILL.md`. The starter prompt authorizes
+this skill's installation/update. Otherwise obtain approval before writing
+instructions, and ask before resolving conflicts. Preserve existing
+repository-specific instructions rather than overwriting them.
 
 The skill defines targeted retrieval, version checks, import rules, and safeguards.
 It does not duplicate component documentation or run downloaded code. Published
-older package versions may contain older skill instructions; the
+older package versions may contain older [bundled instructions](agent/SKILL.md); the
 [current skill download](https://microsoft.github.io/coreai-design-system/source/package/SKILL.md)
-contains the HTTP workflow. Review it before installing.
+contains the current workflow. Review it before installing.
 
-Compare documentation versions with installed packages. Report missing
+The description and metadata record the shared docs/skill version separately
+from the documented package version. Check the small
+[version manifest](https://microsoft.github.io/coreai-design-system/version.json)
+once per task and refresh older skill guidance; do not downgrade a newer local
+skill. Documentation-only updates do not require a new component package.
+
+Compare the documented package version with installed packages. Report missing
 documentation rather than guessing APIs, and review and test examples before
 using them in an application.
 

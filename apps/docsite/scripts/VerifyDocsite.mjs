@@ -12,8 +12,15 @@ import ts from 'typescript';
 import { chromium } from 'playwright';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
-import { appRoot, outputDirectory, codeFence, providerSource } from './BuildDocsite.mjs';
+import {
+  appRoot,
+  outputDirectory,
+  codeFence,
+  escapeHtml,
+  providerSource,
+} from './BuildDocsite.mjs';
 import { serveReferenceProof } from './ServeDocsite.mjs';
+import { readDocumentationVersion } from './DocumentationVersion.mjs';
 
 const require = createRequire(import.meta.url);
 const metadata = JSON.parse(
@@ -155,8 +162,37 @@ try {
     assert.equal(response.status, 200, relative);
     return response;
   };
-  await read('');
-  assert.match(await (await read('llms.txt')).text(), /Fetch this index once per task/);
+  const home = await (await read('')).text();
+  const { documentation, skillSource } = await readDocumentationVersion();
+  assert.deepEqual(metadata.documentation, documentation);
+  assert.deepEqual(await (await read('version.json')).json(), {
+    schemaVersion: 1,
+    ...documentation,
+    sourceRef: metadata.coreaiSourceRef,
+  });
+  assert.equal(await (await read(documentation.skill.path)).text(), skillSource);
+  const discovery = await (await read('llms.txt')).text();
+  assert.match(discovery, /Fetch this index once per task/);
+  assert.ok(discovery.includes(`Docs/skill v${documentation.version}`));
+  assert.ok(
+    discovery.includes(`documented @coreai-ds/react-components v${documentation.packageVersion}`),
+  );
+  assert.ok(
+    home.includes(`Docs/skill ${documentation.version}; CoreAI ${documentation.packageVersion}`),
+  );
+  const starterPrompt = (
+    await fs.readFile(path.join(appRoot, 'content/data/AgentPrompt.md'), 'utf8')
+  ).trim();
+  assert.equal(await (await read('agent-prompt.txt')).text(), starterPrompt);
+  assert.equal(metadata.agentPrompt, starterPrompt);
+  assert.ok(
+    home.includes(escapeHtml(starterPrompt)),
+    'Homepage starter prompt uses the canonical source.',
+  );
+  assert.ok(
+    (await (await read('guides/UseWithAgents.md')).text()).includes(starterPrompt),
+    'Agent onboarding includes the same starter prompt.',
+  );
   for (const filename of ['paper-shaders-license.txt', 'paper-shaders-notice.txt']) {
     assert.equal(
       await (await read(`third-party/${filename}`)).text(),

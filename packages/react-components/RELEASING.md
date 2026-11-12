@@ -126,10 +126,17 @@ secret. Do not assume that a configured but untested relationship works.
 
    ```bash
    npm version 0.12.0 --workspace packages/react-components --no-git-tag-version
+   npm version patch --workspace apps/docsite --no-git-tag-version
    ```
 
-   Use the approved version for later releases. Commit both the package manifest
-   and root lockfile. Roll `[Unreleased]` into `[VERSION] - YYYY-MM-DD`, add a fresh
+   Use the approved version for later releases. Docs and skill share a version
+   independent of the package; every package release also advances docs/skill.
+   The docsite version lifecycle synchronizes the skill description and metadata
+   with both manifests. If scripts were disabled, run
+   `npm --workspace apps/docsite run sync:versions`.
+   See the [version policy](../../apps/docsite/README.md#documentation-and-skill-versions).
+   Commit both manifests, the root lockfile, and `agent/SKILL.md`.
+   Roll `[Unreleased]` into `[VERSION] - YYYY-MM-DD`, add a fresh
    `[Unreleased]`, and update heading anchors. Add comparison links only when both
    referenced tags/commits actually exist.
 
@@ -137,6 +144,7 @@ secret. Do not assume that a configured but untested relationship works.
 
    ```bash
    node --test .github/workflows/scripts/release-package.test.mjs
+   npm --workspace apps/docsite run check:versions
    npm run check:public-source
    npm run license:check
    npm run test:package --workspace packages/react-components

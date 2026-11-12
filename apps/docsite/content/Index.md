@@ -25,14 +25,15 @@ copy-and-adapt templates, and UX guidance.
 ## Get started
 
 - [Set up the package](./guides/Package.md).
-- [Working with agents](./overview/Introduction.md#working-with-agents): use a starter prompt or install the optional reusable skill.
+- [Working with agents](./overview/Introduction.md#working-with-agents): use a starter prompt to install or update the repository skill.
 
 ## Give your agent CoreAI guidance
 
-Start at [llms.txt](/llms.txt). Share the [starter prompt](/agent-prompt.txt)
-with your coding agent or add the [reusable skill](/source/package/SKILL.md) to
-your repository. Agents read the same guidance, APIs, and example source as people
-over ordinary HTTPS.
+Share the [starter prompt](/agent-prompt.txt) with your coding agent. It checks
+[current versions](/version.json) and installs or updates the
+[repository skill](/source/package/SKILL.md) before UI work. Agents then read
+relevant guidance, APIs, and examples through [llms.txt](/llms.txt) over ordinary
+HTTPS.
 
 - [Open the Figma library](https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-DS?node-id=0-1).
 

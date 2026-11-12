@@ -110,12 +110,13 @@ The static output includes:
 | Output                                           | Purpose                                                           |
 | ------------------------------------------------ | ----------------------------------------------------------------- |
 | Physical directory HTML and paired `.md` files   | Human and agent documentation                                     |
-| `llms.txt`                                       | Targeted discovery and package versions                           |
+| `llms.txt`                                       | Targeted discovery, docs/skill and package versions               |
+| `version.json`                                   | Small current-release manifest for skill update checks            |
 | `llms/index.json`                                | Exact routes, APIs, source hashes, coverage, and build provenance |
 | `source/examples/*.tsx`                          | Complete generated example modules                                |
 | `source/templates/`                              | Complete copy-and-adapt template files                            |
 | `source/setup/App.tsx`                           | Provider setup                                                    |
-| `source/package/SKILL.md` and `agent-prompt.txt` | Optional consumer workflow and starter prompt                     |
+| `source/package/SKILL.md` and `agent-prompt.txt` | Versioned repository skill and install/update starter prompt      |
 | `THIRD-PARTY-NOTICES.txt` and `third-party/`     | Dependency attribution and license material                       |
 | `.nojekyll`                                      | Direct static publishing                                          |
 
@@ -128,6 +129,45 @@ APIs are summaries extracted through the public CoreAI barrel and the installed
 Fluent declarations. They do not replace the package's exported types. Templates
 remain copy-and-adapt source. The build records the actual bundled peer versions
 and rejects Storybook runtime modules or duplicate React/Fluent installations.
+
+## Documentation and skill versions
+
+The docsite manifest owns one semantic version shared by the documentation and
+consumer skill. The component package has its own independent version. A
+documentation-only change advances docs/skill without republishing the package.
+A package release advances both tracks. Only the current release is hosted.
+
+The skill description includes both versions so clients can see them before
+loading the body. `metadata.version` is the docs/skill version;
+`metadata.package-version` identifies the package documented by that skill.
+These labels describe the site, not a consuming app's installed package.
+
+For a docs/skill change, run from the repository root:
+
+```powershell
+npm version patch --workspace apps/docsite --no-git-tag-version
+```
+
+Use the approved semantic increment or explicit version. npm updates the
+workspace manifest and root lockfile, then the `version` lifecycle synchronizes
+the skill's description/metadata. If lifecycle scripts were disabled, run:
+
+```powershell
+npm --workspace apps/docsite run sync:versions
+```
+
+For a package release, change the package version first, then advance docs/skill.
+Synchronization refuses a package-version change without a newer docs/skill
+version. Commit the two manifests, root lockfile, and skill together.
+See the [package release procedure](../../packages/react-components/RELEASING.md).
+
+Build and type-check reject version-label drift; they do not silently rewrite
+authored files. `version.json` contains the docs version, documented package
+version, skill version/path/SHA-256, and source revision. The same release
+metadata appears in `llms/index.json`, `llms.txt`, and human page footers.
+Agents check the small manifest once per task, then review and update only older
+CoreAI skill guidance while preserving local instructions. Failed retrieval or
+conflicting edits require an explicit report rather than a silent skip.
 
 ## Runtime and validation
 

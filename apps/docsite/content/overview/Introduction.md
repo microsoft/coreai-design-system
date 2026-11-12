@@ -60,7 +60,7 @@ Share a page's **View .md** link for guidance and example code.
 
 ### Repository skill
 
-Add **SKILL.md** to your project's skill folder for future CoreAI tasks.
+Install or update **SKILL.md** before CoreAI tasks; it checks for newer guidance.
 
 [Download skill](/source/package/SKILL.md)
 

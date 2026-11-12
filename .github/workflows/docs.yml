@@ -70,6 +70,7 @@ jobs:
         run: |
           node --input-type=module <<'NODE'
           import assert from 'node:assert/strict';
+          import { createHash } from 'node:crypto';
           import { setTimeout } from 'node:timers/promises';
           for (let attempt = 1; attempt <= 12; attempt++) {
             try {
@@ -81,6 +82,13 @@ jobs:
               const index = JSON.parse((await read('llms/index.json')).text);
               assert.equal(index.coreaiSourceRef, process.env.GITHUB_SHA);
               assert.equal(index.basePath, '/coreai-design-system/');
+              const release = JSON.parse((await read('version.json')).text);
+              assert.equal(release.sourceRef, process.env.GITHUB_SHA);
+              assert.equal(release.version, index.documentation.version);
+              assert.equal(release.skill.version, release.version);
+              assert.equal(release.packageVersion, index.versions['@coreai-ds/react-components']);
+              const skill = (await read(release.skill.path)).text;
+              assert.equal(createHash('sha256').update(skill).digest('hex'), release.skill.sha256);
               assert.match((await read('')).text, /CoreAI Design System/);
               const markdown = await read('components/DataGrid.md');
               assert.ok(!markdown.type.includes('text/html'));

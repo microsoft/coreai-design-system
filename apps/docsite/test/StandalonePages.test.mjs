@@ -116,13 +116,16 @@ test('agent handoff and skill use HTTP discovery without requiring installation'
   assert.match(source, /llms\.txt/);
   assert.match(source, /llms\/index\.json/);
   assert.match(source, /once per task/);
-  assert.match(source, /Get the user's\s+approval/);
+  assert.match(source, /user's approval before writing instructions/);
+  assert.match(source, /metadata\.version/);
+  assert.match(source, /version\.json/);
   assert.doesNotMatch(source, /\bMCP\b|docs-list|docs-show|azurewebsites/i);
   const prompt = (
     await fs.readFile(path.join(appRoot, 'content/data/AgentPrompt.md'), 'utf8')
   ).trim();
-  assert.match(prompt, /No installation is needed/);
-  assert.match(prompt, /without overwriting existing instructions/);
+  assert.match(prompt, /Install it at \.github\/skills\/coreai-ds-fluentui-react\/SKILL\.md/);
+  assert.match(prompt, /update the existing CoreAI skill.*before implementing/);
+  assert.match(prompt, /Preserve repository-specific rules/);
   const expanded = await expandStandaloneMarkdown('<!-- include: agent-prompt -->', {
     route: 'guides/UseWithAgents',
     pages: [],
@@ -332,7 +335,7 @@ test('Introduction keeps feature cards, agent guidance and resources in order', 
     assert.ok(output.indexOf('Working with agents') < output.lastIndexOf('Resources'));
     assert.match(output, /agent-prompt\.txt/);
     assert.match(output, /source\/package\/SKILL\.md/);
-    assert.match(output, /guides\/AgentWorkflow/);
+    assert.match(output, /version\.json/);
   }
   assert.match(html, /id="guidance-working-with-agents"/);
   assert.match(html, /data-page-widget="agent-cards"/);
@@ -397,7 +400,7 @@ test('workflow and content pages use bounded views backed by their complete Mark
     'utf8',
   );
   const contentSource = await fs.readFile(path.join(appRoot, 'content', content.guidance), 'utf8');
-  assert.match(workflowSource, /\*\*Find the index\.\*\*/);
+  assert.match(workflowSource, /\*\*Refresh the skill\.\*\*/);
   assert.match(contentSource, /\*\*Bad:\*\*[\s\S]*\*\*Better:\*\*/);
   assert.match(contentSource, /## Get help/);
 });

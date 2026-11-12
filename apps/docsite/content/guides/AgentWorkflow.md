@@ -13,12 +13,17 @@ reference:
 
 Base URL: https://microsoft.github.io/coreai-design-system/
 
-1. **Find the index.** Read [llms.txt](/llms.txt) once per task. It lists page purposes and package
-   versions. Reuse it rather than fetching the entire catalog.
+1. **Refresh the skill.** Read [version.json](/version.json) once per task. Install the
+   [current skill](/source/package/SKILL.md) if missing, or update older
+   `metadata.version` guidance before UI work. Preserve local rules, do not
+   downgrade newer local guidance, and ask before resolving conflicts. Follow the
+   updated skill in this task.
 2. **Check installed versions.** Check the consuming app's manifest and lockfile. This site documents the
-   current release. If versions differ, inspect installed TypeScript declarations
+   `packageVersion` from the version manifest, independently of the docs/skill
+   version. If versions differ, inspect installed TypeScript declarations
    and state the mismatch before relying on newer APIs.
-3. **Read only what you need.** Choose only the pages needed for the user's task. Read their UX guidance as
+3. **Read only what you need.** Fetch [llms.txt](/llms.txt) once, then choose only the
+   pages needed for the user's task. Read their UX guidance as
    well as the Default example, API summaries, and relevant additional examples.
 4. **Fetch over HTTPS.** Use ordinary HTTPS GET with a web-fetch or HTTP tool. Check HTTP status and
    reject HTML returned where Markdown was expected.
@@ -31,6 +36,7 @@ Base URL: https://microsoft.github.io/coreai-design-system/
 - Markdown: `/coreai-design-system/components/Button.md`
 - Homepage Markdown: `/coreai-design-system/index.md`
 - Discovery index: `/coreai-design-system/llms.txt`
+- Current docs/skill and package versions: `/coreai-design-system/version.json`
 - Exact routes and metadata: `/coreai-design-system/llms/index.json`
 - Reusable skill: `/coreai-design-system/source/package/SKILL.md`
 
@@ -63,11 +69,17 @@ template page, review it, and copy it into the consuming repository before adapt
 it. Install the listed dependencies. Keep keyboard behavior, accessible names,
 focus visibility, responsive layouts, and both themes.
 
-## Optional skill
+## Skill installation and updates
 
 The [reusable skill](./PackageSkill.md) stores this retrieval workflow in a
-consuming repository. It is optional, not a prerequisite for HTTP reading.
-Never install or overwrite instructions without the user's approval.
+consuming repository. Install or refresh it before implementing, not on every
+page fetch. Its docs/skill version can change without a new component package.
+Only current documentation is hosted; existing package releases are not rewritten.
+
+The starter prompt authorizes skill installation/update. Otherwise obtain approval
+before writing instructions. Review downloaded changes and preserve
+repository-specific guidance. Report retrieval, version, or write failures and
+ask how to proceed rather than claiming successful setup.
 
 ## When a page is unavailable
 

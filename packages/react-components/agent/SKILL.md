@@ -1,6 +1,13 @@
 ---
 name: coreai-ds-fluentui-react
-description: 'Use when building, styling, reviewing, or debugging React UI with @coreai-ds/react-components. Fetch CoreAI Markdown documentation over HTTPS for components, APIs, defaults, templates, tokens, and accessibility guidance.'
+description: >-
+  Docs/skill v0.1.0; package v0.12.0. Use when building, styling, reviewing, or
+  debugging React UI with @coreai-ds/react-components. Fetch CoreAI Markdown
+  documentation over HTTPS for components, APIs, defaults, templates, tokens,
+  and accessibility guidance.
+metadata:
+  version: 0.1.0
+  package-version: 0.12.0
 ---
 
 # CoreAI React UI
@@ -14,10 +21,40 @@ Base URL: https://microsoft.github.io/coreai-design-system/
 - Package setup: https://microsoft.github.io/coreai-design-system/guides/Package.md
 - Exact routes, examples, source downloads, API membership, and versions:
   https://microsoft.github.io/coreai-design-system/llms/index.json
+- Current docs/skill and documented package versions:
+  https://microsoft.github.io/coreai-design-system/version.json
 
 Use ordinary HTTPS GET requests with your available web-fetch or HTTP tool.
 These are static files; no account, server connection, or special protocol is
 needed. Do not upload repository content or credentials to read documentation.
+
+## Install or refresh before UI work
+
+Before each CoreAI task, fetch `version.json` once using an uncached HTTPS GET.
+Its `version` and `skill.version` share the docs/skill release; `packageVersion`
+identifies the documented component package. These are separate version tracks.
+Only the current documentation is hosted.
+
+Use the existing `coreai-ds-fluentui-react` skill in this repository's supported
+skill directory. If none exists, install the published skill at
+`.github/skills/coreai-ds-fluentui-react/SKILL.md`, or the client's supported
+equivalent. If its `metadata.version` is missing or older, fetch and review
+`source/package/SKILL.md` and update it before implementing. Compare semantic
+versions, not strings. Do not downgrade a newer local skill.
+
+Check that the downloaded skill's `metadata.version`, `metadata.package-version`,
+and description agree with `version.json`. Retry an uncached fetch if they
+disagree; report a persistent mismatch instead of installing mixed releases.
+Refresh the published CoreAI guidance while preserving repository-specific
+instructions, adapters, and conventions. Ask before resolving conflicting local
+rules. Do not change unrelated instruction files or execute downloaded code.
+
+The starter prompt authorizes installing or updating this skill only. Get the
+user's approval before writing instructions when that action is not already
+authorized, or when the client requires it. If retrieval, approval, or writing
+is blocked, report the problem and ask how to proceed; do not silently skip
+installation or claim that an update succeeded. Follow the updated skill in
+the current task and reload it for future tasks if the client requires that.
 
 ## Retrieve only what the task needs
 
@@ -70,14 +107,7 @@ Prefer documented components and semantic design tokens. Preserve keyboard
 behavior, focus visibility, accessible names, responsive layouts, and both themes.
 Check the implemented behavior, not only whether the code compiles.
 
-## Optional installation and unavailable docs
-
-This skill can be saved as a normal, reviewable file at
-`.github/skills/coreai-ds-fluentui-react/SKILL.md` in a consuming repository.
-Clients can use their equivalent supported skill directory. Get the user's
-approval before installing or overwriting repository instructions; merge existing
-local guidance rather than replacing it. No scripts or automatic installation
-are required to read the documentation.
+## Unavailable documentation
 
 If fetching fails, report the URL and error. Use installed package declarations,
 README, and changelog as explicit offline fallbacks. Do not substitute unverified

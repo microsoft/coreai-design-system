@@ -22,15 +22,18 @@ reference:
 
 Copy the text below into your coding agent, then replace the final line with your
 task. Your agent needs a web-fetch or HTTP tool. Reading the site needs no
-installation, login, API key, or client configuration. Use ordinary HTTPS GET
-requests to read the published files.
+login, API key, or client connection. The prompt directs your agent to review
+and install the current skill, or update the one already in your repository,
+before implementing your task. No executable installer is needed.
 
 <!-- include: agent-prompt -->
 
 ## What the agent reads
 
 The [documentation index](/llms.txt) lists page purposes and current package
-versions. Each human page has a Markdown counterpart with the same guidance,
+versions. The small [version manifest](/version.json) identifies the shared
+docs/skill version and the documented package version independently.
+Each human page has a Markdown counterpart with the same guidance,
 API summaries, and complete example source. For example, the Button page is
 available as [Markdown](/components/Button.md).
 
@@ -38,15 +41,18 @@ The [agent workflow](./AgentWorkflow.md) explains targeted retrieval, version
 checks, templates, and validation. The [machine-readable index](/llms/index.json)
 adds exact paths, source links, API members, and provenance.
 
-## Make it reusable
+## Keep the repository skill current
 
-For a repository that regularly uses CoreAI, install the [agent skill](./PackageSkill.md)
-once. It teaches supported agents when and how to find this documentation.
-Installation is optional; the prompt works without it.
+The [agent skill](./PackageSkill.md) is the persistent entry point for CoreAI
+tasks. Its description and metadata carry its docs/skill version and the
+documented package version. Before each task it checks whether newer published
+guidance is available; an older npm package may contain an older skill.
 
-Review the skill before saving it. Ask the agent to show the destination and
-proposed changes, preserve existing local instructions, and get your approval.
-Do not execute downloaded scripts to set up read-only documentation.
+Review the skill before saving it. The starter prompt authorizes that skill's
+installation or update, not changes to unrelated repository instructions.
+Preserve local rules and adapters; ask before resolving conflicts or when the
+client requires approval. If fetching or saving fails, the agent must report it
+and ask how to proceed instead of silently skipping setup.
 
 ## Privacy and limitations
 
@@ -54,6 +60,7 @@ These are public, read-only static files. Fetching a page does not require sendi
 your source code, prompts, or credentials to this site. Your agent provider and
 HTTP client have their own data policies.
 
-The site documents the current release. Agents must compare versions with your
+The site hosts only the current docs/skill release and its documented package
+version. Agents must compare that package version with your
 installed packages, report unavailable pages, and test adapted code in your app.
 The skill is guidance, not an enforcement mechanism or a guarantee of correctness.

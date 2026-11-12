@@ -72,7 +72,10 @@ For individual components, start with documented props and design tokens. Preser
 
 Install the package to build an application. Agents can read the same UX guidance and complete examples as people through this site's Markdown endpoints with ordinary HTTPS.
 
-See [Working with agents](./Introduction.md#working-with-agents) for a starter prompt. The optional reusable skill makes this workflow available for repeated work in a consuming repository.
+See [Working with agents](./Introduction.md#working-with-agents) for a starter
+prompt that installs or updates the repository skill before UI work. The skill
+checks the [current docs/skill version](/version.json) once per task. Its version
+can change independently of the component package.
 
 - [Agent workflow](/guides/AgentWorkflow.md)
 
