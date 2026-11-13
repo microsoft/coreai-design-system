@@ -56,6 +56,7 @@ export default tseslint.config(
       'apps/prototype/*config.ts',
       'apps/prototype/test/**/*.mjs',
       'apps/docsite/scripts/**/*.{js,mjs}',
+      'apps/legacy-docs/**/*.mjs',
       'apps/docsite/src/{site-data,utils}.mjs',
       'apps/storybook/.storybook/**/*.{js,mjs,ts,tsx}',
       'apps/storybook/host/**/*.{js,mjs}',

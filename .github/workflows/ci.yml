@@ -38,6 +38,8 @@ jobs:
       - run: npm run type-check
       - name: Test guidance generation
         run: node --test shared/guidance.test.mjs
+      - name: Test legacy documentation migration host
+        run: npm --workspace apps/legacy-docs test
       - name: Test local Storybook source tooling
         run: npm --workspace apps/docsite run sources:ensure && node --test apps/storybook/scripts/story-inventory.test.mjs apps/storybook/scripts/story-source.test.mjs
       - name: Install Chromium

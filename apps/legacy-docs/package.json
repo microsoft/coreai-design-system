@@ -1,0 +1,21 @@
+{
+  "name": "@coreai-ds/legacy-docs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Legacy documentation redirects and MCP retirement notice.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "pretest": "npm run build",
+    "test": "node --test server.test.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

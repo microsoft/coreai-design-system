@@ -211,6 +211,8 @@ deploy. Manual deployment also requires `main`. No Azure
 credentials or public Storybook/MCP host are used.
 
 See [hosting setup](../../docs/CI-CD-SETUP.md) and
-[workflow operations](../../docs/GITHUB-ACTIONS.md). Existing Azure hosts may
-redirect to the Pages root after cutover; precise old-page redirects are not a
-documentation contract.
+[workflow operations](../../docs/GITHUB-ACTIONS.md). The separate
+[legacy retirement host](../legacy-docs/README.md) forwards old website requests
+to the Pages root and returns skill/Markdown migration guidance for old MCP calls.
+It does not serve documentation or run Storybook. Precise old-page redirects are
+not a documentation contract.

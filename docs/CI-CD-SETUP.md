@@ -3,7 +3,9 @@
 The public documentation site is
 <https://microsoft.github.io/coreai-design-system/>.
 GitHub Pages is the only documentation hosting target. Storybook is a local
-development tool; neither Storybook nor MCP is deployed publicly by this repository.
+development tool. Legacy Azure hosts can retain website redirects and the small
+[MCP retirement notice](../apps/legacy-docs/README.md), but do not serve Storybook
+or component documentation.
 
 ## Repository setup
 
@@ -22,8 +24,10 @@ validation has read-only repository permissions.
 
 No Azure configuration, private feed, publish profile, or long-lived credential
 is needed for site hosting. The workflow does not modify existing Azure hosts.
-Their owners can redirect old hostnames to the Pages root after the new site is
-available. Precise old-page mappings are not required.
+Their owners can deploy the retirement host to forward website requests to the
+Pages root while retaining migration instructions at the old MCP endpoint.
+Precise old-page mappings are not required. This is a separate, manually approved
+deployment; the Pages workflow never changes Azure.
 
 ## Build and verification
 
