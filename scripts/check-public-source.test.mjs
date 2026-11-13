@@ -55,14 +55,14 @@ test('allows retained Figma design links without allowing credentials', () => {
   );
 });
 
-test('allows intended public targets, hosted auth, font docs and local CSS', () => {
+test('allows intended public targets, font docs and local CSS', () => {
   assert.deepEqual(
     checkFile(
       'README.md',
       `
 https://github.com/microsoft/coreai-design-system
 https://registry.npmjs.org/
-https://coreai-ds-storybook.azurewebsites.net/mcp
+https://microsoft.github.io/coreai-design-system/llms.txt
 https://www.microsoft.com/en-us/download/details.aspx?id=106087
 Aptos remains preferred; review the license before use.
 `,

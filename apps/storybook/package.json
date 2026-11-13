@@ -9,7 +9,6 @@
     "build": "npm run storybook:prepare && storybook build -o storybook-static && npm run docs:markdown",
     "clean": "rimraf --glob storybook-static \"src/stories/templates/*.mdx\" src/stories/docs/AgentSkill.mdx",
     "verify:build": "node scripts/verify-storybook-build.mjs && node --test ../../scripts/validate-illicons.test.mjs scripts/illicon-catalog.test.mjs scripts/theme-source-revision.test.mjs scripts/fluent-story-version.test.mjs scripts/story-inventory.test.mjs scripts/generate-component-stories.test.mjs scripts/story-source.test.mjs scripts/story-descriptions.test.mjs scripts/generate-markdown.test.mjs scripts/guidance-mcp.test.mjs scripts/ingestion-mcp.test.mjs",
-    "test:host": "node --test \"host/*.test.mjs\"",
     "type-check": "node ../../scripts/generate-illicons.mjs && tsc --noEmit",
     "stories:ensure": "npm --workspace @coreai-ds/docsite run sources:ensure",
     "stories:init": "npm --workspace @coreai-ds/docsite run sources:update",
