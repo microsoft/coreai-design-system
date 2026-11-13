@@ -28,3 +28,6 @@ reference:
 - Cards can also be used to let people make a selection, similar to checkboxes or radio groups.
 - By default, there is no indicator on cards that signifies they are selectable, but interaction states like hover and focus can hint at selectability.
 - While they’re very flexible, it’s important to use them consistently for particular use cases across experiences.
+
+For React Router navigation, see the [Card Link template](../templates/ReactRouterCardLink.md).
+Prefer an existing repository adapter when your app already provides one.

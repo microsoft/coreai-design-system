@@ -3432,7 +3432,7 @@ a.theme-crossfade:hover {
   height: 18px;
 }
 
-.component-resource-card__icon .fluent-logo {
+.component-resource-card__icon :is(.figma-logo, .fluent-logo) {
   color: var(--colorNeutralForeground2);
 }
 

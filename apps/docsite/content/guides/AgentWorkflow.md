@@ -60,9 +60,14 @@ exported types are authoritative.
 
 ## Components and templates
 
-Import components, styling APIs, and tokens from `@coreai-ds/react-components`.
-Icons can come from `@fluentui/react-icons`. Inspect repository adapters and
-import rules before adding a new composition.
+Follow repository adapters, import restrictions, and lint rules first. Otherwise
+import components, styling APIs, and tokens from `@coreai-ds/react-components`.
+Icons can come from `@fluentui/react-icons`. If a local instruction still requires the legacy
+documentation MCP, report the conflict and ask before changing it. Do not
+silently bypass repository instructions.
+
+Reading these docs does not replace normal app dependency setup. Follow the
+repository's package manager, lockfile, and approval rules.
 
 Templates are not npm exports. Download every source file listed on the chosen
 template page, review it, and copy it into the consuming repository before adapting

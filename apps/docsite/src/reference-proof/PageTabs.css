@@ -188,7 +188,7 @@
   height: 18px;
 }
 
-.reference-showcase-toolbar__action .fluent-logo {
+.reference-showcase-toolbar__action :is(.figma-logo, .fluent-logo) {
   color: var(--colorNeutralForeground2);
 }
 

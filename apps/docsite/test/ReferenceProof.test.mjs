@@ -382,18 +382,28 @@ test('coverage accounts for upstream replacements and deliberately unselected ex
   );
 });
 
-test('Markdown includes authored guidance, exact example source, base-aware links and template source', () => {
+test('Markdown puts authored guidance before examples and APIs without losing source or links', () => {
   const source = 'export default function Example() { return null; }\n';
   const page = {
-    guidance: '# Empty state\n\nDo not confuse no results with missing permissions.',
+    guidance:
+      '# Empty state\n\nDo not confuse no results with missing permissions.\n\n## Behavior and states\n\nExplain how to recover before offering an action.',
     kind: 'templates',
+    defaultExampleId: 'empty-state--default',
     examples: [
       {
+        id: 'empty-state--default',
         name: 'Default',
         origin: 'local',
         description: 'A complete example.',
         sourcePath: 'source/examples/default.tsx',
         source,
+      },
+    ],
+    api: [
+      {
+        name: 'EmptyState',
+        kind: 'component',
+        props: [{ name: 'label', type: 'string', required: true }],
       },
     ],
     templateSources: [{ name: 'EmptyState.tsx', path: 'source/templates/EmptyState.tsx', source }],
@@ -403,6 +413,11 @@ test('Markdown includes authored guidance, exact example source, base-aware link
     versions: { '@coreai-ds/react-components': '0.11.1', '@fluentui/react-components': '9.74.9' },
   });
   assert.match(markdown, /Do not confuse no results with missing permissions/);
+  assert.match(markdown, /## Behavior and states\n\nExplain how to recover/);
+  assert.ok(markdown.indexOf('Explain how to recover') < markdown.indexOf('## Default'));
+  assert.ok(markdown.indexOf('Explain how to recover') < markdown.indexOf('## API'));
+  assert.match(markdown, /Source: CoreAI\./);
+  assert.match(markdown, /label: string/);
   assert.match(markdown, /A complete example\./);
   assert.match(markdown, /not an npm export/);
   assert.match(markdown, /\(\/repo\/guides\/Package\.md\)/);

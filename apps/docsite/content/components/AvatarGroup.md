@@ -2,9 +2,8 @@
 id: avatar-group
 title: Avatar group
 summary: >-
-  An avatar shows an image or text to represent a person or group as well as
-  give additional information like their status and activity. If you need to
-  represent many avatars, try an avatar group.
+  Represent multiple people or groups with an avatar spread, stack, or compact
+  pie; show overflow when space is limited.
 resources:
   - label: Figma component
     url: >-

@@ -24,7 +24,9 @@ Copy the text below into your coding agent, then replace the final line with you
 task. Your agent needs a web-fetch or HTTP tool. Reading the site needs no
 login, API key, or client connection. The prompt directs your agent to review
 and install the current skill, or update the one already in your repository,
-before implementing your task. No executable installer is needed.
+before implementing your task. No executable installer is needed to read the
+docs or save the skill. Normal app dependency setup still applies; follow your
+repository's package manager, lockfile, and approval rules.
 
 <!-- include: agent-prompt -->
 

@@ -1,12 +1,12 @@
 ---
 name: coreai-ds-fluentui-react
 description: >-
-  Docs/skill v0.1.0; package v0.12.0. Use when building, styling, reviewing, or
+  Docs/skill v0.1.1; package v0.12.0. Use when building, styling, reviewing, or
   debugging React UI with @coreai-ds/react-components. Fetch CoreAI Markdown
   documentation over HTTPS for components, APIs, defaults, templates, tokens,
   and accessibility guidance.
 metadata:
-  version: 0.1.0
+  version: 0.1.1
   package-version: 0.12.0
 ---
 
@@ -26,7 +26,9 @@ Base URL: https://microsoft.github.io/coreai-design-system/
 
 Use ordinary HTTPS GET requests with your available web-fetch or HTTP tool.
 These are static files; no account, server connection, or special protocol is
-needed. Do not upload repository content or credentials to read documentation.
+needed. This does not replace normal app dependency setup. Follow the
+repository's package manager, lockfile, and approval rules. Do not upload
+repository content or credentials to read documentation.
 
 ## Install or refresh before UI work
 
@@ -81,9 +83,14 @@ identify any fallback. Do not claim a failed request succeeded.
 
 ## Imports and application setup
 
-Import components, tokens, and styling APIs from `@coreai-ds/react-components`.
-Do not bypass CoreAI wrappers by importing the Fluent component barrel directly.
-Icons can come from `@fluentui/react-icons`.
+Follow repository adapters, import restrictions, and lint rules first. Where
+those rules allow direct imports, use `@coreai-ds/react-components` for components,
+tokens, and styling APIs. Do not bypass CoreAI wrappers by importing the Fluent
+component barrel directly. Icons can come from `@fluentui/react-icons`.
+
+If a local rule still requires the legacy documentation MCP, report the conflict
+and ask before changing that rule. Do not silently ignore it or rewrite unrelated
+instructions.
 
 Use one `CoreAIFluentProvider` at the app root unless the product intentionally
 needs a nested theme. Read setup and theming guidance before changing providers.
@@ -106,6 +113,11 @@ template import from the package.
 Prefer documented components and semantic design tokens. Preserve keyboard
 behavior, focus visibility, accessible names, responsive layouts, and both themes.
 Check the implemented behavior, not only whether the code compiles.
+
+At completion, briefly report pages actually read, installed/documented version
+differences, guidance gaps or fallbacks, and checks actually run. Distinguish
+failed or skipped checks from passing checks; do not imply untested browser,
+theme, or responsive behavior was verified.
 
 ## Unavailable documentation
 

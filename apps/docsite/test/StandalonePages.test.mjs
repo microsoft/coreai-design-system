@@ -106,7 +106,7 @@ test('Markdown includes and generated sections expand without evaluating code fe
   await assert.rejects(expandStandaloneMarkdown('<!-- include: ../outside -->', {}), /Malformed/);
 });
 
-test('agent handoff and skill use HTTP discovery without requiring installation', async () => {
+test('agent handoff installs the current skill and uses HTTP documentation discovery', async () => {
   const skillPath = path.resolve(appRoot, '../../packages/react-components/agent/SKILL.md');
   const source = await fs.readFile(skillPath, 'utf8');
   const skill = matter(source);
@@ -119,7 +119,7 @@ test('agent handoff and skill use HTTP discovery without requiring installation'
   assert.match(source, /user's approval before writing instructions/);
   assert.match(source, /metadata\.version/);
   assert.match(source, /version\.json/);
-  assert.doesNotMatch(source, /\bMCP\b|docs-list|docs-show|azurewebsites/i);
+  assert.doesNotMatch(source, /docs-list|docs-show|azurewebsites/i);
   const prompt = (
     await fs.readFile(path.join(appRoot, 'content/data/AgentPrompt.md'), 'utf8')
   ).trim();

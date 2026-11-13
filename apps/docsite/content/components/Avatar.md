@@ -9,9 +9,8 @@ storybookTitles:
   - Components/AvatarGroup
 figmaPageId: '2070:48306'
 summary: >-
-  An avatar shows an image or text to represent a person or group as well as
-  give additional information like their status and activity. If you need to
-  represent many avatars, try an avatar group.
+  Represent one person or group with an image or text, plus optional presence
+  and activity indicators. Use AvatarGroup for multiple avatars.
 resources:
   - label: Figma component
     url: >-

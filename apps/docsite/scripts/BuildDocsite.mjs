@@ -374,9 +374,9 @@ export function pageMarkdown(page, metadata) {
     ].join('\n\n');
   return [
     parts.introduction,
+    parts.body,
     ...(basic ? [exampleMarkdown(basic)] : []),
     componentApiMarkdown(page.api),
-    parts.body,
     implementationMarkdown(page, metadata),
     ...page.examples.filter((example) => example !== basic).map(exampleMarkdown),
     ...page.templateSources.map((source) =>

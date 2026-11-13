@@ -121,7 +121,9 @@ The static output includes:
 | `.nojekyll`                                      | Direct static publishing                                          |
 
 The same generated TSX is compiled for previews, shown as source, and published in
-Markdown/downloads. Source extraction rejects unsupported Storybook runtime setup
+Markdown/downloads. Component and template Markdown puts authored guidance before
+the Default example and API summaries so agents read usage rules before code.
+Source extraction rejects unsupported Storybook runtime setup
 instead of shipping a partial compatibility runtime. Fixed DOM IDs are scoped;
 already-unique hook-generated IDs retain their reference relationships.
 

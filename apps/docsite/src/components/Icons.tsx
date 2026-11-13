@@ -10,7 +10,6 @@ import {
   WeatherSunny20Regular,
   type FluentIconsProps,
 } from '@fluentui/react-icons';
-import figmaColor32 from '../assets/figma-color-32.svg';
 
 export function CoreAILogo(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -57,19 +56,24 @@ export function ExternalIcon(props: FluentIconsProps) {
   return <Open20Filled aria-hidden="true" {...props} />;
 }
 
-export function FigmaLogo(props: React.ImgHTMLAttributes<HTMLImageElement>) {
-  const className = ['figma-logo', props.className].filter(Boolean).join(' ');
+export function FigmaLogo({ className, ...props }: React.SVGProps<SVGSVGElement>) {
   return (
-    <img
-      {...props}
-      className={className}
-      src={figmaColor32}
-      alt=""
+    <svg
+      viewBox="0 0 32 32"
+      fill="currentColor"
       width={32}
       height={32}
       aria-hidden="true"
-      draggable={false}
-    />
+      focusable="false"
+      {...props}
+      className={['figma-logo', className].filter(Boolean).join(' ')}
+    >
+      <path d="M11.5003 30C13.9842 30 16.0005 27.909 16.0005 25.333V20.6659H11.5003C9.01632 20.6659 7 22.757 7 25.333C7 27.909 9.01632 30 11.5003 30Z" />
+      <path d="M7 16C7 13.424 9.01632 11.333 11.5003 11.333H16.0005V20.6659H11.5003C9.01632 20.667 7 18.576 7 16Z" />
+      <path d="M7 6.66704C7 4.09104 9.01632 2 11.5003 2H16.0005V11.333H11.5003C9.01632 11.333 7 9.24304 7 6.66704Z" />
+      <path d="M15.9995 2H20.4997C22.9837 2 25 4.09104 25 6.66704C25 9.24304 22.9837 11.333 20.4997 11.333H15.9995V2Z" />
+      <path d="M25 16C25 18.576 22.9837 20.667 20.4997 20.667C18.0158 20.667 15.9995 18.576 15.9995 16C15.9995 13.424 18.0158 11.333 20.4997 11.333C22.9837 11.333 25 13.424 25 16Z" />
+    </svg>
   );
 }
 
