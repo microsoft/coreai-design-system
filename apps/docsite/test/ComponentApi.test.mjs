@@ -159,7 +159,7 @@ test('component bindings share local-over-Fluent member ownership with Storybook
   assert.match(bindings.imports[0], /Accordion as Root/);
 });
 
-test('Default precedes separate APIs and guidance without duplicating the example source', () => {
+test('Markdown prioritizes guidance while HTML retains the basic preview without duplicate source', () => {
   const basic = {
     id: 'button--default',
     name: 'Default',
@@ -206,9 +206,9 @@ test('Default precedes separate APIs and guidance without duplicating the exampl
     pages: [page],
   };
   const markdown = pageMarkdown(page, metadata);
+  assert.ok(markdown.indexOf('## Best practices') < markdown.indexOf('## Default'));
   assert.ok(markdown.indexOf('## Default') < markdown.indexOf('## API'));
-  assert.ok(markdown.indexOf('## API') < markdown.indexOf('## Best practices'));
-  assert.ok(markdown.indexOf('## Best practices') < markdown.indexOf('## Other'));
+  assert.ok(markdown.indexOf('## API') < markdown.indexOf('## Other'));
   assert.equal(markdown.split(basic.source).length, 2);
   assert.match(markdown, /interface ButtonProps \{/);
   assert.match(markdown, /shape\?: "circular" \| "square";/);
