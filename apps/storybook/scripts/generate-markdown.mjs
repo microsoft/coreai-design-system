@@ -731,7 +731,8 @@ export async function generateMarkdown({ buildDirectory = defaultBuildDirectory 
     if (indexedIds.has(entry.id)) throw new Error(`Duplicate index ID: ${entry.id}`);
     indexedIds.add(entry.id);
     if (key !== entry.id) throw new Error(`Index key/ID mismatch: ${key} / ${entry.id}`);
-    if (entry.type === 'story') indexStories.set(entry.id, entry);
+    if (entry.type === 'story' && (!entry.tags || entry.tags.includes('manifest')))
+      indexStories.set(entry.id, entry);
   }
   const components = [];
   for (const component of manifestEntries(componentManifest, 'components')) {

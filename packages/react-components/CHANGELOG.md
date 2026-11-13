@@ -26,7 +26,14 @@ headings in this changelog.
 ### Added
 
 - `Illicon` renders occupancy-only `DotGridData` as theme-aware SVG circles at cells-times-pitch pixel dimensions, with diameter-aware pixel alignment and separate custom inline SVG sizing.
-- `iconToDotGrid` converts static SVG (including local inline CSS masks) and Fluent icons through browser canvas sampling; `dotGridToSvg` exports editable circle-based SVG for Figma. Both are exported from the main package.
+- `iconToDotGrid` converts static SVG (including local inline CSS masks) and Fluent icons using one canvas pixel per grid cell and an alpha coverage threshold. `dotGridToSvg` exports editable circle-based SVG for Figma. Both are exported from the main package.
+- New Fluent-based Illicons use native 20px icons at 2x as the recommended standard: 40 x 40 cells, rendered at 200 x 200px with the default 2px dots and 5px pitch. Storybook retains other native sizes, multipliers, and actual-canvas previews for verification.
+- A searchable Storybook artwork gallery previews reviewed SVGs and copies their original markup; saved-data catalog integration remains separate.
+- `CopyButton` accepts `copiedMessage` for illustration-specific confirmation in its anchored tooltip.
+
+### Changed
+
+- `iconToDotGrid` sampling defaults to SVG viewBox dimensions times `multiplier` (default 2), replacing the fixed-24-cell default and supersampled center-point sampling. Use `multiplier: 1` for native resolution or explicit `columns`/`rows` for a custom grid, not both. Regenerating data can change dimensions and occupancy; existing saved grids and designer artwork remain unchanged.
 
 ## [0.12.0] - 2026-10-16
 

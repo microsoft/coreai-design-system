@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { log } from 'node:console';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
@@ -42,6 +42,17 @@ try {
       maxBuffer: 10 * 1024 * 1024,
     });
   const manifest = JSON.parse(read('package/package.json'));
+  const catalog = JSON.parse(
+    readFileSync(path.join(packageRoot, 'illicons/manifest.json'), 'utf8'),
+  );
+  const registry = read('package/dist/illicons.generated.js');
+  for (const icon of catalog.icons) {
+    const original = readFileSync(path.join(packageRoot, 'illicons', icon.file));
+    assert.ok(
+      registry.includes(`data:image/svg+xml;base64,${original.toString('base64')}`),
+      `Packaged artwork must remain byte-identical: ${icon.file}`,
+    );
+  }
 
   assert.equal(manifest.name, '@coreai-ds/react-components');
   assert.equal(manifest.private, false);

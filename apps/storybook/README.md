@@ -31,6 +31,15 @@ npm -w apps/storybook run dev
 
 Toolbar dropdowns toggle theme (CoreAI / Web / Teams / Teams v2.1) and Light / Dark mode.
 
+## Illicon catalog
+
+**Components / Illicon** groups component usage examples and a searchable
+artwork gallery with Copy SVG actions. The gallery preserves original SVGs for
+Figma and further editing; saved-data catalog integration remains separate.
+The gallery is excluded from the component MCP manifest.
+See the [asset contribution guide](../../packages/react-components/illicons/README.md)
+for SVG conventions and the title, file, tags, and author fields.
+
 ## Scripts
 
 | Script                   | What it does                                                                                |

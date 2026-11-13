@@ -199,6 +199,20 @@ try {
       await fs.readFile(path.join(appRoot, 'public/third-party', filename), 'utf8'),
     );
   }
+  const illiconDirectory = path.resolve(appRoot, '../../packages/react-components/illicons');
+  const illiconManifest = JSON.parse(
+    await fs.readFile(path.join(illiconDirectory, 'manifest.json'), 'utf8'),
+  );
+  const illiconMarkdown = await (await read('components/Illicon.md')).text();
+  for (const icon of illiconManifest.icons) {
+    const sourcePath = `assets/illicons/${icon.file}`;
+    assert.ok(illiconMarkdown.includes(sourcePath), `${icon.file}: catalog download link`);
+    assert.deepEqual(
+      Buffer.from(await (await read(sourcePath)).arrayBuffer()),
+      await fs.readFile(path.join(illiconDirectory, icon.file)),
+      `${icon.file}: original SVG download`,
+    );
+  }
   assert.equal((await fetch(`${root}components/NotAPage/`)).status, 404);
   const files = new Set(
     (await fs.readdir(outputDirectory, { recursive: true })).map((entry) =>

@@ -134,6 +134,12 @@ Fluent declarations. They do not replace the package's exported types. Templates
 remain copy-and-adapt source. The build records the actual bundled peer versions
 and rejects Storybook runtime modules or duplicate React/Fluent installations.
 
+The Illicon page includes canonical component and contribution guidance, usage
+examples, and the reviewed artwork catalog. The package build validates and
+generates the registry first. Original SVG downloads under `assets/illicons/`
+retain the source bytes. Local gallery and verification stories marked
+`!manifest` are explicitly excluded from component examples.
+
 ## Documentation and skill versions
 
 The docsite manifest owns one semantic version shared by the documentation and

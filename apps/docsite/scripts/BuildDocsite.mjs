@@ -773,6 +773,18 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
     fence: codeFence,
     foundationData,
   });
+  const illiconDirectory = path.join(repositoryRoot, 'packages/react-components/illicons');
+  const illiconManifest = JSON.parse(
+    await fs.readFile(path.join(illiconDirectory, 'manifest.json'), 'utf8'),
+  );
+  const illiconEntries = illiconManifest.icons;
+  const markdownLabel = (value) => value.replace(/[\\[\]*_`<>]/g, '\\$&');
+  generated['illicon-catalog'] = illiconEntries
+    .map(
+      (icon) =>
+        `### ${markdownLabel(icon.title)}\n\n![${markdownLabel(icon.title)}](${basePath}assets/illicons/${icon.file})\n\n[Download original SVG](${basePath}assets/illicons/${icon.file})\n\nTags: ${icon.tags.map(markdownLabel).join(', ') || 'none'}.`,
+    )
+    .join('\n\n');
   for (const page of pages) {
     if (page.standalone) {
       Object.assign(
@@ -870,6 +882,12 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
     await fs.mkdir(path.dirname(target), { recursive: true });
     await fs.writeFile(target, content);
   };
+  for (const icon of illiconEntries) {
+    await write(
+      `assets/illicons/${icon.file}`,
+      await fs.readFile(path.join(illiconDirectory, icon.file)),
+    );
+  }
   const navigationGroups = groupNavigationEntries(
     pages.map((page) => ({
       path: `/${page.route}${page.route ? '/' : ''}`,

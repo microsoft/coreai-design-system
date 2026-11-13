@@ -179,6 +179,25 @@ async function declareProps(root, props, source, owner = 'WidgetProps', filename
   return fileName;
 }
 
+test('omits indexed stories explicitly disabled for manifests', async () => {
+  await withFixture(
+    async (root, data) => {
+      const index = await generateMarkdown({ buildDirectory: root });
+      const disabled = Object.values(data.index.entries).find(
+        (entry) => entry.type === 'story' && !entry.tags.includes('manifest'),
+      );
+      assert.ok(index.documents.every((document) => !document.storyIds.includes(disabled.id)));
+    },
+    (data) => {
+      const disabled = data.components.components[componentId].stories.pop();
+      for (const entry of Object.values(data.index.entries)) {
+        if (entry.type === 'story')
+          entry.tags = entry.id === disabled.id ? ['dev', 'test'] : ['manifest'];
+      }
+    },
+  );
+});
+
 test('exports complete component descriptions, JSDoc, imports, props and every story', async () => {
   await withFixture(async (root, data) => {
     const index = await generateMarkdown({ buildDirectory: root });
