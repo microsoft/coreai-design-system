@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "icons": [
+    {
+      "title": "Agents",
+      "file": "agents.svg",
+      "tags": [],
+      "author": "CoreAI Design"
+    },
+    {
+      "title": "Workflows",
+      "file": "workflows.svg",
+      "tags": [],
+      "author": "CoreAI Design"
+    },
+    {
+      "title": "Models",
+      "file": "models.svg",
+      "tags": [],
+      "author": "CoreAI Design"
+    },
+    {
+      "title": "Fine-tune",
+      "file": "beaker.svg",
+      "tags": ["beaker", "lab", "test"],
+      "author": "CoreAI Design"
+    },
+    {
+      "title": "Database",
+      "file": "database.svg",
+      "tags": ["data", "storage"],
+      "author": "CoreAI Design"
+    },
+    {
+      "title": "Documents",
+      "file": "documents.svg",
+      "tags": ["file", "pages"],
+      "author": "CoreAI Design"
+    },
+    {
+      "title": "Evaluations",
+      "file": "evaluations.svg",
+      "tags": ["compare", "scale"],
+      "author": "CoreAI Design"
+    },
+    {
+      "title": "Shield",
+      "file": "shield.svg",
+      "tags": ["security", "defence"],
+      "author": "CoreAI Design"
+    },
+    {
+      "title": "Lock closed",
+      "file": "lock-closed.svg",
+      "tags": ["lock", "access", "permissions"],
+      "author": "CoreAI Design"
+    },
+    {
+      "title": "Warning",
+      "file": "warning.svg",
+      "tags": ["alert", "error"],
+      "author": "CoreAI Design"
+    },
+    {
+      "title": "Globe",
+      "file": "globe.svg",
+      "tags": ["networking", "network", "world"],
+      "author": "CoreAI Design"
+    },
+    {
+      "title": "Foundry",
+      "file": "foundry.svg",
+      "tags": [],
+      "author": "CoreAI Design"
+    },
+    {
+      "title": "Home",
+      "file": "home.svg",
+      "tags": [],
+      "author": "CoreAI Design"
+    },
+    {
+      "title": "AI Gateway",
+      "file": "ai-gateway.svg",
+      "tags": [],
+      "author": "ckantner"
+    }
+  ]
+}

@@ -65,6 +65,41 @@ test('missing or conflicting relative dependencies produce explicit errors', asy
   }
 });
 
+test('JavaScript import specifiers resolve to TypeScript sources, including transitive types', async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'coreai-source-typescript-'));
+  try {
+    await fs.writeFile(
+      path.join(root, 'story.tsx'),
+      `import { helper } from './helper.js';
+import { Badge } from './Badge.js';
+export const Default = () => <Badge label={helper} />;`,
+    );
+    await fs.writeFile(
+      path.join(root, 'helper.ts'),
+      `import type { Label } from './types.js'; export const helper: Label = 'TypeScript source';`,
+    );
+    await fs.writeFile(
+      path.join(root, 'helper.js'),
+      `export const helper = 'Compiled placeholder';`,
+    );
+    await fs.writeFile(path.join(root, 'types.ts'), 'export type Label = string;');
+    await fs.writeFile(
+      path.join(root, 'Badge.tsx'),
+      'export const Badge = ({ label }: { label: string }) => <span>{label}</span>;',
+    );
+    const result = await extractStorySource(
+      { id: 'test--default', implementationFile: 'story.tsx', implementationExport: 'Default' },
+      { root },
+    );
+    assert.match(result.snippet, /TypeScript source/);
+    assert.match(result.snippet, /type Label = string/);
+    assert.match(result.snippet, /<span>/);
+    assert.doesNotMatch(result.snippet, /Compiled placeholder|from ['"]\.\//);
+  } finally {
+    await fs.rm(root, { recursive: true, force: true });
+  }
+});
+
 test('Fluent Markdown dependencies are sanitized in both snippets and descriptions', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'coreai-source-markdown-'));
   try {
@@ -206,7 +241,7 @@ test('Illicon docs publish usage stories but exclude manifest-disabled verificat
     'utf8',
   );
   const indexed = loadCsf(generated, { makeTitle: (title) => title }).parse();
-  for (const name of ['EmptyGridDev', 'CustomSvgDev']) {
+  for (const name of ['EmptyGridDev', 'CustomSvgDev', 'Catalog', 'SourceRecreationDev']) {
     assert.ok(indexed._stories[name].tags.includes('!manifest'));
   }
   const provider = componentStoryDocsProvider(async () => undefined);
@@ -223,9 +258,10 @@ test('Illicon docs publish usage stories but exclude manifest-disabled verificat
     'components-illicon--stroked-svg',
   ]);
   const example = payload.stories['components-illicon--default'];
-  assert.match(example.snippet, /Agents24Filled/);
-  assert.match(example.snippet, /columns=\{48\}/);
-  assert.match(example.description, /240 x 240/);
+  assert.match(example.snippet, /Agents20Filled/);
+  assert.match(example.snippet, /multiplier/);
+  assert.match(example.description, /40 x 40 grid at 200 x 200/);
+  assert.match(example.description, /recommended standard/);
   assert.ok(example.summary);
   for (const story of Object.values(payload.stories)) assert.ok(story.summary);
 });

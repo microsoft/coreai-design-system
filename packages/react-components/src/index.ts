@@ -48,6 +48,7 @@ export {
 export { Text, type TextProps, type TextForeground, type TextPreset } from './components/Text.js';
 export { LinkButton, type LinkButtonProps } from './components/LinkButton.js';
 export { CopyButton, type CopyButtonProps } from './components/CopyButton.js';
+export { illicons, type IlliconName, type IlliconDefinition } from './illicons.generated.js';
 export { InfoButton, type InfoButtonProps } from './components/InfoButton.js';
 export { CodeBlock, type CodeBlockProps } from './components/CodeBlock.js';
 export { Markdown, type MarkdownProps } from './components/Markdown.js';

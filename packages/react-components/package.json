@@ -35,15 +35,15 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "node ../../scripts/generate-illicons.mjs && tsc -p tsconfig.build.json",
     "clean": "rimraf dist tsconfig.build.tsbuildinfo",
-    "test": "vitest run",
-    "test:component": "vitest run",
+    "test": "node ../../scripts/generate-illicons.mjs && vitest run",
+    "test:component": "node ../../scripts/generate-illicons.mjs && vitest run",
     "test:tree-shaking": "npm run build && node scripts/test-tree-shaking.mjs",
     "test:package": "npm run clean && npm run build && node scripts/verify-package.mjs",
     "test:install-browser": "playwright install chromium",
-    "test:watch": "vitest",
-    "type-check": "tsc --noEmit",
+    "test:watch": "node ../../scripts/generate-illicons.mjs && vitest",
+    "type-check": "node ../../scripts/generate-illicons.mjs && tsc --noEmit",
     "prepack": "npm run clean && npm run build"
   },
   "dependencies": {

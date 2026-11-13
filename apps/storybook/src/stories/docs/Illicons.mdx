@@ -1,0 +1,67 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta
+  title="Components/Illicon"
+  name="Documentation"
+  summary="Documentation and contribution guidance for curated Illicon artwork."
+/>
+
+# Illicon
+
+Illicons are dot-grid spot illustrations that support a clear message in an
+empty state, error, or invitation to act. Check this library before creating
+another illustration.
+
+## Documentation
+
+Browse **Default**, **Original Vs Illicon**, **Stroked Svg**, and **In Empty State**
+for component usage and sampling examples. `Illicon` renders saved dot-grid data
+or custom inline SVG. Grid dimensions follow the row/column count and pitch;
+custom inline SVG supports a separate `size`.
+
+## Recommended sampling
+
+For new Fluent-based Illicons, use the actual **native 20px icon at 2x**.
+Prefer Filled, or Regular when an outline is intended. Do not resize a 24px icon
+to substitute for its 20px variant.
+
+```tsx
+import { Scales20Filled } from '@fluentui/react-icons';
+import { iconToDotGrid } from '@coreai-ds/react-components';
+
+const data = await iconToDotGrid(Scales20Filled, { multiplier: 2 });
+```
+
+The multiplier defaults to 2. The converter reads the SVG viewBox and renders
+directly into a **40 x 40 canvas**, with one raster pixel per grid cell. Pixels
+with alpha of at least 128 turn on a dot. Empty borders are retained. Save the
+returned data and pass it to `Illicon`; conversion is browser-only.
+
+With the default radius of 1px and pitch of 5px, the result is **200 x 200px**
+with **2px dots**. Radius and pitch affect display geometry, not sampling.
+Doubling source coordinates aligns half-pixels to whole pixels, but curves can
+still anti-alias.
+
+**Source Recreation Dev** keeps native 16px, 20px, and 24px selectors, an editable
+multiplier, and the actual canvas for visual verification. These are testing
+alternatives; the recommended standard remains 20px at 2x.
+
+## Artwork catalog
+
+Browse **Catalog** for reviewed artwork and Copy SVG actions. Its 80px previews
+do not set the component's output size. Copies preserve the original SVG bytes
+for Figma or further editing. The gallery is not a component usage example and
+is excluded from the component MCP manifest. Saved-data catalog integration
+remains a separate step; there is no `Illicon name` prop.
+The sampling standard does not rewrite existing designer SVGs or custom logos.
+
+## How to contribute
+
+Submit a new icon or suggest tags for an existing icon in a pull request.
+For new artwork, add the original SVG and an entry in the Illicon catalog's
+`manifest.json`. For tag updates, edit the existing entry's `tags` without changing
+its filename or artwork. Each entry contains only `title`, `file`, `tags`, and
+`author`. Tags are optional search terms, not repetitions of the title.
+
+Maintainers review artwork and tag changes before they enter the shared catalog.
+Detailed submission guidance is being prepared.

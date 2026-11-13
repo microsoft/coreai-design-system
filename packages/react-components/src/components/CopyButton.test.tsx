@@ -49,6 +49,20 @@ test('receives focus and activates with the keyboard', async () => {
   expect(writeText).toHaveBeenCalledWith('Hello from CoreAI');
 });
 
+test('shows custom copy feedback without changing the accessible button label', async () => {
+  vi.spyOn(window.navigator.clipboard, 'writeText').mockResolvedValue(undefined);
+  const screen = await renderCoreAIComponent(
+    <CopyButton
+      aria-label="Copy Shield JSX"
+      contentToCopy={'<Illicon name="shield" />'}
+      copiedMessage="Copied Shield JSX"
+    />,
+  );
+  await userEvent.click(screen.getByRole('button', { name: 'Copy Shield JSX' }));
+  await expect.element(screen.getByText('Copied Shield JSX', { exact: true })).toBeVisible();
+  expect(screen.getByRole('button', { name: 'Copy Shield JSX' })).toBeVisible();
+});
+
 test('does not confirm success when copying fails', async () => {
   const copyError = new Error('Clipboard unavailable');
   const writeText = vi.spyOn(window.navigator.clipboard, 'writeText').mockRejectedValue(copyError);
