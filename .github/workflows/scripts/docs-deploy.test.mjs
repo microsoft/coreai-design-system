@@ -6,15 +6,13 @@ import fs from 'node:fs/promises';
 import test from 'node:test';
 import { parse } from 'yaml';
 
-test('Pages validates PRs but deploys only the verified testing branch without Azure', async () => {
+test('Pages validates PRs but deploys only verified main output without Azure', async () => {
   const source = await fs.readFile(new URL('../docs.yml', import.meta.url), 'utf8');
   const workflow = parse(source);
   assert.deepEqual(workflow.on.pull_request.branches, ['main']);
-  assert.deepEqual(workflow.on.push.branches, ['feat/static-storybook-markdown']);
-  assert.match(
-    workflow.jobs.deploy.if,
-    /github\.ref == 'refs\/heads\/feat\/static-storybook-markdown'/,
-  );
+  assert.deepEqual(workflow.on.push.branches, ['main']);
+  assert.ok(Object.hasOwn(workflow.on, 'workflow_dispatch'));
+  assert.match(workflow.jobs.deploy.if, /github\.ref == 'refs\/heads\/main'/);
   assert.match(workflow.jobs.deploy.if, /github\.event_name != 'pull_request'/);
   assert.equal(workflow.jobs.deploy.needs, 'build');
   const steps = workflow.jobs.build.steps;

@@ -8,15 +8,15 @@ development tool; neither Storybook nor MCP is deployed publicly by this reposit
 ## Repository setup
 
 1. Under **Settings > Pages > Build and deployment**, select **GitHub Actions**.
-2. During testing, keep the **github-pages** environment restricted to
-   **feat/static-storybook-markdown**. Keep normal pull-request review protection.
+2. Restrict the **github-pages** environment to **main** after the cutover below.
+   Keep normal pull-request review protection.
 3. Allow the pinned checkout, Node setup, Pages artifact upload, and Pages
    deployment actions used by the workflows.
 4. Require the **Validate** CI check and **Validate documentation** check on
    pull requests. Deployment itself is not a contribution prerequisite.
 
 The [documentation workflow](../.github/workflows/docs.yml) builds, tests,
-type-checks, and verifies static output on pull requests. Only the testing branch can deploy. The deploy job has
+type-checks, and verifies static output on pull requests. Only main can deploy. The deploy job has
 `pages: write` and `id-token: write`; ordinary
 validation has read-only repository permissions.
 
@@ -47,16 +47,30 @@ For local source ownership and authoring, see the [docsite README](../apps/docsi
 ## Recovery and retirement
 
 Use the Actions logs to identify the failed build or deployment step. A manual
-dispatch on the testing branch reruns the same validation/deployment path. Disable the
-**Documentation preview** workflow to stop new deployments; inspect already-running work
+dispatch on main reruns the same validation/deployment path. Disable the
+**Documentation** workflow to stop new deployments; inspect already-running work
 separately.
 
-The old Azure workflow is retired. The replacement Pages workflow remains
-feature-branch-only while the site is being tested.
+The old Azure workflow is retired. The replacement Pages workflow deploys only
+verified main output.
 
-When the team is ready to merge to main, update the workflow's push/deployment
-branch guards and the environment's permitted branch together. Do not enable
-main deployment before that cutover decision.
+## Initial production cutover
+
+1. Open the cutover PR and wait for validation and required review. Pushing the
+   main-only workflow or opening the PR does not replace the live site.
+2. Finish or cancel any running feature-branch documentation deployments.
+3. Before merging, allow **main** in the **github-pages** environment deployment
+   branch policy. The testing branch may remain allowed temporarily. Changing
+   this permission does not deploy anything.
+4. Merge the PR to main. The push builds, verifies, and deploys the site. Pages
+   continues serving the last successful deployment until the new one succeeds.
+5. Verify the public source revision, version manifest, skill, Markdown routes,
+   examples, and license assets. Remove the testing-branch allowance afterward.
+6. Handle legacy Azure root forwarding and MCP retirement separately, after the
+   main deployment works. Do not delete the hosts needed for migration notices.
+
+If main was not permitted before merging, correct the environment policy and
+rerun the failed deployment or manually dispatch **Documentation** on main.
 
 Site deployment does not publish an npm package. Package authentication,
 approval, and release recovery remain documented separately in

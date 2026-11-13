@@ -198,8 +198,8 @@ Known heading-anchor and broader architecture options are tracked in
 ## Hosting
 
 [The documentation workflow](../../.github/workflows/docs.yml) validates pull
-requests and deploys verified `feat/static-storybook-markdown` output to the
-current GitHub Pages testing site. Main deployment is not enabled yet. No Azure
+requests and deploys verified `main` output to GitHub Pages. Pull requests never
+deploy. Manual deployment also requires `main`. No Azure
 credentials or public Storybook/MCP host are used.
 
 See [hosting setup](../../docs/CI-CD-SETUP.md) and

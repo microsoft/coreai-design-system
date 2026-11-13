@@ -3,12 +3,12 @@
 Source and automation live at
 <https://github.com/microsoft/coreai-design-system>.
 
-| Workflow                | Definition                                                                | Trigger                                                                   |
-| ----------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| CI / Validate           | [ci.yml](../.github/workflows/ci.yml)                                     | Pull requests and pushes to main; manual; reusable                        |
-| Documentation preview   | [docs.yml](../.github/workflows/docs.yml)                                 | Pushes to `feat/static-storybook-markdown`; pull requests to main; manual |
-| Check Fluent UI updates | [check-fluent-updates.yml](../.github/workflows/check-fluent-updates.yml) | Monday 09:00 UTC; manual; opt-in                                          |
-| Publish package         | [publish-package.yml](../.github/workflows/publish-package.yml)           | See the release guide                                                     |
+| Workflow                | Definition                                                                | Trigger                                               |
+| ----------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------- |
+| CI / Validate           | [ci.yml](../.github/workflows/ci.yml)                                     | Pull requests and pushes to main; manual; reusable    |
+| Documentation           | [docs.yml](../.github/workflows/docs.yml)                                 | Pushes to main; pull requests to main; manual on main |
+| Check Fluent UI updates | [check-fluent-updates.yml](../.github/workflows/check-fluent-updates.yml) | Monday 09:00 UTC; manual; opt-in                      |
+| Publish package         | [publish-package.yml](../.github/workflows/publish-package.yml)           | See the release guide                                 |
 
 ## Validation and documentation
 
@@ -24,26 +24,27 @@ tests, a type check, packed-consumer compilation, static artifact checks, and
 representative Chromium interactions. It does not require a Storybook build or
 public MCP service.
 
-Pull requests validate without deploying. Testing-branch runs upload the verified
+Pull requests validate without deploying. Main runs upload the verified
 `apps/docsite/dist/` artifact and publish it to
 <https://microsoft.github.io/coreai-design-system/>. The final smoke check verifies
 the deployed source revision and public HTML/Markdown/discovery/license assets.
 Fork contributions use `pull_request`, not privileged `pull_request_target`.
 
-Configure Pages and the feature-branch-only `github-pages` environment through
+Configure Pages and the main-only `github-pages` environment through
 [CI/CD setup](CI-CD-SETUP.md). Require **Validate** and **Validate documentation**
 on main pull requests. Do not require deployment or publishing for contributions.
 If introducing a merge queue, add and validate its trigger separately.
 
-The Azure deployment is retired. The only public site is the docsite testing
-preview; Storybook remains local. Main deployment will be enabled separately
-when the team is ready to merge.
+The Azure deployment workflow is retired. GitHub Pages hosts the public docsite;
+Storybook remains local. Follow the ordered
+[initial production cutover](CI-CD-SETUP.md#initial-production-cutover) before merging
+the main-only deployment workflow. Settings changes are separate from the PR.
 
 ## Running and troubleshooting workflows
 
 Open [Actions](https://github.com/microsoft/coreai-design-system/actions), select
 the workflow, and inspect its failed job/step. Documentation manual deployment
-accepts the testing branch only. A deployment retry reruns validation before publishing.
+accepts main only. A deployment retry reruns validation before publishing.
 
 Site deployment and npm publication are independent. Automatic npm publishing
 follows successful CI **push** runs on main, not manual CI dispatches. Retry
