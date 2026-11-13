@@ -52,18 +52,18 @@ const bundleExport = async (exportName) => {
   });
 
   const outputs = Array.isArray(result) ? result : [result];
-  return new Set(
-    outputs.flatMap(({ output }) =>
-      output.flatMap((item) => (item.type === 'chunk' ? Object.keys(item.modules) : [])),
-    ),
-  );
+  const chunks = outputs.flatMap(({ output }) => output.filter((item) => item.type === 'chunk'));
+  return {
+    modules: new Set(chunks.flatMap((chunk) => Object.keys(chunk.modules))),
+    imports: new Set(chunks.flatMap((chunk) => chunk.imports)),
+  };
 };
 
 const normalizeModuleId = (moduleId) => moduleId.replaceAll('\\', '/');
 const includesModule = (moduleIds, fragment) =>
   [...moduleIds].some((moduleId) => normalizeModuleId(moduleId).includes(fragment));
 
-const buttonModules = await bundleExport('Button');
+const { modules: buttonModules } = await bundleExport('Button');
 const forbiddenButtonModules = [
   '/@fluentui/react-swatch-picker/',
   '/@fluentui/react-tag-picker/',
@@ -84,7 +84,7 @@ for (const moduleFragment of forbiddenButtonModules) {
   );
 }
 
-const tagPickerModules = await bundleExport('TagPicker');
+const { modules: tagPickerModules } = await bundleExport('TagPicker');
 const tagPickerModuleSummary = [...tagPickerModules]
   .map(normalizeModuleId)
   .filter((moduleId) => moduleId.toLowerCase().includes('tag'))
@@ -99,3 +99,36 @@ assert.equal(
   true,
   'TagPicker bundle does not include Fluent TagPicker',
 );
+
+const { modules: illiconModules, imports: illiconImports } = await bundleExport('Illicon');
+assert.equal(includesModule(illiconModules, '/dist/components/Illicon.js'), true);
+assert.equal(includesModule(illiconModules, '/dist/illicons/dotGridGeometry.js'), true);
+assert.equal(
+  includesModule(illiconModules, '/dist/illicons/iconToDotGrid.js'),
+  false,
+  'Rendering saved Illicons must not bundle the browser converter',
+);
+
+const { modules: svgExportModules, imports: svgExportImports } = await bundleExport('dotGridToSvg');
+assert.equal(includesModule(svgExportModules, '/dist/illicons/dotGridToSvg.js'), true);
+assert.equal(
+  includesModule(svgExportModules, '/dist/components/Illicon.js'),
+  false,
+  'Standalone SVG export must not bundle the React renderer',
+);
+assert.equal(includesModule(svgExportModules, '/dist/illicons/iconToDotGrid.js'), false);
+
+for (const [name, imports] of [
+  ['Illicon', illiconImports],
+  ['dotGridToSvg', svgExportImports],
+]) {
+  assert.equal(
+    [...imports].some((id) => id.startsWith('react-dom/server')),
+    false,
+    `${name} must not retain an unused React static serializer import`,
+  );
+}
+
+const { modules: converterModules } = await bundleExport('iconToDotGrid');
+assert.equal(includesModule(converterModules, '/dist/illicons/iconToDotGrid.js'), true);
+assert.equal(includesModule(converterModules, '/dist/components/Illicon.js'), false);

@@ -251,6 +251,8 @@ entries delegate to Storybook's provider. Templates and MDX discovery are unchan
 `npm --workspace apps/storybook run test:source` checks source extraction and provider ownership.
 `npm --workspace apps/storybook run stories:verify-source` checks all consumer examples against
 the CoreAI types and writes `.storybook/.cache/story-source-validation.json`.
+Explicitly type CSF object stories' `render` parameters: extracted examples are standalone
+functions and do not retain contextual typing from `StoryObj`.
 All 689 selected examples now type-check with zero diagnostics.
 
 For upstream examples only, the source extractor adapts `Partial<ComboboxProps>` and
@@ -403,6 +405,10 @@ Story files under `src/stories/` are grouped into three folders:
 Storybook supports `manifest` and `!manifest` tags to control manifest inclusion.
 A `Dev` filename or export suffix does not itself hide a story from MCP. Check the manifest
 debugger and docs tools when changing inclusion or grouping stories under the same title.
+Mark verification-only stories with per-story `tags: ['!manifest']`; the inventory-backed
+source documentation provider also excludes these stories from MCP examples.
+Build verification still requires their generated owners in the story index and checks that
+they are absent from component manifest examples.
 
 ### Creating a template
 

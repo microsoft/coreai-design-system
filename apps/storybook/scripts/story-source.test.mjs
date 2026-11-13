@@ -7,6 +7,7 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import ts from 'typescript';
+import { loadCsf } from 'storybook/internal/csf-tools';
 import { createStoryInventory } from '../../docsite/scripts/sources/StoryInventory.mjs';
 import { extractStorySource } from '../../docsite/scripts/sources/StorySource.mjs';
 import { appRoot } from './generate-component-stories.mjs';
@@ -207,4 +208,35 @@ test('inventory-backed provider publishes both local and Fluent stories and dele
     entry: { title: 'Templates/Test', importPath: './src/stories/templates/Test.stories.tsx' },
   });
   assert.equal(delegated, 1);
+});
+
+test('Illicon docs publish usage stories but exclude manifest-disabled verification stories', async () => {
+  await generateComponentStories();
+  const generated = await fs.readFile(
+    path.join(appRoot, '.storybook/.cache/component-stories/components-illicon.stories.js'),
+    'utf8',
+  );
+  const indexed = loadCsf(generated, { makeTitle: (title) => title }).parse();
+  for (const name of ['EmptyGridDev', 'CustomSvgDev']) {
+    assert.ok(indexed._stories[name].tags.includes('!manifest'));
+  }
+  const provider = componentStoryDocsProvider(async () => undefined);
+  const payload = await provider({
+    entry: {
+      title: 'Components/Illicon',
+      importPath: './.storybook/.cache/component-stories/components-illicon.stories.js',
+    },
+  });
+  assert.deepEqual(Object.keys(payload.stories).sort(), [
+    'components-illicon--default',
+    'components-illicon--in-empty-state',
+    'components-illicon--original-vs-illicon',
+    'components-illicon--stroked-svg',
+  ]);
+  const example = payload.stories['components-illicon--default'];
+  assert.match(example.snippet, /Agents24Filled/);
+  assert.match(example.snippet, /columns=\{48\}/);
+  assert.match(example.description, /240 x 240/);
+  assert.ok(example.summary);
+  for (const story of Object.values(payload.stories)) assert.ok(story.summary);
 });
