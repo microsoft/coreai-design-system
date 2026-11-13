@@ -1,0 +1,220 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT license.
+ */
+
+.reference-page-tabs {
+  align-self: stretch;
+  width: 100%;
+}
+
+.reference-shell .reference-page-tablist {
+  width: 100%;
+  border-block-end: 1px solid var(--colorNeutralStroke2);
+}
+
+.reference-page-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  min-width: 0;
+}
+
+.reference-sample-header {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacingHorizontalS);
+  min-height: 48px;
+  padding: var(--spacingVerticalS) var(--spacingHorizontalM);
+  border-block-end: 1px solid var(--colorNeutralStroke2);
+}
+
+.reference-sample-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--colorNeutralStroke2);
+  border-radius: var(--borderRadiusXLarge, 12px);
+  background: var(--colorNeutralBackground1);
+}
+
+.reference-sample-section > * {
+  margin-block: 0;
+}
+
+.reference-shell .reference-sample-download {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  padding-inline: var(--spacingHorizontalM);
+  border-radius: var(--borderRadiusMedium);
+  color: var(--colorNeutralForeground1);
+  font-size: var(--fontSizeBase300);
+  line-height: var(--lineHeightBase300);
+  font-weight: var(--fontWeightSemibold);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.reference-sample-download:hover {
+  background: var(--colorNeutralBackground1Hover);
+  color: var(--colorNeutralForeground1Hover);
+}
+
+.reference-sample-download:active {
+  background: var(--colorNeutralBackground1Pressed);
+  color: var(--colorNeutralForeground1Pressed);
+}
+
+.reference-page-code-block-host,
+.reference-page-code-block {
+  width: 100%;
+  min-width: 0;
+}
+
+.reference-sample-section .reference-page-code-block,
+.reference-sample-section .reference-page-code-block::after {
+  border: 0;
+  border-radius: 0;
+}
+
+.reference-sample-section > .preview + .reference-page-code-block-host,
+.reference-sample-section > .reference-page-code-block-host + .reference-page-code-block-host {
+  border-block-start: 1px solid var(--colorNeutralStroke2);
+}
+
+.reference-sample-section > .preview {
+  display: grid;
+  min-height: 220px;
+  place-items: center;
+  border: 0;
+  border-radius: 0;
+}
+
+.reference-sample-section > .preview > * {
+  max-width: 100%;
+}
+
+.reference-page-code-block .fui-CodeBlock__pre {
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.reference-page-panel[hidden] {
+  display: none !important;
+}
+
+.reference-page-panel[data-page-panel='usage'] > [data-page-resources][hidden] {
+  display: none !important;
+}
+
+.reference-page-panel[data-page-panel='usage'] > .component-markdown > :first-child {
+  margin-block-start: 0;
+}
+
+.reference-page-panel[data-page-panel='usage'] > .component-markdown > :is(h2, h3) {
+  font-size: var(--fontSizeBase400);
+  line-height: var(--lineHeightBase400);
+}
+
+.reference-page-panel[data-page-panel='samples'] > .standalone-guidance {
+  margin-block: 0;
+}
+
+.reference-page-panel[data-page-panel='samples'] pre {
+  margin: 0;
+}
+
+.reference-showcase-toolbar-host,
+.reference-showcase-toolbar {
+  display: inline-flex;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  align-items: center;
+}
+
+.reference-showcase-frame {
+  overflow: hidden;
+  border: 1px solid var(--colorNeutralStroke2);
+  border-radius: var(--borderRadiusXLarge, 12px);
+  background: var(--colorNeutralBackground1);
+}
+
+.reference-basic-example.reference-showcase-frame > h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--spacingHorizontalXS);
+  min-height: 48px;
+  margin: 0;
+  padding: var(--spacingVerticalS);
+  border-block-end: 1px solid var(--colorNeutralStroke2);
+}
+
+.reference-basic-example.reference-showcase-frame > h2:has(.reference-showcase-toolbar:empty) {
+  display: none;
+}
+
+.reference-basic-example.reference-showcase-frame > h2 > .reference-showcase-toolbar-host {
+  width: auto;
+  min-width: 0;
+  flex: 1;
+}
+
+.reference-showcase-menu__trigger {
+  max-width: 100%;
+}
+
+.reference-showcase-toolbar__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  margin-inline-start: auto;
+}
+
+.reference-showcase-toolbar__action :is(svg, img) {
+  width: 20px;
+  height: 20px;
+}
+
+.reference-showcase-toolbar__action .figma-logo {
+  width: 18px;
+  height: 18px;
+}
+
+.reference-showcase-toolbar__action :is(.figma-logo, .fluent-logo) {
+  color: var(--colorNeutralForeground2);
+}
+
+.reference-basic-example.reference-showcase-frame .preview {
+  border: 0;
+  border-radius: 0;
+}
+
+.reference-showcase-menu__popover {
+  max-height: min(480px, calc(100vh - 32px));
+  overflow-y: auto;
+}
+
+.reference-shell .reference-sample-header > :is(h3, h4, h5, h6) {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--colorNeutralForeground1);
+  font-size: var(--fontSizeBase400);
+  line-height: var(--lineHeightBase400);
+  font-weight: var(--fontWeightSemibold);
+}
+
+.reference-page-panel > :is(h3, h4, h5, h6) {
+  color: var(--colorNeutralForeground1);
+  font-size: var(--fontSizeBase600);
+  line-height: var(--lineHeightBase600);
+  font-weight: var(--fontWeightSemibold);
+}

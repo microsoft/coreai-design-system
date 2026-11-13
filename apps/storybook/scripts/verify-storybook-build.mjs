@@ -186,9 +186,42 @@ if (disclosureFindings.length > 0) {
 }
 
 const manifestProblems = assertExpectedManifestProblems(componentEntries);
+const markdownIndex = JSON.parse(
+  fs.readFileSync(path.join(buildRoot, 'llms', 'index.json'), 'utf8'),
+);
+const expectedDocumentIds = [...componentEntries, ...Object.values(docs)]
+  .map(({ id }) => id)
+  .sort();
+const exportedDocumentIds = markdownIndex.documents.map(({ id }) => id).sort();
+if (
+  markdownIndex.version !== 1 ||
+  JSON.stringify(exportedDocumentIds) !== JSON.stringify(expectedDocumentIds)
+) {
+  throw new Error(
+    'Static Markdown must export every component and standalone docs entry exactly once.',
+  );
+}
+for (const component of componentEntries) {
+  const markdown = fs.readFileSync(path.join(buildRoot, 'llms', `${component.id}.md`), 'utf8');
+  const document = markdownIndex.documents.find(({ id }) => id === component.id);
+  const expectedStoryIds = (component.stories ?? []).map(({ id }) => id).sort();
+  if (JSON.stringify([...document.storyIds].sort()) !== JSON.stringify(expectedStoryIds)) {
+    throw new Error(`Static Markdown has incomplete story coverage: ${component.id}`);
+  }
+  for (const story of component.stories ?? []) {
+    if (
+      !story.snippet?.trim() ||
+      !markdown.includes(story.id) ||
+      !markdown.includes(story.snippet.trim())
+    ) {
+      throw new Error(`Static Markdown is missing a complete example: ${story.id}`);
+    }
+  }
+}
 
 console.log(
   `Verified Storybook build with ${fluentStoryCount} generated component story entries, ` +
     `${componentEntries.length} manifest components, ${Object.keys(docs).length} docs entries, ` +
+    `${markdownIndex.documents.length} static Markdown documents, ` +
     `and ${manifestProblems} reported manifest problems.`,
 );

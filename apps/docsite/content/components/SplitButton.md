@@ -1,11 +1,6 @@
 ---
 id: split-button
 title: Split button
-navigation:
-  group: Components
-  showInSidebar: false
-  canonicalId: button
-status: complete
 summary: >-
   A split button lets someone take one of several related actions. The dominant
   action is the button label and additional actions are tucked away in a menu.
@@ -15,8 +10,8 @@ resources:
       https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=160724-5710
   - label: Fluent button guidance
     url: 'https://fluent2.microsoft.design/components/web/react/core/button/usage'
-storybookTitles:
-  - Components/Button/SplitButton
+reference:
+  component: components-button-splitbutton
 ---
 
 ## Best practices

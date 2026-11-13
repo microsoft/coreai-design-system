@@ -1,0 +1,508 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import os from 'node:os';
+import test from 'node:test';
+import matter from 'gray-matter';
+import ts from 'typescript';
+import { readReferencePages } from '../scripts/ReadReferencePages.mjs';
+import {
+  expandStandaloneMarkdown,
+  rewriteDocumentationLinks,
+  tokenSwatches,
+  stripPresentationMarkers,
+  currentReleaseNotes,
+} from '../scripts/StandaloneMarkdown.mjs';
+import { appRoot, codeFence, standalonePageHtml, pageMarkdown } from '../scripts/BuildDocsite.mjs';
+import {
+  pageGuidanceParts,
+  pageTemplateHeader,
+  pageTemplateResources,
+  presentationResources,
+} from '../scripts/PageTemplate.mjs';
+import { readFoundationData, standaloneSections } from '../scripts/StandaloneSections.mjs';
+import { guidanceMarkdown, renderGuidance } from '../../../shared/guidance.mjs';
+import { publicMarkdown } from '../scripts/sources/PublicMarkdown.mjs';
+import {
+  generateStandaloneDocs,
+  standaloneDocsRoot,
+} from '../../storybook/scripts/generate-standalone-docs.mjs';
+
+test('Showcase keeps its interactive hero without displaying the agent catalog appendix', () => {
+  const page = {
+    route: '',
+    title: 'CoreAI Design System',
+    renderer: 'home',
+    guidance: '# CoreAI Design System\n\nShared components.\n\n## Components\n\nCatalog appendix.',
+    resources: [],
+    examples: [],
+  };
+  const html = standalonePageHtml(page, { basePath: '/', pages: [], agentPrompt: 'Use CoreAI.' });
+  assert.match(html, /data-page-widget="home"/);
+  assert.match(html, /home-visual/);
+  assert.doesNotMatch(
+    html,
+    /Catalog appendix|home-documentation|home-resource-links|Build with your agent|Give your coding agent/,
+  );
+  assert.match(html, /<\/header><div class="home-agent-content"><section class="home-agent-entry"/);
+  assert.match(html, /<\/section><details class="home-agent-preview" hidden>/);
+  assert.match(html, /page-header__title-row"><h1[^>]*>CoreAI Design System<\/h1><\/div>/);
+  assert.match(page.guidance, /Catalog appendix/);
+  const guidanceHtml = standalonePageHtml(
+    { ...page, renderer: undefined },
+    { basePath: '/', pages: [] },
+  );
+  assert.match(guidanceHtml, /Catalog appendix/);
+});
+
+test('component and template Markdown cannot silently fall out of the catalog', async (t) => {
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'coreai-reference-required-'));
+  t.after(() => fs.rm(directory, { recursive: true, force: true }));
+  const components = path.join(directory, 'components');
+  await fs.mkdir(components);
+  await fs.writeFile(
+    path.join(components, 'MissingReference.md'),
+    matter.stringify('Guidance.', {
+      id: 'missing-reference',
+      title: 'Missing reference',
+      summary: 'A page summary.',
+    }),
+  );
+  await assert.rejects(readReferencePages(directory), /require reference metadata/);
+});
+
+test('Markdown includes and generated sections expand without evaluating code fences', async () => {
+  const input =
+    '## Colors\n\n<!-- generated: colors -->\n\n```md\n<!-- generated: unknown -->\n```\n\n<!-- include: router-link-slots -->';
+  const output = await expandStandaloneMarkdown(input, {
+    route: 'foundations/Colors',
+    pages: [],
+    basePath: '/repo/',
+    generated: { colors: 'A real token table.' },
+    renderExample: () => {
+      throw new Error('Unexpected example');
+    },
+    fence: codeFence,
+  });
+  assert.match(output, /A real token table/);
+  assert.match(output, /<!-- generated: unknown -->/);
+  assert.match(output, /export function useRouterLinkSlot/);
+  assert.match(output, /registerPlugin|useRouterNavLinkSlot/);
+  await assert.rejects(
+    expandStandaloneMarkdown('<!-- include: secrets -->', { fence: codeFence }),
+    /Unknown included/,
+  );
+  await assert.rejects(
+    expandStandaloneMarkdown('<!-- include: constructor -->', { fence: codeFence }),
+    /Unknown included/,
+  );
+  await assert.rejects(
+    expandStandaloneMarkdown('<!-- generated: unknown -->', { generated: {} }),
+    /Unknown generated/,
+  );
+  await assert.rejects(expandStandaloneMarkdown('<!-- include: ../outside -->', {}), /Malformed/);
+});
+
+test('agent handoff installs the current skill and uses HTTP documentation discovery', async () => {
+  const skillPath = path.resolve(appRoot, '../../packages/react-components/agent/SKILL.md');
+  const source = await fs.readFile(skillPath, 'utf8');
+  const skill = matter(source);
+  assert.equal(skill.data.name, 'coreai-ds-fluentui-react');
+  assert.ok(skill.data.description.length > 0 && skill.data.description.length <= 1024);
+  assert.match(skill.data.description, /HTTPS/);
+  assert.match(source, /llms\.txt/);
+  assert.match(source, /llms\/index\.json/);
+  assert.match(source, /once per task/);
+  assert.match(source, /user's approval before writing instructions/);
+  assert.match(source, /metadata\.version/);
+  assert.match(source, /version\.json/);
+  assert.doesNotMatch(source, /docs-list|docs-show|azurewebsites/i);
+  const prompt = (
+    await fs.readFile(path.join(appRoot, 'content/data/AgentPrompt.md'), 'utf8')
+  ).trim();
+  assert.match(prompt, /Install it at \.github\/skills\/coreai-ds-fluentui-react\/SKILL\.md/);
+  assert.match(prompt, /update the existing CoreAI skill.*before implementing/);
+  assert.match(prompt, /Preserve repository-specific rules/);
+  const expanded = await expandStandaloneMarkdown('<!-- include: agent-prompt -->', {
+    route: 'guides/UseWithAgents',
+    pages: [],
+    basePath: '/repo/',
+    fence: codeFence,
+  });
+  assert.ok(expanded.includes(prompt));
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  assert.equal(
+    pages.find((page) => page.route === 'guides/mcp-setup'),
+    undefined,
+  );
+  const entry = pages.find((page) => page.route === 'guides/UseWithAgents');
+  assert.ok(entry.aliases.includes('/mcp-server/'));
+  assert.ok(entry.aliases.includes('/guides/mcp-setup/'));
+});
+
+test('site release notes omit retired integration entries without changing package history', () => {
+  const source =
+    '# History\n\n## 1.0\n\n### Changed\n\n- Keep component behavior.\n- MCP client setup changed.\n- Keep package install.\n\n### Added\n\n- MCP endpoint.\n';
+  const filtered = currentReleaseNotes(source);
+  assert.match(filtered, /Keep component behavior/);
+  assert.match(filtered, /Keep package install/);
+  assert.doesNotMatch(filtered, /\bMCP\b/);
+  assert.match(source, /MCP client setup changed/);
+});
+test('links use canonical routes, base paths and HTML heading IDs without changing code samples', () => {
+  const pages = [
+    {
+      route: 'foundations/Theming',
+      aliases: ['/theming/'],
+      legacyIds: ['docs-theming--docs'],
+      guidanceSource: 'content/foundations/Theming.md',
+    },
+    { route: 'components/Field', guidanceSource: 'content/components/Field.md' },
+  ];
+  const input =
+    '[Theme](../foundations/Theming.md#set-up-aptos)\n\n[Field](../components/Field.md)\n\n[Old](/theming.md)\n\n[Storybook](https://coreai-ds-storybook.azurewebsites.net/?path=/docs/docs-theming--docs)\n\n```md\n[Example](../do-not-rewrite.md)\n```';
+  const options = {
+    route: 'guides/Package',
+    pages,
+    basePath: '/repo/',
+    sourceFile: 'apps/docsite/content/guides/Package.md',
+  };
+  const markdown = rewriteDocumentationLinks(input, options);
+  assert.match(markdown, /\/repo\/foundations\/Theming\.md#set-up-aptos/);
+  assert.match(markdown, /\/repo\/components\/Field\.md/);
+  assert.doesNotMatch(markdown, /azurewebsites\.net/);
+  assert.match(markdown, /\[Example\]\(\.\.\/do-not-rewrite\.md\)/);
+  const html = rewriteDocumentationLinks(markdown, { ...options, html: true });
+  assert.match(html, /\/repo\/foundations\/Theming\/#guidance-set-up-aptos/);
+  assert.doesNotMatch(html, /\/repo\/repo\//);
+  assert.equal(
+    tokenSwatches('<td>#ff00aa</td>'),
+    '<td><span class="reference-color-swatch" style="background-color:#ff00aa" aria-hidden="true"></span><code>#ff00aa</code></td>',
+  );
+  assert.match(
+    tokenSwatches('<td>hsl(0, 0%, 6%)</td>'),
+    /style="background-color:hsl\(0, 0%, 6%\)"/,
+  );
+  assert.match(tokenSwatches('<td>rgba(0, 0, 0, 0.5)</td>'), /class="reference-color-swatch"/);
+  assert.equal(
+    tokenSwatches('<td>hsl(0, 0%, 6%); color:red</td>'),
+    '<td>hsl(0, 0%, 6%); color:red</td>',
+  );
+});
+
+test('only registered live examples become preview slots in authored guidance', () => {
+  const html = renderGuidance('# Guide\n\n<!-- live-example:components-text--presets -->', {
+    examples: { 'components-text--presets': { id: 'components-text--presets', name: 'Presets' } },
+  }).html;
+  assert.match(html, /data-example-id="components-text--presets"/);
+  assert.match(html, /class="preview"/);
+  assert.throws(() => renderGuidance('<!-- live-example:unknown -->'), /Missing live example/);
+  assert.throws(() => renderGuidance('<!-- live-example:constructor -->'), /Missing live example/);
+  const referenced = renderGuidance(
+    '## [Unreleased]\n\n[Unreleased]: #unreleased\n\n[Top](#)\n\n[Already scoped](#guidance-unreleased)',
+  ).html;
+  assert.match(referenced, /href="#guidance-unreleased"/);
+  assert.doesNotMatch(referenced, /href="#unreleased"|guidance-guidance/);
+  assert.match(referenced, /href="#"/);
+});
+
+test('page templates preserve rich summaries and present canonical resources as separate links', () => {
+  const resources = [
+    { label: 'Components', url: '/index.md#components' },
+    { label: 'Figma & design', url: 'https://www.figma.com/' },
+  ];
+  const guidance =
+    '# CoreAI\n\nUse **CoreAI** with `React`.\n\n## Setup\n\nKeep this guidance.\n\n## Resources\n\n- [Components](/index.md#components)';
+  const parts = pageGuidanceParts(guidance, resources);
+  assert.equal(parts.headingId, 'guidance-coreai');
+  assert.match(parts.summaryHtml, /<strong>CoreAI<\/strong>.*<code>React<\/code>/);
+  assert.match(parts.body, /Keep this guidance/);
+  assert.doesNotMatch(parts.body, /## Resources/);
+  const page = { title: 'CoreAI', route: '', resources };
+  const metadata = { basePath: '/repo/', pages: [{ route: '' }] };
+  assert.deepEqual(presentationResources(page, metadata), [
+    { label: 'Components', href: '/repo/#guidance-components' },
+    { label: 'Figma & design', href: 'https://www.figma.com/' },
+  ]);
+  assert.match(pageTemplateHeader(page, metadata, parts), /data-markdown-url="\/repo\/index.md"/);
+  const html = pageTemplateResources(page, metadata);
+  assert.match(html, /class="component-resource-card"/);
+  assert.match(html, /Figma &amp; design/);
+  assert.throws(() => pageGuidanceParts('# Missing summary'), /title and summary/);
+  assert.throws(
+    () =>
+      presentationResources(
+        { ...page, resources: [{ label: 'Invalid', url: 'javascript:alert(1)' }] },
+        metadata,
+      ),
+    /Unsupported page resource/,
+  );
+});
+
+test('registered custom views keep readable fallbacks, heading IDs and code-fenced markers', () => {
+  const markdown =
+    '## Palette\n\n<!-- view:colors -->\n\n### Brand ramps\n\nFallback content.\n\n<!-- /view:colors -->\n\n```md\n<!-- view:colors -->\n<!-- /view:colors -->\n```';
+  const { html } = renderGuidance(markdown, { views: { colors: true } });
+  assert.match(html, /data-page-widget="colors"/);
+  assert.match(html, /id="guidance-brand-ramps"/);
+  assert.match(html, /Fallback content/);
+  assert.match(html, /&#x3C;!-- view:colors -->/);
+  const stripped = stripPresentationMarkers(markdown);
+  assert.match(stripped, /Fallback content/);
+  assert.equal(
+    stripped.split('<!-- view:colors -->').length,
+    2,
+    'Keep the code-fenced example only',
+  );
+  assert.throws(() => renderGuidance(markdown), /Unknown page view/);
+  assert.throws(
+    () => renderGuidance('<!-- view:colors -->', { views: { colors: true } }),
+    /Unclosed page view/,
+  );
+  assert.throws(() => renderGuidance('<!-- view:constructor -->'), /Unknown page view/);
+});
+
+test('overview pages opt into their Markdown-backed rich views', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  const introduction = pages.find((page) => page.route === 'overview/Introduction');
+  const introductionSource = matter(
+    await fs.readFile(path.join(appRoot, 'content', introduction.guidance), 'utf8'),
+  );
+  const introductionGuidance = guidanceMarkdown({
+    ...introductionSource.data,
+    body: introductionSource.content.trim(),
+  });
+  assert.ok(introduction?.aliases.includes('/overview/resources/'));
+  assert.ok(introduction?.aliases.includes('/resources/'));
+  assert.doesNotMatch(introductionGuidance, /Why CoreAI has a shared design system/);
+  assert.match(introductionGuidance, /<!-- view:resources -->/);
+  assert.match(
+    standalonePageHtml(
+      {
+        ...introduction,
+        ...introductionSource.data,
+        guidance: introductionGuidance,
+        examples: [],
+      },
+      { basePath: '/', pages },
+    ),
+    /id="guidance-resources".*data-page-widget="resources"/s,
+  );
+  assert.equal(
+    pages.find((page) => page.route === 'overview/resources'),
+    undefined,
+  );
+  assert.equal(pages.find((page) => page.route === 'overview/Faq')?.renderer, 'faqs');
+});
+
+test('Introduction keeps feature cards, agent guidance and resources in order', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  const page = pages.find((candidate) => candidate.route === 'overview/Introduction');
+  const source = matter(await fs.readFile(path.join(appRoot, 'content', page.guidance), 'utf8'));
+  const introduction = {
+    ...page,
+    ...source.data,
+    standalone: true,
+    guidance: await expandStandaloneMarkdown(
+      guidanceMarkdown({ ...source.data, body: source.content.trim() }),
+      { route: page.route, pages, basePath: '/', fence: codeFence },
+    ),
+    examples: [],
+  };
+  const metadata = { basePath: '/', pages };
+  const html = standalonePageHtml(introduction, metadata);
+  const markdown = pageMarkdown(introduction, metadata);
+  assert.match(html, /data-page-widget="includes"/);
+  for (const [heading, description] of [
+    ['Foundations', 'Color, typography, spacing, and themes provide a shared visual language for'],
+    ['Components', 'Reusable controls in the CoreAI npm package come with usage guidance and code'],
+    ['Templates', 'They are not package imports.'],
+    ['Documentation for agents', 'endpoints over ordinary HTTPS.'],
+  ]) {
+    assert.ok(html.includes(`>${heading}</h3>`));
+    assert.ok(markdown.includes(`### ${heading}`));
+    assert.ok(html.includes(description));
+    assert.ok(markdown.includes(description));
+  }
+  assert.ok(html.indexOf('>Foundations</h3>') < html.indexOf('>Components</h3>'));
+  assert.doesNotMatch(markdown, /### Samples/);
+  assert.doesNotMatch(markdown, /<!-- \/?view:includes -->/);
+  for (const output of [html, markdown]) {
+    assert.ok(output.indexOf('Documentation for agents') < output.indexOf('Working with agents'));
+    assert.ok(output.indexOf('Working with agents') < output.lastIndexOf('Resources'));
+    assert.match(output, /agent-prompt\.txt/);
+    assert.match(output, /source\/package\/SKILL\.md/);
+    assert.match(output, /version\.json/);
+  }
+  assert.match(html, /id="guidance-working-with-agents"/);
+  assert.match(html, /data-page-widget="agent-cards"/);
+  assert.match(html, /Copy starter prompt/);
+  assert.match(html, /href="\/llms\.txt"/);
+  assert.match(markdown, /\]\(\/llms\.txt\)/);
+});
+
+test('React Router templates share setup notes and retain the helper source', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  const templates = pages.filter((page) => page.id.startsWith('react-router-'));
+  assert.ok(templates.length > 0);
+  for (const page of templates) {
+    const source = matter(await fs.readFile(path.join(appRoot, 'content', page.guidance), 'utf8'));
+    const markdown = await expandStandaloneMarkdown(source.content, {
+      route: page.route,
+      pages,
+      basePath: '/',
+      fence: codeFence,
+    });
+    assert.match(markdown, /Copy all files listed under \*\*Code\*\*/);
+    assert.match(markdown, /`RouterLinkSlots\.tsx`/);
+    assert.match(markdown, /not an\nnpm export/);
+    assert.doesNotMatch(markdown, /<!-- include:/);
+    assert.ok(page.sources.some((file) => file.endsWith('/RouterLinkSlots.tsx')));
+  }
+});
+
+test('package guidance opts into its Markdown-backed setup view', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  const page = pages.find((candidate) => candidate.route === 'guides/Package');
+  assert.ok(page);
+  assert.equal(page.renderer, 'package');
+  const guidance = await fs.readFile(path.join(appRoot, 'content', page.guidance), 'utf8');
+  assert.match(guidance, /## Let your agent handle setup/);
+  assert.match(guidance, /<!-- include: package-readme -->/);
+});
+
+test('release and skill pages opt into scanning views without duplicating their sources', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  const changelog = pages.find((candidate) => candidate.route === 'overview/Changelog');
+  const skill = pages.find((candidate) => candidate.route === 'guides/PackageSkill');
+  assert.equal(changelog?.renderer, 'changelog');
+  assert.equal(skill?.renderer, 'package-skill');
+  const changelogSource = await fs.readFile(
+    path.join(appRoot, 'content', changelog.guidance),
+    'utf8',
+  );
+  const skillSource = await fs.readFile(path.join(appRoot, 'content', skill.guidance), 'utf8');
+  assert.match(changelogSource, /<!-- include: package-release-notes -->/);
+  assert.match(skillSource, /<!-- include: package-skill -->/);
+});
+
+test('workflow and content pages use bounded views backed by their complete Markdown', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  const workflow = pages.find((candidate) => candidate.route === 'guides/AgentWorkflow');
+  const content = pages.find((candidate) => candidate.route === 'foundations/Content');
+  assert.equal(workflow?.renderer, 'agent-workflow');
+  assert.equal(content?.renderer, 'content');
+  const workflowSource = await fs.readFile(
+    path.join(appRoot, 'content', workflow.guidance),
+    'utf8',
+  );
+  const contentSource = await fs.readFile(path.join(appRoot, 'content', content.guidance), 'utf8');
+  assert.match(workflowSource, /\*\*Refresh the skill\.\*\*/);
+  assert.match(contentSource, /\*\*Bad:\*\*[\s\S]*\*\*Better:\*\*/);
+  assert.match(contentSource, /## Get help/);
+});
+
+test('custom foundation views and published Markdown share authored tokens, presets and fonts', async () => {
+  const data = await readFoundationData(appRoot);
+  const sections = await standaloneSections({
+    appRoot,
+    pages: [],
+    versions: {},
+    providerSource: '',
+    fence: codeFence,
+    foundationData: data,
+  });
+  const themes = await import('@coreai-ds/react-components');
+  for (const row of data.colors) {
+    assert.ok(sections.colors.includes(row.token));
+    assert.ok(sections.colors.includes(row.description));
+    for (const theme of [
+      'coreaiLightTheme',
+      'coreaiDarkTheme',
+      'azureLightTheme',
+      'azureDarkTheme',
+    ])
+      assert.ok(sections.colors.includes(themes[theme][row.token]));
+  }
+  for (const row of data.dataViz) assert.ok(sections['data-visualization'].includes(row.value));
+  for (const row of data.typography) assert.ok(sections.typography.includes(row.strongPreset));
+  assert.match(sections['coreai-theme-code'], /coreaiLightTheme/);
+  assert.match(sections['azure-theme-code'], /azureLightTheme/);
+  assert.match(sections['aptos-font-code'], /fonts\/fonts\.css/);
+  assert.match(sections['inter-font-code'], /family=Inter/);
+  assert.equal(
+    sections['colors-code'],
+    codeFence(await fs.readFile(path.join(appRoot, 'src/pages/Colors.tsx'), 'utf8')),
+  );
+  assert.equal(
+    sections['typography-code'],
+    codeFence(await fs.readFile(path.join(appRoot, 'src/pages/Typography.tsx'), 'utf8')),
+  );
+  assert.equal(data.fonts.length, 2);
+  for (const font of data.fonts) {
+    assert.ok(sections['font-families'].includes(font.name));
+    assert.ok(sections['font-families'].includes(font.token));
+    assert.ok(sections['font-families'].includes(font.download));
+  }
+});
+
+test('Storybook snapshots embed canonical Markdown for manifest-only readers without a second authored copy', async () => {
+  const mirrors = await generateStandaloneDocs();
+  assert.equal(mirrors.length, 4);
+  assert.ok(!mirrors.includes('ReactGrab.mdx'));
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  for (const filename of ['Theming', 'VariationsFromFluent', 'StylingWithCssModules', 'MCPSetup']) {
+    const snapshot = await fs.readFile(path.join(standaloneDocsRoot, `${filename}.mdx`), 'utf8');
+    const page = pages.find((page) =>
+      page.migratedFrom?.some((source) => source.endsWith(`/docs/${filename}.mdx`)),
+    );
+    const sourceFile = path.join(appRoot, 'content', page.guidance);
+    assert.ok(snapshot.includes(publicMarkdown(await fs.readFile(sourceFile, 'utf8'), sourceFile)));
+    assert.doesNotMatch(snapshot, /import content from/);
+  }
+  const file = path.join(appRoot, 'content/foundations/Theming.md');
+  const mirror = publicMarkdown(await fs.readFile(file, 'utf8'), file);
+  assert.doesNotMatch(mirror, /migratedFrom:|legacyIds:/);
+  assert.match(mirror, /Open live example/);
+  assert.match(mirror, /Only Microsoft-hosted projects/);
+});
+
+test('content principles, workflow, examples and support details survive migration in full', async () => {
+  const source = await fs.readFile(path.join(appRoot, 'src/pages/Content.tsx'), 'utf8');
+  const markdown = (
+    await fs.readFile(path.join(appRoot, 'content/foundations/Content.md'), 'utf8')
+  ).replace(/\s+/g, ' ');
+  const ast = ts.createSourceFile(
+    'Content.tsx',
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  );
+  let checked = 0;
+  for (const statement of ast.statements.filter(ts.isVariableStatement)) {
+    for (const declaration of statement.declarationList.declarations) {
+      if (
+        !['principles', 'contentDesignSteps', 'supportSteps', 'editingChecklist'].includes(
+          declaration.name.getText(ast),
+        )
+      )
+        continue;
+      const visit = (node) => {
+        if (ts.isStringLiteralLike(node)) {
+          assert.ok(
+            markdown.includes(node.text.replace(/\s+/g, ' ')),
+            `Missing original content: ${node.text}`,
+          );
+          checked++;
+        }
+        ts.forEachChild(node, visit);
+      };
+      visit(declaration.initializer);
+    }
+  }
+  assert.ok(checked > 40, 'Check original details, not only section headings');
+});

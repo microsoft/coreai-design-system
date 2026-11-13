@@ -1,10 +1,11 @@
 ---
 id: dialog
 title: Dialog
+reference:
+  component: components-dialog
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '79014:189219'
 summary: A dialog is a window overlaid on the page to focus a task or message.
 resources:
@@ -43,3 +44,9 @@ storybookTitles:
 - In such cases, the primary action button is disabled until the checkbox is selected.
 - An optional checkbox can be used to give people a way to prevent the dialog from reappearing every time they perform the same action.
 - For this purpose, use “Don’t show this message again” as the checkbox label, and don’t disable the action buttons.
+
+## Forms in dialogs
+
+Select **With Form** in the example menu to see controls, submit handling, and
+dialog actions together. Use the [Field guidance](./field.md) for labels, hints,
+and validation.

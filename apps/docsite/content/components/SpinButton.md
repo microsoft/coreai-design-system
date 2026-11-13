@@ -4,7 +4,6 @@ title: Spin button
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '36789:211140'
 summary: >-
   A spin button is a specialized input that lets someone easily increase or
@@ -18,6 +17,8 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/spin/usage'
 storybookTitles:
   - Components/SpinButton
+reference:
+  component: components-spinbutton
 ---
 
 ## Best practices

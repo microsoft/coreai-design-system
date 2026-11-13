@@ -15,7 +15,7 @@ import { figmaDesign } from '../../utils/figma';
 import * as React from 'react';
 
 export const Default: StoryObj<PopoverProps> = {
-  render: (props: PopoverProps) => {
+  render: (props: Omit<PopoverProps, 'children'>) => {
     const ExampleContent = (): React.JSX.Element => (
       <div className="popover-default-example__content">
         <h3 className="popover-default-example__content-header">Popover content</h3>

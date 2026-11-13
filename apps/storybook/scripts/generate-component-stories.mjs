@@ -4,9 +4,12 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import ts from 'typescript';
-import { createStoryInventory } from './story-inventory.mjs';
-import { readStoryDescriptions, descriptionComment } from './story-descriptions.mjs';
+import { componentBindings } from '../../docsite/scripts/sources/ComponentBindings.mjs';
+import { createStoryInventory } from '../../docsite/scripts/sources/StoryInventory.mjs';
+import {
+  readStoryDescriptions,
+  descriptionComment,
+} from '../../docsite/scripts/sources/StoryDescriptions.mjs';
 
 export const appRoot = fileURLToPath(new URL('../', import.meta.url));
 export const generatedRoot = path.join(appRoot, '.storybook', '.cache', 'component-stories');
@@ -38,77 +41,6 @@ export function generatedStoryIndexer(indexer) {
 function importPath(from, target) {
   const relative = path.relative(from, target).split(path.sep).join('/');
   return relative.startsWith('.') ? relative : `./${relative}`;
-}
-
-function componentBindings(component) {
-  const sources = [...component.sources].reverse();
-  const owner = sources.find((source) => source.metadata.component);
-  if (!owner) return { imports: [], properties: [] };
-  const fields = ['component', 'subcomponents'].map((key) => {
-    const source = sources.find((item) => item.metadata[key]);
-    return { key, source, expression: source?.metadata[key] };
-  });
-  const imports = new Map();
-  for (const { expression, source } of fields) {
-    if (!expression) continue;
-    const ast = ts.createSourceFile(
-      'metadata.ts',
-      `const value = ${expression};`,
-      ts.ScriptTarget.Latest,
-      true,
-    );
-    const names = new Set();
-    function collect(node) {
-      if (ts.isIdentifier(node)) names.add(node.text);
-      ts.forEachChild(node, collect);
-    }
-    collect(ast);
-    for (const item of source.imports) {
-      const parsed = ts.createSourceFile('import.ts', item.source, ts.ScriptTarget.Latest, true);
-      const clause = parsed.statements[0].importClause;
-      if (!clause?.namedBindings || !ts.isNamedImports(clause.namedBindings)) continue;
-      for (const binding of clause.namedBindings.elements) {
-        if (!names.has(binding.name.text)) continue;
-        if (
-          !['@fluentui/react-components', '@coreai-ds/react-components'].includes(item.specifier)
-        ) {
-          throw new Error(
-            `Unsupported component metadata import in ${source.sourceFile}: ${item.specifier}`,
-          );
-        }
-        const imported = binding.propertyName
-          ? `${binding.propertyName.text} as ${binding.name.text}`
-          : binding.name.text;
-        if (imports.has(binding.name.text) && imports.get(binding.name.text) !== imported) {
-          throw new Error(
-            `Conflicting component metadata import ${binding.name.text} in ${component.id}`,
-          );
-        }
-        imports.set(binding.name.text, imported);
-      }
-    }
-  }
-  if (!imports.has(owner.metadata.component)) {
-    throw new Error(
-      `Cannot resolve component metadata for ${component.id}: ${owner.metadata.component}`,
-    );
-  }
-  return {
-    imports: [`import { ${[...imports.values()].join(', ')} } from '@coreai-ds/react-components';`],
-    names: [...imports.keys()],
-    properties: fields
-      .filter(({ expression }) => expression)
-      .map(({ key, expression: value }) => {
-        const ast = ts.createSourceFile(
-          'expression.ts',
-          `const expression = ${value};`,
-          ts.ScriptTarget.Latest,
-          true,
-        );
-        const expression = ast.statements[0].declarationList.declarations[0].initializer;
-        return `${key}: ${ts.createPrinter().printNode(ts.EmitHint.Expression, expression, ast)}`;
-      }),
-  };
 }
 
 export function generateComponentIndex(

@@ -6,7 +6,7 @@ import { Card, Link, Text, type TextProps } from '@coreai-ds/react-components';
 import { PageLayout } from '../components/PageLayout';
 import { Section } from '../components/Section';
 import { ExternalIcon } from '../components/Icons';
-import { typographyRows, siteLinks } from '../data/content';
+import { typographyRows, siteLinks } from '../data/Content';
 
 function FontCard({
   font = 'base',
@@ -126,7 +126,7 @@ export function Typography() {
               <Text className="type-table__preset" font="monospace" size={100} foreground={3}>
                 <PairedLabel separator="&">{row.fluent}</PairedLabel>
               </Text>
-              <Text className="type-table__usage" foreground={2}>
+              <Text className="type-table__usage" foreground={3}>
                 {row.usage}
               </Text>
             </div>

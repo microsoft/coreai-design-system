@@ -4,7 +4,6 @@ title: Accordion
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '292:48147'
 summary: >-
   An accordion groups sections of related content that can be opened and closed.
@@ -18,6 +17,8 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/accordion/usage'
 storybookTitles:
   - Components/Accordion
+reference:
+  component: components-accordion
 ---
 
 ## Best practices

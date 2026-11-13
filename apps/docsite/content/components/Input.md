@@ -4,7 +4,6 @@ title: Input
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '33:559'
 summary: >-
   An input allows people to enter short, free form text data. If you need to
@@ -17,6 +16,8 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/input/usage'
 storybookTitles:
   - Components/Input
+reference:
+  component: components-input
 ---
 
 ## Best practices

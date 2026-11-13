@@ -12,9 +12,10 @@ import {
   renderComponentMarkdown,
   renderLlmsIndex,
   type ComponentContent,
-} from './src/data/component-content';
-import { buildSiteRegistry, type SiteRegistry } from './src/data/registry-builder';
-import { generateContent } from './scripts/generate-content.mjs';
+  type StorybookMarkdownDocument,
+} from './src/data/ComponentContent';
+import { buildSiteRegistry, type SiteRegistry } from './src/data/RegistryBuilder';
+import { generateContent } from './scripts/GenerateContent.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -23,6 +24,12 @@ const generatedContentDirectory = path.resolve(__dirname, 'content/generated');
 const generatedComponentsPath = path.join(generatedContentDirectory, 'metadata.json');
 const generatedPagesDirectory = path.join(generatedContentDirectory, 'pages');
 const storybookManifestPath = path.join(generatedContentDirectory, 'storybook-manifest.json');
+const storybookMarkdownDirectory = path.join(generatedContentDirectory, 'llms');
+const storybookMarkdownIndexPath = path.join(storybookMarkdownDirectory, 'index.json');
+
+function readStorybookMarkdownIndex(): { version: number; documents: StorybookMarkdownDocument[] } {
+  return JSON.parse(fs.readFileSync(storybookMarkdownIndexPath, 'utf8'));
+}
 
 function readComponentContent(): ComponentContent[] {
   const records = JSON.parse(fs.readFileSync(generatedComponentsPath, 'utf8')) as unknown;
@@ -46,7 +53,7 @@ function readComponentContent(): ComponentContent[] {
 
 function readMergedSiteRegistry() {
   const baseRegistry = JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, 'site-registry.json'), 'utf8'),
+    fs.readFileSync(path.resolve(__dirname, 'SiteRegistry.json'), 'utf8'),
   ) as SiteRegistry;
   return buildSiteRegistry(baseRegistry, readComponentContent());
 }
@@ -54,12 +61,19 @@ function readMergedSiteRegistry() {
 function componentContentForPath(urlPath: string): string | undefined {
   if (
     !['/llms.txt', '/llms-full.txt'].includes(urlPath) &&
-    !/^\/components\/[a-z0-9-]+\.md$/.test(urlPath)
+    !/^\/(?:components|llms)\/[a-z0-9-]+\.md$/.test(urlPath)
   )
     return undefined;
+  const documents = readStorybookMarkdownIndex().documents;
+  if (urlPath.startsWith('/llms/')) {
+    const document = documents.find((document) => `/${document.path}` === urlPath);
+    return document
+      ? fs.readFileSync(path.join(storybookMarkdownDirectory, `${document.id}.md`), 'utf8')
+      : undefined;
+  }
   const components = readComponentContent();
   if (urlPath === '/llms.txt') {
-    return renderLlmsIndex(components);
+    return renderLlmsIndex(components, documents);
   }
   if (urlPath === '/llms-full.txt') {
     return components.map(renderComponentMarkdown).join('\n\n---\n\n');
@@ -75,13 +89,13 @@ const exposeDataFiles: Plugin = {
   buildStart() {
     this.emitFile({
       type: 'asset',
-      fileName: 'site-registry.json',
+      fileName: 'SiteRegistry.json',
       source: JSON.stringify(readMergedSiteRegistry(), null, 2),
     });
     this.emitFile({
       type: 'asset',
-      fileName: 'changelog.json',
-      source: fs.readFileSync(path.resolve(__dirname, 'changelog.json')),
+      fileName: 'Changelog.json',
+      source: fs.readFileSync(path.resolve(__dirname, 'Changelog.json')),
     });
     this.emitFile({
       type: 'asset',
@@ -99,7 +113,7 @@ const serveComponentContent: Plugin = {
         ? new URL(request.url, 'http://localhost')
         : new URL('http://localhost');
       const pathname = requestUrl.pathname;
-      if (pathname === '/site-registry.json' && !requestUrl.searchParams.has('import')) {
+      if (pathname === '/SiteRegistry.json' && !requestUrl.searchParams.has('import')) {
         response.statusCode = 200;
         response.setHeader('Content-Type', 'application/json; charset=utf-8');
         response.setHeader('Cache-Control', 'no-cache');
@@ -113,8 +127,21 @@ const serveComponentContent: Plugin = {
         response.end(fs.readFileSync(storybookManifestPath));
         return;
       }
+      if (pathname === '/llms/index.json') {
+        response.statusCode = 200;
+        response.setHeader('Content-Type', 'application/json; charset=utf-8');
+        response.setHeader('Cache-Control', 'no-cache');
+        response.end(fs.readFileSync(storybookMarkdownIndexPath));
+        return;
+      }
       const content = componentContentForPath(pathname);
       if (!content) {
+        if (/^\/(?:components|llms)\/[a-z0-9-]+\.md$/.test(pathname)) {
+          response.statusCode = 404;
+          response.setHeader('Content-Type', 'text/plain; charset=utf-8');
+          response.end('Not found.');
+          return;
+        }
         next();
         return;
       }
@@ -162,6 +189,7 @@ const exposeComponentContent: Plugin = {
   apply: 'build',
   buildStart() {
     const components = readComponentContent();
+    const index = readStorybookMarkdownIndex();
     for (const component of components) {
       this.emitFile({
         type: 'asset',
@@ -169,7 +197,23 @@ const exposeComponentContent: Plugin = {
         source: renderComponentMarkdown(component),
       });
     }
-    this.emitFile({ type: 'asset', fileName: 'llms.txt', source: renderLlmsIndex(components) });
+    for (const document of index.documents) {
+      this.emitFile({
+        type: 'asset',
+        fileName: document.path,
+        source: fs.readFileSync(path.join(storybookMarkdownDirectory, `${document.id}.md`)),
+      });
+    }
+    this.emitFile({
+      type: 'asset',
+      fileName: 'llms/index.json',
+      source: JSON.stringify(index, null, 2) + '\n',
+    });
+    this.emitFile({
+      type: 'asset',
+      fileName: 'llms.txt',
+      source: renderLlmsIndex(components, index.documents),
+    });
     this.emitFile({
       type: 'asset',
       fileName: 'llms-full.txt',

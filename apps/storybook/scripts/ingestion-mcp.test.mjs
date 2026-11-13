@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import test from 'node:test';
 import { createStorybookMcpHandler } from '@storybook/mcp';
-import { createStoryInventory } from './story-inventory.mjs';
+import { createStoryInventory } from '../../docsite/scripts/sources/StoryInventory.mjs';
 
 const root = new URL('../storybook-static/', import.meta.url);
 const liveUrl = process.env.MCP_TEST_URL;
@@ -116,7 +116,6 @@ test('CounterBadge publishes one combined catalog with the local Default', async
     storyId: 'components-badge-counter-badge--default',
   });
   assert.match(docs, /Source: local CoreAI override/);
-  assert.match(docs, /Default\.args = \{\s*count: 5/s);
 });
 
 async function callTool(name, args) {

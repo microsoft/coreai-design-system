@@ -4,7 +4,6 @@ title: Rating
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '190351:2605'
 summary: >-
   Rating is used to communicate user sentiment. It also allows customers to
@@ -17,6 +16,8 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/rating/usage'
 storybookTitles:
   - Components/Rating
+reference:
+  component: components-rating
 ---
 
 ## Best practices

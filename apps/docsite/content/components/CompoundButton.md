@@ -1,11 +1,6 @@
 ---
 id: compound-button
 title: Compound button
-navigation:
-  group: Components
-  showInSidebar: false
-  canonicalId: button
-status: complete
 summary: >-
   A compound button includes a main title and an additional description of the
   title. Use it when it’s helpful to include more detail.
@@ -15,8 +10,8 @@ resources:
       https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=161008-6469
   - label: Fluent button guidance
     url: 'https://fluent2.microsoft.design/components/web/react/core/button/usage'
-storybookTitles:
-  - Components/Button/CompoundButton
+reference:
+  component: components-button-compoundbutton
 ---
 
 ## Best practices

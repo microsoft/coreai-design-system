@@ -25,13 +25,13 @@ export async function readGuidance(directory = guidanceDirectory) {
         'title',
         'summary',
         'navigation',
-        'status',
         'storybookTitles',
         'storybookDefaultStory',
         'figmaPageId',
         'figmaPreviewUrl',
         'preview',
         'resources',
+        'reference',
       ];
       for (const key of Object.keys(data)) {
         if (!keys.includes(key)) throw new Error(`${name}: unsupported metadata "${key}".`);
@@ -43,8 +43,6 @@ export async function readGuidance(directory = guidanceDirectory) {
         if (typeof data[key] !== 'string' || !data[key].trim())
           throw new Error(`${name}: ${key} is required.`);
       }
-      if (data.status !== undefined && !['complete', 'under-construction'].includes(data.status))
-        throw new Error(`${name}: invalid status.`);
       if (data.preview !== undefined && !['storybook', 'figma'].includes(data.preview))
         throw new Error(`${name}: invalid preview.`);
       if (
@@ -110,11 +108,9 @@ export async function readGuidance(directory = guidanceDirectory) {
 }
 
 export function guidanceMarkdown(record, resources = record.resources) {
-  const status =
-    record.status === 'under-construction' ? '\n\n## Status\n\nPage under construction.' : '';
   const links = resources.map(({ label, url }) => `- [${label}](${url})`).join('\n');
   const resourceSection = links ? `\n\n## Resources\n\n${links}` : '';
-  return `# ${record.title}\n\n${record.summary}${status}\n\n${record.body}${resourceSection}\n`;
+  return `# ${record.title}\n\n${record.summary}\n\n${record.body}${resourceSection}\n`;
 }
 
 function bestPracticesCards() {
@@ -165,29 +161,137 @@ function bestPracticesCards() {
   };
 }
 
-export function renderGuidance(markdown) {
+function headingSections() {
+  return (tree) => {
+    const children = tree.children;
+    tree.children = [];
+    const stack = [{ depth: 0, node: tree }];
+    for (const child of children) {
+      if (child.type === 'text' && !child.value.trim()) continue;
+      const depth =
+        child.type === 'element' && /^h[2-6]$/.test(child.tagName)
+          ? Number(child.tagName.slice(1))
+          : undefined;
+      if (depth !== undefined) {
+        while (stack.at(-1).depth >= depth) stack.pop();
+        const section = {
+          type: 'element',
+          tagName: 'section',
+          properties: {
+            className: ['guidance-section'],
+            ariaLabelledBy: child.properties.id,
+          },
+          children: [child],
+        };
+        stack.at(-1).node.children.push(section);
+        stack.push({ depth, node: section });
+      } else {
+        if (stack.length === 1) {
+          const section = {
+            type: 'element',
+            tagName: 'section',
+            properties: { className: ['guidance-section'] },
+            children: [],
+          };
+          tree.children.push(section);
+          stack.push({ depth: Infinity, node: section });
+        }
+        stack.at(-1).node.children.push(child);
+      }
+    }
+  };
+}
+
+export function renderGuidance(markdown, { examples = {}, views = {}, sections = false } = {}) {
   const processor = unified().use(remarkParse).use(remarkGfm);
   const tree = processor.parse(markdown);
+  for (let index = 0; index < tree.children.length; index++) {
+    const node = tree.children[index];
+    const marker = node.type === 'html' && node.value.match(/^<!-- view:([\w-]+) -->$/);
+    if (!marker) continue;
+    if (!Object.hasOwn(views, marker[1])) throw new Error(`Unknown page view: ${marker[1]}`);
+    const end = tree.children.findIndex(
+      (child, childIndex) =>
+        childIndex > index &&
+        child.type === 'html' &&
+        child.value === `<!-- /view:${marker[1]} -->`,
+    );
+    if (end < 0) throw new Error(`Unclosed page view: ${marker[1]}`);
+    tree.children.splice(index, end - index + 1, {
+      type: 'blockquote',
+      children: tree.children.slice(index + 1, end),
+      data: { hName: 'div', hProperties: { dataPageWidget: marker[1] } },
+    });
+  }
+  for (const node of tree.children) {
+    if (node.type !== 'html') continue;
+    const marker = node.value.match(/^<!-- live-example:([\w-]+) -->$/);
+    if (!marker) continue;
+    if (!Object.hasOwn(examples, marker[1]))
+      throw new Error(`Missing live example for guidance: ${marker[1]}`);
+    const example = examples[marker[1]];
+    node.type = 'paragraph';
+    node.children = [];
+    node.data = {
+      hName: 'div',
+      hProperties: {
+        className: ['preview'],
+        dataExampleId: example.id,
+        ariaLabel: `${example.name} preview`,
+      },
+      hChildren: [
+        {
+          type: 'element',
+          tagName: 'p',
+          properties: {},
+          children: [
+            { type: 'text', value: 'Loading interactive example. Full source is available below.' },
+          ],
+        },
+      ],
+    };
+  }
   const slugger = new GithubSlugger();
   const anchors = [];
-  for (const node of tree.children) {
+  const annotateHeading = (node) => {
     if (node.type === 'heading') {
       const label = toString(node);
       const id = slugger.slug(label);
       node.data = { hProperties: { id } };
       if (node.depth === 2) anchors.push({ id: `guidance-${id}`, label });
     }
-  }
+    node.children?.forEach(annotateHeading);
+  };
+  tree.children.forEach(annotateHeading);
   const updateLinks = (node) => {
-    if (node.type === 'link' && node.url.startsWith('#'))
+    if (
+      ['link', 'definition'].includes(node.type) &&
+      node.url.startsWith('#') &&
+      node.url.length > 1 &&
+      !/^#(?:guidance-|components-|templates-)/.test(node.url)
+    )
       node.url = `#guidance-${node.url.slice(1)}`;
     node.children?.forEach(updateLinks);
   };
   updateLinks(tree);
   const renderer = unified()
     .use(remarkRehype)
-    .use(rehypeSanitize, { ...defaultSchema, clobberPrefix: 'guidance-' })
-    .use(bestPracticesCards)
-    .use(rehypeStringify);
+    .use(rehypeSanitize, {
+      ...defaultSchema,
+      attributes: {
+        ...defaultSchema.attributes,
+        div: [
+          ...(defaultSchema.attributes.div ?? []),
+          'className',
+          'dataExampleId',
+          'ariaLabel',
+          'dataPageWidget',
+        ],
+      },
+      clobberPrefix: 'guidance-',
+    })
+    .use(bestPracticesCards);
+  if (sections) renderer.use(headingSections);
+  renderer.use(rehypeStringify);
   return { html: renderer.stringify(renderer.runSync(tree)), anchors };
 }

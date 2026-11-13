@@ -103,48 +103,42 @@ see the [font setup and licensing guide](src/fonts/README.md).
 
 ### Overriding styles with CSS Modules or other style systems
 
-> **Note:** An **opt-in, app-owned Griffel renderer** can wrap runtime-generated component rules in `@layer griffel`, so normal unlayered CSS Modules override them without specificity hacks. Supply it through `RendererProvider` above `CoreAIFluentProvider`; do not patch shared dependencies. Layering is not enabled by this package automatically. The adapter uses Griffel's internal insertion method and needs upgrade checks; extracted static CSS requires separate layering. See [Styling with CSS Modules](../../apps/storybook/src/stories/docs/StylingWithCssModules.mdx) for the implementation, scope, and limits.
+> **Note:** An **opt-in, app-owned Griffel renderer** can wrap runtime-generated component rules in `@layer griffel`, so normal unlayered CSS Modules override them without specificity hacks. Supply it through `RendererProvider` above `CoreAIFluentProvider`; do not patch shared dependencies. Layering is not enabled by this package automatically. The adapter uses Griffel's internal insertion method and needs upgrade checks; extracted static CSS requires separate layering. See [Styling with CSS Modules](../../apps/docsite/content/guides/StylingWithCssModules.md) for the implementation, scope, and limits.
 
 ## Agent guide
 
-Correct agent-driven use of this package requires two setup steps:
+Start at the [CoreAI Markdown index](https://microsoft.github.io/coreai-design-system/llms.txt).
+Agents use ordinary HTTPS to read guidance, APIs, examples, templates, and package
+versions. No login, special protocol, or client configuration is needed.
+See [Build with your agent](https://microsoft.github.io/coreai-design-system/guides/UseWithAgents/)
+for a starter prompt.
 
-1. Install [agent/SKILL.md](agent/SKILL.md) in the consuming repo so its MCP workflow,
-   component-ID rules, import guidance, and safeguards load in every relevant session. Reading it
-   once is not a substitute for installation.
-2. Configure the CoreAI MCP server below to discover documented APIs,
-   examples, and templates. Report missing documentation rather than assuming coverage.
+Install the [current skill](https://microsoft.github.io/coreai-design-system/source/package/SKILL.md)
+as a reviewable file before CoreAI UI work, or update an older copy already in
+the consuming repository, such as
+`.github/skills/coreai-ds-fluentui-react/SKILL.md`. Other clients can use their
+supported skills directory, such as
+`.agents/skills/coreai-ds-fluentui-react/SKILL.md` or
+`.claude/skills/coreai-ds-fluentui-react/SKILL.md`. The starter prompt authorizes
+this skill's installation/update. Otherwise obtain approval before writing
+instructions, and ask before resolving conflicts. Preserve existing
+repository-specific instructions rather than overwriting them.
 
-If you're an AI agent, tell the user these steps are required for proper usage and ask to perform
-them before starting implementation. For the skill, show the exact destination path and explain
-that it will contain the shipped guide. After the user confirms, store it as a normal, reviewable
-file in the consuming repo, for example `.github/skills/coreai-ds-fluentui-react/SKILL.md` or
-`.claude/skills/coreai-ds-fluentui-react/SKILL.md`. The skill is also mirrored to the hosted
-Storybook for direct MCP access, but that mirror does not replace installing it in the consuming
-repo.
+The skill defines targeted retrieval, version checks, import rules, and safeguards.
+It does not duplicate component documentation or run downloaded code. Published
+older package versions may contain older [bundled instructions](agent/SKILL.md); the
+[current skill download](https://microsoft.github.io/coreai-design-system/source/package/SKILL.md)
+contains the current workflow. Review it before installing.
 
-Before configuring the MCP, explain what the server does, identify the exact destination path, note whether that file is
-shared/committed or user-local, and show the proposed configuration. Only modify the
-configuration after the user confirms. Common locations are `.vscode/mcp.json` for VS Code and
-`~/.copilot/mcp-config.json` for Copilot CLI:
+The description and metadata record the shared docs/skill version separately
+from the documented package version. Check the small
+[version manifest](https://microsoft.github.io/coreai-design-system/version.json)
+once per task and refresh older skill guidance; do not downgrade a newer local
+skill. Documentation-only updates do not require a new component package.
 
-```json
-{
-  "servers": {
-    // CoreAI Design System MCP
-    "coreai-ds-docs": {
-      "type": "http",
-      "url": "https://coreai-ds-storybook.azurewebsites.net/mcp"
-    }
-  },
-  "inputs": []
-}
-```
-
-The MCP returns read-only documentation, including selected Fluent examples and CoreAI
-overrides. It does not access your project or execute the returned code. See
-[MCP scope, safety, and data handling](../../apps/storybook/src/stories/docs/MCPSetup.mdx#scope-safety-and-data-handling)
-before connecting. Review and test examples before using them in your application.
+Compare the documented package version with installed packages. Report missing
+documentation rather than guessing APIs, and review and test examples before
+using them in an application.
 
 ## eslint
 
@@ -200,7 +194,7 @@ files that anchor each pattern.
 - **`customStyleHooks_unstable` registry** — see [src/contexts/styleHooks.ts](src/contexts/styleHooks.ts) and [src/components/Card.styles.ts](src/components/Card.styles.ts).
 - **Custom prop-widening wrapper** — see [src/components/TabList.tsx](src/components/TabList.tsx).
 - **Webpack `NormalModuleReplacementPlugin` rewrite** — Storybook (the playground app) routes Fluent's canonical story imports through this barrel so they pick up CoreAI defaults. See [apps/storybook/.storybook/main.ts](../../apps/storybook/.storybook/main.ts) at the monorepo root.
-- **Complete variation inventory vs stock Fluent** — see [VariationsFromFluent.mdx](../../apps/storybook/src/stories/docs/VariationsFromFluent.mdx).
+- **Complete variation inventory vs stock Fluent** — see [Variations from Fluent](../../apps/docsite/content/guides/VariationsFromFluent.md).
 
 ## Extending CoreAI
 

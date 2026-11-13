@@ -5,8 +5,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import ts from 'typescript';
 import { appRoot } from './generate-component-stories.mjs';
-import { createStoryInventory } from './story-inventory.mjs';
-import { extractStorySource } from './story-source.mjs';
+import { createStoryInventory } from '../../docsite/scripts/sources/StoryInventory.mjs';
+import { extractStorySource } from '../../docsite/scripts/sources/StorySource.mjs';
 
 const inventory = await createStoryInventory();
 const cache = new Map();

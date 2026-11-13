@@ -4,7 +4,6 @@ title: Status indicator
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPreviewUrl: >-
   https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=326713-271
 figmaPageId: '326713:271'
@@ -17,6 +16,9 @@ resources:
       https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=326713-271
   - label: Fluent badge guidance
     url: 'https://fluent2.microsoft.design/components/web/react/core/badge/usage'
+reference:
+  standalone: true
+  route: components/StatusIndicator
 ---
 
 ## Best practices

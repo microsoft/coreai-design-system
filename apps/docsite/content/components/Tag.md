@@ -4,7 +4,6 @@ title: Tag
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 storybookTitles:
   - Components/Tag/Tag
   - Components/Tag/InteractionTag
@@ -18,6 +17,8 @@ resources:
       https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=174111-15541
   - label: Fluent guidance
     url: 'https://fluent2.microsoft.design/components/web/react/core/tag/usage'
+reference:
+  component: components-tag-tag
 ---
 
 ## Best practices

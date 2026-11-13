@@ -98,7 +98,7 @@ For each affected behavior, determine:
 
 Implementation is primary evidence. Cross-check only relevant entries in
 `packages/react-components/CHANGELOG.md` and the relevant component section of
-`apps/storybook/src/stories/docs/VariationsFromFluent.mdx`. Documentation supports intent but does
+`apps/docsite/content/guides/VariationsFromFluent.md`. Documentation supports intent but does
 not create scope or require tests by itself. Report implementation/documentation mismatches with
 both locations and interpretations; do not resolve them by editing docs or production code.
 
@@ -215,7 +215,7 @@ The status and supporting sections must agree.
 - Unverified: <relevant scope, including an undetermined PR target, or none>
 
 ### Documentation
-- <relevant CHANGELOG.md or VariationsFromFluent.mdx evidence and whether it supports the contract>
+- <relevant CHANGELOG.md or variations-from-fluent.md evidence and whether it supports the contract>
 - Mismatches: <implementation/documentation disagreement with locations and interpretations, or none>
 
 ### Issues

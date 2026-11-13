@@ -4,7 +4,6 @@ title: Textarea
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '7214:127351'
 summary: >-
   A textarea allows people to enter long, free-form text data, like a comment.
@@ -18,6 +17,8 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/textarea/usage'
 storybookTitles:
   - Components/Textarea
+reference:
+  component: components-textarea
 ---
 
 ## Best practices

@@ -4,7 +4,6 @@ title: Switch
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '2070:49484'
 summary: >-
   A switch lets someone choose between two mutually exclusive options, like on
@@ -17,6 +16,8 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/switch/usage'
 storybookTitles:
   - Components/Switch
+reference:
+  component: components-switch
 ---
 
 ## Best practices

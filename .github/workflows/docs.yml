@@ -1,0 +1,106 @@
+name: Documentation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: documentation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Validate documentation
+    if: github.repository == 'microsoft/coreai-design-system'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Check public source and license headers
+        run: npm run check:public-source && npm run license:check
+      - run: npm ci --prefer-offline
+      - name: Build static documentation
+        run: npm --workspace apps/docsite run build -- --base=/coreai-design-system/
+      - name: Test documentation contracts
+        run: npm --workspace apps/docsite test && node --test shared/guidance.test.mjs .github/workflows/scripts/docs-deploy.test.mjs
+      - name: Type-check documentation
+        run: npm --workspace apps/docsite run type-check
+      - name: Install Chromium
+        run: npm exec -- playwright install --with-deps chromium
+      - name: Verify static output, consumer examples and browser behavior
+        run: npm --workspace apps/docsite run verify
+      - name: Upload verified static site
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+        with:
+          path: apps/docsite/dist
+
+  deploy:
+    needs: build
+    if: >-
+      github.repository == 'microsoft/coreai-design-system' &&
+      github.ref == 'refs/heads/main' &&
+      github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy documentation
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+      - name: Verify published documentation
+        env:
+          DOCSITE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { createHash } from 'node:crypto';
+          import { setTimeout } from 'node:timers/promises';
+          for (let attempt = 1; attempt <= 12; attempt++) {
+            try {
+              const read = async (path) => {
+                const response = await fetch(new URL(path, process.env.DOCSITE_URL), { cache: 'no-store' });
+                assert.equal(response.status, 200, path);
+                return { text: await response.text(), type: response.headers.get('content-type') ?? '' };
+              };
+              const index = JSON.parse((await read('llms/index.json')).text);
+              assert.equal(index.coreaiSourceRef, process.env.GITHUB_SHA);
+              assert.equal(index.basePath, '/coreai-design-system/');
+              const release = JSON.parse((await read('version.json')).text);
+              assert.equal(release.sourceRef, process.env.GITHUB_SHA);
+              assert.equal(release.version, index.documentation.version);
+              assert.equal(release.skill.version, release.version);
+              assert.equal(release.packageVersion, index.versions['@coreai-ds/react-components']);
+              const skill = (await read(release.skill.path)).text;
+              assert.equal(createHash('sha256').update(skill).digest('hex'), release.skill.sha256);
+              assert.match((await read('')).text, /CoreAI Design System/);
+              const markdown = await read('components/DataGrid.md');
+              assert.ok(!markdown.type.includes('text/html'));
+              assert.match(markdown.text, /DataGridProps/);
+              assert.match((await read('llms.txt')).text, /Fetch this index once per task/);
+              assert.match((await read('third-party/paper-shaders-license.txt')).text, /Apache License/);
+              console.log(`Verified public documentation: ${process.env.DOCSITE_URL}`);
+              break;
+            } catch (error) {
+              if (attempt === 12) throw error;
+              console.warn(`Published documentation not current yet (${attempt}/12): ${error.message}`);
+              await setTimeout(10000);
+            }
+          }
+          NODE

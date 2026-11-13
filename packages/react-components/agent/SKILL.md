@@ -1,172 +1,127 @@
 ---
 name: coreai-ds-fluentui-react
-description: 'MANDATORY for @coreai-ds/react-components work. Use the CoreAI documentation MCP to discover components, props, stories, templates, and implementation patterns. If the MCP is unavailable, stop and ask the user to enable or troubleshoot it with you.'
+description: >-
+  Docs/skill v0.1.1; package v0.12.0. Use when building, styling, reviewing, or
+  debugging React UI with @coreai-ds/react-components. Fetch CoreAI Markdown
+  documentation over HTTPS for components, APIs, defaults, templates, tokens,
+  and accessibility guidance.
+metadata:
+  version: 0.1.1
+  package-version: 0.12.0
 ---
 
-# CoreAI Design System - Using `@coreai-ds/react-components` as an agent
+# CoreAI React UI
 
-Use the CoreAI documentation MCP before CoreAI-dependent implementation. This skill provides
-lookup and implementation rules for consuming repositories; component APIs, defaults, states,
-and examples belong in the MCP.
+## Documentation entry points
 
-## Skill boundary
+Base URL: https://microsoft.github.io/coreai-design-system/
 
-This skill owns the authoritative workflow for the external `@coreai-ds/react-components` package:
-CoreAI documentation lookup, included Fluent story lookup, and CoreAI import rules. It does
-not decide whether the consuming repository already owns a product-specific adapter or composition.
+- Start here: https://microsoft.github.io/coreai-design-system/llms.txt
+- Agent workflow: https://microsoft.github.io/coreai-design-system/guides/AgentWorkflow.md
+- Package setup: https://microsoft.github.io/coreai-design-system/guides/Package.md
+- Exact routes, examples, source downloads, API membership, and versions:
+  https://microsoft.github.io/coreai-design-system/llms/index.json
+- Current docs/skill and documented package versions:
+  https://microsoft.github.io/coreai-design-system/version.json
 
-Follow the consuming repository's component guidance to identify existing local adapters and
-compositions, and inspect their source before using them. Local guidance owns repository-specific
-import boundaries and behavior; this skill owns CoreAI API questions. Keep local component
-catalogs and repository-specific exceptions in the repository's own guidance.
+Use ordinary HTTPS GET requests with your available web-fetch or HTTP tool.
+These are static files; no account, server connection, or special protocol is
+needed. This does not replace normal app dependency setup. Follow the
+repository's package manager, lockfile, and approval rules. Do not upload
+repository content or credentials to read documentation.
 
-## Import components from `@coreai-ds/react-components`, not `@fluentui/react-components`
+## Install or refresh before UI work
 
-**Never** import a component from `@fluentui/react-components` directly — the barrel re-exports
-Fluent's full surface and shadows some components with CoreAI-themed wrappers (`Button`, `Card`,
-`Input`, …); importing straight from `@fluentui/react-components` renders stock Fluent instead of
-the CoreAI version. This does **not** apply to every `@fluentui/*` package — icons
-(`@fluentui/react-icons`) and other packages the barrel doesn't wrap are fine to import directly.
-See the package's
-[README.md](https://github.com/microsoft/coreai-design-system/blob/main/packages/react-components/README.md)
-(or `node_modules/@coreai-ds/react-components/README.md#eslint` once installed) for the enforced
-eslint rule.
+Before each CoreAI task, fetch `version.json` once using an uncached HTTPS GET.
+Its `version` and `skill.version` share the docs/skill release; `packageVersion`
+identifies the documented component package. These are separate version tracks.
+Only the current documentation is hosted.
 
-Import components, styling APIs, and tokens from the CoreAI package:
+Use the existing `coreai-ds-fluentui-react` skill in this repository's supported
+skill directory. If none exists, install the published skill at
+`.github/skills/coreai-ds-fluentui-react/SKILL.md`, or the client's supported
+equivalent. If its `metadata.version` is missing or older, fetch and review
+`source/package/SKILL.md` and update it before implementing. Compare semantic
+versions, not strings. Do not downgrade a newer local skill.
 
-```tsx
-import { Button, Card, Input, makeStyles, tokens } from '@coreai-ds/react-components';
-```
+Check that the downloaded skill's `metadata.version`, `metadata.package-version`,
+and description agree with `version.json`. Retry an uncached fetch if they
+disagree; report a persistent mismatch instead of installing mixed releases.
+Refresh the published CoreAI guidance while preserving repository-specific
+instructions, adapters, and conventions. Ask before resolving conflicting local
+rules. Do not change unrelated instruction files or execute downloaded code.
 
-Import icons directly from Fluent:
+The starter prompt authorizes installing or updating this skill only. Get the
+user's approval before writing instructions when that action is not already
+authorized, or when the client requires it. If retrieval, approval, or writing
+is blocked, report the problem and ask how to proceed; do not silently skip
+installation or claim that an update succeeded. Follow the updated skill in
+the current task and reload it for future tasks if the client requires that.
 
-```tsx
-import { AddRegular } from '@fluentui/react-icons';
-```
+## Retrieve only what the task needs
 
-## MCP servers
+1. Inspect the consuming app's package manifest and lockfile for installed CoreAI
+   and Fluent versions. The site documents the current release, not archived APIs.
+   If versions differ, check the installed declarations and disclose the mismatch.
+2. Fetch `llms.txt` once per task to find the relevant page. Reuse pages already
+   fetched during that task; do not download the entire catalog.
+3. Read the selected page's Markdown before choosing components or props.
+   It includes a basic Default example, API summaries, UX guidance, and other examples.
+4. For a known human URL, replace its trailing slash with `.md`, preserving the
+   `/coreai-design-system/` prefix. The homepage maps to `index.md`.
+   Example: `components/Button/` becomes `components/Button.md`.
+5. Use `llms/index.json` only when you need exact routes, subcomponent membership,
+   story IDs, dependencies, or direct source links. Follow published paths instead
+   of guessing names from component exports or old story IDs.
+6. Fetch only the source files needed for the chosen example or template. Inspect
+   them before adapting. Validate the result with the consuming app's checks.
 
-- **`coreai-ds-docs`** — public documentation at `https://coreai-ds-storybook.azurewebsites.net/mcp`,
-  combining CoreAI components, extensions, templates, and selected Fluent stories.
-  CoreAI overrides take precedence for matching story IDs.
-- **`fluent-agent`** — optional supplementary source at `https://chat.fluentui.dev/mcp/server/`
-  for icon/token search or general Fluent guidance.
-  CoreAI's combined catalog remains the source for component decisions.
+CoreAI UX guidance takes precedence over upstream demonstration examples.
+API blocks are summaries; exported package types are authoritative. Never invent
+props, defaults, or package exports. If guidance is missing, report the gap and
+identify any fallback. Do not claim a failed request succeeded.
 
-For connection instructions, point the user to
-[Docs/MCP Setup](https://coreai-ds-storybook.azurewebsites.net/?path=/docs/docs-mcp-setup--docs).
-Keep client configuration and setup details in that guide. Ask for approval before editing
-the user's MCP configuration.
+## Imports and application setup
 
-### Required MCP workflow
+Follow repository adapters, import restrictions, and lint rules first. Where
+those rules allow direct imports, use `@coreai-ds/react-components` for components,
+tokens, and styling APIs. Do not bypass CoreAI wrappers by importing the Fluent
+component barrel directly. Icons can come from `@fluentui/react-icons`.
 
-1. Confirm the CoreAI documentation server is connected.
-2. Call `docs-list` before assuming a component ID.
-3. Call `docs-show` before using a component or prop.
-4. Call `docs-show-story` when a specific state or pattern is needed.
-5. Implement only documented props, combinations, and patterns.
-6. If a component or prop is missing, report the gap. Do not invent it.
+If a local rule still requires the legacy documentation MCP, report the conflict
+and ask before changing that rule. Do not silently ignore it or rewrite unrelated
+instructions.
 
-**Never hallucinate a prop.** Even a common-sounding one (`shadow`, `variant`, `color`) — verify
-it's real via `docs-show` or an example story before using it. If it isn't documented or
-shown in an example, ask the user instead of assuming.
+Use one `CoreAIFluentProvider` at the app root unless the product intentionally
+needs a nested theme. Read setup and theming guidance before changing providers.
+Inspect existing local adapters and repository import rules before adding UI.
 
-### Report documentation and component gaps
+Useful direct references:
 
-When CoreAI documentation is missing, incorrect, or does not cover a needed component or prop:
+- Theming: https://microsoft.github.io/coreai-design-system/foundations/Theming.md
+- Colors: https://microsoft.github.io/coreai-design-system/foundations/Colors.md
+- Typography: https://microsoft.github.io/coreai-design-system/foundations/Typography.md
+- CoreAI differences: https://microsoft.github.io/coreai-design-system/guides/VariationsFromFluent.md
+- CSS Modules: https://microsoft.github.io/coreai-design-system/guides/StylingWithCssModules.md
 
-1. Tell the user exactly what is missing and what fallback, if any, you used.
-2. Ask whether they want you to file an issue in the
-   [CoreAI GitHub issue tracker](https://github.com/microsoft/coreai-design-system/issues/new).
-3. Only after the user confirms, use
-   `gh issue create --repo microsoft/coreai-design-system` to file an issue that
-   includes the component or documentation page, the expected behavior or
-   information, the observed gap, and a minimal example when available. Source,
-   pull requests, and issues share this GitHub repository.
-4. If you cannot create the issue, give the user a ready-to-submit title and body instead.
+## Templates and design quality
 
-## Component IDs have no predictable scheme
+Templates are copy-and-adapt files, not npm exports. Read their page and copy every
+required source file it lists into the consuming repository. Do not invent a
+template import from the package.
 
-IDs are inconsistent — `components-button-button` (Storybook groups `Button` inside a `Button`
-folder alongside `CopyButton`/`DropdownButton`/etc., doubling category+name), but
-`components-avatar` (not doubled), `components-datetime-calendar` (category `datetime`, name
-`calendar`). You cannot guess an id from a component name.
+Prefer documented components and semantic design tokens. Preserve keyboard
+behavior, focus visibility, accessible names, responsive layouts, and both themes.
+Check the implemented behavior, not only whether the code compiles.
 
-- Call `docs-list` first, every session, before assuming an id.
-- Pass `withStoryIds: false` when you don't need story ids yet — it meaningfully cuts response
-  size.
+At completion, briefly report pages actually read, installed/documented version
+differences, guidance gaps or fallbacks, and checks actually run. Distinguish
+failed or skipped checks from passing checks; do not imply untested browser,
+theme, or responsive behavior was verified.
 
-## Templates vs. components
+## Unavailable documentation
 
-- **Components** are real, importable components, ids like `components-button-button`,
-  `components-avatar` — import from the barrel as usual.
-- **Templates** (`templates-empty-state`, `templates-filterable-list`,
-  `templates-shell-and-navigation`) are higher-level, copy-paste starting points, **not exported
-  from the package** — there's no import path for them. Call `docs-show` with the
-  template's id and copy its "Source Code" entry (story id `templates-empty-state--source-code`)
-  verbatim into the consuming repo, then edit it freely to fit the app; it's meant to be
-  modified as needed.
-- Prefer an existing CoreAI component or template over recreating the same pattern with custom
-  markup.
-
-## Design implementation rules
-
-- Preserve existing component structure, props, behavior, and accessibility when translating a
-  design. Retheme before rewriting.
-- Use CoreAI or Fluent semantic tokens instead of hardcoded colors, spacing, radii, typography,
-  shadows, or motion values.
-- Support both light and dark themes unless the product explicitly supports only one.
-- Keep keyboard behavior, focus visibility, labels, names, roles, and contrast intact.
-- Reuse documented component states instead of approximating them with custom CSS.
-- Keep responsive behavior intentional. Check narrow and wide layouts.
-- Use CoreAI typography primitives and presets for hierarchy.
-- Use `CodeBlock` for source code and `Markdown` for Markdown content rather than maintaining
-  custom renderers.
-- Import exact product assets. Do not approximate supplied icons, SVGs, or illustrations.
-
-## Higher-value docs for specific questions
-
-Prefer these over guessing from a prop table alone — confirm the entry in `docs-list`, then pass its id to `docs-show`:
-
-- **What CoreAI changes vs. stock Fluent** → `docs-variations-from-fluent--docs`
-- **Theming / token overrides** → `docs-theming--docs`
-- **Overriding styles with plain CSS/CSS Modules** → `docs-styling-with-css-modules--docs`
-
-## If the CoreAI MCP is unavailable
-
-Pause CoreAI-dependent work, report the connection error or missing server, and point the user
-to [Docs/MCP Setup](https://coreai-ds-storybook.azurewebsites.net/?path=/docs/docs-mcp-setup--docs).
-Help them connect, then retry the catalog index call to verify the connection.
-
-Proceed offline only if the user explicitly authorizes it after being told that CoreAI APIs
-and defaults cannot be verified. Disclose that limitation in the final result.
-
-## Translating a Storybook URL into an MCP call
-
-A link a human pastes in, e.g.
-`https://coreai-ds-storybook.azurewebsites.net/?path=/docs/components-button-button--docs` or
-`.../?path=/story/components-button-button--subtle-content-alignment`:
-
-- The segment before `--` (`components-button-button`) is the `id` for `docs-show`.
-- The segment after `--` (kebab-case) maps to a story export name for `docs-show-story`
-  (e.g. `subtle-content-alignment` → `SubtleContentAlignment`). If the guess doesn't hit, confirm
-  the exact name via `docs-show`, which includes the component's story index.
-- For a story URL, use the full story ID to locate its exact entry in the component's story
-  index or `docs-list` with story IDs. Pass the identifier or name required by the discovered
-  `docs-show-story` schema rather than guessing an export name from kebab-case.
-- The catalog includes selected canonical Fluent stories alongside local CoreAI
-  examples, including upstream variants that are not overridden locally. Retrieve these through
-  the same server. If a UI story is absent or its returned example is incomplete, report that
-  specific gap instead of assuming re-exported stories are always unavailable.
-
-## Completion checklist
-
-- CoreAI MCP documentation checked for each component used.
-- Relevant included Fluent stories checked through the CoreAI catalog when additional states or
-  inherited APIs are needed.
-- CoreAI differences applied and given precedence over upstream examples in conflicts.
-- Imports come from `@coreai-ds/react-components`, except icons and packages the barrel does not wrap.
-- No undocumented props or invented component APIs.
-- Existing behavior and accessibility preserved.
-- Semantic tokens used for visual styling.
-- Light, dark, narrow, and wide layouts considered.
+If fetching fails, report the URL and error. Use installed package declarations,
+README, and changelog as explicit offline fallbacks. Do not substitute unverified
+stock Fluent behavior for CoreAI behavior. Ask before filing a public issue or
+sharing project details.

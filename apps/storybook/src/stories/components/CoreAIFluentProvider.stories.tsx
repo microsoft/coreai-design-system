@@ -20,6 +20,15 @@ import {
 } from '@coreai-ds/react-components';
 import type { StoryObj } from '@storybook/react-vite';
 
+/** Provide the CoreAI theme to a component subtree. */
+export const Default: StoryObj = {
+  render: () => (
+    <CoreAIFluentProvider theme={coreaiLightTheme}>
+      <Button appearance="primary">CoreAI theme</Button>
+    </CoreAIFluentProvider>
+  ),
+};
+
 /**
  * Customize the brand colors and feed the resulting theme to a nested
  * `CoreAIFluentProvider`. Each provider re-themes only its own subtree, so the

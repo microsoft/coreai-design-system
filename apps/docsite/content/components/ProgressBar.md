@@ -4,7 +4,6 @@ title: Progress bar
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '39768:210991'
 summary: >-
   Progress bars communicate system information, like how much cloud storage
@@ -19,6 +18,9 @@ resources:
       https://fluent2.microsoft.design/components/web/react/core/progressbar/usage
 storybookTitles:
   - Components/ProgressBar
+reference:
+  component: components-progressbar
+  aliases: [/static-progress-bar/]
 ---
 
 ## Best practices

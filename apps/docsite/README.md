@@ -1,385 +1,216 @@
 # @coreai-ds/docsite
 
-React SPA docsite for CoreAI. Built with Vite + React 18 and themed entirely with the repo's own [`@coreai-ds/react-components`](../../packages/react-components) package (wrapped Fluent UI v9), the same way `apps/storybook` consumes it (workspace symlink, no ADO feed auth needed for in-repo builds). `vite build` emits a static bundle to `dist/`, then `server.js` serves it locally or on Azure App Service.
+Static CoreAI documentation for people and agents. GitHub Pages serves the same
+Markdown-owned guidance as physical HTML pages, Markdown downloads, and live React
+examples. Public delivery does not require Storybook, MCP, Azure, or a Node server.
+Storybook remains available for local component development.
 
-## Source of truth
+Public site: <https://microsoft.github.io/coreai-design-system/>.
 
-- Base page inventory / nav / IA: [`site-registry.json`](site-registry.json)
-- Canonical component guidance and metadata: plain Markdown in [`content/components/`](content/components)
-- Offline Storybook input: [`content/storybook-index.snapshot.json`](content/storybook-index.snapshot.json)
-- Changelog data: [`changelog.json`](changelog.json)
-- Typed data layer and content validation: [`src/data/`](src/data)
-- App shell + routing: [`src/App.tsx`](src/App.tsx), [`src/components/`](src/components)
-- Theme provider (system/light/dark using `CoreAIFluentProvider`): [`src/theme/ThemeProvider.tsx`](src/theme/ThemeProvider.tsx)
-- Pages: [`src/pages/`](src/pages)
-- Build config (barrel alias + optimizeDeps to consume the package from source, mirrors storybook): [`vite.config.ts`](vite.config.ts)
+## Local commands
 
-## Scripts
+Run from the repository root after installing the locked dependencies:
 
-Run from repo root:
-
-```bash
-npm run docsite        # vite dev server on http://localhost:8080
-npm run build:docsite  # vite build → dist/
+```powershell
+npm run build:docsite
+npm --workspace apps/docsite run preview
 ```
 
-Run from workspace:
+Preview opens on `http://127.0.0.1:8081/`. To reproduce the Pages repository prefix:
 
-```bash
-npm -w apps/docsite run dev      # vite dev server
-npm -w apps/docsite run build    # vite build
-npm -w apps/docsite run preview  # serve the built dist/ via vite preview
-npm -w apps/docsite test         # build + route/cache/bundle regression tests
-npm -w apps/docsite run generate:content # regenerate from Markdown + cached/local Storybook data
-npm -w apps/docsite run generate:content:refresh # refresh from deployed Storybook
+```powershell
+npm --workspace apps/docsite run build -- --base=/coreai-design-system/
+npm --workspace apps/docsite run preview
 ```
 
-To exercise the exact production runtime (Node static server + SPA fallback) instead of vite's preview server, run `npm -w apps/docsite run build` then `npm -w apps/docsite start`.
+Preview reads the base path from the generated index. `npm run docsite` builds and
+starts that preview. Rebuild after content or example changes; this pipeline does
+not yet provide a development watcher.
 
-## What ships
+The normal build provisions the pinned Fluent story checkout if needed, builds
+the CoreAI package, and generates `dist/`. It does not build hosted Storybook or
+fetch a deployed Storybook index. The first source checkout needs network access;
+subsequent builds use the pinned local checkout.
 
-- Landing page with Storybook, Figma, and npm links.
-  Audience cards are reserved for future content.
-  Resource icons and labels use the link color
-  at rest. The left-aligned content is centered horizontally and vertically
-  within the main area's left half.
-  An oversized, full-opacity, draggable logo extends off the page on the
-  right. The desktop illustration is viewport-anchored and sized from viewport
-  height, so toggling the sidebar does not resize or reposition it. Only the
-  viewport clips it, not the inset page container. Narrow or short screens can
-  still scroll when needed to reach the actual content.
-  The illustration is 25% larger on desktop and mobile. It drifts at 0.080802
-  radians/second (two successive 33% reductions from 0.18) under
-  stationary lights, with Paper's animated Heatmap followed by
-  Image Dithering (8x8 Bayer, 2px cells, original colors, colorSteps 4).
-  Dither spacing uses CSS pixels for consistent
-  texture across display densities. The cubes slightly overlap at their rounded
-  corners to close the gaps. A theme-matched radial fade sits above the desktop
-  illustration and below the hero content, without blocking pointer interaction.
-  Reduced-motion preference stops both automatic drift and heatmap animation
-  but keeps dragging available. The temporary tuning controls are removed.
-  On narrow screens the logo moves below the content. Shared resource URLs come from
-  [`shared/site-links.ts`](../../shared/site-links.ts); package and MCP guidance stay on the local site.
-- App shell with header, sidebar nav, content column, footer, and prev/next page nav, composed from CoreAI `Button`, `Card`, `Input`, `Link`, and `Text` components
-- Client-routed pages for resources, changelog, colors, typography, materials, Web UI Guidelines, component package, and agent skill
-- Theme preference (system/light/dark, persisted in `localStorage` as `coreai-docsite-theme`), mobile nav toggle, token copy actions
-- Exposed `site-registry.json` and `changelog.json` in built output for human and agent consumption (copied into `dist/` at build time)
-- Component pages rendered from canonical Markdown, with matching downloads at `/components/{id}.md`
-- Story IDs, preview options, and iframe targets generated from the live Storybook index
-- Component routes and built registry entries generated from the canonical component records
-- LLM discovery files at `/llms.txt` and `/llms-full.txt`, generated from the same component content
-- Route-level JavaScript chunks, WOFF2 fonts, Brotli/gzip responses, and enforced delivery budgets
+## Ownership and naming
 
-Because it is a client-rendered SPA, `server.js` includes an SPA fallback (serves `index.html` for unknown extension-less routes) so client-side deep links resolve.
+- Canonical guidance and page metadata: [`content/`](content).
+- Shared tables and starter prompt: [`content/data/`](content/data).
+- Package setup, changelog, and consumer skill: the package's canonical files,
+  included at build time rather than copied by authors.
+- Build and source tooling: [`scripts/`](scripts).
+- React presentation: [`src/reference-proof/`](src/reference-proof).
+- Shared theme and UI components: [`src/theme/`](src/theme) and
+  [`src/components/`](src/components).
 
-### Navigation
+Custom docsite source, script, style, test, and Markdown filenames use PascalCase.
+Required tooling names, public protocol endpoints, generated example IDs, and
+vendor/static assets retain their established names. Components use their public
+export spelling, including acronyms: `DataGrid`, `CoreAIFluentProvider`, and
+`DateTimePicker`.
 
-The sidebar follows this order:
+A component file such as `content/components/DataGrid.md` publishes:
 
-- **Overview:** Home, Resources, FAQs.
-- **For humans:** Prototyping, NPM package.
-- **For agents:** MCP server, Package skill.
-- **Foundations:** Colors, Typography, Content.
-- **Components**, then **Templates:** existing guidance pages.
-- **Samples:** an empty section after Templates.
+- `components/DataGrid/index.html`
+- `components/DataGrid.md`
 
-Each group has its own section with a bottom divider, including Overview,
-For humans, and For agents. On initial load or reload, Overview starts open and all
-other sections start collapsed unless the current page belongs to that group.
-Empty sections remain visible outside search.
-Search replaces the groups with ranked page results and highlighted excerpts.
+Guides follow the same casing convention, for example `guides/Package/` and
+`guides/Package.md`. Links are case-sensitive on Pages. The homepage retains the
+standard `index.html` / `index.md` output names.
 
-**Home** keeps the existing landing page at `/`.
-Resources (`/resources/`) groups nine link cards into Assets, Code, and Connect.
-Each card is one native link, composed with the existing CoreAI Card and Text controls.
-Cards use the `filled-alternative` appearance. Content uses the standard page max-width.
-Icons are 24px with no separate background. Destination
-labels and external-link icons use `colorBrandForegroundLink`.
-Titles, descriptions, destination labels, and icons live in
-[`src/data/resources.ts`](src/data/resources.ts); URLs reuse `siteLinks`.
-Cards open in a new tab, announce that behavior, and support keyboard focus.
-The grid adapts to the available width in both themes.
-FAQs (`/faqs/`) contains 12 answers in five topic groups, using the
-existing CoreAI Accordion, Text, and Link controls. Questions, answers, links,
-and research sources live in [`src/data/faqs.ts`](src/data/faqs.ts).
-The page renders only optional `links` to resources mentioned in an answer,
-such as setup guides and GitHub Issues. The `sources` stay in the data for
-editorial traceability; they are not rendered as citation lists.
-The research combines live Storybook documentation, the package README, and
-selected CoreAI DS Community threads. Community history was only partially
-available, so this is not a frequency-ranked or exhaustive list.
-Mini Foundry background was checked against the existing
-`proto/jabradford/mini-foundry-history-slides` source at `ca0ea4f7`
-(`app/slides/ExampleSlideDeck.tsx`); the deployed deck required sign-in.
-Additional rationale comes from the September 22 Apogee Loop recording transcript
-retrieved through WorkIQ and speaker notes read directly from the Figma `History`
-deck (`Lyb3shKi3jWCYjxajCRqmt`, slides 13, 15, 16, and 17). The transcript excerpts
-had no timestamps, so retained recording references point to the whole recording.
-Historical migration plans and unconfirmed component delivery dates are not current guidance.
-Prototyping (`/prototyping/`) and Content (`/content/`) use the shared "Page under construction" state
-in [`src/components/work-in-progress.tsx`](src/components/work-in-progress.tsx).
-It is centered in the page with no separate page header or summary.
-Empty state (`/empty-state/`), Page header (`/page-header/`), and Top nav
-(`/top-nav/`) show only this state, centered in the page without a page header,
-preview, resources, or guidance. Their source content remains intact for later use.
-Other component pages marked `under-construction` show the state above their
-existing previews, resources, and guidance.
-The state uses a miniature monochrome version of the spinning home logo,
-with neutral lighting, dithering, and no purple heatmap. Drag the logo to rotate it.
-Reduced motion stops automatic rotation but keeps dragging available.
-It has a static logo while the canvas loads.
-On entry, the logo, heading, description, and button fade in over 320ms each,
-staggered by 70ms. This repeats when switching template pages.
-Reduced motion shows all elements immediately.
-"Share a suggestion" opens the existing `siteLinks.feedback` intake in a new tab.
-Its label and 16px external-link icon use the purple link colors, including hover
-and pressed states. Supporting copy reads "We're still working on this page."
-Content's authored guidance remains intact in `src/pages/Content.tsx`; removing
-`content` from `blankPageIds` restores it. Existing page URLs stay unchanged.
-Materials and Changelog remain available at their existing URLs without sidebar entries.
+Frontmatter `id` is an internal content identifier, not a public URL. The file
+location determines the route unless `reference.route` explicitly sets one.
+Documentation has no `complete` or `under-construction` status metadata.
 
-Storybook previews include a small "Preview not loading?" help row.
-"Sign in to Storybook" opens the current story in a new tab. After signing in,
-"Reload preview" reloads only that iframe, preserving the selected story and theme.
-Figma previews do not show this help row.
-This is recovery guidance, not an authentication check: the docsite does not read
-the cross-origin iframe, infer sign-in status from its load event, or change
-Storybook's server or Azure authentication configuration.
+## Authoring pages
 
-At viewport widths of 1440px and above, only FAQs shows a sticky "On this page"
-rail using its rendered registry anchors. The FAQ content column is capped at 776px.
-The TOC sits in the right margin rather than taking space from the content.
-It grows to 200px wide as room allows; longer labels wrap at smaller desktop widths.
-The rail aligns with the FAQ title, has an 80px gap from the content, and uses existing CoreAI `LinkButton`
-controls with a filled active row, native fragment links, and standard hover/focus states.
-It highlights the current section within the page scroll region and updates when
-content expands or the viewport changes. Clicking a section keeps that section
-selected even when the scroll position is limited by the bottom of the page;
-scrolling away resumes automatic section tracking.
-TOC clicks scroll smoothly and keep the chosen section highlighted during the transition.
-Reduced-motion preferences disable smooth scrolling. Direct section URLs load at their target.
-It does not expand FAQ answers. All other pages retain their layout without a rail.
-Below 1440px, the rail is hidden and the existing single-column layout is unchanged.
+All pages declare `id`, `title`, `summary`, `resources`, and `reference`:
 
-On desktop, the logo button hides or shows the sidebar. The collapsed sidebar
-shows only that button, overlaid on the page without reserving a sidebar gutter.
-The contents fade without wrapping during the transition.
-Reduced motion disables the transition. The toggle shortcut does not focus the
-logo button; normal Tab navigation keeps its visible focus indicator.
-Docsite-only styles set navigation item left padding to 16px and section heading
-left padding to 8px.
-The footer has a soft upward shadow in the shell background color, clipped inside
-the sidebar, to separate its links from scrolling navigation items.
-The outer outline and footer divider paint above the shadow so their strokes stay visible.
-The desktop open/closed state persists across reloads in `localStorage` under
-`coreai-docsite-sidebar-collapsed`. The mobile overlay still starts closed.
-Cmd/Ctrl+K expands it and focuses search. On mobile,
-the logo closes the existing navigation overlay.
+```yaml
+---
+id: data-grid
+title: DataGrid
+summary: Present and interact with structured data.
+resources: []
+reference:
+  component: components-datagrid
+---
+```
 
-| Action                           | Mac            | Windows         |
-| -------------------------------- | -------------- | --------------- |
-| Show/hide navigation             | Option+S       | Alt+S           |
-| Previous page                    | Option+Up      | Alt+Up          |
-| Next page                        | Option+Down    | Alt+Down        |
-| Collapse all navigation sections | Cmd+Shift+Up   | Ctrl+Shift+Up   |
-| Expand all navigation sections   | Cmd+Shift+Down | Ctrl+Shift+Down |
-| Switch theme                     | Option+M       | Alt+M           |
-| Search navigation                | Cmd+K          | Ctrl+K          |
-| Close mobile navigation          | Esc            | Esc             |
+The source component ID remains the Storybook inventory ID. It is independent of
+the case-sensitive public route. Omitting `examples` includes all selected
+examples. Explicit selections and exclusions are validated rather than guessed.
+Every executable component/template group has one selected Default example.
 
-Previous/next follows sidebar order, including collapsed groups, without wrapping
-at the ends. After a page change, the navigation scrolls just enough to reveal the active page,
-waiting for its group to open if needed. Opening or closing sections manually
-does not scroll back to the active page. This does not move focus or scroll the page body.
-Pages outside the sidebar do not participate. Collapse-all closes
-the groups, not the whole sidebar. The next page change reopens only the destination
-group, even when the previous page was in that same group.
-Plain N and M no longer trigger actions.
-Shortcuts ignore typing fields, held keys, text composition, and AltGr.
-Search and Escape remain available while typing. Search also opens mobile navigation.
-Option letter shortcuts use physical key codes so macOS-generated characters
-do not prevent recognition. Shortcuts apply to the docsite, not embedded previews.
+Templates declare complete copy-and-adapt `sources` under
+`apps/storybook/src/stories/templates/`; they are not npm exports. Standalone pages
+can opt into the bounded renderer registry for custom foundation and overview
+layouts.
 
-The settings gear in the sidebar opens a popover with an elevated **Dark / Light**
-tablist sized to its content above the shortcut list. The popover opens below
-the gear, aligned to its left edge. The complete menu, including padding and
-borders, is 220px wide. Shortcut labels use type-ramp size 200 and foreground 2.
-CoreAI Badges contain system-UI shortcut glyphs. Letters, modifiers, and arrows
-use size 200, with a 2px gap between keys and no text spaces.
-The edge-to-edge divider matches the popover border.
-Shortcut badges use platform-specific symbols without plus signs;
-full key names remain available to screen readers and on hover.
-Escape is not listed in the popover, but still closes the popover first,
-without closing an open mobile navigation overlay. The popover reuses CoreAI
-controls and Fluent's settings icon; shared components are unchanged.
+Supported directives include:
 
-### Illustration shaders
+```markdown
+<!-- generated: colors -->
+<!-- include: package-readme -->
+<!-- example: components-text--presets -->
+```
 
-The pipeline is **lit 3D X → Paper Heatmap → Paper Image Dithering → CSS radial fade**.
+Only standalone comment nodes are expanded. Fenced examples are not executed.
+Includes have a fixed repository-source allowlist; malformed or unknown directives
+fail the build. Guidance links are rewritten for HTML, Markdown, and the selected
+deployment base.
 
-The home illustration stays hidden until its first complete rendered frame, then
-fades in over 400ms. Reduced-motion preferences disable the fade.
+Use `npm --workspace apps/docsite run catalog:init` only to seed newly supported
+groups, then review the resulting Markdown. Ordinary builds do not author content.
 
-[`src/components/paper-heatmap.tsx`](src/components/paper-heatmap.tsx) uses Paper's
-published Heatmap fragment shader with a ten-stop palette: the first two stops
-match the page background (black in dark mode, white in light mode), allowing
-cooler parts of the shape to disappear. The next lavender stop
-(`coreaiBrandVariants[140]`) has about 12% opacity over that background.
-The illustration contains no Azure-blue stops.
-Seven purple stops bridge the tail to the center:
-`coreaiBrandVariants[140]`, `[130]`, `[110]`, `[100]`, then three `[80]` stops.
-This adds lavender-to-purple transitions while keeping most of the heated
-range saturated brand purple in both themes.
-The app shell owns the page backdrop; the provider has no duplicate fill.
-All surfaces switch theme colors together with the shader and radial fade.
-Transitions are suppressed until the new theme paints, then normal hover and
-sidebar transitions resume. Rapid theme switches cancel pending cleanup frames.
-The colors come from the shared CoreAI theme. Contour is 1.0
-to strengthen the heat around edges without adding a separate outline.
-Paper's noise is set to 0.025 for subtle texture variation without changing the palette.
-The heat animation runs at 67% of its original speed.
-Paper expects a preprocessed image, not a live render target. The adapter supplies
-its contour, broad-blur, and inner-blur channels using GPU grayscale preparation
-and library Kawase blur passes. This is a live approximation of Paper's static
-CPU image preprocessing; it does not rewrite the heatmap animation or color algorithm.
-Those smooth fields are capped at 512px on the longest side. Scene lighting drives
-the heat fields, but does not multiply and dim the finished colors a second time.
-The final composite keeps the original surface alpha so the colors stay on the cubes
-without changing their silhouette. Paper adds a small amount of output grain even
-with noise disabled. The adapter snaps colors within 0.012 of the base back to the
-exact base color, preventing dithering from amplifying that grain into stray specks.
-The vertex adapter cancels Paper's static-image
-padding crop. No image snapshots or CPU readbacks run per frame.
+## Generated output
 
-[`src/components/paper-dithering.tsx`](src/components/paper-dithering.tsx) adapts
-the published `imageDitheringFragmentShader` from the pinned
-`@paper-design/shaders` package. The dithering algorithm is not copied or rewritten.
-The adapter supplies the live heatmap render target, resolution, and pixel ratio.
-It removes Paper's image-upload Y flip for render-target input
-and lets Three.js supply the GLSL version directive. At the input/output boundary,
-it separates color from the scene's premultiplied alpha, dithers color at full
-opacity, then restores the sampled surface coverage. This prevents dark outlines
-on partially transparent white edges without changing opaque heatmap colors.
-No custom shading blend or
-output-level shader runs after it. Original-color mode preserves the heatmap
-colors in both themes, with a transparent background.
+The static output includes:
 
-Upstream: [Heatmap](https://shaders.paper.design/heatmap),
-[Image Dithering](https://shaders.paper.design/image-dithering), and
-[shader source](https://github.com/paper-design/shaders/blob/main/packages/shaders/src/shaders/image-dithering.ts).
-The Apache 2.0 license and Paper notice ship in
-[`public/third-party/`](public/third-party/). When updating the package, verify
-orientation, transparency, resizing, display density, theme switching, and dragging.
+| Output                                           | Purpose                                                           |
+| ------------------------------------------------ | ----------------------------------------------------------------- |
+| Physical directory HTML and paired `.md` files   | Human and agent documentation                                     |
+| `llms.txt`                                       | Targeted discovery, docs/skill and package versions               |
+| `version.json`                                   | Small current-release manifest for skill update checks            |
+| `llms/index.json`                                | Exact routes, APIs, source hashes, coverage, and build provenance |
+| `source/examples/*.tsx`                          | Complete generated example modules                                |
+| `source/templates/`                              | Complete copy-and-adapt template files                            |
+| `source/setup/App.tsx`                           | Provider setup                                                    |
+| `source/package/SKILL.md` and `agent-prompt.txt` | Versioned repository skill and install/update starter prompt      |
+| `THIRD-PARTY-NOTICES.txt` and `third-party/`     | Dependency attribution and license material                       |
+| `.nojekyll`                                      | Direct static publishing                                          |
 
-## Updating component guidance
+The same generated TSX is compiled for previews, shown as source, and published in
+Markdown/downloads. Component and template Markdown puts authored guidance before
+the Default example and API summaries so agents read usage rules before code.
+Literal story-default props are materialized in the downloadable example wrapper;
+dynamic arguments and other unsupported Storybook runtime setup are rejected.
+Source extraction rejects unsupported Storybook runtime setup
+instead of shipping a partial compatibility runtime. Fixed DOM IDs are scoped;
+already-unique hook-generated IDs retain their reference relationships.
 
-Story selectors on all component pages use CoreAI's popover-based `Dropdown`
-and `Option` controls, not native browser selects. Selection updates both the
-embedded preview and its Storybook resource link. Shared components and controls
-inside embedded previews are unchanged.
+APIs are summaries extracted through the public CoreAI barrel and the installed
+Fluent declarations. They do not replace the package's exported types. Templates
+remain copy-and-adapt source. The build records the actual bundled peer versions
+and rejects Storybook runtime modules or duplicate React/Fluent installations.
 
-Edit the `.md` files in [content/components](content/components); use
-[Accordion.md](content/components/Accordion.md) as an example. Don't edit generated output.
+The Illicon page includes canonical component and contribution guidance, usage
+examples, and the reviewed artwork catalog. The package build validates and
+generates the registry first. Original SVG downloads under `assets/illicons/`
+retain the source bytes. Local gallery and verification stories marked
+`!manifest` are explicitly excluded from component examples.
 
-Name sources `ComponentName.md`, matching component casing, or
-`ComponentName-kebab-case-variant.md` for variants. Design-only patterns keep
-descriptive PascalCase names. Frontmatter `id` remains the stable kebab-case route
-and download name; renaming a source must not change it. Keep separate alias
-documents distinct (for example, `EmptyState-alias.md`).
+## Documentation and skill versions
 
-Nonstandard behavior in [shared/guidance.mjs](../../shared/guidance.mjs):
+The docsite manifest owns one semantic version shared by the documentation and
+consumer skill. The component package has its own independent version. A
+documentation-only change advances docs/skill without republishing the package.
+A package release advances both tracks. Only the current release is hosted.
 
-- **Do/Don't cards:** `## Best practices` with exactly two nonempty H3 sections,
-  `### Do` and `### Don't`, becomes a green/red pair on the docsite only.
-  Matching is case-sensitive; curly apostrophes work. Other shapes remain plain
-  Markdown. See `bestPracticesCards` for boundaries and ordering.
-- **Anchors:** docsite heading IDs and direct `#fragment` links receive a
-  `guidance-` prefix automatically. See `renderGuidance`.
-- **Exports:** status/resources come from frontmatter, not body headings.
-  Previews prefer Storybook; design-only pages can use `figmaPreview` for an
-  embedded Figma frame. Figma resources also appear as links alongside code and
-  Fluent guidance. Pages may omit `storybookTitles` and use `resources: []`;
-  exports omit an empty Resources section. See `guidanceMarkdown`.
-- **Aliases:** `navigation.canonicalId` redirects a hidden page without merging
-  its content. See `readGuidance`.
+The skill description includes both versions so clients can see them before
+loading the body. `metadata.version` is the docs/skill version;
+`metadata.package-version` identifies the package documented by that skill.
+These labels describe the site, not a consuming app's installed package.
 
-Generation runs on dev/build and Markdown saves. The
-[docsite generator](scripts/generate-content.mjs) uses a local Storybook index or
-the committed offline snapshot.
-Guidance is published only on the docsite, not as separate Storybook or MCP entries.
-The homepage links to the Figma library through
-[`shared/site-links.ts`](../../shared/site-links.ts). Figma links and embeds keep
-the design file's existing sharing permissions; readers may need to sign in or
-request access.
+For a docs/skill change, run from the repository root:
 
-### Build Inputs and Outputs
+```powershell
+npm version patch --workspace apps/docsite --no-git-tag-version
+```
 
-- Commit only the environment-free [offline snapshot](content/storybook-index.snapshot.json).
-  `generate:content:refresh` updates it from hosted Storybook; set an absolute
-  `STORYBOOK_INDEX_PATH` to refresh from a local build instead. Routine generation
-  never updates it. Refresh deliberately when story associations change.
-- All of `content/generated/` is ignored, including the runtime manifest and its
-  `STORYBOOK_ROOT`. Storybook's generated MDX, build folders, and `.playwright*`
-  artifacts are also ignored. The docsite `clean` script removes its generated output.
-- CI/deploy build Storybook before testing/building the docsite against that exact
-  index. Missing explicit paths fail instead of falling back. Without a local
-  build, docsite generation works offline after dependencies are installed;
-  Storybook itself still requires its pinned Fluent checkout.
-- Story options are ordered by authored family order, then Default first and
-  story ID. Unchanged docsite output is not rewritten. Dev/build/type-check use
-  explicit preparation commands, including when `ignore-scripts=true`.
+Use the approved semantic increment or explicit version. npm updates the
+workspace manifest and root lockfile, then the `version` lifecycle synchronizes
+the skill's description/metadata. If lifecycle scripts were disabled, run:
 
-## Privacy and runtime diagnostics
+```powershell
+npm --workspace apps/docsite run sync:versions
+```
 
-The docsite does not collect or transmit product usage data, load analytics
-scripts, or expose remote reporting configuration. Navigation search stays in
-the browser, and the saved theme preference is used only for local presentation.
-Ordinary startup logs and actionable console errors remain on the host; the
-application contains no code that forwards them to a remote analytics service.
+For a package release, change the package version first, then advance docs/skill.
+Synchronization refuses a package-version change without a newer docs/skill
+version. Commit the two manifests, root lockfile, and skill together.
+See the [package release procedure](../../packages/react-components/RELEASING.md).
 
-The unauthenticated `/healthz` endpoint returns `{"status":"ok"}` for health
-checks. The hosting template does not provision monitoring resources. Removing those
-resources from the template does not delete existing Azure resources or
-previously collected data; any cloud cleanup requires a separate, deliberate
-administrator action.
+Build and type-check reject version-label drift; they do not silently rewrite
+authored files. `version.json` contains the docs version, documented package
+version, skill version/path/SHA-256, and source revision. The same release
+metadata appears in `llms/index.json`, `llms.txt`, and human page footers.
+Agents check the small manifest once per task, then review and update only older
+CoreAI skill guidance while preserving local instructions. Failed retrieval or
+conflicting edits require an explicit report rather than a silent skip.
 
-## Deployment
+## Runtime and validation
 
-The shared [GitHub deployment workflow](../../.github/workflows/deploy.yml)
-deploys this workspace alongside Storybook and the MCP using ZIP deployments to
-**existing** Azure App Services. It does not apply Bicep or change existing app
-settings, startup commands, or authentication. The hosts retain Node 22 LTS on
-Linux, with the docsite served by `npm start` / `node server.js`.
+Physical HTML contains readable guidance and source without JavaScript. React
+enhances it with a shared provider, native-link sidebar/search, page tabs, and
+examples. Ordinary links navigate without resetting the shell; modified clicks
+retain native browser behavior. Storage or fragment failures do not blank the
+page, and unexpected enhancement errors restore static content explicitly.
 
-Deployment requires all of the following:
+```powershell
+npm --workspace apps/docsite test
+npm --workspace apps/docsite run type-check
+npm --workspace apps/docsite run verify
+```
 
-- The exact repository `microsoft/coreai-design-system` and branch `main`
-- Repository variable `ENABLE_AZURE_DEPLOY=true`; site deployment does not
-  enable npm publishing
-- Passing CI and main-only access to the `azure-production` environment;
-  the protected PR merge is approval, with no second human deployment gate
-- Azure OIDC configuration and existing host identifiers supplied through that
-  environment, as documented in [CI/CD setup](../../docs/CI-CD-SETUP.md)
+Build before `verify`. Node tests cover content contracts and focused regressions,
+not fixed catalog totals or exact source formatting. Verification checks paired
+static output, source hashes, license assets, downloaded example/template
+compilation against a locally packed package, and representative browser behavior.
+It does not prove registry availability, all-browser accessibility, or real agent
+task quality.
 
-The workflow responds to every main-branch push,
-and supports manual dispatch subject to the same gates. It verifies existing
-hosting authentication before deploying. No monitoring workflow is included.
+Known heading-anchor and broader architecture options are tracked in
+[the review record](https://github.com/microsoft/coreai-design-system/issues/50).
 
-## Hosting access policy
+## Hosting
 
-The docsite, Storybook, and read-only MCP are public and require no visitor
-authentication or access tokens. Both App Services have Easy Auth disabled
-(`platform.enabled=false`, `globalValidation.requireAuthentication=false`,
-`unauthenticatedClientAction=AllowAnonymous`), as declared in
-[`infra/main.bicep`](../../infra/main.bicep). The deployment workflow checks this
-policy before and after uploading application files; it does not change Azure
-authentication settings.
+[The documentation workflow](../../.github/workflows/docs.yml) validates pull
+requests and deploys verified `main` output to GitHub Pages. Pull requests never
+deploy. Manual deployment also requires `main`. No Azure
+credentials or public Storybook/MCP host are used.
 
-The workflow's Azure OIDC identity still authorizes deployments. It is separate
-from visitor access and must remain.
-
-Bicep remains available for separately approved operator-managed infrastructure
-changes, not routine app deployment. Preserve anonymous access for both apps
-and the MCP endpoint when making such changes. See the
-[hosting contract and prerequisites](../../docs/CI-CD-SETUP.md#app--mcp-hosting-public-docsite-storybook-and-mcp)
-before changing infrastructure.
+See [hosting setup](../../docs/CI-CD-SETUP.md) and
+[workflow operations](../../docs/GITHUB-ACTIONS.md). Existing Azure hosts may
+redirect to the Pages root after cutover; precise old-page redirects are not a
+documentation contract.

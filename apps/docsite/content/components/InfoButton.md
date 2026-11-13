@@ -1,11 +1,6 @@
 ---
 id: info-button
 title: Info button
-navigation:
-  group: Components
-  showInSidebar: false
-  canonicalId: info-label
-status: complete
 summary: A button that reveals supplemental information in a popover.
 resources:
   - label: Figma component
@@ -13,8 +8,8 @@ resources:
       https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=77695-190112
   - label: Fluent info label guidance
     url: 'https://fluent2.microsoft.design/components/web/react/core/infolabel/usage'
-storybookTitles:
-  - Components/InfoButton
+reference:
+  component: components-infobutton
 ---
 
 ## Behavior and states

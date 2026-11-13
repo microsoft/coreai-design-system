@@ -4,7 +4,6 @@ title: Checkbox
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '116:46757'
 summary: >-
   Checkboxes let people select multiple options from a group or switch a single
@@ -18,6 +17,11 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/checkbox/usage'
 storybookTitles:
   - Components/Checkbox
+reference:
+  component: components-checkbox
+  omitDecorators: >-
+    Storybook-only layout decorators are omitted. Examples use the documentation
+    preview spacing instead.
 ---
 
 ## Best practices

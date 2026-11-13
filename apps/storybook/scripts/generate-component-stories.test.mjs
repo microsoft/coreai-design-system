@@ -8,7 +8,7 @@ import path from 'node:path';
 import test from 'node:test';
 import ts from 'typescript';
 import { loadCsf } from 'storybook/internal/csf-tools';
-import { createStoryInventory } from './story-inventory.mjs';
+import { createStoryInventory } from '../../docsite/scripts/sources/StoryInventory.mjs';
 import {
   appRoot,
   generatedRoot,

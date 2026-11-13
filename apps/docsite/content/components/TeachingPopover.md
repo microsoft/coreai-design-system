@@ -4,7 +4,6 @@ title: Teaching popover
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '131806:454'
 summary: >-
   The Teaching popover component is a versatile tool to help users learn about a
@@ -15,6 +14,8 @@ resources:
       https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=170592-76650
 storybookTitles:
   - Components/TeachingPopover
+reference:
+  component: components-teachingpopover
 ---
 
 ## Behavior and states

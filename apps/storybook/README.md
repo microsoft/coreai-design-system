@@ -2,6 +2,18 @@
 
 Storybook playground that previews [`@coreai-ds/react-components`](../../packages/react-components) against the canonical Fluent UI v9 stories.
 
+Storybook is local-only. Public human and agent documentation is published by the
+[static docsite](../docsite/README.md) on GitHub Pages; no public Storybook or MCP
+host is deployed.
+
+Theming, Variations from Fluent, CSS Modules, and agent workflow prose is
+now authored in [`apps/docsite/content/`](../docsite/content/).
+`docs:standalone` generates ignored MDX snapshots under
+`.storybook/.cache/standalone-docs/` during preparation and on source saves.
+These embed the canonical text so manifest-only MCP readers do not need source
+files on the host. Their historical document IDs are preserved. Edit Markdown,
+not the generated MDX. The static Markdown exporter reads the same snapshots.
+
 ## Quickstart
 
 From the repo root:
@@ -48,7 +60,7 @@ You normally never need to run these by hand: `dev` and `build` explicitly invok
 
 `apps/storybook/fluent-stories/` is a separately-provisioned, sparse, shallow checkout of [`microsoft/fluentui`](https://github.com/microsoft/fluentui) that contains only the canonical story sources. It is gitignored from this repo, and the Storybook app's webpack config rewrites Fluent imports inside those stories to route through the CoreAI barrel — so the canonical Fluent stories render with CoreAI defaults applied, without us editing any of Fluent's code.
 
-It is provisioned by [`scripts/setup-fluent-stories.mjs`](scripts/setup-fluent-stories.mjs), a cross-platform
+It is provisioned by the docsite-owned [`setup-fluent-stories.mjs`](../docsite/scripts/sources/SetupFluentStories.mjs), a cross-platform
 script driven by `{ repo, version, ref, sparsePaths }`. The checkout is pinned to
 `ee856ea115d3a1c7b7a81cfd5b42613ff4bf9a06`, the peeled
 `@fluentui/react-components_v9.74.9` release tag. Its upstream package version matches the installed
@@ -60,13 +72,14 @@ version at that commit, update both `version` and `ref` in the setup script, and
 `npm --workspace apps/storybook run stories:update`. Version resolution is deliberate, not an
 automatic selection of the newest or nearest commit.
 
-The 9.74.9 refresh adds Popover `NonInteractiveContent` and Tooltip `OverflowHidden`, with no
-selected story removals. The current catalog has **697 selected stories**: 152 local and 545
-Fluent, with 70 local overrides. All selected examples type-check. CounterBadge uses the
+The selected catalog includes local CoreAI examples and upstream variants, with local
+definitions winning matching IDs. CounterBadge uses the
 canonical `Components/Badge/Counter Badge` title so its local Default replaces the upstream
 Default in one catalog instead of publishing a second component.
 
-Setup is automatic because `dev` and `build` run `storybook:prepare` before Storybook starts. GitHub Actions also verifies the built story index before deployment. To force a fresh local re-provision, run `npm run stories:init`.
+Setup is automatic because `dev` and `build` run `storybook:prepare` before Storybook starts.
+Documentation CI checks extracted consumer examples without deploying Storybook.
+To force a fresh local re-provision, run `npm run stories:init`.
 
 ### Replacing a canonical story with a CoreAI fork
 
@@ -89,48 +102,23 @@ The introduction also links to the Figma library through
 [`shared/site-links.ts`](../../shared/site-links.ts). Links and embeds retain the
 design file's existing permissions; users may need to sign in or request access.
 
-## MCP for AI agents
+## Local MCP authoring tools
 
-This design system ships a **Model Context Protocol (MCP)** server so AI agents read accurate,
-CoreAI-specific component knowledge (props, example stories, templates) instead of guessing prop
-names or pulling raw upstream Fluent APIs. This section documents how the MCP **content** is
-authored. For how the hosted server is **deployed**, see
-[docs/CI-CD-SETUP.md](../../docs/CI-CD-SETUP.md#app--mcp-hosting-public-storybook-authenticated-docsite). For
-**connection setup** (`mcp.json`, server URLs), see [Docs/MCP Setup](src/stories/docs/MCPSetup.mdx).
-For the **behavioral rules** an agent should follow (which server to prefer, component-ID quirks,
-offline fallback), see the distributable
-[`agent/SKILL.md`](../../packages/react-components/agent/SKILL.md), mirrored to the hosted
-Storybook as [Docs/Agent Skill](src/stories/docs/AgentSkill.mdx) (generated — see
-[Agent Skill mirror](#agent-skill-mirror) below).
+The local [`@storybook/addon-mcp`](https://www.npmjs.com/package/@storybook/addon-mcp)
+is registered in [`.storybook/main.ts`](.storybook/main.ts). While Storybook is
+running, an HTTP MCP client can connect to `http://localhost:6006/mcp` without
+credentials. This is optional local authoring support, not the public consumer
+documentation contract.
 
-### Servers
+The local tools include `docs-list`, `docs-show`, and `docs-show-story`. They return
+selected documentation and source examples; they do not read project files,
+execute returned examples, or host an AI model. Review the client destination and
+permissions, do not send secrets or confidential project details, and validate
+returned code before use.
 
-Declared in [`.vscode/mcp.json`](../../.vscode/mcp.json); MCP-aware clients pick them up
-automatically.
-
-| Server                     | URL                                                 | Use                                                                                                                 |
-| -------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `coreai-ds-docs`           | `https://coreai-ds-storybook.azurewebsites.net/mcp` | **Default.** Hosted documentation.                                                                                  |
-| `coreai-ds-docs-localhost` | `http://localhost:6006/mcp`                         | The local dev server — for authoring/previewing story changes before deploy. Only works while Storybook is running. |
-
-Both Storybook servers expose the same content and toolset. The hosted one is powered by the
-standalone [`@storybook/mcp`](https://www.npmjs.com/package/@storybook/mcp) library reading the
-built `manifests/`; the local one by [`@storybook/addon-mcp`](https://www.npmjs.com/package/@storybook/addon-mcp)
-(**dev-server-only**), registered in [`.storybook/main.ts`](.storybook/main.ts). Edit stories
-against the local server; the hosted one picks up changes on the next deploy.
-
-The Storybook runtime, local addon, and standalone host are pinned to the same `10.6.1` release so
-both MCP surfaces use Storybook's shared docs toolset and manifest schema.
-
-Both servers return read-only design-system content, including selected upstream stories. See
-[MCP scope, safety, and data handling](src/stories/docs/MCPSetup.mdx#scope-safety-and-data-handling)
-for capabilities, limitations, client precautions, privacy, and licensing information.
-
-**Toolsets:**
-
-- `docs-list` — enumerate every component and standalone docs entry, optionally with story IDs.
-- `docs-show` — full docs for one component: prop types, initial examples, and its story index.
-- `docs-show-story` — complete docs for a single named story variant.
+Consumers use ordinary HTTPS Markdown retrieval through the
+[package skill](../../packages/react-components/agent/SKILL.md).
+The local Storybook mirror remains generated from that canonical source.
 
 ### How accurate props are produced (React Component Meta)
 
@@ -171,6 +159,55 @@ Template-specific validation remains deferred.
 Upstream references: [Manifests](https://storybook.js.org/docs/ai/manifests),
 [docgen server configuration](https://storybook.js.org/docs/api/main-config/main-config-features#experimentaldocgenserver),
 and [MCP docs tools](https://storybook.js.org/docs/ai/mcp/overview#docs).
+
+### Static Markdown export
+
+`npm run build:storybook` also runs `docs:markdown` after Storybook finishes.
+To regenerate from an existing build, run:
+
+```bash
+npm --workspace apps/storybook run docs:markdown
+```
+
+The [exporter](scripts/generate-markdown.mjs) resolves the built component/docs
+manifests and their `$ref` snapshots from disk. It does not scrape the preview DOM,
+launch Chromium, contact a hosted MCP, or truncate examples to the first three.
+It writes `storybook-static/llms/{id}.md` and `storybook-static/llms/index.json`.
+Output is deterministic; unchanged files keep their modification times and stale
+generated documents are removed.
+
+Component references contain descriptions and JSDoc, prop tables (including
+required/default values and `children`), subcomponent APIs, attached docs, and
+every selected story's description and complete source. Source-backed examples
+keep the CoreAI imports, local/upstream provenance, and dependency notes supplied
+by the existing story-docs provider. Where Storybook omits property JSDoc, the
+exporter reads the declared local TypeScript source and matches the exact
+owner/property to recover descriptions and tags, including deprecation warnings.
+An unmatched declaration keeps the available metadata and states the limitation.
+
+Standalone MDX docs, including generated templates and the agent skill, are
+parsed without executing JavaScript. Imports, metadata, and comments are removed;
+prose, tables, and fenced/static source are preserved. Interactive Canvas and
+custom components that cannot be expanded statically receive explicit notices
+instead of disappearing or being presented as fully rendered documentation.
+
+This follows Fluent's build-time static-export model, but uses our pinned
+Storybook manifest APIs rather than Fluent's browser story-store internals.
+The existing two allowed `No component found` extraction errors remain visible
+as limitations, not invented API tables. Unexpected extraction errors, broken
+references, empty docs, and missing example source fail generation.
+
+The normal build verifier checks that every manifest document and complete
+example was exported. Focused fixtures run with:
+
+```bash
+node --test apps/storybook/scripts/generate-markdown.test.mjs
+```
+
+The [docsite](../docsite/README.md#static-storybook-markdown) publishes these
+references and joins matching API/example sections to its canonical guidance
+downloads. Storybook remains a build-time source; public Storybook and MCP
+hosting are unchanged by this prototype.
 
 ### Validating story extraction
 
@@ -215,7 +252,7 @@ try {
 ### Fluent ingestion pipeline
 
 The source-backed provider is implemented in `scripts/component-story-docs.mjs`, with AST
-dependency extraction in `scripts/story-source.mjs`. It publishes selected implementations,
+dependency extraction in [`story-source.mjs`](../docsite/scripts/sources/StorySource.mjs). It publishes selected implementations,
 required declarations and imports, relative helper source, provenance, and required package
 names. It is now enabled in the main configuration for generated component owners. Non-generated
 entries delegate to Storybook's provider. Templates and MDX discovery are unchanged.
@@ -245,7 +282,9 @@ are explicitly routed through the CoreAI barrel and aliased to avoid conflicts w
 deterministic regeneration, and stale-index removal. Normal development and build preparation
 now run generation, and Storybook discovers the generated component indexes.
 
-The shared story inventory is implemented in [`scripts/story-inventory.mjs`](scripts/story-inventory.mjs).
+The shared story inventory is implemented in the docsite-owned
+[`story-inventory.mjs`](../docsite/scripts/sources/StoryInventory.mjs).
+Storybook uses these same source tools rather than maintaining a second importer.
 Run `npm --workspace apps/storybook run stories:inventory` to write
 `.storybook/.cache/story-inventory.json` (gitignored). The module also exports
 `createStoryInventory()` for the future generated indexes and provider to share.
@@ -496,9 +535,7 @@ next regeneration. If the content is wrong, fix `{Name}.tsx` or the generator sc
 - [ ] No `{Name}.knowledge.md` / `.template.tsx` / `Variants.stories.tsx` / `.templateSource.ts`
       file exists for this template, and you haven't hand-edited the generated `{Name}.mdx`
 
-## Deployment
+## Public documentation
 
-This app deploys to Azure App Service (Storybook + the hosted MCP at `/mcp`), publishing to
-https://coreai-ds-storybook.azurewebsites.net. The pipeline and public hosting are
-documented in
-[docs/CI-CD-SETUP.md](../../docs/CI-CD-SETUP.md#app--mcp-hosting-public-storybook-authenticated-docsite).
+This app is not deployed publicly. The docsite owns the GitHub Pages artifact and
+all public documentation. See [hosting setup](../../docs/CI-CD-SETUP.md).

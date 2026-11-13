@@ -15,11 +15,11 @@ import { Navigate, Routes, Route } from 'react-router-dom';
 import { Shell } from './components/Shell';
 import { PageLayout } from './components/PageLayout';
 import { Section } from './components/Section';
-import { WorkInProgress } from './components/work-in-progress';
+import { WorkInProgress } from './components/WorkInProgress';
 import { ExternalIcon } from './components/Icons';
-import { resourceGroups } from './data/resources';
-import { faqGroups } from './data/faqs';
-import { pages, redirects } from './data/registry';
+import { resourceGroups } from './data/Resources';
+import { faqGroups } from './data/Faqs';
+import { pages, redirects } from './data/Registry';
 
 const Introduction = React.lazy(() =>
   import('./pages/Introduction').then((module) => ({
@@ -87,7 +87,7 @@ const routeComponents: Record<string, React.LazyExoticComponent<React.ComponentT
   'mcp-server': McpServer,
 };
 
-const blankPageIds = new Set(['prototyping', 'content']);
+const blankPageIds = new Set(['prototyping', 'content', 'materials']);
 
 export function App() {
   return (
@@ -120,7 +120,7 @@ export function App() {
                                 <AccordionPanel>
                                   <div className="faq-answer">
                                     {item.answer.map((paragraph) => (
-                                      <Text as="p" size={300} foreground={2} key={paragraph}>
+                                      <Text as="p" size={300} foreground={3} key={paragraph}>
                                         {paragraph}
                                       </Text>
                                     ))}
@@ -187,7 +187,7 @@ export function App() {
                                     as="p"
                                     id={`resource-${resource.id}-description`}
                                     size={300}
-                                    foreground={2}
+                                    foreground={3}
                                   >
                                     {resource.description}
                                   </Text>

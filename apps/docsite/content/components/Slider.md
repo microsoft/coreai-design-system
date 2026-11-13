@@ -4,7 +4,6 @@ title: Slider
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '5874:120283'
 summary: >-
   A slider lets someone set a value from a given range. Sliders can take
@@ -18,6 +17,11 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/slider/usage'
 storybookTitles:
   - Components/Slider
+reference:
+  component: components-slider
+  omitDecorators: >-
+    Storybook-only layout decorators are omitted. Examples use the documentation
+    preview spacing instead.
 ---
 
 ## Best practices

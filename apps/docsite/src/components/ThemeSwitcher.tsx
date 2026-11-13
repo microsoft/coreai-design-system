@@ -3,8 +3,15 @@
 
 import * as React from 'react';
 import {
+  Accordion,
+  AccordionHeader,
+  AccordionItem,
+  AccordionPanel,
   Badge,
   Button,
+  Dropdown,
+  Field,
+  Option,
   Popover,
   PopoverSurface,
   PopoverTrigger,
@@ -12,11 +19,11 @@ import {
   TabList,
   Text,
 } from '@coreai-ds/react-components';
-import { Settings20Regular } from '@fluentui/react-icons';
+import { Options20Regular } from '@fluentui/react-icons';
 import { useThemeMode } from '../theme/ThemeProvider';
 
 export function ThemeSwitcher({ isApplePlatform }: { isApplePlatform: boolean }) {
-  const { preference, setPreference } = useThemeMode();
+  const { preference, brand, setPreference, setBrand } = useThemeMode();
   const [open, setOpen] = React.useState(false);
   const modifier = isApplePlatform ? 'Option' : 'Alt';
   const primary = isApplePlatform ? 'Cmd' : 'Ctrl';
@@ -28,7 +35,7 @@ export function ThemeSwitcher({ isApplePlatform }: { isApplePlatform: boolean })
     ['Next page', `${modifierSymbol}↓`, `${modifier} Down arrow`],
     ['Collapse all sections', `${primarySymbol}⇧↑`, `${primary} Shift Up arrow`],
     ['Expand all sections', `${primarySymbol}⇧↓`, `${primary} Shift Down arrow`],
-    ['Switch theme', `${modifierSymbol}M`, `${modifier} M`],
+    ['Switch color mode', `${modifierSymbol}M`, `${modifier} M`],
     ['Search navigation', `${primarySymbol}K`, `${primary} K`],
   ];
 
@@ -43,7 +50,7 @@ export function ThemeSwitcher({ isApplePlatform }: { isApplePlatform: boolean })
         <Button
           shape="rounded"
           appearance="subtle"
-          icon={<Settings20Regular />}
+          icon={<Options20Regular />}
           aria-label="Settings"
           title="Settings"
         />
@@ -58,59 +65,86 @@ export function ThemeSwitcher({ isApplePlatform }: { isApplePlatform: boolean })
           }
         }}
       >
-        <TabList
-          aria-label="Color mode"
-          className="docsite-settings__mode"
-          appearance="elevated"
-          size="small"
-          selectedValue={preference}
-          onTabSelect={(_event, data) => {
-            if (data.value === 'light' || data.value === 'dark') {
-              setPreference(data.value);
-            }
-          }}
-        >
-          <Tab value="dark">Dark</Tab>
-          <Tab value="light">Light</Tab>
-        </TabList>
-        <section className="docsite-settings__shortcuts" aria-label="Keyboard shortcuts">
-          <dl className="docsite-settings__shortcut-list">
-            {shortcuts.map(([label, keys, accessibleKeys]) => (
-              <div className="docsite-settings__shortcut" key={label}>
-                <dt>
-                  <Text size={200} foreground={2}>
-                    {label}
-                  </Text>
-                </dt>
-                <dd>
-                  <Badge
-                    appearance="tint"
-                    color="subtle"
-                    shape="rounded"
-                    size="large"
-                    title={accessibleKeys}
-                  >
-                    <span className="docsite-settings__keys" aria-hidden="true">
-                      {[...keys].map((key, index) => (
-                        <span
-                          className={
-                            /^[A-Z]$/.test(key)
-                              ? 'docsite-settings__key-letter'
-                              : 'docsite-settings__key-symbol'
-                          }
-                          key={index}
-                        >
-                          {key}
+        <div className="docsite-settings__appearance">
+          <TabList
+            aria-label="Color mode"
+            className="docsite-settings__mode"
+            appearance="elevated"
+            size="small"
+            selectedValue={preference}
+            onTabSelect={(_event, data) => {
+              if (data.value === 'light' || data.value === 'dark') {
+                setPreference(data.value);
+              }
+            }}
+          >
+            <Tab value="dark">Dark</Tab>
+            <Tab value="light">Light</Tab>
+          </TabList>
+          <Field className="docsite-settings__brand-field" label="Theme">
+            <Dropdown
+              id="docsite-theme"
+              className="docsite-settings__brand"
+              size="medium"
+              style={{ width: '100%', minWidth: 0, maxWidth: '100%' }}
+              selectedOptions={[brand]}
+              value={brand === 'coreai' ? 'CoreAI purple' : 'Azure blue'}
+              onOptionSelect={(_event, data) => {
+                if (data.optionValue === 'coreai' || data.optionValue === 'azure') {
+                  setBrand(data.optionValue);
+                }
+              }}
+            >
+              <Option value="coreai">CoreAI purple</Option>
+              <Option value="azure">Azure blue</Option>
+            </Dropdown>
+          </Field>
+        </div>
+        <Accordion className="docsite-settings__shortcuts" collapsible>
+          <AccordionItem value="keyboard-shortcuts">
+            <AccordionHeader expandIconPosition="end" size="small">
+              Keyboard shortcuts
+            </AccordionHeader>
+            <AccordionPanel>
+              <dl className="docsite-settings__shortcut-list">
+                {shortcuts.map(([label, keys, accessibleKeys]) => (
+                  <div className="docsite-settings__shortcut" key={label}>
+                    <dt>
+                      <Text size={200} foreground={2}>
+                        {label}
+                      </Text>
+                    </dt>
+                    <dd>
+                      <Badge
+                        appearance="tint"
+                        color="subtle"
+                        shape="rounded"
+                        size="medium"
+                        title={accessibleKeys}
+                      >
+                        <span className="docsite-settings__keys" aria-hidden="true">
+                          {[...keys].map((key, index) => (
+                            <span
+                              className={
+                                /^[A-Z]$/.test(key)
+                                  ? 'docsite-settings__key-letter'
+                                  : 'docsite-settings__key-symbol'
+                              }
+                              key={index}
+                            >
+                              {key}
+                            </span>
+                          ))}
                         </span>
-                      ))}
-                    </span>
-                    <span className="sr-only">{accessibleKeys}</span>
-                  </Badge>
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </section>
+                        <span className="sr-only">{accessibleKeys}</span>
+                      </Badge>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
       </PopoverSurface>
     </Popover>
   );

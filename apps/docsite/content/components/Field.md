@@ -4,7 +4,6 @@ title: Field
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '32182:95313'
 summary: >-
   A field is a combination of a label and any form component, like an input,
@@ -17,6 +16,11 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/field/usage'
 storybookTitles:
   - Components/Field
+reference:
+  component: components-field
+  omitDecorators: >-
+    Storybook-only layout decorators are omitted. Examples use the documentation
+    preview spacing instead.
 ---
 
 ## Best practices
@@ -44,3 +48,11 @@ storybookTitles:
 - When a field is disabled, only the form component appears disabled; its label remains enabled.
 - Helper text and validation text that appeared before the field was disabled also remain enabled.
 - Optionally, fields can also have info buttons, helper text, and validation states to give people clues about the information they need to enter.
+
+## Forms
+
+For selection controls, read the [Dropdown guidance](./dropdown.md) before choosing
+an inline label, external label, or placeholder. Keep labels and validation
+accessible, and preserve keyboard behavior.
+
+For a form inside a dialog, see [Forms in dialogs](./dialog.md#forms-in-dialogs).

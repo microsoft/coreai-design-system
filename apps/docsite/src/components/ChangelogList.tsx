@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import { Text } from '@coreai-ds/react-components';
-import { changelogEntries, type ChangelogEntry } from '../data/changelog';
+import { changelogEntries, type ChangelogEntry } from '../data/Changelog';
 import { ChevronRight } from './Icons';
 
 const monthFormatter = new Intl.DateTimeFormat('en-US', {
@@ -57,7 +57,7 @@ function ReleaseEntry({ entry, compact }: { entry: ChangelogEntry; compact: bool
           <Text as="h3" weight="semibold">
             {entry.title}
           </Text>
-          <Text as="p" foreground={2}>
+          <Text as="p" foreground={3}>
             {entry.summary}
           </Text>
         </div>

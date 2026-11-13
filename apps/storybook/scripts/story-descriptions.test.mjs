@@ -6,9 +6,12 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { readStoryDescriptions, descriptionComment } from './story-descriptions.mjs';
+import {
+  readStoryDescriptions,
+  descriptionComment,
+} from '../../docsite/scripts/sources/StoryDescriptions.mjs';
 import { appRoot } from './generate-component-stories.mjs';
-import { publicMarkdown } from './public-markdown.mjs';
+import { publicMarkdown } from '../../docsite/scripts/sources/PublicMarkdown.mjs';
 
 test('local component and story JSDoc and upstream parameter descriptions are preserved', async () => {
   const component = await readStoryDescriptions(
@@ -86,6 +89,18 @@ export default { title: 'Test', parameters: { docs: { description: { component: 
   } finally {
     await fs.rm(root, { recursive: true, force: true });
   }
+});
+
+test('upstream Storybook-relative links keep their upstream destination outside fenced examples', () => {
+  const link = './?path=/docs/concepts-slots--docs#usage';
+  const content = `[Slots](${link})\n\n\`\`\`md\n[Example](${link})\n\`\`\`\n`;
+  const output = publicMarkdown(content, '/repo/fluent-stories/Description.md');
+  assert.match(
+    output,
+    /\[Slots\]\(https:\/\/react\.fluentui\.dev\/\?path=\/docs\/concepts-slots--docs#usage\)/,
+  );
+  assert.ok(output.includes(`[Example](${link})`));
+  assert.equal(publicMarkdown(content, '/repo/local/Description.md'), content);
 });
 
 test('literal parameters, concatenated strings, meta JSDoc, summaries and safe comment output', async () => {

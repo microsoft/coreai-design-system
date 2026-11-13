@@ -4,6 +4,7 @@
 import * as React from 'react';
 import {
   ChevronRight20Regular,
+  Fluent20Regular,
   Open20Filled,
   WeatherMoon20Regular,
   WeatherSunny20Regular,
@@ -55,26 +56,30 @@ export function ExternalIcon(props: FluentIconsProps) {
   return <Open20Filled aria-hidden="true" {...props} />;
 }
 
-export function FigmaLogo(props: React.SVGProps<SVGSVGElement>) {
+export function FigmaLogo({ className, ...props }: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="5 2 10 15" aria-hidden="true" focusable="false" {...props}>
-      <path
-        fill="currentColor"
-        d="M7.5 2A2.5 2.5 0 0 0 7.5 7H10V2H7.5ZM10 2v5h2.5a2.5 2.5 0 1 0 0-5H10ZM7.5 7a2.5 2.5 0 0 0 0 5H10V7H7.5ZM12.5 7a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5ZM7.5 12a2.5 2.5 0 1 0 2.5 2.5V12H7.5Z"
-      />
+    <svg
+      viewBox="0 0 32 32"
+      fill="currentColor"
+      width={32}
+      height={32}
+      aria-hidden="true"
+      focusable="false"
+      {...props}
+      className={['figma-logo', className].filter(Boolean).join(' ')}
+    >
+      <path d="M11.5003 30C13.9842 30 16.0005 27.909 16.0005 25.333V20.6659H11.5003C9.01632 20.6659 7 22.757 7 25.333C7 27.909 9.01632 30 11.5003 30Z" />
+      <path d="M7 16C7 13.424 9.01632 11.333 11.5003 11.333H16.0005V20.6659H11.5003C9.01632 20.667 7 18.576 7 16Z" />
+      <path d="M7 6.66704C7 4.09104 9.01632 2 11.5003 2H16.0005V11.333H11.5003C9.01632 11.333 7 9.24304 7 6.66704Z" />
+      <path d="M15.9995 2H20.4997C22.9837 2 25 4.09104 25 6.66704C25 9.24304 22.9837 11.333 20.4997 11.333H15.9995V2Z" />
+      <path d="M25 16C25 18.576 22.9837 20.667 20.4997 20.667C18.0158 20.667 15.9995 18.576 15.9995 16C15.9995 13.424 18.0158 11.333 20.4997 11.333C22.9837 11.333 25 13.424 25 16Z" />
     </svg>
   );
 }
 
-export function FluentLogo(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 17 30" aria-hidden="true" focusable="false" {...props}>
-      <path
-        fill="currentColor"
-        d="M8.17362.673779.678882 4.86611C.259079 5.10094 0 5.53796 0 6.01127V24.2645c0 .4733.25908.9103.678882 1.1451l7.155258 4.0025c.44912.2512 1.00794-.0662 1.00794-.5726v-8.7551l7.81852-4.3734c.4525-.2532.4525-.892 0-1.1452L8.84208 10.1919l7.81852-4.37346c.4525-.25316.4525-.89199 0-1.14516L9.51054.673779a1.362 1.362 0 0 0-1.33692 0Z"
-      />
-    </svg>
-  );
+export function FluentLogo(props: FluentIconsProps) {
+  const className = ['fluent-logo', props.className].filter(Boolean).join(' ');
+  return <Fluent20Regular aria-hidden="true" {...props} className={className} />;
 }
 
 export function StorybookLogo(props: React.SVGProps<SVGSVGElement>) {

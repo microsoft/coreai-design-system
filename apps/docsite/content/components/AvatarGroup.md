@@ -1,15 +1,9 @@
 ---
 id: avatar-group
 title: Avatar group
-navigation:
-  group: Components
-  showInSidebar: false
-  canonicalId: avatar
-status: complete
 summary: >-
-  An avatar shows an image or text to represent a person or group as well as
-  give additional information like their status and activity. If you need to
-  represent many avatars, try an avatar group.
+  Represent multiple people or groups with an avatar spread, stack, or compact
+  pie; show overflow when space is limited.
 resources:
   - label: Figma component
     url: >-
@@ -17,8 +11,9 @@ resources:
   - label: Fluent guidance
     url: >-
       https://fluent2.microsoft.design/components/web/react/core/avatargroup/usage
-storybookTitles:
-  - Components/AvatarGroup
+reference:
+  component: components-avatargroup
+  aliases: [/avatar-pie/]
 ---
 
 ## Behavior and states
@@ -27,3 +22,9 @@ storybookTitles:
 - The avatar stack is a more condensed configuration in which the avatars overlap each other.
 - If there are more than five people or groups to represent, the fifth avatar slot can show an overflow avatar to indicate an exact number of associated entities.
 - Both the avatar spread and stack support displaying activity rings. The spread can also display presence badges.
+
+### Avatar pie
+
+- The avatar pie shows two to three avatars in a single circular container.
+- Use the avatar pie in cases where space is extremely limited, like Teams group chats.
+- The avatar pie can’t display activity or presence.

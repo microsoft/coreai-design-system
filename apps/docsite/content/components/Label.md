@@ -4,7 +4,6 @@ title: Label
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '2070:49486'
 summary: Labels give a name to a component or group of components.
 resources:
@@ -15,6 +14,11 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/label/usage'
 storybookTitles:
   - Components/Label
+reference:
+  component: components-label
+  omitDecorators: >-
+    Storybook-only layout decorators are omitted. Examples use the documentation
+    preview spacing instead.
 ---
 
 ## Best practices

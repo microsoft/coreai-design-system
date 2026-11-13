@@ -4,7 +4,6 @@ title: Top nav
 navigation:
   group: Templates
   showInSidebar: true
-status: under-construction
 figmaPreviewUrl: >-
   https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=433307-79538
 figmaPageId: '433307:79538'
@@ -15,6 +14,10 @@ resources:
   - label: Figma component
     url: >-
       https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=433307-79538
+reference:
+  standalone: true
+  route: templates/TopNav
+  aliases: [/components/top-nav/]
 ---
 
 ## Behavior and states

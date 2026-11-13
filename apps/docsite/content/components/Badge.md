@@ -4,7 +4,6 @@ title: Badge
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 storybookTitles:
   - Components/Badge/Badge
   - Components/Badge/PresenceBadge
@@ -18,6 +17,11 @@ resources:
       https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=151708-5234
   - label: Fluent guidance
     url: 'https://fluent2.microsoft.design/components/web/react/core/badge/usage'
+reference:
+  component: components-badge-badge
+  omitDecorators: >-
+    Storybook-only layout decorators are omitted. Examples use the documentation
+    preview spacing instead.
 ---
 
 ## Best practices

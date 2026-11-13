@@ -4,7 +4,6 @@ title: Image
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '412650:7889'
 summary: >-
   Images, like photos and illustrations, help reinforce a message and express
@@ -17,6 +16,8 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/image/usage'
 storybookTitles:
   - Components/Image
+reference:
+  component: components-image
 ---
 
 ## Behavior and states

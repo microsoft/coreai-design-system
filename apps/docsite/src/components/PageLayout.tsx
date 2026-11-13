@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import { LinkButton, Text } from '@coreai-ds/react-components';
-import { getPage, type Anchor } from '../data/registry';
+import { getPage, type Anchor } from '../data/Registry';
 
 export function PageLayout({
   id,

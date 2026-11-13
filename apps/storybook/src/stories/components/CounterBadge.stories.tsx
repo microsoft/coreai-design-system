@@ -1,15 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { CounterBadge, type CounterBadgeProps, type JSXElement } from '@coreai-ds/react-components';
+import { CounterBadge, type JSXElement } from '@coreai-ds/react-components';
 
 import * as React from 'react';
 
-export const Default = (args: CounterBadgeProps): JSXElement => <CounterBadge {...args} />;
-
-Default.args = {
-  count: 5,
-};
+export const Default = (): JSXElement => <CounterBadge count={5} />;
 
 /**
  * A counter badge is a badge that displays a numerical count.

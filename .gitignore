@@ -16,6 +16,8 @@ apps/storybook/src/stories/templates/**/*.mdx
 # apps/storybook/scripts/generate-skill-doc.mjs. Never hand-edit.
 apps/storybook/src/stories/docs/AgentSkill.mdx
 apps/docsite/content/generated/
+apps/docsite/.cache/
+apps/docsite/dist-reference-proof/
 
 # Editor
 .idea/

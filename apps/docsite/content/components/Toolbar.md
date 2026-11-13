@@ -4,7 +4,6 @@ title: Toolbar
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '78568:189219'
 summary: >-
   A toolbar gives access to frequently used actions related to someone’s current
@@ -17,6 +16,8 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/toolbar/usage'
 storybookTitles:
   - Components/Toolbar
+reference:
+  component: components-toolbar
 ---
 
 ## Best practices

@@ -4,7 +4,6 @@ title: Carousel
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '213842:1919'
 summary: >-
   A carousel is a dynamic user interface component that allows users to cycle
@@ -17,6 +16,8 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/carousel/usage'
 storybookTitles:
   - Components/Carousel/Carousel
+reference:
+  component: components-carousel-carousel
 ---
 
 ## Best practices

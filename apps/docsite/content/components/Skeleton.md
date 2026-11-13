@@ -4,7 +4,6 @@ title: Skeleton
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '74734:188193'
 summary: >-
   A skeleton lets people know that a section of content is loading without
@@ -17,6 +16,8 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/skeleton/usage'
 storybookTitles:
   - Components/Skeleton
+reference:
+  component: components-skeleton
 ---
 
 ## Best practices

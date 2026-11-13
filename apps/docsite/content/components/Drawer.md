@@ -4,7 +4,6 @@ title: Drawer
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '134794:2279'
 summary: >-
   A drawer is a secondary content surface that slides in from one edge of a
@@ -18,6 +17,8 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/drawer/usage'
 storybookTitles:
   - Components/Drawer
+reference:
+  component: components-drawer
 ---
 
 ## Best practices

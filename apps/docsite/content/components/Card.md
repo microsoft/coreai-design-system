@@ -4,7 +4,6 @@ title: Card
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '1011:48412'
 summary: >-
   A card is a container that holds information and actions related to a single
@@ -18,6 +17,8 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/card/usage'
 storybookTitles:
   - Components/Card/Card
+reference:
+  component: components-card-card
 ---
 
 ## Behavior and states
@@ -27,3 +28,6 @@ storybookTitles:
 - Cards can also be used to let people make a selection, similar to checkboxes or radio groups.
 - By default, there is no indicator on cards that signifies they are selectable, but interaction states like hover and focus can hint at selectability.
 - While they’re very flexible, it’s important to use them consistently for particular use cases across experiences.
+
+For React Router navigation, see the [Card Link template](../templates/ReactRouterCardLink.md).
+Prefer an existing repository adapter when your app already provides one.

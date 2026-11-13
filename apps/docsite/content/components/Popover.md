@@ -4,7 +4,6 @@ title: Popover
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '1011:48414'
 summary: >-
   A popover is a small surface that appears when someone interacts with a
@@ -17,6 +16,8 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/popover/usage'
 storybookTitles:
   - Components/Popover
+reference:
+  component: components-popover
 ---
 
 ## Best practices

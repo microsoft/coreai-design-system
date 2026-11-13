@@ -4,7 +4,6 @@ title: Persona
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '56607:166099'
 summary: >-
   A persona is a representation of a person with additional contextual
@@ -17,6 +16,8 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/persona/usage'
 storybookTitles:
   - Components/Persona
+reference:
+  component: components-persona
 ---
 
 ## Best practices

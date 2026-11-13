@@ -4,7 +4,6 @@ title: Divider
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '2070:49490'
 summary: >-
   A divider groups sections of content to create visual rhythm and hierarchy.
@@ -18,6 +17,8 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/divider/usage'
 storybookTitles:
   - Components/Divider
+reference:
+  component: components-divider
 ---
 
 ## Behavior and states

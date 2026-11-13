@@ -4,7 +4,6 @@ title: Message bar
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '100180:181055'
 summary: >-
   A message bar communicates important information about the state of the entire
@@ -19,6 +18,8 @@ resources:
       https://fluent2.microsoft.design/components/web/react/core/messagebar/usage
 storybookTitles:
   - Components/MessageBar
+reference:
+  component: components-messagebar
 ---
 
 ## Best practices

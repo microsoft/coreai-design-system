@@ -4,7 +4,6 @@ title: Link
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '2070:49491'
 summary: >-
   Link component does not support breaking and wrapping onto the next line. In
@@ -17,6 +16,8 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/link/usage'
 storybookTitles:
   - Components/Link
+reference:
+  component: components-link
 ---
 
 ## Best practices

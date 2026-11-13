@@ -6,10 +6,10 @@ import { Tab as CoreAITab, type TabProps as CoreAITabProps } from '@coreai-ds/re
 import type { NavLinkProps } from 'react-router-dom';
 import { useRouterNavLinkSlot } from './RouterLinkSlots';
 
-type RouterNavLinkProps = Omit<NavLinkProps, 'children' | 'className' | 'style'>;
+type TabRouterProps = Omit<NavLinkProps, 'children' | 'className' | 'style'>;
 
-export type TabLinkProps = Omit<CoreAITabProps, keyof RouterNavLinkProps | 'as' | 'value'> &
-  RouterNavLinkProps;
+export type TabLinkProps = Omit<CoreAITabProps, keyof TabRouterProps | 'as' | 'value'> &
+  TabRouterProps;
 
 export const TabLink = React.forwardRef<HTMLAnchorElement, TabLinkProps>((props, ref) => {
   const value = typeof props.to === 'string' ? props.to : (props.to.pathname ?? '');

@@ -1,11 +1,6 @@
 ---
 id: interaction-tag
 title: Interaction tag
-navigation:
-  group: Components
-  showInSidebar: false
-  canonicalId: tag
-status: complete
 summary: >-
   A tag is a representation of a value that someone has picked, like recipients
   for an email or categories on a planner task.
@@ -15,8 +10,8 @@ resources:
       https://www.figma.com/design/eXfSQrRg3poHRgmr0ivN5V/CoreAI-Figma-Library?node-id=175028-86039
   - label: Fluent guidance
     url: 'https://fluent2.microsoft.design/components/web/react/core/tag/usage'
-storybookTitles:
-  - Components/Tag/InteractionTag
+reference:
+  component: components-tag-interactiontag
 ---
 
 ## Behavior and states

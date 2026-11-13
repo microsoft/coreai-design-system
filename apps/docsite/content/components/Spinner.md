@@ -4,7 +4,6 @@ title: Spinner
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '2070:49489'
 summary: >-
   Spinners visually communicate that something is processing. They’re used for
@@ -17,6 +16,8 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/spinner/usage'
 storybookTitles:
   - Components/Spinner
+reference:
+  component: components-spinner
 ---
 
 ## Best practices

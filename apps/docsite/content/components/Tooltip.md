@@ -4,7 +4,6 @@ title: Tooltip
 navigation:
   group: Components
   showInSidebar: true
-status: complete
 figmaPageId: '1011:48417'
 summary: >-
   A tooltip provides supplemental, contextual information elevated near its
@@ -18,6 +17,11 @@ resources:
     url: 'https://fluent2.microsoft.design/components/web/react/core/tooltip/usage'
 storybookTitles:
   - Components/Tooltip
+reference:
+  component: components-tooltip
+  omitDecorators: >-
+    Storybook-only layout decorators are omitted. Examples use the documentation
+    preview spacing instead.
 ---
 
 ## Best practices

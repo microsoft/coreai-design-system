@@ -12,7 +12,7 @@ import {
 import { Tab, TabList, type SelectTabData, type SelectTabEvent } from '@coreai-ds/react-components';
 import { Text } from '@coreai-ds/react-components';
 import { PageLayout } from '../components/PageLayout';
-import { siteLinks } from '../data/content';
+import { siteLinks } from '../data/Content';
 
 const vscodeConfig = `{
   "servers": {
@@ -101,11 +101,11 @@ Do not add headers, API keys, or bearer tokens. ${client.verify}`;
     <PageLayout id="mcp-server">
       <div className="mcp-guide">
         <section className="mcp-section">
-          <Text as="p" size={300} foreground={2}>
+          <Text as="p" size={300} foreground={3}>
             The CoreAI MCP returns read-only component documentation, examples, and templates. It
             combines selected Fluent stories with CoreAI stories and overrides.
           </Text>
-          <Text as="p" size={300} foreground={2}>
+          <Text as="p" size={300} foreground={3}>
             The server does not read your project or execute returned code. Do not send secrets or
             confidential content in tool arguments. Review and test examples before using them. Read
             the{' '}
@@ -149,7 +149,7 @@ Do not add headers, API keys, or bearer tokens. ${client.verify}`;
                 <Text as="h3" weight="semibold">
                   {client.stepTitle}
                 </Text>
-                <Text as="p" size={300} foreground={2}>
+                <Text as="p" size={300} foreground={3}>
                   {client.setup}
                 </Text>
               </div>
@@ -161,7 +161,7 @@ Do not add headers, API keys, or bearer tokens. ${client.verify}`;
                 <Text as="h3" weight="semibold">
                   Add the CoreAI MCP server
                 </Text>
-                <Text as="p" size={300} foreground={2}>
+                <Text as="p" size={300} foreground={3}>
                   Add the CoreAI server using the configuration format expected by {client.label}.
                 </Text>
                 <CodeBlock
@@ -185,7 +185,7 @@ Do not add headers, API keys, or bearer tokens. ${client.verify}`;
                 <Text as="h3" weight="semibold">
                   Start an agent session
                 </Text>
-                <Text as="p" size={300} foreground={2}>
+                <Text as="p" size={300} foreground={3}>
                   {client.verify}
                 </Text>
               </div>
