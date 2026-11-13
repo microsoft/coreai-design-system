@@ -166,6 +166,14 @@ test('the staged Markdown catalog covers every selected core and template group'
     catalog.components.map((component) => component.id).sort(),
   );
   assert.ok(!pages.some((page) => page.component === 'components-nav'));
+  const illicon = pages.find((page) => page.component === 'components-illicon');
+  const illiconSource = catalog.components.find(
+    (component) => component.id === 'components-illicon',
+  );
+  const illiconCoverage = accountForStories(illiconSource, illicon.examples, illicon.exclude);
+  for (const story of illiconSource.stories.filter((story) => story.tags.includes('!manifest'))) {
+    assert.equal(illiconCoverage.find((record) => record.id === story.id).status, 'excluded');
+  }
   for (const page of pages) {
     if (page.component) {
       const component = catalog.components.find((component) => component.id === page.component);
@@ -324,9 +332,16 @@ test('simple function and object examples do not require Storybook runtime', () 
   }
 });
 
-test('args, decorators, loaders and context are not silently dropped', () => {
+test('literal story defaults are retained and unsupported setup is not silently dropped', () => {
+  assert.equal(
+    assertSimpleStory(
+      'export const Default = { render: (props) => null, args: { radius: 1, pitch: 5 } };',
+      'Default',
+    ),
+    '{ radius: 1, pitch: 5 }',
+  );
   for (const source of [
-    'export const Default = { render: () => null, args: { label: "Fixed" } };',
+    'export const Default = { render: () => null, args: { label: computeLabel() } };',
     'export const Default = () => null; Default.args = { label: "Fixed" };',
     'export const Default = { render: () => null, decorators: [withProvider] };',
     'export const Default = { render: () => null, loaders: [loadData] };',

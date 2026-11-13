@@ -17,6 +17,7 @@ const parser = unified()
   .use(remarkGfm)
   .use(remarkStringify, { bullet: '-', fences: true, listItemIndent: 'one' });
 export const includedSources = {
+  'illicon-guidance': 'packages/react-components/src/components/Illicon.md',
   'package-readme': 'packages/react-components/README.md',
   'package-changelog': 'packages/react-components/CHANGELOG.md',
   'package-release-notes': 'packages/react-components/CHANGELOG.md',

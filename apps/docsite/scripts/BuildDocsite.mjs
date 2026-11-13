@@ -236,6 +236,7 @@ export function assertSimpleStory(source, exportName, metadata = {}, label = exp
   const ast = ts.createSourceFile('example.tsx', source, ts.ScriptTarget.Latest, true);
   if (ast.parseDiagnostics.length) throw new Error(`${label}: invalid TSX source.`);
   let implementation;
+  let fixedArgs;
   for (const statement of ast.statements) {
     if (ts.isFunctionDeclaration(statement) && statement.name?.text === exportName) {
       implementation = statement;
@@ -259,6 +260,31 @@ export function assertSimpleStory(source, exportName, metadata = {}, label = exp
   if (implementation && ts.isObjectLiteralExpression(implementation)) {
     for (const property of implementation.properties) {
       if (ts.isSpreadAssignment(property)) fail('spread story metadata');
+      if (ts.isPropertyAssignment(property) && property.name.getText(ast) === 'args') {
+        const literal = (node) =>
+          ts.isStringLiteral(node) ||
+          ts.isNumericLiteral(node) ||
+          [
+            ts.SyntaxKind.TrueKeyword,
+            ts.SyntaxKind.FalseKeyword,
+            ts.SyntaxKind.NullKeyword,
+          ].includes(node.kind) ||
+          (ts.isPrefixUnaryExpression(node) &&
+            [ts.SyntaxKind.PlusToken, ts.SyntaxKind.MinusToken].includes(node.operator) &&
+            ts.isNumericLiteral(node.operand));
+        if (
+          !ts.isObjectLiteralExpression(property.initializer) ||
+          !property.initializer.properties.every(
+            (item) =>
+              ts.isPropertyAssignment(item) &&
+              !ts.isComputedPropertyName(item.name) &&
+              literal(item.initializer),
+          )
+        )
+          fail('nonliteral example args');
+        fixedArgs = property.initializer.getText(ast);
+        continue;
+      }
       if (unsupported.has(property.name?.getText(ast)) && property.name.getText(ast) !== 'render') {
         fail(`example ${property.name.getText(ast)}`);
       }
@@ -280,6 +306,7 @@ export function assertSimpleStory(source, exportName, metadata = {}, label = exp
   ) {
     fail('non-function render or Storybook context');
   }
+  return fixedArgs;
 }
 
 export function accountForStories(component, selectedNames, exclusions = {}) {
@@ -638,7 +665,7 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
       if (scope.exclude?.[story.exportName]) continue;
       const implementationFile = path.join(storyRoot, story.implementationFile);
       const owner = component.sources.find((source) => source.sourceFile === story.sourceFile);
-      assertSimpleStory(
+      const fixedArgs = assertSimpleStory(
         await fs.readFile(implementationFile, 'utf8'),
         story.implementationExport,
         scope.omitDecorators
@@ -651,7 +678,7 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
       const extracted = await extractStorySource(story, { root: storyRoot, cache: sourceCache });
       for (const dependency of extracted.requirements) dependencies.add(packageName(dependency));
       const source = normalizeSource(
-        `// Copyright (c) Microsoft Corporation.\n// Licensed under the MIT license.\n\n${scopeExampleIds(extracted.snippet, story.id).trim()}\n\nexport default ${story.implementationExport};\n`,
+        `// Copyright (c) Microsoft Corporation.\n// Licensed under the MIT license.\n\n${scopeExampleIds(extracted.snippet, story.id).trim()}\n\n${fixedArgs ? `export default function Example() { return <${story.implementationExport} {...${fixedArgs}} />; }` : `export default ${story.implementationExport};`}\n`,
       );
       const filename = `${story.id}.tsx`;
       await fs.writeFile(path.join(exampleDirectory, filename), source);
