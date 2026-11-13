@@ -21,7 +21,7 @@ CoreAI builds on Fluent UI v9. It adds a shared visual language, themes, and com
 
 Use the Variations from Fluent guide to check differences before copying a Fluent example.
 
-- [Variations from Fluent](https://coreai-ds-storybook.azurewebsites.net/?path=/docs/docs-variations-from-fluent--docs)
+- [Variations from Fluent](../guides/VariationsFromFluent.md)
 
 ### Why does CoreAI have a shared design system?
 
@@ -50,7 +50,7 @@ Import components from @coreai-ds/react-components instead of @fluentui/react-co
 
 Check that withComponentDefaults has not been set to false. The optional fonts.css import only registers Aptos fonts already installed on the device. The theming guide covers the provider, fonts, and defaults.
 
-- [Theming](https://coreai-ds-storybook.azurewebsites.net/?path=/docs/docs-theming--docs)
+- [Theming](../foundations/Theming.md)
 
 ## Using components
 
@@ -64,7 +64,7 @@ Yes. CoreAI supports light and dark themes, Azure themes, and custom brand color
 
 For individual components, start with documented props and design tokens. Preserve the existing behavior and accessibility. The theming guide covers theme setup.
 
-- [Theming](https://coreai-ds-storybook.azurewebsites.net/?path=/docs/docs-theming--docs)
+- [Theming](../foundations/Theming.md)
 
 ## Working with agents
 

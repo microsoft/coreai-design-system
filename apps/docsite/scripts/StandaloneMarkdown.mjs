@@ -63,7 +63,7 @@ export function rewriteDocumentationLinks(
       const storybookId = url.searchParams.get('path')?.replace(/^\/docs\//, '');
       if (
         storybookId &&
-        /^(?:coreai-ds-storybook\.azurewebsites\.net|documentation\.invalid)$/.test(url.hostname) &&
+        url.origin === 'https://documentation.invalid' &&
         routes.has(`storybook:${storybookId}`)
       ) {
         node.url = `${basePath}${routes.get(`storybook:${storybookId}`)}${hash}`;

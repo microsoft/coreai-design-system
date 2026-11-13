@@ -2,7 +2,7 @@
 
 Static CoreAI documentation for people and agents. GitHub Pages serves the same
 Markdown-owned guidance as physical HTML pages, Markdown downloads, and live React
-examples. Public delivery does not require Storybook, MCP, Azure, or a Node server.
+examples. Public delivery does not require Storybook, MCP, or a Node server.
 Storybook remains available for local component development.
 
 Public site: <https://microsoft.github.io/coreai-design-system/>.
@@ -207,10 +207,8 @@ Known heading-anchor and broader architecture options are tracked in
 
 [The documentation workflow](../../.github/workflows/docs.yml) validates pull
 requests and deploys verified `main` output to GitHub Pages. Pull requests never
-deploy. Manual deployment also requires `main`. No Azure
-credentials or public Storybook/MCP host are used.
+deploy. Manual deployment also requires `main`. No separate documentation server
+or public Storybook/MCP host is used.
 
 See [hosting setup](../../docs/CI-CD-SETUP.md) and
-[workflow operations](../../docs/GITHUB-ACTIONS.md). Existing Azure hosts may
-redirect to the Pages root after cutover; precise old-page redirects are not a
-documentation contract.
+[workflow operations](../../docs/GITHUB-ACTIONS.md).

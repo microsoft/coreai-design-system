@@ -5,10 +5,12 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
+import { pathToFileURL } from 'node:url';
 import test from 'node:test';
 import matter from 'gray-matter';
 import ts from 'typescript';
 import { readReferencePages } from '../scripts/ReadReferencePages.mjs';
+import { generateContent } from '../scripts/GenerateContent.mjs';
 import {
   expandStandaloneMarkdown,
   rewriteDocumentationLinks,
@@ -72,6 +74,71 @@ test('component and template Markdown cannot silently fall out of the catalog', 
     }),
   );
   await assert.rejects(readReferencePages(directory), /require reference metadata/);
+});
+
+test('local guidance generation excludes stories disabled for documentation manifests', async (t) => {
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'coreai-local-guidance-'));
+  t.after(() => fs.rm(directory, { recursive: true, force: true }));
+  const content = path.join(directory, 'content');
+  const markdown = path.join(directory, 'llms');
+  const output = path.join(directory, 'generated');
+  await fs.mkdir(content);
+  await fs.mkdir(markdown);
+  await fs.writeFile(
+    path.join(content, 'Widget.md'),
+    matter.stringify('Use the widget.', {
+      id: 'widget',
+      title: 'Widget',
+      summary: 'Widget guidance.',
+      resources: [],
+      storybookTitles: ['Components/Widget'],
+    }),
+  );
+  const visible = {
+    id: 'components-widget--default',
+    title: 'Components/Widget',
+    name: 'Default',
+    type: 'story',
+    tags: ['manifest'],
+  };
+  const hidden = { ...visible, id: 'components-widget--verification', tags: ['dev', 'test'] };
+  const indexPath = path.join(directory, 'index.json');
+  await fs.writeFile(
+    indexPath,
+    JSON.stringify({ entries: { [visible.id]: visible, [hidden.id]: hidden } }),
+  );
+  await fs.writeFile(
+    path.join(markdown, 'index.json'),
+    JSON.stringify({
+      version: 1,
+      documents: [
+        {
+          id: 'components-widget',
+          title: visible.title,
+          kind: 'component',
+          path: 'llms/components-widget.md',
+          storyIds: [visible.id],
+        },
+      ],
+    }),
+  );
+  await fs.writeFile(path.join(markdown, 'components-widget.md'), '# Widget API\n\nExample.');
+  await generateContent({
+    contentDirectory: pathToFileURL(content + path.sep),
+    outputDirectory: output,
+    indexPath,
+    storybookMarkdownDirectory: markdown,
+  });
+  const manifest = JSON.parse(
+    await fs.readFile(path.join(output, 'storybook-manifest.json'), 'utf8'),
+  );
+  assert.deepEqual(
+    manifest.components.widget.stories.map((story) => story.storyId),
+    [visible.id],
+  );
+  const page = await fs.readFile(path.join(output, 'pages/widget.md'), 'utf8');
+  assert.match(page, /Widget API/);
+  assert.ok(!page.includes(hidden.id));
 });
 
 test('Markdown includes and generated sections expand without evaluating code fences', async () => {
@@ -163,7 +230,7 @@ test('links use canonical routes, base paths and HTML heading IDs without changi
     { route: 'components/Field', guidanceSource: 'content/components/Field.md' },
   ];
   const input =
-    '[Theme](../foundations/Theming.md#set-up-aptos)\n\n[Field](../components/Field.md)\n\n[Old](/theming.md)\n\n[Storybook](https://coreai-ds-storybook.azurewebsites.net/?path=/docs/docs-theming--docs)\n\n```md\n[Example](../do-not-rewrite.md)\n```';
+    '[Theme](../foundations/Theming.md#set-up-aptos)\n\n[Field](../components/Field.md)\n\n[Old](/theming.md)\n\n[Storybook](/?path=/docs/docs-theming--docs)\n\n```md\n[Example](../do-not-rewrite.md)\n```';
   const options = {
     route: 'guides/Package',
     pages,
@@ -173,7 +240,7 @@ test('links use canonical routes, base paths and HTML heading IDs without changi
   const markdown = rewriteDocumentationLinks(input, options);
   assert.match(markdown, /\/repo\/foundations\/Theming\.md#set-up-aptos/);
   assert.match(markdown, /\/repo\/components\/Field\.md/);
-  assert.doesNotMatch(markdown, /azurewebsites\.net/);
+  assert.doesNotMatch(markdown, /\?path=/);
   assert.match(markdown, /\[Example\]\(\.\.\/do-not-rewrite\.md\)/);
   const html = rewriteDocumentationLinks(markdown, { ...options, html: true });
   assert.match(html, /\/repo\/foundations\/Theming\/#guidance-set-up-aptos/);

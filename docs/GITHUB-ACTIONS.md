@@ -35,7 +35,7 @@ Configure Pages and the main-only `github-pages` environment through
 on main pull requests. Do not require deployment or publishing for contributions.
 If introducing a merge queue, add and validate its trigger separately.
 
-The Azure deployment workflow is retired. GitHub Pages hosts the public docsite;
+GitHub Pages hosts the public docsite;
 Storybook remains local. Follow the ordered
 [initial production cutover](CI-CD-SETUP.md#initial-production-cutover) before merging
 the main-only deployment workflow. Settings changes are separate from the PR.

@@ -9,6 +9,8 @@ import { guidanceMarkdown, readGuidance, renderGuidance } from '../../../shared/
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const defaultSnapshotPath = path.join(appRoot, 'content/StorybookIndex.snapshot.json');
+const isDocumentationStory = (entry) =>
+  entry.type === 'story' && (!entry.tags || entry.tags.includes('manifest'));
 
 async function writeIfChanged(file, content) {
   try {
@@ -29,7 +31,7 @@ async function readStorybookEntries({ refresh, indexPath, snapshotPath, indexUrl
       try {
         const index = JSON.parse(await fs.readFile(sourcePath, 'utf8'));
         if (!index.entries) throw new Error(`${sourcePath} is not a Storybook index.`);
-        return Object.values(index.entries).filter((entry) => entry.type === 'story');
+        return Object.values(index.entries).filter(isDocumentationStory);
       } catch (error) {
         if (error.code !== 'ENOENT' || indexPath) throw error;
       }
@@ -42,7 +44,7 @@ async function readStorybookEntries({ refresh, indexPath, snapshotPath, indexUrl
   if (!response.ok) throw new Error(`Unable to fetch Storybook index: ${response.status}`);
   const index = await response.json();
   if (!index.entries) throw new Error(`${indexUrl} is not a Storybook index.`);
-  return Object.values(index.entries).filter((entry) => entry.type === 'story');
+  return Object.values(index.entries).filter(isDocumentationStory);
 }
 
 async function readStorybookMarkdown(directory, entries, required) {
@@ -136,7 +138,7 @@ export async function generateContent({
   snapshotPath = defaultSnapshotPath,
   indexPath = process.env.STORYBOOK_INDEX_PATH,
   refresh = false,
-  storybookRoot = process.env.STORYBOOK_ROOT ?? 'https://coreai-ds-storybook.azurewebsites.net',
+  storybookRoot = process.env.STORYBOOK_ROOT ?? 'http://localhost:6006',
   indexUrl = process.env.STORYBOOK_INDEX_URL ?? `${storybookRoot}/index.json`,
   contentDirectory,
   storybookMarkdownDirectory = refresh || indexPath === null

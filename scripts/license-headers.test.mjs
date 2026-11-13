@@ -21,8 +21,8 @@ test('selects supported source files and excludes external or generated paths', 
     'scripts/build.mjs',
     'scripts/build.sh',
     'styles/app.css',
-    'infra/main.bicep',
-    'infra/main.bicepparam',
+    'fixtures/template.bicep',
+    'fixtures/template.bicepparam',
   ]) {
     assert.equal(isEligibleSource(filename), true, filename);
   }
@@ -63,7 +63,11 @@ test('uses hash comments after shell shebangs', () => {
 });
 
 test('uses slash comments for TypeScript modules and Bicep files', () => {
-  for (const filename of ['src/types.d.mts', 'infra/main.bicep', 'infra/main.bicepparam']) {
+  for (const filename of [
+    'src/types.d.mts',
+    'fixtures/template.bicep',
+    'fixtures/template.bicepparam',
+  ]) {
     const source = 'export const value = 1;\n';
     const fixed = addLicenseHeader(filename, source);
     assert.equal(fixed, `${slashHeader}${source}`, filename);

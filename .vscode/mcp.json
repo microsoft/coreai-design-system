@@ -7,13 +7,6 @@
       "url": "https://chat.fluentui.dev/mcp/server/"
     }, */
 
-    // CoreAI Design System MCP
-    // Disabled here to prefer local authoring.
-    /* "coreai-ds-docs": {
-      "type": "http",
-      "url": "https://coreai-ds-storybook.azurewebsites.net/mcp"
-    } */
-
     // Local version of Storybook MCP
     "coreai-ds-docs-localhost": {
       "type": "http",

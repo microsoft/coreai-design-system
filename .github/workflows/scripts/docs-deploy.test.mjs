@@ -6,7 +6,7 @@ import fs from 'node:fs/promises';
 import test from 'node:test';
 import { parse } from 'yaml';
 
-test('Pages validates PRs but deploys only verified main output without Azure', async () => {
+test('Pages validates PRs but deploys only verified main output', async () => {
   const source = await fs.readFile(new URL('../docs.yml', import.meta.url), 'utf8');
   const workflow = parse(source);
   assert.deepEqual(workflow.on.pull_request.branches, ['main']);
@@ -20,5 +20,5 @@ test('Pages validates PRs but deploys only verified main output without Azure', 
   const upload = steps.findIndex((step) => step.uses?.startsWith('actions/upload-pages-artifact@'));
   assert.ok(verify >= 0 && upload > verify);
   assert.equal(steps[upload].with.path, 'apps/docsite/dist');
-  assert.doesNotMatch(source, /azure\/login|az webapp|pull_request_target|secrets\./);
+  assert.doesNotMatch(source, /pull_request_target|secrets\./);
 });

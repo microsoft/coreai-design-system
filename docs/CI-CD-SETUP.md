@@ -3,7 +3,8 @@
 The public documentation site is
 <https://microsoft.github.io/coreai-design-system/>.
 GitHub Pages is the only documentation hosting target. Storybook is a local
-development tool; neither Storybook nor MCP is deployed publicly by this repository.
+development tool; neither Storybook nor a documentation MCP service is deployed
+publicly by this repository.
 
 ## Repository setup
 
@@ -20,10 +21,8 @@ type-checks, and verifies static output on pull requests. Only main can deploy. 
 `pages: write` and `id-token: write`; ordinary
 validation has read-only repository permissions.
 
-No Azure configuration, private feed, publish profile, or long-lived credential
-is needed for site hosting. The workflow does not modify existing Azure hosts.
-Their owners can redirect old hostnames to the Pages root after the new site is
-available. Precise old-page mappings are not required.
+No private feed, separate documentation server, or long-lived hosting credential
+is needed. Site deployment uses the workflow's short-lived GitHub permissions.
 
 ## Build and verification
 
@@ -44,15 +43,14 @@ or security audit.
 
 For local source ownership and authoring, see the [docsite README](../apps/docsite/README.md).
 
-## Recovery and retirement
+## Recovery
 
 Use the Actions logs to identify the failed build or deployment step. A manual
 dispatch on main reruns the same validation/deployment path. Disable the
 **Documentation** workflow to stop new deployments; inspect already-running work
 separately.
 
-The old Azure workflow is retired. The replacement Pages workflow deploys only
-verified main output.
+The Pages workflow deploys only verified main output.
 
 ## Initial production cutover
 
@@ -66,8 +64,6 @@ verified main output.
    continues serving the last successful deployment until the new one succeeds.
 5. Verify the public source revision, version manifest, skill, Markdown routes,
    examples, and license assets. Remove the testing-branch allowance afterward.
-6. Handle legacy Azure root forwarding and MCP retirement separately, after the
-   main deployment works. Do not delete the hosts needed for migration notices.
 
 If main was not permitted before merging, correct the environment policy and
 rerun the failed deployment or manually dispatch **Documentation** on main.

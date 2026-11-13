@@ -52,13 +52,12 @@ export default tseslint.config(
   {
     files: [
       'eslint.config.mjs',
-      'apps/docsite/{Build.mjs,Server.js}',
+      'apps/docsite/Build.mjs',
       'apps/prototype/*config.ts',
       'apps/prototype/test/**/*.mjs',
       'apps/docsite/scripts/**/*.{js,mjs}',
       'apps/docsite/src/{site-data,utils}.mjs',
       'apps/storybook/.storybook/**/*.{js,mjs,ts,tsx}',
-      'apps/storybook/host/**/*.{js,mjs}',
       'apps/storybook/scripts/**/*.{js,mjs}',
       '.github/scripts/**/*.{js,mjs}',
       '.github/workflows/scripts/**/*.{js,mjs}',
