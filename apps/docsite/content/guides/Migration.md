@@ -19,12 +19,8 @@ replacement or tombstone version is published.
 
 ## 1. Update registry configuration
 
-Remove this scope mapping from your project's `.npmrc` if no other `@coreai`
-packages need it:
-
-```ini
-@coreai:registry=https://pkgs.dev.azure.com/coreaidesign/_packaging/coreai/npm/registry/
-```
+Remove the `@coreai:registry` mapping to the former Azure Artifacts feed from
+your project's `.npmrc` if no other `@coreai` packages need it.
 
 If your default registry is not public npm, add:
 
