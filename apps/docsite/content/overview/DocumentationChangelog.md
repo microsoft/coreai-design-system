@@ -15,6 +15,12 @@ these notes are not archived documentation snapshots.
 Tracking starts at 0.1.2. Earlier merges shared docs/skill 0.1.1; their individual
 changes remain recorded in Git history.
 
+## [0.1.3] - 2026-11-16
+
+- Add a migration guide from the retired `@coreai/fluentui-react` Azure Artifacts
+  package to `@coreai-ds/react-components` on public npm.
+- Link the migration guide from the package guide, READMEs, and package changelog.
+
 ## [0.1.2] - 2026-11-16
 
 - Require a docs/skill version increase and documentation changelog entry for
