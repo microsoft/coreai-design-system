@@ -147,12 +147,20 @@ consumer skill. The component package has its own independent version. A
 documentation-only change advances docs/skill without republishing the package.
 A package release advances both tracks. Only the current release is hosted.
 
+Every PR targeting `main` must advance docs/skill and update the
+[documentation changelog](content/overview/DocumentationChangelog.md), even when
+it changes only maintenance or infrastructure. Each merge deploys the site.
+The [release-docs skill](../../.github/skills/release-docs/SKILL.md) owns this
+procedure and is required by create-pr and package releases. Use one increment
+per PR, not per commit, review update, or deployment retry. Package release notes
+remain separate.
+
 The skill description includes both versions so clients can see them before
 loading the body. `metadata.version` is the docs/skill version;
 `metadata.package-version` identifies the package documented by that skill.
 These labels describe the site, not a consuming app's installed package.
 
-For a docs/skill change, run from the repository root:
+For a PR that still needs its docs/skill increment, run from the repository root:
 
 ```powershell
 npm version patch --workspace apps/docsite --no-git-tag-version
@@ -166,10 +174,30 @@ the skill's description/metadata. If lifecycle scripts were disabled, run:
 npm --workspace apps/docsite run sync:versions
 ```
 
-For a package release, change the package version first, then advance docs/skill.
-Synchronization refuses a package-version change without a newer docs/skill
-version. Commit the two manifests, root lockfile, and skill together.
+For a package release, change the package version first where possible, then
+follow the same procedure. If the PR already has an appropriate docs increment,
+keep it and run synchronization after changing the package. Commit the affected
+manifests, root lockfile, skill, and documentation changelog together.
 See the [package release procedure](../../packages/react-components/RELEASING.md).
+
+Before opening/updating the PR and again after integrating current main:
+
+```powershell
+git fetch origin main
+npm --workspace apps/docsite run check:release -- --base=origin/main
+```
+
+The check requires a docs version higher than the target, synchronized labels
+and lockfile, and a non-empty dated changelog entry for that version. It applies
+to every PR, without published-input path filters. If another merged PR used
+the same version, choose the next version and reconcile the changelog.
+Documentation CI compares PRs with their event's base commit and main pushes
+with the previous push head; both revisions are fetched. Manual redeployments
+skip the increment check and retain the original version. Checks never bump
+versions themselves. Repository administrators should require **Validate
+documentation** and an up-to-date branch or equivalent merge queue to prevent
+stale green PRs from merging with duplicate versions; this code does not change
+repository settings.
 
 Build and type-check reject version-label drift; they do not silently rewrite
 authored files. `version.json` contains the docs version, documented package

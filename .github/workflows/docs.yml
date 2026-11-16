@@ -24,6 +24,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
@@ -31,6 +32,11 @@ jobs:
       - name: Check public source and license headers
         run: npm run check:public-source && npm run license:check
       - run: npm ci --prefer-offline
+      - name: Check per-PR documentation release
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        env:
+          DOCS_RELEASE_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: npm --workspace apps/docsite run check:release -- --base="$DOCS_RELEASE_BASE"
       - name: Build static documentation
         run: npm --workspace apps/docsite run build -- --base=/coreai-design-system/
       - name: Test documentation contracts

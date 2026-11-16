@@ -126,14 +126,16 @@ secret. Do not assume that a configured but untested relationship works.
 
    ```bash
    npm version 0.12.0 --workspace packages/react-components --no-git-tag-version
-   npm version patch --workspace apps/docsite --no-git-tag-version
    ```
 
-   Use the approved version for later releases. Docs and skill share a version
-   independent of the package; every package release also advances docs/skill.
-   The docsite version lifecycle synchronizes the skill description and metadata
-   with both manifests. If scripts were disabled, run
-   `npm --workspace apps/docsite run sync:versions`.
+   Use the approved version for later releases. Follow
+   [release-docs](../../.github/skills/release-docs/SKILL.md) for this PR's docs/skill
+   increment and documentation changelog, just like every other PR to main.
+   Reuse an existing appropriate docs increment instead of adding a second one.
+   Docs/skill and package versions remain independent. The docsite version
+   lifecycle synchronizes the skill description and metadata with both manifests.
+   If the docs increment already exists or scripts were disabled, run
+   `npm --workspace apps/docsite run sync:versions` after changing the package.
    See the [version policy](../../apps/docsite/README.md#documentation-and-skill-versions).
    Commit both manifests, the root lockfile, and `agent/SKILL.md`.
    Roll `[Unreleased]` into `[VERSION] - YYYY-MM-DD`, add a fresh
