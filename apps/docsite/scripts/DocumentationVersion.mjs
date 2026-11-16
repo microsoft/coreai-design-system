@@ -25,14 +25,6 @@ export function synchronizeSkillVersions(source, version, packageVersion) {
   if (typeof skill.data.description !== 'string' || !skill.data.description.trim())
     throw new Error('The skill must have a description.');
   const previous = skill.data.metadata;
-  if (
-    previous?.['package-version'] &&
-    previous['package-version'] !== packageVersion &&
-    semver.valid(previous.version) &&
-    !semver.gt(version, previous.version)
-  ) {
-    throw new Error('Bump the docsite version before synchronizing a package release.');
-  }
   const description = skill.data.description.replace(/^Docs\/skill v\S+; package v\S+\.\s*/, '');
   return matter.stringify(skill.content, {
     ...skill.data,
