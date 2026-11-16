@@ -8,6 +8,9 @@ and re-exports that API. In most imports, replacing the `@fluentui` scope with
 
 ## Install
 
+Upgrading from `@coreai/fluentui-react` on Azure Artifacts? Follow the
+[migration guide](https://microsoft.github.io/coreai-design-system/guides/Migration/).
+
 Install the package from npm:
 
 ```bash

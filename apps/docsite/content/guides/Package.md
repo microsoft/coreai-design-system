@@ -20,6 +20,9 @@ The provider belongs once at the app root. Import components from
 `@coreai-ds/react-components`, not directly from Fluent's component barrel.
 Icons can still come from `@fluentui/react-icons`.
 
+Moving from the retired Azure Artifacts package? Follow the
+[migration guide](./Migration.md).
+
 ## Fonts
 
 Aptos is preferred, but font binaries are not included in this repository or the

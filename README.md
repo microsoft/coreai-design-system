@@ -96,6 +96,9 @@ To run a script in just one workspace, use `npm -w <workspace> run <script>` —
 
 ## Consuming the react package
 
+Moving from the former Azure Artifacts package, `@coreai/fluentui-react`? Follow the
+[migration guide](apps/docsite/content/guides/Migration.md).
+
 Install from npm. See the
 [package README](packages/react-components/README.md#install) for installation,
 optional Aptos setup, and provider configuration.

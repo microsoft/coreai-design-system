@@ -45,6 +45,7 @@ headings in this changelog.
 ### Changed
 
 - Version 0.12.0 is the first public npm release as `@coreai-ds/react-components`; earlier versions were distributed privately as `@coreai/fluentui-react`.
+- See the [Azure Artifacts migration guide](../../apps/docsite/content/guides/Migration.md) for registry cleanup, dependency and import renames, font changes, and upgrade verification.
 - Consumer agent guidance uses the public CoreAI documentation MCP, delegates setup to the docsite guide, and keeps repository-specific exceptions in local proxy skills.
 - CSS Modules guidance uses an opt-in, app-owned layered Griffel renderer instead of patching shared dependencies.
 - `Accordion` removes the default `AccordionHeader` button padding and `AccordionPanel` margin so content aligns with its surroundings, and keeps the expand icon vertically centered without stretching alongside tall header content.
