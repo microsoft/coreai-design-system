@@ -16,6 +16,20 @@ test('Pages validates PRs but deploys only verified main output', async () => {
   assert.match(workflow.jobs.deploy.if, /github\.event_name != 'pull_request'/);
   assert.equal(workflow.jobs.deploy.needs, 'build');
   const steps = workflow.jobs.build.steps;
+  const checkout = steps.find((step) => step.uses?.startsWith('actions/checkout@'));
+  assert.equal(checkout.with['fetch-depth'], 0);
+  const release = steps.findIndex((step) => step.run?.includes('run check:release'));
+  const build = steps.findIndex((step) => step.run?.includes('run build'));
+  assert.ok(release >= 0 && build > release);
+  assert.equal(
+    steps[release].if,
+    "github.event_name == 'pull_request' || github.event_name == 'push'",
+  );
+  assert.equal(
+    steps[release].env.DOCS_RELEASE_BASE,
+    '${{ github.event.pull_request.base.sha || github.event.before }}',
+  );
+  assert.match(steps[release].run, /--base="\$DOCS_RELEASE_BASE"/);
   const verify = steps.findIndex((step) => step.run?.includes('run verify'));
   const upload = steps.findIndex((step) => step.uses?.startsWith('actions/upload-pages-artifact@'));
   assert.ok(verify >= 0 && upload > verify);

@@ -1,6 +1,6 @@
 {
   "name": "@coreai-ds/docsite",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "Static CoreAI documentation with React examples and Markdown references.",
   "type": "module",
@@ -16,6 +16,7 @@
     "sources:update": "node scripts/sources/SetupFluentStories.mjs",
     "catalog:init": "node scripts/InitializeReferenceCatalog.mjs",
     "check:versions": "node scripts/DocumentationVersion.mjs",
+    "check:release": "node scripts/CheckDocumentationRelease.mjs",
     "sync:versions": "node scripts/DocumentationVersion.mjs --sync",
     "version": "npm run sync:versions",
     "verify": "node scripts/VerifyDocsite.mjs",

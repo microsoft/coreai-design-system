@@ -28,9 +28,10 @@ publishes the version-changing main commit after CI succeeds and tags it `vVERSI
    Historical 0.11.2 includes provider circular-dependency fix `567dc9a`, merged in
    PR #9; its exact privately published source baseline is unconfirmed.
 4. Run `npm version VERSION --workspace packages/react-components --no-git-tag-version`.
-   Then run `npm version patch --workspace apps/docsite --no-git-tag-version` to
-   advance the shared docs/skill version and synchronize its labels with the new
-   package version. Follow the release guide if lifecycle scripts are disabled.
+   Then follow [release-docs](../release-docs/SKILL.md) for this PR's shared
+   docs/skill version, synchronization, and documentation changelog. Reuse an
+   existing appropriate docs increment; do not add a second one for the package
+   release or the later create-pr step.
    Update both manifests, the root lockfile, and the canonical agent skill together.
    Roll `[Unreleased]` into
    `[VERSION] - YYYY-MM-DD`, add a fresh `[Unreleased]`, and update heading anchors.
