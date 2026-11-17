@@ -1911,7 +1911,156 @@ code:not(pre code) {
   font-weight: var(--fontWeightSemibold);
 }
 
+.content-page--layout-mockup .content-opening {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacingVerticalXXL);
+}
+
+.content-page--layout-mockup {
+  gap: var(--spacingVerticalXXXL);
+}
+
+.content-page--layout-mockup .content-section + .content-section {
+  margin-block-start: var(--spacingVerticalL);
+}
+
+.content-page--layout-mockup .content-lead {
+  color: var(--mf-text-strong);
+  font-size: var(--fontSizeBase400);
+  line-height: var(--lineHeightBase400);
+}
+
+.content-page--layout-mockup :is(.content-lead, .content-principles-intro) > p {
+  margin: 0;
+}
+
+.content-page--layout-mockup :is(.content-section, .content-step)[id] {
+  scroll-margin-block-start: var(--spacingVerticalXL);
+}
+
+.content-page--layout-mockup .content-section__header,
+.content-page--layout-mockup .content-step__content,
+.content-page--layout-mockup .content-help-card__summary {
+  gap: 2px;
+}
+
+.content-page--layout-mockup .content-section__header > *,
+.content-page--layout-mockup .content-step__content > *,
+.content-page--layout-mockup .content-help-card__summary > * {
+  margin-block: 0;
+}
+
+.content-page--layout-mockup .content-help-card__summary > .content-help-card__link {
+  margin-block-start: var(--spacingVerticalM);
+}
+
+.content-page--layout-mockup #guidance-write-clear-useful-content > .content-section__header {
+  padding-block-end: 12px;
+}
+
+.content-page--layout-mockup .content-principles-intro {
+  color: var(--mf-text-low);
+}
+
+.content-page--layout-mockup .content-process-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid var(--colorNeutralStrokeAlpha);
+  border-radius: var(--borderRadiusXLarge);
+}
+
+.content-page--layout-mockup .content-flow--review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacingVerticalXXL);
+  margin: 0;
+  padding: 24px 24px 24px 48px;
+  list-style: decimal;
+}
+
+.content-page--layout-mockup .content-step {
+  display: list-item;
+  padding: 0 0 0 var(--spacingHorizontalS);
+  border: 0;
+  border-radius: 0;
+}
+
+.content-page--layout-mockup .content-step::marker {
+  color: var(--mf-text-strong);
+  font-size: var(--fontSizeBase400);
+  font-weight: var(--fontWeightSemibold);
+}
+
+.content-page--layout-mockup .content-step__content > div {
+  max-width: 72ch;
+}
+
+.content-page--layout-mockup .content-publish-checklist {
+  gap: var(--spacingVerticalL);
+  margin: 0;
+  padding: var(--spacingVerticalXXL) var(--spacingHorizontalXXL);
+  border-radius: var(--borderRadiusXLarge);
+  background-color: var(--colorNeutralBackground3);
+}
+
+.content-page--layout-mockup .content-publish-checklist > li {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacingVerticalXS);
+}
+
+.content-page--layout-mockup .content-help-cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+.content-page--layout-mockup .content-help-cards .content-help-card {
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+}
+
+.content-page--layout-mockup .content-help-card__summary {
+  padding: 24px;
+}
+
+.content-page--layout-mockup .content-help-card .content-guidance-list {
+  padding: 24px 24px 24px 40px;
+}
+
+.content-page--layout-mockup .content-help-contact {
+  padding-block-start: var(--spacingVerticalL);
+  color: var(--mf-text-low);
+}
+
+@media (min-width: 901px) {
+  .content-page--layout-mockup .content-help-card:has(.content-guidance-list) {
+    position: relative;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .content-page--layout-mockup
+    .content-help-card:has(.content-guidance-list)
+    .content-help-card__summary::before {
+    position: absolute;
+    inset-block: -1px;
+    inset-inline-start: 50%;
+    width: 1px;
+    background-color: var(--colorNeutralBackground1);
+    content: '';
+    pointer-events: none;
+  }
+}
+
 @media (max-width: 900px) {
+  .content-page--layout-mockup .content-process-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .content-introduction,
   .content-flow {
     grid-template-columns: minmax(0, 1fr);
