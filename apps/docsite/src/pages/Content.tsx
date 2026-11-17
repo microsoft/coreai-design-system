@@ -66,7 +66,7 @@ const supportSteps = [
     title: 'Use the agent',
     description: 'Start here for lower-risk work that needs a strong first draft.',
     details: [
-      'There are no legal, data security, or Responsible AI implications.',
+      'There are no legal, security, or Responsible AI implications.',
       'You want to simplify basic jargon or create realistic stand-in content.',
       'The work does not involve new UI.',
     ],
@@ -80,7 +80,7 @@ const supportSteps = [
     description:
       'Ask for direct support when the work is sensitive, strategic, or needs expert judgment.',
     details: [
-      'The work has legal, data security, or Responsible AI implications.',
+      'The work has legal, security, or Responsible AI implications.',
       'You do not know where to start.',
       'You need help with a larger content strategy, new or redesigned feature, navigation, AI behavior, or content research.',
       'The work requires terminology alignment across products or platforms.',
