@@ -28,7 +28,7 @@ import { useComponentDefaults } from './ComponentDefaultsContext.js';
  * Replaces selected inherited props so their JSDoc can describe CoreAI's
  * effective defaults. Storybook's static component metadata cannot see values
  * applied at runtime by `withComponentDefaults`, so without this override its
- * MCP tools report Fluent's original defaults instead.
+ * static documentation reports Fluent's original defaults instead.
  *
  * The conditional type distributes over polymorphic prop unions (such as
  * Button's button/anchor variants) so overriding the documentation does not

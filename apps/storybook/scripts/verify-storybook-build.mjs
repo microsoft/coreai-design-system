@@ -61,9 +61,18 @@ const componentEntries = await Promise.all(
     resolveComponentEntry(component, undefined, manifestProvider),
   ),
 );
-await Promise.all(
+const docEntries = await Promise.all(
   Object.values(docs).map((doc) => resolveDocEntry(doc, undefined, manifestProvider)),
 );
+
+const skillBody = fs
+  .readFileSync(path.resolve(root, '../../packages/react-components/agent/SKILL.md'), 'utf8')
+  .replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '')
+  .trimStart();
+const mirroredSkill = docEntries.find((doc) => doc.id === 'docs-agent-skill--docs');
+if (!mirroredSkill?.content?.includes(skillBody)) {
+  throw new Error('Built Agent Skill documentation must match the authored guide.');
+}
 
 if (componentsManifest.meta?.docgen !== 'react-component-meta') {
   throw new Error(
@@ -133,6 +142,8 @@ for (const expected of inventory.components) {
       }
     } else if (!documented?.snippet || documented.error) {
       throw new Error(`Selected story is not published through its generated owner: ${story.id}`);
+    } else if (documented.name !== entry.name) {
+      throw new Error(`Story name differs between index and documentation: ${story.id}`);
     }
   }
 }

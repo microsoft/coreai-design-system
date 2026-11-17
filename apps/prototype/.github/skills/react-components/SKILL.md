@@ -1,6 +1,6 @@
 ---
 name: react-components
-description: 'CoreAI Sandbox component usage: import boundaries, CoreAI MCP documentation, and local adapter inspection. USE WHEN: editing any `*.tsx` file, picking a component, or writing component imports.'
+description: 'CoreAI Sandbox component usage: import boundaries, CoreAI documentation, and local adapter inspection. USE WHEN: editing any `*.tsx` file, picking a component, or writing component imports.'
 ---
 
 # CoreAI Sandbox Component Usage
@@ -33,31 +33,29 @@ implementations may import those underlying CoreAI components.
 
 - This skill owns CoreAI Sandbox's repository boundary: decide whether the need is satisfied by
   CoreAI or by an existing app-owned adapter, composition, hook, theme utility, or asset.
-- `prototype-app-coreai-ds-fluentui-react` owns the external package API and its mandatory CoreAI-first MCP
-  workflow. Invoke it for every CoreAI component or prop decision instead of restating its catalog
-  here.
+- `prototype-app-coreai-ds-fluentui-react` owns the external package API and its CoreAI-first
+  documentation workflow. Invoke it for every CoreAI component or prop decision instead of
+  restating its catalog here.
 - Local source under `app/components/common/**` is authoritative only for Foundry-owned behavior;
   it is not a substitute for CoreAI documentation.
 
 ## Choose and Verify Components
 
-1. Invoke the `prototype-app-coreai-ds-fluentui-react` skill and successfully call the CoreAI MCP
-   before selecting, changing, or reviewing a component or its props. Do not infer APIs
-   from stock Fluent behavior.
-2. If the CoreAI MCP tools are missing or a call fails, stop CoreAI-dependent work. Tell
-   the user the MCP is required, ask them to start or reconnect `coreai-ds-docs-localhost`, help
-   them troubleshoot it, and retry the call after they respond. Do not silently substitute
-   package source, prior knowledge, or Fluent component documentation.
+1. Invoke the `prototype-app-coreai-ds-fluentui-react` skill and follow its documentation
+   workflow before selecting, changing, or reviewing a component or its props. Do not infer
+   APIs from stock Fluent behavior.
+2. If documentation cannot be fetched, report the failure and follow the canonical skill's
+   explicit offline fallback using installed package declarations, README, and changelog.
 3. Check `app/components/common/index.ts` for an existing Foundry-owned export only when the
    requested behavior is product-specific or integrates an app concern such as React Router.
 4. When a local export exists, read its source under `app/components/common/**` before using it.
-   The CoreAI MCP cannot document Foundry-owned behavior.
+   The published CoreAI documentation cannot document Foundry-owned behavior.
 5. Prefer an existing documented component or template over recreating the same
    interaction with custom markup and CSS.
 
-Do not maintain a static component catalog in this skill. CoreAI's MCP is the
-source of truth for CoreAI components, and the app barrel and local source are the
-source of truth for repository-owned exports.
+Do not maintain a static component catalog in this skill. Published CoreAI documentation
+provides component guidance, installed package types define the API, and the app barrel
+and local source are the source of truth for repository-owned exports.
 
 ## Semantics
 

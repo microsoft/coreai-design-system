@@ -3,8 +3,7 @@
 
 // Mirrors packages/react-components/agent/SKILL.md — the canonical,
 // npm-shipped agent-usage doc — into a generated `src/stories/docs/AgentSkill.mdx`
-// page, so the same authored source is also addressable through the MCP tools
-// without hand-maintaining a second copy that can drift (see
+// page without hand-maintaining a second copy that can drift (see
 // apps/storybook/README.md's "Agent Skill mirror" section).
 //
 // `agent/SKILL.md` is the single source of truth; `AgentSkill.mdx` is a

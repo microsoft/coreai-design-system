@@ -10,6 +10,7 @@ import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import { resolveDocEntry } from 'storybook/internal/toolsets-docs';
 import { generateMarkdown } from './generate-markdown.mjs';
+import { assertExpectedManifestProblems } from './verify-manifest-problems.mjs';
 
 const componentId = 'components-widget';
 const docId = 'guide--docs';
@@ -463,6 +464,43 @@ test('permits only known extraction errors and emits a notice instead of fabrica
       }
     },
   );
+});
+
+test('rejects unexpected component and story extraction problems', () => {
+  const expected = ['components-portal-tomountnodeprops', 'templates-shell-and-navigation'].map(
+    (id) => ({ id, error: { name: 'No component found', message: 'Specify meta.component' } }),
+  );
+  assert.equal(assertExpectedManifestProblems(expected), 2);
+  assert.equal(assertExpectedManifestProblems([{ id: 'resolved', stories: [] }]), 0);
+  assert.throws(
+    () =>
+      assertExpectedManifestProblems([
+        {
+          id: 'new-component',
+          error: { name: 'No component found', message: 'Missing component' },
+        },
+      ]),
+    /new-component/,
+  );
+  assert.throws(
+    () =>
+      assertExpectedManifestProblems([
+        { ...expected[0], error: { name: 'Different error', message: 'Unexpected failure' } },
+      ]),
+    /Different error/,
+  );
+  for (const problem of ['error', 'warning']) {
+    assert.throws(
+      () =>
+        assertExpectedManifestProblems([
+          {
+            id: expected[0].id,
+            stories: [{ id: 'new-story', [problem]: { message: 'Incomplete snippet' } }],
+          },
+        ]),
+      /new-story/,
+    );
+  }
 });
 
 test('allows an explicitly docs-only indexed variant without fabricating a snippet', async () => {

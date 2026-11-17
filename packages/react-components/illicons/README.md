@@ -27,7 +27,7 @@ been reviewed. The saved-data catalog and its generation workflow remain separat
 
 Storybook's **Components / Illicon / Source Recreation Dev** compares the original
 SVGs with candidate Fluent icons and freshly sampled grids. It is a verification
-story, excluded from the component MCP manifest. No original files are replaced.
+story, excluded from the component documentation manifest. No original files are replaced.
 It starts with the recommended 20px-at-2x settings. Use the editable
 native-size selector to switch between the actual 16px, 20px, and 24px Fluent
 variants, not scaled copies of one icon. At 2x these produce 32, 40, and 48 cells.

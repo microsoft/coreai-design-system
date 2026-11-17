@@ -3,10 +3,7 @@
 
 // Generates a lean, auto-generated `{Name}.mdx` doc page next to every
 // copy-paste template component (src/stories/templates/{Name}.tsx), so its
-// real source shows up verbatim in both the Storybook UI and MCP's
-// `docs-show` output (which returns MDX docs pages as raw file text,
-// unlike CSF stories, whose `render()` gets reconstructed into synthesized
-// "usage code" — see /memories/repo/storybook-vite-migration.md).
+// real source shows up verbatim in Storybook and its static Markdown export.
 //
 // `{Name}.tsx` is the single source of truth; `{Name}.mdx` is a generated
 // build artifact (gitignored — see .gitignore) that must never be

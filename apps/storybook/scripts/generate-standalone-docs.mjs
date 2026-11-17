@@ -68,6 +68,6 @@ ${body}`;
 
 if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url) {
   console.log(
-    `Generated ${(await generateStandaloneDocs()).length} canonical Markdown mirrors for Storybook and MCP.`,
+    `Generated ${(await generateStandaloneDocs()).length} canonical Markdown mirrors for Storybook.`,
   );
 }

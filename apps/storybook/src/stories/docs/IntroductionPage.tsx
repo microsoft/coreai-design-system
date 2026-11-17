@@ -245,9 +245,14 @@ export function IntroductionPage() {
       </header>
 
       <aside className={styles.callout}>
-        Using an AI coding agent? Connect the component-docs server with{' '}
-        <a className={styles.link} href="?path=/docs/docs-mcp-setup--docs">
-          Docs / MCP Setup
+        Using an AI coding agent? Read{' '}
+        <a
+          className={styles.link}
+          href={siteLinks.storybookDocs.agentGuide}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Build with your agent
         </a>
         .
       </aside>
