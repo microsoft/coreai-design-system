@@ -154,7 +154,7 @@ Use an info bubble when some users may benefit from extra context, but everyone 
 
 - Keep the content brief and directly related to the label or control.
 - Put in an info bubble: A brief definition of an unfamiliar term; optional context that helps some users understand a field or setting; an example that clarifies the expected input; or a link to detailed documentation when the summary is enough for the current task.
-- Keep in the main experience: Information needed to complete the current task; requirements, warnings, costs, or consequences; and instructions or recovery steps users must find to continue.
+- Keep in the main experience: Information needed to complete the current task; requirements, warnings, costs, or consequences; instructions or recovery steps users must find to continue; and content that repeats the label or nearby helper text.
 - Do not put content that repeats the label or nearby helper text in an info bubble.
 - The preferred example defines the term. The other example gives an instruction the user needs to act on, so it should remain visible in the main experience.
 - Check: Can the user complete the task without opening the info bubble?
@@ -177,7 +177,7 @@ Review the content in a complete flow or mockup. Check UI terminology, errors, a
 
 ### Before you publish
 
-Put the main point first and make the next action clear. Cut extra words, read it aloud, and check that everyone can understand and use it.
+Before you ship, check that users can understand where they are, make informed decisions, take action with predictable results, recover from problems, and trust the experience. Put the main point first and make the next action clear. Cut extra words, read it aloud, and check that everyone can understand and use it.
 
 - Journey: Do the entry points provide the right context, and can users complete their goal without reaching a dead end?
 - Understand: Is the meaning clear? Are unfamiliar concepts explained at the right level?
@@ -197,7 +197,7 @@ Start here for lower-risk work that needs a strong first draft. Use the Foundry 
 
 [Open the Content Design Copilot](https://m365.cloud.microsoft/chat/?titleId=T_3e60de43-9ea8-499c-1f68-30bd3ff0e720)
 
-- There are no legal, data security, or Responsible AI implications.
+- There are no legal, security, or Responsible AI implications.
 - You want to simplify basic jargon or create realistic stand-in content.
 - The work does not involve new UI.
 
@@ -205,7 +205,7 @@ Start here for lower-risk work that needs a strong first draft. Use the Foundry 
 
 Ask for direct support when the work is sensitive, strategic, or needs expert judgment. Work with a content designer when the experience requires content strategy, affects a large audience, or carries significant user or business risk.
 
-- The work has legal, data security, or Responsible AI implications.
+- The work has legal, security, or Responsible AI implications.
 - You do not know where to start.
 - You need help with a larger content strategy, new or redesigned feature, navigation, AI behavior, or content research.
 - The work requires terminology alignment across products or platforms.
