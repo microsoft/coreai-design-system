@@ -14,8 +14,6 @@ reference:
 
 ## Write clear, useful content
 
-Good product content helps people understand, decide, and act without guessing.
-
 Use these guidelines when writing or reviewing UI content for Microsoft Foundry experiences. They help teams create content that is clear, useful, consistent, and trustworthy.
 
 These guidelines support everyday design work. They do not replace review from content design, legal, privacy, security, accessibility, or responsible AI specialists when that expertise is required.
