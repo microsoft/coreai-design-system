@@ -355,6 +355,10 @@ function DocumentationShell({
             ref={treeRef}
             entries={entries}
             query={query}
+            onSelectResult={() => {
+              setQuery('');
+              setNavigationOpen(false);
+            }}
             onExitSearch={clearSearch}
           />
         </ShellSlot>

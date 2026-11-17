@@ -35,9 +35,10 @@ export const NavigationTree = React.forwardRef<
   {
     entries: NavigationEntry[];
     query: string;
+    onSelectResult: () => void;
     onExitSearch: () => void;
   }
->(function NavigationTree({ entries, query, onExitSearch }, ref) {
+>(function NavigationTree({ entries, query, onSelectResult, onExitSearch }, ref) {
   const location = useLocation();
   const activePath = normalizeReferencePath(location.pathname);
   const groups = groupNavigationEntries(entries.filter((entry) => entry.showInSidebar));
@@ -120,6 +121,16 @@ export const NavigationTree = React.forwardRef<
                   href={`${import.meta.env.BASE_URL}${entry.path.slice(1)}`}
                   className="app-search-result"
                   aria-current={entry.path === activePath ? 'page' : undefined}
+                  onClick={(event) => {
+                    if (
+                      event.button === 0 &&
+                      !event.metaKey &&
+                      !event.ctrlKey &&
+                      !event.shiftKey &&
+                      !event.altKey
+                    )
+                      onSelectResult();
+                  }}
                 >
                   <span className="app-search-result__title">
                     <HighlightedText text={entry.title} />
