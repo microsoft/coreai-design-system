@@ -79,6 +79,7 @@ export async function readReferencePages(contentDirectory) {
               'layout',
               'hideSummary',
               'api',
+              'mergedInto',
             ].includes(key)
           ) {
             fail(`unknown reference field "${key}".`);
@@ -207,6 +208,13 @@ export async function readReferencePages(contentDirectory) {
         ) {
           fail('reference.sources must have unique filenames.');
         }
+        if (
+          reference.mergedInto !== undefined &&
+          (!reference.component ||
+            typeof reference.mergedInto !== 'string' ||
+            !/^(components|templates)\/[A-Za-z][A-Za-z0-9]*$/.test(reference.mergedInto))
+        )
+          fail('reference.mergedInto must name the combined component or template page route.');
         if (kind === 'templates' && !reference.sources?.length && !usageGuide) {
           fail('template pages must provide reference.sources for copying.');
         }

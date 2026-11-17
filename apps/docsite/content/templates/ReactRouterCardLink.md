@@ -9,6 +9,7 @@ reference:
     - src/stories/templates/react-router/CardLink.tsx
     - src/stories/templates/react-router/RouterLinkSlots.tsx
   route: templates/ReactRouterCardLink
+  mergedInto: templates/ReactRouter
 ---
 
 <!-- include: router-link-notes -->

@@ -9,6 +9,7 @@ reference:
     - src/stories/templates/react-router/TabLink.tsx
     - src/stories/templates/react-router/RouterLinkSlots.tsx
   route: templates/ReactRouterTabLink
+  mergedInto: templates/ReactRouter
 ---
 
 <!-- include: router-link-notes -->

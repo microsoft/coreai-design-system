@@ -18,7 +18,13 @@ import {
   stripPresentationMarkers,
   currentReleaseNotes,
 } from '../scripts/StandaloneMarkdown.mjs';
-import { appRoot, codeFence, standalonePageHtml, pageMarkdown } from '../scripts/BuildDocsite.mjs';
+import {
+  appRoot,
+  codeFence,
+  mergedTemplateSections,
+  standalonePageHtml,
+  pageMarkdown,
+} from '../scripts/BuildDocsite.mjs';
 import {
   pageGuidanceParts,
   pageTemplateHeader,
@@ -481,6 +487,43 @@ test('React Router templates share setup notes and retain the helper source', as
     assert.doesNotMatch(markdown, /<!-- include:/);
     assert.ok(page.sources.some((file) => file.endsWith('/RouterLinkSlots.tsx')));
   }
+});
+
+test('React Router templates merge into one page with each example and source once', async () => {
+  const scope = await readReferencePages(path.join(appRoot, 'content'));
+  const merged = scope.filter((page) => page.mergedInto);
+  assert.equal(merged.length, 7);
+  assert.ok(merged.every((page) => page.mergedInto === 'templates/ReactRouter'));
+  const source = (name) => ({ name, path: `source/templates/x/${name}`, source: `// ${name}` });
+  const pages = [
+    { route: 'templates/ReactRouter', standalone: true },
+    ...['Tab Link List', 'Tab Link', 'Link'].map((label) => {
+      const id = `templates-${label.toLowerCase().replaceAll(' ', '-')}--default`;
+      return {
+        label,
+        summary: `${label} summary.`,
+        mergedInto: 'templates/ReactRouter',
+        defaultExampleId: id,
+        examples: [{ id, sourcePath: `source/examples/${id}.tsx`, source: `// ${id}` }],
+        templateSources: [
+          source(`${label.replaceAll(' ', '')}.tsx`),
+          ...(label === 'Tab Link List' ? [source('TabLink.tsx')] : []),
+          source('RouterLinkSlots.tsx'),
+        ],
+      };
+    }),
+  ];
+  const { generated, examples } = mergedTemplateSections(pages);
+  const markdown = generated['merged-reactrouter'];
+  assert.deepEqual(
+    [...markdown.matchAll(/^## (.+)$/gm)].map((match) => match[1]),
+    ['Link', 'Tab Link', 'Tab Link List', 'Shared helper'],
+  );
+  assert.equal(examples.get('templates/ReactRouter').length, 3);
+  assert.equal(markdown.match(/<!-- live-example:/g).length, 3);
+  for (const name of ['TabLink.tsx', 'RouterLinkSlots.tsx'])
+    assert.equal(markdown.split(`### Template source: ${name}`).length, 2);
+  assert.match(markdown, /Also copy `TabLink\.tsx` from \[Tab Link\]\(#guidance-tab-link\)/);
 });
 
 test('package guidance opts into its Markdown-backed setup view', async () => {

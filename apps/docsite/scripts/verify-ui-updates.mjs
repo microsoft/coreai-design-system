@@ -23,12 +23,11 @@ try {
 
   await visit('guides/RouterLinkSlots/');
   await page.getByRole('button', { name: 'Templates', exact: true }).click();
-  const labels = page.locator('.reference-navigation-link').filter({
-    hasText: /React Router \/ (Breadcrumb|Card Link)/,
-  });
-  assert.ok((await labels.count()) >= 2);
-  for (const label of await labels.all()) {
-    await expect(label).toBeVisible();
+  const templateLinks = page.locator('.reference-navigation-link');
+  await expect(templateLinks.filter({ hasText: /^React Router$/ })).toHaveCount(1);
+  await expect(templateLinks.filter({ hasText: /React Router \// })).toHaveCount(0);
+  for (const label of await templateLinks.all()) {
+    if (!(await label.isVisible())) continue;
     assert.ok(
       await label.evaluate((element) => element.scrollHeight <= element.clientHeight),
       `Navigation text fits: ${await label.textContent()}`,
@@ -38,8 +37,30 @@ try {
       'normal',
     );
   }
-  await labels.first().scrollIntoViewIfNeeded();
+  await templateLinks.filter({ hasText: /^React Router$/ }).scrollIntoViewIfNeeded();
   await screenshot('docsite-after-nav.png');
+
+  const routerSections = [
+    'Breadcrumb Link',
+    'Card Link',
+    'Link',
+    'Link Button',
+    'Menu Item Link',
+    'Tab Link',
+    'Tab Link List',
+  ];
+  await visit('templates/ReactRouter/');
+  for (const name of [...routerSections, 'Shared helper'])
+    await expect(page.getByRole('heading', { level: 2, name, exact: true })).toHaveCount(1);
+  const previews = page.locator('.preview[data-example-id]');
+  await expect(previews).toHaveCount(routerSections.length);
+  for (const preview of await previews.all())
+    await expect(preview.locator('> :not(p)').first()).toBeAttached();
+  await page.goto(new URL('templates/ReactRouterCardLink/', root).href);
+  await page.waitForURL(/\/templates\/ReactRouter\/#guidance-card-link$/);
+  await page.locator('[data-reference-ready="true"]').waitFor();
+  await expect(page.locator('#guidance-card-link')).toBeInViewport();
+  await screenshot('docsite-after-react-router.png');
 
   for (const route of ['foundations/Spacing/', 'foundations/Layout/', 'foundations/Surfaces/']) {
     await visit(route);

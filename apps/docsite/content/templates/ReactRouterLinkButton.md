@@ -9,6 +9,7 @@ reference:
     - src/stories/templates/react-router/LinkButton.tsx
     - src/stories/templates/react-router/RouterLinkSlots.tsx
   route: templates/ReactRouterLinkButton
+  mergedInto: templates/ReactRouter
 ---
 
 <!-- include: router-link-notes -->

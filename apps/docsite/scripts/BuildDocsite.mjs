@@ -592,6 +592,87 @@ ${assets.css.map((file) => `<link rel="stylesheet" href="${metadata.basePath}${f
 </main></div></div></div></div><div class="copy-toast" role="status"></div></div></div><script type="module" src="${metadata.basePath}${assets.entry}"></script></body></html>\n`;
 }
 
+function redirectHtml(destination, title, basePath) {
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=${destination}"><link rel="canonical" href="${destination}"><link rel="icon" href="${basePath}assets/favicon.svg" type="image/svg+xml"><title>${escapeHtml(title)}</title></head><body><a href="${destination}">Continue to ${escapeHtml(title)}</a></body></html>`;
+}
+
+const slug = (value) =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+function mergedSectionId(page) {
+  return `guidance-${slug(page.label)}`;
+}
+
+// Combined template pages embed each merged page's default example and its copyable sources.
+export function mergedTemplateSections(pages) {
+  const generated = {};
+  const examples = new Map();
+  const targets = [...new Set(pages.map((page) => page.mergedInto).filter(Boolean))];
+  for (const route of targets) {
+    const target = pages.find((page) => page.route === route);
+    if (!target?.standalone)
+      throw new Error(`${route}: mergedInto must name a standalone page in the catalog.`);
+    const merged = pages
+      .filter((page) => page.mergedInto === route)
+      .sort((first, second) => first.label.localeCompare(second.label));
+    const counts = new Map();
+    for (const source of merged.flatMap((page) => page.templateSources))
+      counts.set(source.name, (counts.get(source.name) ?? 0) + 1);
+    const shown = new Map();
+    const sourceMarkdown = (source) =>
+      [
+        `### Template source: ${source.name}`,
+        `[Download ${source.name}](/${source.path})`,
+        codeFence(source.source),
+      ].join('\n\n');
+    const sections = merged.map((page) => {
+      const example = page.examples.find((item) => item.id === page.defaultExampleId);
+      const own = page.templateSources.filter((source) => counts.get(source.name) === 1);
+      const reused = page.templateSources.filter(
+        (source) => counts.get(source.name) > 1 && source.name !== 'RouterLinkSlots.tsx',
+      );
+      const parts = [`## ${page.label}`, page.summary];
+      parts.push(
+        `<!-- live-example:${example.id} -->`,
+        `[Download example source](/${example.sourcePath})`,
+        codeFence(example.source),
+      );
+      for (const source of own) parts.push(sourceMarkdown(source));
+      for (const source of reused) {
+        if (shown.has(source.name)) {
+          parts.push(
+            `Also copy \`${source.name}\` from [${shown.get(source.name).label}](#${mergedSectionId(shown.get(source.name))}).`,
+          );
+        } else {
+          shown.set(source.name, page);
+          parts.push(sourceMarkdown(source));
+        }
+      }
+      return parts.join('\n\n');
+    });
+    const shared = merged
+      .flatMap((page) => page.templateSources)
+      .find((source) => source.name === 'RouterLinkSlots.tsx' && counts.get(source.name) > 1);
+    if (shared)
+      sections.push(
+        [
+          '## Shared helper',
+          'Every adapter on this page imports `RouterLinkSlots.tsx`. Copy it once alongside the adapters you use.',
+          sourceMarkdown(shared),
+        ].join('\n\n'),
+      );
+    generated[`merged-${slug(route.split('/').pop())}`] = sections.join('\n\n');
+    examples.set(
+      route,
+      merged.map((page) => page.examples.find((item) => item.id === page.defaultExampleId)),
+    );
+  }
+  return { generated, examples };
+}
+
 function sourceHtml(source, id, downloadPath, base) {
   return `<div class="source-actions"><button type="button" data-copy-source="${id}">Copy source</button>
 <a href="${base}${downloadPath}">Download source</a><span role="status" data-copy-status="${id}"></span></div>
@@ -656,7 +737,8 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
       renderer: scope.renderer,
       layout: scope.layout,
       hideSummary: scope.hideSummary,
-      showInSidebar: data.navigation?.showInSidebar !== false,
+      mergedInto: scope.mergedInto,
+      showInSidebar: !scope.mergedInto && data.navigation?.showInSidebar !== false,
       resources: data.resources ?? [],
       aliases: scope.aliases ?? [],
       legacyIds: [
@@ -810,12 +892,15 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
         `### ${markdownLabel(icon.title)}\n\n![${markdownLabel(icon.title)}](${basePath}assets/illicons/${icon.file})\n\n[Download original SVG](${basePath}assets/illicons/${icon.file})\n\nTags: ${icon.tags.map(markdownLabel).join(', ') || 'none'}.`,
     )
     .join('\n\n');
+  const mergedSections = mergedTemplateSections(pages);
+  Object.assign(generated, mergedSections.generated);
   for (const page of pages) {
     if (page.standalone) {
       Object.assign(
         page,
         await resolveStandalonePage(page, { pages, basePath, generated, allExamples }),
       );
+      page.examples.push(...(mergedSections.examples.get(page.route) ?? []));
     } else {
       page.guidance = await expandStandaloneMarkdown(page.guidance, {
         route: page.route,
@@ -916,13 +1001,16 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
   const navigationGroups = groupNavigationEntries(
     pages.map((page) => ({
       path: `/${page.route}${page.route ? '/' : ''}`,
-      title: page.id.startsWith('react-router-') ? `React Router / ${page.label}` : page.label,
+      title: page.label,
       page,
     })),
   );
+  const listedGroups = navigationGroups
+    .map((group) => ({ ...group, items: group.items.filter(({ page }) => !page.mergedInto) }))
+    .filter((group) => group.items.length);
   const orderedPages = navigationGroups.flatMap((group) => group.items.map((entry) => entry.page));
   const searchIndex = JSON.stringify(
-    navigationGroups.flatMap((group) =>
+    listedGroups.flatMap((group) =>
       group.items.map(({ path, title, page }) => ({
         path,
         title,
@@ -972,16 +1060,18 @@ ${sourceHtml(source.source, `template-${page.id}-${index}`, source.path, basePat
       await write(source.path, source.source);
     }
     await write(markdownPath, markdown);
+    const mergedDestination = page.mergedInto
+      ? `${basePath}${page.mergedInto}/#${mergedSectionId(page)}`
+      : undefined;
     await write(
       `${htmlPath}index.html`,
-      shell(page.title, body, metadata, assets, navigation(htmlPath), searchIndex, htmlPath),
+      mergedDestination
+        ? redirectHtml(mergedDestination, page.title, basePath)
+        : shell(page.title, body, metadata, assets, navigation(htmlPath), searchIndex, htmlPath),
     );
     for (const alias of page.aliases) {
-      const destination = `${basePath}${htmlPath}`;
-      await write(
-        `${alias.slice(1)}index.html`,
-        `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=${destination}"><link rel="canonical" href="${destination}"><link rel="icon" href="${basePath}assets/favicon.svg" type="image/svg+xml"><title>${escapeHtml(page.title)}</title></head><body><a href="${destination}">Continue to ${escapeHtml(page.title)}</a></body></html>`,
-      );
+      const destination = mergedDestination ?? `${basePath}${htmlPath}`;
+      await write(`${alias.slice(1)}index.html`, redirectHtml(destination, page.title, basePath));
       await write(`${alias.slice(1, -1)}.md`, markdown);
     }
     for (const id of page.legacyIds) await write(`llms/${id}.md`, markdown);
@@ -1022,7 +1112,7 @@ ${sourceHtml(source.source, `template-${page.id}-${index}`, source.path, basePat
       await fs.readFile(path.join(appRoot, 'public/logo-effects', frame)),
     );
   }
-  const listing = navigationGroups
+  const listing = listedGroups
     .map(
       (group) =>
         `### ${group.label}\n\n${group.items
