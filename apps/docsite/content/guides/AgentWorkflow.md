@@ -15,12 +15,14 @@ Base URL: https://microsoft.github.io/coreai-design-system/
 
 1. **Refresh the skill.** Read [version.json](/version.json) once per task. Install the
    [current skill](/source/package/SKILL.md) if missing, or update older
-   `metadata.version` guidance before UI work. Preserve local rules, do not
+   `metadata.last-updated` guidance before UI work. When `lastUpdated` changes,
+   review the [dated changelog](../overview/DocumentationChangelog.md).
+   Verify the downloaded skill bytes against `skill.sha256`. Preserve local rules, do not
    downgrade newer local guidance, and ask before resolving conflicts. Follow the
    updated skill in this task.
 2. **Check installed versions.** Check the consuming app's manifest and lockfile. This site documents the
-   `packageVersion` from the version manifest, independently of the docs/skill
-   version. If versions differ, inspect installed TypeScript declarations
+   `packageVersion` from the build manifest, independently of the documentation
+   timestamp. If versions differ, inspect installed TypeScript declarations
    and state the mismatch before relying on newer APIs.
 3. **Read only what you need.** Fetch [llms.txt](/llms.txt) once, then choose only the
    pages needed for the user's task. Read their UX guidance as
@@ -36,7 +38,7 @@ Base URL: https://microsoft.github.io/coreai-design-system/
 - Markdown: `/coreai-design-system/components/Button.md`
 - Homepage Markdown: `/coreai-design-system/index.md`
 - Discovery index: `/coreai-design-system/llms.txt`
-- Current docs/skill and package versions: `/coreai-design-system/version.json`
+- Current build timestamp and package version: `/coreai-design-system/version.json`
 - Exact routes and metadata: `/coreai-design-system/llms/index.json`
 - Reusable skill: `/coreai-design-system/source/package/SKILL.md`
 
@@ -78,7 +80,7 @@ focus visibility, responsive layouts, and both themes.
 
 The [reusable skill](./PackageSkill.md) stores this retrieval workflow in a
 consuming repository. Install or refresh it before implementing, not on every
-page fetch. Its docs/skill version can change without a new component package.
+page fetch. Its build timestamp can change without a new component package.
 Only current documentation is hosted; existing package releases are not rewritten.
 
 The starter prompt authorizes skill installation/update. Otherwise obtain approval

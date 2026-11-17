@@ -29,7 +29,7 @@ import {
   tokenSwatches,
 } from './StandaloneMarkdown.mjs';
 import { standaloneSections, readFoundationData } from './StandaloneSections.mjs';
-import { readDocumentationVersion } from './DocumentationVersion.mjs';
+import { readDocumentationMetadata } from './DocumentationMetadata.mjs';
 import {
   escapeHtml,
   codeFence,
@@ -562,7 +562,7 @@ ${assets.css.map((file) => `<link rel="stylesheet" href="${metadata.basePath}${f
 <nav class="app-sidenav__nav" id="app-navigation-links" aria-label="Documentation">${navigation}</nav>
 <div class="app-sidenav__footer"><a class="app-sidenav__link" href="https://github.com/microsoft/coreai-design-system/issues">Questions?</a><a class="app-sidenav__link" href="https://github.com/microsoft/coreai-design-system/issues/new">Feedback</a></div></aside>
 <div class="app-content${home ? ' app-content--home' : ''}"><div data-shell-header></div><div class="app-page${home ? ' app-page--home' : ''}"><main class="site-main" id="main" tabindex="-1">${body}
-<footer class="reference-footer${currentPath === '' ? ' sr-only' : ''}"${currentPath === '' ? ' aria-hidden="true" inert' : ''}>Docs/skill ${escapeHtml(metadata.documentation.version)}; CoreAI ${escapeHtml(metadata.versions['@coreai-ds/react-components'])}; Fluent ${escapeHtml(metadata.versions['@fluentui/react-components'])}.
+<footer class="reference-footer">Last updated <time datetime="${escapeHtml(metadata.documentation.lastUpdated)}">${escapeHtml(metadata.documentation.lastUpdated)}</time>; <a href="${metadata.basePath}overview/DocumentationChangelog/">Documentation changelog</a>; CoreAI ${escapeHtml(metadata.versions['@coreai-ds/react-components'])}; Fluent ${escapeHtml(metadata.versions['@fluentui/react-components'])}.
 <a href="${metadata.basePath}llms.txt">Agent index</a> · <a href="${metadata.basePath}llms/index.json">Coverage and provenance</a> · <a href="${metadata.basePath}THIRD-PARTY-NOTICES.txt">License</a></footer>
 </main></div></div></div></div><div class="copy-toast" role="status"></div></div></div><script type="module" src="${metadata.basePath}${assets.entry}"></script></body></html>\n`;
 }
@@ -584,7 +584,7 @@ ${basic ? `<details class="reference-basic-source"><summary>View example source<
 
 export async function buildReferenceProof({ basePath = '/', outDir = outputDirectory } = {}) {
   basePath = normalizeBase(basePath);
-  const { documentation, skillSource } = await readDocumentationVersion();
+  const { documentation, skillSource } = await readDocumentationMetadata();
   const pageScope = await readReferencePages(path.join(appRoot, 'content'));
   const checkout = path.join(storyRoot, 'fluent-stories');
   const fluentRef = git(['rev-parse', 'HEAD'], checkout);
@@ -844,7 +844,7 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
               await fs.readFile(path.join(root, 'package.json'), 'utf8'),
             );
             if (version !== metadata.versions[name]) {
-              this.error(`Bundled ${name}@${version} differs from the documentation version.`);
+              this.error(`Bundled ${name}@${version} differs from the documented package version.`);
             }
             metadata.runtimePackages[name] = { version, installations: roots.size };
           }
@@ -1000,7 +1000,7 @@ ${sourceHtml(source.source, `template-${page.id}-${index}`, source.path, basePat
   const introduction = `# CoreAI design system\n\nHelp designers code and help engineers design.\n\nExplore component guidance, working examples, and copy-and-adapt templates. This catalog contains ${pages.length} pages and ${imports.length} examples.\n\n[Get started](${basePath}guides/Package.md)\n\n${listing}\n`;
   await write(
     'llms.txt',
-    `# CoreAI documentation for agents\n\nDocs/skill v${documentation.version}; documented @coreai-ds/react-components v${documentation.packageVersion}.\n\nUse ordinary HTTPS GET to read these static Markdown files. Reading needs no login or client connection. Install or update the repository skill before implementing UI; preserve local instructions.\n\n## Start here\n\n- [Current versions](${basePath}version.json): small docs/skill and package version manifest; check once per task.\n- [Reusable skill](${basePath}source/package/SKILL.md): review and install or update before UI work.\n- [Agent workflow](${basePath}guides/AgentWorkflow.md): targeted retrieval, version checks, imports, and fallbacks.\n- [Build with your agent](${basePath}guides/UseWithAgents.md): starter prompt and skill setup.\n- [Starter prompt](${basePath}agent-prompt.txt): add the user's task and paste into an agent.\n- [Exact routes and source metadata](${basePath}llms/index.json): use only when needed; do not fetch every page.\n\nFetch this index once per task. Choose the relevant pages below; reuse fetched documents. Human directory URLs map to .md files, preserving ${basePath}; the homepage maps to ${basePath}index.md. CoreAI UX guidance overrides upstream demonstrations. Check installed package versions before implementing. Templates are copy-and-adapt source, not package exports. Report retrieval failures; never invent APIs.\n\n${introduction}\n## Build versions\n\n- Docs and skill: ${documentation.version}\n\n${Object.entries(
+    `# CoreAI documentation for agents\n\nLast updated ${documentation.lastUpdated}; documented @coreai-ds/react-components v${documentation.packageVersion}.\n\nUse ordinary HTTPS GET to read these static Markdown files. Reading needs no login or client connection. Install or update the repository skill before implementing UI; preserve local instructions.\n\n## Start here\n\n- [Build metadata](${basePath}version.json): check lastUpdated once per task, then review the dated changelog if it changed.\n- [Documentation changelog](${basePath}overview/DocumentationChangelog.md): dated guidance and maintenance changes.\n- [Reusable skill](${basePath}source/package/SKILL.md): review and install or update before UI work.\n- [Agent workflow](${basePath}guides/AgentWorkflow.md): targeted retrieval, timestamp checks, imports, and fallbacks.\n- [Build with your agent](${basePath}guides/UseWithAgents.md): starter prompt and skill setup.\n- [Starter prompt](${basePath}agent-prompt.txt): add the user's task and paste into an agent.\n- [Exact routes and source metadata](${basePath}llms/index.json): use only when needed; do not fetch every page.\n\nFetch this index once per task. Choose the relevant pages below; reuse fetched documents. Human directory URLs map to .md files, preserving ${basePath}; the homepage maps to ${basePath}index.md. CoreAI UX guidance overrides upstream demonstrations. Check installed package versions before implementing. Templates are copy-and-adapt source, not package exports. Report retrieval failures; never invent APIs.\n\n${introduction}\n## Build metadata\n\n- Last updated: ${documentation.lastUpdated}\n\n${Object.entries(
       metadata.versions,
     )
       .map(([name, version]) => `- ${name}: ${version}`)

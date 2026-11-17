@@ -74,8 +74,9 @@ Install the package to build an application. Agents can read the same UX guidanc
 
 See [Working with agents](./Introduction.md#working-with-agents) for a starter
 prompt that installs or updates the repository skill before UI work. The skill
-checks the [current docs/skill version](/version.json) once per task. Its version
-can change independently of the component package.
+checks the [current UTC build timestamp](/version.json) once per task, then reads
+the dated documentation changelog when it changed. Documentation updates do not
+require a component package release.
 
 - [Agent workflow](/guides/AgentWorkflow.md)
 

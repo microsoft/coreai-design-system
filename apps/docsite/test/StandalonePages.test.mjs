@@ -184,14 +184,14 @@ test('agent handoff installs the current skill and uses HTTP documentation disco
   assert.match(source, /llms\/index\.json/);
   assert.match(source, /once per task/);
   assert.match(source, /user's approval before writing instructions/);
-  assert.match(source, /metadata\.version/);
+  assert.match(source, /metadata\.last-updated/);
   assert.match(source, /version\.json/);
   assert.doesNotMatch(source, /docs-list|docs-show|azurewebsites/i);
   const prompt = (
     await fs.readFile(path.join(appRoot, 'content/data/AgentPrompt.md'), 'utf8')
   ).trim();
   assert.match(prompt, /Install it at \.github\/skills\/coreai-ds-fluentui-react\/SKILL\.md/);
-  assert.match(prompt, /update the existing CoreAI skill.*before implementing/);
+  assert.match(prompt, /refresh older existing CoreAI guidance.*before implementing/);
   assert.match(prompt, /Preserve repository-specific rules/);
   const expanded = await expandStandaloneMarkdown('<!-- include: agent-prompt -->', {
     route: 'guides/UseWithAgents',

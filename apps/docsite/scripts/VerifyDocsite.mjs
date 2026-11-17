@@ -20,7 +20,7 @@ import {
   providerSource,
 } from './BuildDocsite.mjs';
 import { serveReferenceProof } from './ServeDocsite.mjs';
-import { readDocumentationVersion } from './DocumentationVersion.mjs';
+import { readDocumentationMetadata } from './DocumentationMetadata.mjs';
 
 const require = createRequire(import.meta.url);
 const metadata = JSON.parse(
@@ -163,7 +163,9 @@ try {
     return response;
   };
   const home = await (await read('')).text();
-  const { documentation, skillSource } = await readDocumentationVersion();
+  const { documentation, skillSource } = await readDocumentationMetadata({
+    lastUpdated: metadata.documentation.lastUpdated,
+  });
   assert.deepEqual(metadata.documentation, documentation);
   assert.deepEqual(await (await read('version.json')).json(), {
     schemaVersion: 1,
@@ -173,12 +175,13 @@ try {
   assert.equal(await (await read(documentation.skill.path)).text(), skillSource);
   const discovery = await (await read('llms.txt')).text();
   assert.match(discovery, /Fetch this index once per task/);
-  assert.ok(discovery.includes(`Docs/skill v${documentation.version}`));
+  assert.ok(discovery.includes(`Last updated ${documentation.lastUpdated}`));
   assert.ok(
     discovery.includes(`documented @coreai-ds/react-components v${documentation.packageVersion}`),
   );
   assert.ok(
-    home.includes(`Docs/skill ${documentation.version}; CoreAI ${documentation.packageVersion}`),
+    home.includes(`datetime="${documentation.lastUpdated}"`) &&
+      home.includes('overview/DocumentationChangelog/'),
   );
   const starterPrompt = (
     await fs.readFile(path.join(appRoot, 'content/data/AgentPrompt.md'), 'utf8')

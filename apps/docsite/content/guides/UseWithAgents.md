@@ -33,8 +33,8 @@ repository's package manager, lockfile, and approval rules.
 ## What the agent reads
 
 The [documentation index](/llms.txt) lists page purposes and current package
-versions. The small [version manifest](/version.json) identifies the shared
-docs/skill version and the documented package version independently.
+versions. The small [build manifest](/version.json) identifies the UTC
+`lastUpdated` timestamp and documented package version independently.
 Each human page has a Markdown counterpart with the same guidance,
 API summaries, and complete example source. For example, the Button page is
 available as [Markdown](/components/Button.md).
@@ -46,9 +46,9 @@ adds exact paths, source links, API members, and provenance.
 ## Keep the repository skill current
 
 The [agent skill](./PackageSkill.md) is the persistent entry point for CoreAI
-tasks. Its description and metadata carry its docs/skill version and the
-documented package version. Before each task it checks whether newer published
-guidance is available; an older npm package may contain an older skill.
+tasks. Its published description and metadata carry the build timestamp and
+documented package version. Before each task it checks the timestamp, then reads
+the dated documentation changelog when it changed; an older npm package may contain an older skill.
 
 Review the skill before saving it. The starter prompt authorizes that skill's
 installation or update, not changes to unrelated repository instructions.
@@ -62,7 +62,7 @@ These are public, read-only static files. Fetching a page does not require sendi
 your source code, prompts, or credentials to this site. Your agent provider and
 HTTP client have their own data policies.
 
-The site hosts only the current docs/skill release and its documented package
+The site hosts only current documentation and guidance and its documented package
 version. Agents must compare that package version with your
 installed packages, report unavailable pages, and test adapted code in your app.
 The skill is guidance, not an enforcement mechanism or a guarantee of correctness.
