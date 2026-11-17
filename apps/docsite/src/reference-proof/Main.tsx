@@ -166,6 +166,10 @@ function DocumentationShell({
   }, [collapsed, slots]);
 
   React.useLayoutEffect(() => {
+    if (query.trim() && slots.navigation) slots.navigation.scrollTop = 0;
+  }, [query, slots.navigation]);
+
+  React.useLayoutEffect(() => {
     const home = page.path === '/' && page.status === 'ready';
     contentRef.current?.querySelector('.app-content')?.classList.toggle('app-content--home', home);
     contentRef.current?.querySelector('.app-page')?.classList.toggle('app-page--home', home);
