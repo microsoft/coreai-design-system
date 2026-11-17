@@ -36,6 +36,8 @@ const standaloneViewNames = new Set([
   'package-skill',
   'agent-workflow',
   'content',
+  'work-in-progress',
+  'guide-accordions',
 ]);
 
 export interface ReferencePage {

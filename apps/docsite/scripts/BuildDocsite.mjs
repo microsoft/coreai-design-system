@@ -469,6 +469,7 @@ export function standalonePageHtml(page, metadata) {
     html: true,
   });
   const parts = pageGuidanceParts(markdown, page.resources);
+  const unfinished = page.layout === 'work-in-progress' || !parts.body;
   const bodyMarkdown = wholePageRendererNames.includes(page.renderer)
     ? `<!-- view:${page.renderer} -->\n\n${parts.body}\n\n<!-- /view:${page.renderer} -->`
     : parts.body;
@@ -484,7 +485,12 @@ export function standalonePageHtml(page, metadata) {
       ]),
     }).html,
   );
-  return `<div class="reference-page-introduction${page.renderer === 'home' ? ' reference-home-introduction' : ''}${page.layout ? ` reference-page--${page.layout}` : ''}">${pageTemplateHeader(page, metadata, parts)}${pageTemplateResources(page, metadata)}${page.renderer === 'home' ? homeHeroFallback(page, metadata, parts) : `<article class="standalone-guidance">${tokenSwatches(body)}</article>`}</div>`;
+  const guidance = `<article class="standalone-guidance">${tokenSwatches(body)}</article>`;
+  const content = unfinished
+    ? `<div data-page-widget="work-in-progress" class="reference-work-in-progress"><h1>Page under construction</h1><p>We're still working on this page.</p></div>${parts.body ? `<details class="reference-existing-guidance"><summary>Existing guidance</summary>${guidance}</details>` : ''}`
+    : guidance;
+  const header = pageTemplateHeader(page, metadata, parts);
+  return `<div class="reference-page-introduction${page.renderer === 'home' ? ' reference-home-introduction' : ''}${page.layout ? ` reference-page--${page.layout}` : ''}">${unfinished ? header.replace('data-page-header', 'hidden data-page-header') : header}${pageTemplateResources(page, metadata)}${page.renderer === 'home' ? homeHeroFallback(page, metadata, parts) : content}</div>`;
 }
 
 function lowerBestPracticesHeading(html) {

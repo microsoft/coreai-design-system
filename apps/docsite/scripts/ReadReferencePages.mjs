@@ -19,6 +19,7 @@ export const standaloneRendererNames = [
   'package-skill',
   'agent-workflow',
   'content',
+  'guide-accordions',
 ];
 
 export const wholePageRendererNames = [
@@ -29,6 +30,7 @@ export const wholePageRendererNames = [
   'package-skill',
   'agent-workflow',
   'content',
+  'guide-accordions',
 ];
 
 export async function readReferencePages(contentDirectory) {
@@ -182,7 +184,10 @@ export async function readReferencePages(contentDirectory) {
           !standaloneRendererNames.includes(reference.renderer)
         )
           fail('Unknown page renderer.');
-        if (reference.layout !== undefined && !['compact-guidance'].includes(reference.layout))
+        if (
+          reference.layout !== undefined &&
+          !['compact-guidance', 'work-in-progress'].includes(reference.layout)
+        )
           fail('Unknown page layout.');
         if (reference.hideSummary !== undefined && typeof reference.hideSummary !== 'boolean')
           fail('reference.hideSummary must be a boolean.');

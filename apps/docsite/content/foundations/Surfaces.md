@@ -4,6 +4,7 @@ title: Surfaces
 summary: 'Surface tiers, depth, and visual hierarchy.'
 resources: []
 reference:
+  layout: work-in-progress
   renderer: materials
   route: foundations/Surfaces
   aliases:

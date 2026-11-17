@@ -33,6 +33,8 @@ import type { PageWidgetProps } from './FoundationViews';
 import { IntroFeatureCards } from './IntroFeatureCards';
 import { ContentHelpCards } from '../components/ContentHelpCards';
 import { ContentPrincipleConnector } from '../components/ContentPrincipleConnector';
+import { WorkInProgress } from '../components/WorkInProgress';
+import { fragmentId } from '../BrowserState.mjs';
 
 interface ResourceItem {
   title: string;
@@ -341,6 +343,94 @@ function FaqsView({ sourceHtml }: PageWidgetProps) {
           </Accordion>
         </section>
       ))}
+    </div>
+  );
+}
+
+function GuideAccordionsView({ sourceHtml }: PageWidgetProps) {
+  const model = React.useMemo(() => {
+    const document = documentFrom(sourceHtml);
+    const headings = [...document.querySelectorAll('h2')];
+    const first = headings[0];
+    const introduction = [...document.body.children].slice(
+      0,
+      first ? [...document.body.children].indexOf(first) : undefined,
+    );
+    return {
+      introduction: introduction.map((element) => element.outerHTML).join(''),
+      sections: headings.map((heading) => {
+        const elements = followingUntil(heading, (candidate) => candidate.tagName === 'H2');
+        return {
+          id: heading.id,
+          title: heading.innerHTML,
+          html: elements.map((element) => element.outerHTML).join(''),
+          anchors: elements.flatMap((element) => [
+            element.id,
+            ...[...element.querySelectorAll('[id]')].map((child) => child.id),
+          ]),
+        };
+      }),
+    };
+  }, [sourceHtml]);
+  const [openItems, setOpenItems] = React.useState<string[]>([]);
+  React.useEffect(() => {
+    let frame = 0;
+    const reveal = (hash: string) => {
+      const id = fragmentId(hash);
+      const section = model.sections.find(
+        (item) => item.id === id || item.anchors.includes(id ?? ''),
+      );
+      if (!id || !section) return;
+      setOpenItems((current) => [...new Set([...current, section.id])]);
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() =>
+        document.getElementById(id)?.scrollIntoView({ block: 'start' }),
+      );
+    };
+    const locationChanged = () => reveal(window.location.hash);
+    const followAnchor = (event: MouseEvent) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+        return;
+      const link = event.target instanceof Element ? event.target.closest('a[href]') : null;
+      if (!link) return;
+      const url = new URL(link.getAttribute('href') ?? '', window.location.href);
+      if (url.origin === window.location.origin && url.pathname === window.location.pathname)
+        reveal(url.hash);
+    };
+    locationChanged();
+    window.addEventListener('hashchange', locationChanged);
+    window.addEventListener('popstate', locationChanged);
+    document.addEventListener('click', followAnchor);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('hashchange', locationChanged);
+      window.removeEventListener('popstate', locationChanged);
+      document.removeEventListener('click', followAnchor);
+    };
+  }, [model]);
+  return (
+    <div className="reference-faqs-view">
+      {model.introduction ? <div dangerouslySetInnerHTML={{ __html: model.introduction }} /> : null}
+      <Accordion
+        className="faq-list"
+        multiple
+        collapsible
+        openItems={openItems}
+        onToggle={(_event, data) => setOpenItems(data.openItems.map(String))}
+      >
+        {model.sections.map((section) => (
+          <AccordionItem id={section.id} key={section.id} value={section.id}>
+            <AccordionHeader expandIconPosition="end" size="large">
+              <Text size={400} weight="regular" foreground={1}>
+                <span dangerouslySetInnerHTML={{ __html: section.title }} />
+              </Text>
+            </AccordionHeader>
+            <AccordionPanel>
+              <div className="faq-answer" dangerouslySetInnerHTML={{ __html: section.html }} />
+            </AccordionPanel>
+          </AccordionItem>
+        ))}
+      </Accordion>
     </div>
   );
 }
@@ -1193,6 +1283,8 @@ function AgentWorkflowView({ sourceHtml }: PageWidgetProps) {
 }
 
 export const standaloneViews: Record<string, React.ComponentType<PageWidgetProps>> = {
+  'work-in-progress': () => <WorkInProgress standalone />,
+  'guide-accordions': GuideAccordionsView,
   resources: ResourcesView,
   includes: IntroFeatureCards,
   'agent-cards': IntroAgentCards,

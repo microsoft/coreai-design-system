@@ -3,7 +3,8 @@ id: migration
 title: Migrate from Azure Artifacts
 summary: Move from the retired private package to the public CoreAI npm package.
 resources: []
-reference: {}
+reference:
+  renderer: guide-accordions
 ---
 
 The CoreAI Design System now lives at

@@ -6,6 +6,7 @@ summary: >-
   `@layer`s so plain CSS/CSS Modules can override CoreAI component styles.
 resources: []
 reference:
+  renderer: guide-accordions
   legacyIds: [docs-styling-with-css-modules--docs]
   route: guides/StylingWithCssModules
   aliases:

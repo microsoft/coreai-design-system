@@ -125,12 +125,20 @@
 
 .site-main:has(.reference-work-in-progress) > [data-reference-ready],
 .site-main:has(.reference-work-in-progress) > [data-reference-ready] > div {
-  display: contents;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 .reference-work-in-progress {
+  display: flex;
   flex: 1;
+  flex-direction: column;
   justify-content: center;
+}
+
+.site-main:has(.reference-work-in-progress) .reference-page-introduction {
+  flex: 1;
 }
 
 .reference-shell .work-in-progress :is(h1, h2) {

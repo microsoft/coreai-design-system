@@ -4,6 +4,7 @@ title: Theming
 summary: 'Apply CoreAI themes, fonts, defaults, and custom brand colors.'
 resources: []
 reference:
+  renderer: guide-accordions
   legacyIds: [docs-theming--docs]
   route: foundations/Theming
   aliases:

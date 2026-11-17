@@ -6,6 +6,7 @@ summary: >-
   v9, by component.
 resources: []
 reference:
+  renderer: guide-accordions
   legacyIds: [docs-variations-from-fluent--docs]
   route: guides/VariationsFromFluent
   aliases:
