@@ -225,6 +225,15 @@ function DocumentationShell({
   React.useEffect(() => {
     document.title = page.title;
   }, [page.title]);
+  React.useLayoutEffect(() => {
+    if (!renderedPage || renderedPage.status !== 'ready') return;
+    const markdown = contentRef.current?.querySelector<HTMLAnchorElement>('[data-agent-markdown]');
+    const alternate = document.querySelector<HTMLLinkElement>(
+      'link[rel="alternate"][type="text/markdown"]',
+    );
+    if (!markdown || !alternate) throw new Error('Missing Markdown discovery links.');
+    alternate.href = markdown.href;
+  }, [renderedPage]);
   React.useEffect(() => {
     const root = document.getElementById('reference-root');
     if (!root) throw new Error('Missing documentation application root.');

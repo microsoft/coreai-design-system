@@ -548,14 +548,25 @@ export function initialThemeStyles(themes, stylesheets) {
     .join('');
 }
 
-export function shell(title, body, metadata, assets, navigation, searchIndex, currentPath = '') {
+export function shell(
+  title,
+  body,
+  metadata,
+  assets,
+  navigation,
+  searchIndex,
+  currentPath = '',
+  markdownPath = 'index.md',
+) {
   const home = currentPath === '';
+  const markdownUrl = `${metadata.basePath}${markdownPath}`;
   const logo = `<span class="app-sidenav__search-logo-static" data-shell-fallback><svg viewBox="-0.74 -0.59 44 44" aria-hidden="true" focusable="false"><path d="M27.43 2.896H39.77V15.236H27.43V2.896Z" fill="currentColor"></path><path d="M2.749 2.896H15.089V15.236H2.749V2.896Z" fill="currentColor"></path><path d="M15.09 15.236H27.431V27.576H15.09V15.236Z" fill="currentColor"></path><path d="M2.749 27.576H15.089V39.916H2.749V27.576Z" fill="currentColor"></path><path d="M27.43 27.576H39.77V39.916H27.43V27.576Z" fill="currentColor"></path></svg></span>`;
   const settings = `<span class="reference-theme-fallback" data-shell-fallback aria-hidden="true"><svg fill="currentColor" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M14.95 5a2.5 2.5 0 0 0-4.9 0H2.5a.5.5 0 0 0 0 1h7.55a2.5 2.5 0 0 0 4.9 0h2.55a.5.5 0 0 0 0-1zM12.5 7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m-2.55 7a2.5 2.5 0 0 0-4.9 0H2.5a.5.5 0 0 0 0 1h2.55a2.5 2.5 0 0 0 4.9 0h7.55a.5.5 0 0 0 0-1zM7.5 16a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" fill="currentColor"></path></svg></span>`;
   const search = `<div class="reference-search-fallback" data-shell-fallback aria-hidden="true"><span>Search</span><span class="app-sidenav__search-shortcut"><span class="app-sidenav__search-shortcut-command">⌘</span><span class="app-sidenav__search-shortcut-key">K</span></span></div>`;
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeHtml(title)} | CoreAI design system</title>
+<link rel="alternate" type="text/markdown" href="${escapeHtml(markdownUrl)}">
 <link rel="icon" href="${metadata.basePath}assets/favicon.svg" type="image/svg+xml">
 <style>${assets.initialThemeStyles}</style>
 <script>${assets.initialThemeScript}</script>
@@ -566,9 +577,9 @@ ${assets.css.map((file) => `<link rel="stylesheet" href="${metadata.basePath}${f
 <div data-shell-search>${search}</div><div data-shell-theme>${settings}</div><button type="button" class="app-sidenav__dismiss" data-close-navigation aria-label="Close navigation"><span></span><span></span><span></span></button></div></div>
 <nav class="app-sidenav__nav" id="app-navigation-links" aria-label="Documentation">${navigation}</nav>
 <div class="app-sidenav__footer"><a class="app-sidenav__link" href="https://github.com/microsoft/coreai-design-system/issues">Questions?</a><a class="app-sidenav__link" href="https://github.com/microsoft/coreai-design-system/issues/new">Feedback</a></div></aside>
-<div class="app-content${home ? ' app-content--home' : ''}"><div data-shell-header></div><div class="app-page${home ? ' app-page--home' : ''}"><main class="site-main" id="main" tabindex="-1">${body}
-<footer class="reference-footer${currentPath === '' ? ' sr-only' : ''}"${currentPath === '' ? ' aria-hidden="true" inert' : ''}>Last updated <time datetime="${escapeHtml(metadata.documentation.lastUpdated)}">${escapeHtml(metadata.documentation.lastUpdated)}</time>; <a href="${metadata.basePath}overview/Changelog/">Site updates</a>; CoreAI ${escapeHtml(metadata.versions['@coreai-ds/react-components'])}; Fluent ${escapeHtml(metadata.versions['@fluentui/react-components'])}.
-<a href="${metadata.basePath}llms.txt">Agent index</a> · <a href="${metadata.basePath}llms/index.json">Coverage and provenance</a> · <a href="${metadata.basePath}THIRD-PARTY-NOTICES.txt">License</a></footer>
+<div class="app-content${home ? ' app-content--home' : ''}"><div data-shell-header></div><div class="app-page${home ? ' app-page--home' : ''}"><main class="site-main" id="main" tabindex="-1"><p class="reference-agent-discovery sr-only" data-agent-discovery>For agents: <a data-agent-markdown href="${escapeHtml(markdownUrl)}">Read this page as Markdown</a> or <a href="${metadata.basePath}llms.txt">browse the agent index</a>.</p>${body}
+<footer class="reference-footer">Last updated <time datetime="${escapeHtml(metadata.documentation.lastUpdated)}">${escapeHtml(metadata.documentation.lastUpdated)}</time>; <a href="${metadata.basePath}overview/Changelog/">Site updates</a>; CoreAI ${escapeHtml(metadata.versions['@coreai-ds/react-components'])}; Fluent ${escapeHtml(metadata.versions['@fluentui/react-components'])}.
+<a href="${escapeHtml(markdownUrl)}">Open page as Markdown</a> · <a href="${metadata.basePath}llms.txt">Agent index</a> · <a href="${metadata.basePath}llms/index.json">Coverage and provenance</a> · <a href="${metadata.basePath}THIRD-PARTY-NOTICES.txt">License</a></footer>
 </main></div></div></div></div><div class="copy-toast" role="status"></div></div></div><script type="module" src="${metadata.basePath}${assets.entry}"></script></body></html>\n`;
 }
 
@@ -1063,7 +1074,16 @@ ${sourceHtml(source.source, `template-${page.id}-${index}`, source.path, basePat
       `${htmlPath}index.html`,
       mergedDestination
         ? redirectHtml(mergedDestination, page.title, basePath)
-        : shell(page.title, body, metadata, assets, navigation(htmlPath), searchIndex, htmlPath),
+        : shell(
+            page.title,
+            body,
+            metadata,
+            assets,
+            navigation(htmlPath),
+            searchIndex,
+            htmlPath,
+            markdownPath,
+          ),
     );
     for (const alias of page.aliases) {
       const destination = mergedDestination ?? `${basePath}${htmlPath}`;

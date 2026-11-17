@@ -255,6 +255,17 @@ try {
       assert.ok(!html.includes('id="reference-search-index"'), record.htmlPath);
     } else {
       assert.ok(html.includes('id="main"'), record.htmlPath);
+      const markdownUrl = `${metadata.basePath}${record.markdownPath}`;
+      assert.ok(
+        html.includes(`<link rel="alternate" type="text/markdown" href="${markdownUrl}">`),
+        `${record.htmlPath}: Markdown alternate metadata`,
+      );
+      assert.ok(
+        html.includes(
+          `<a data-agent-markdown href="${markdownUrl}">Read this page as Markdown</a>`,
+        ),
+        `${record.htmlPath}: static page-specific Markdown link`,
+      );
     }
     for (const [, href] of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
       checkLink(href.replaceAll('&amp;', '&'), `${record.htmlPath}index.html`);
@@ -297,6 +308,64 @@ try {
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
+  const assertDiscovery = async (page, htmlPath) => {
+    const record = metadata.pages.find((record) => record.htmlPath === htmlPath);
+    assert.ok(record, `Missing discovery sample ${htmlPath}`);
+    const markdownUrl = `${metadata.basePath}${record.markdownPath}`;
+    const notice = page.locator('[data-agent-discovery]');
+    const appearance = await notice.evaluate((element) => {
+      const style = globalThis.getComputedStyle(element);
+      return {
+        display: style.display,
+        visibility: style.visibility,
+        clip: style.clip,
+        width: element.getBoundingClientRect().width,
+      };
+    });
+    assert.notEqual(appearance.display, 'none');
+    assert.notEqual(appearance.visibility, 'hidden');
+    assert.equal(appearance.clip, 'rect(0px, 0px, 0px, 0px)');
+    assert.equal(appearance.width, 1, `${htmlPath}: discovery is visually clipped`);
+    const accessibleLink = notice.getByRole('link', {
+      name: 'Read this page as Markdown',
+      exact: true,
+    });
+    assert.equal(await accessibleLink.count(), 1, 'Discovery stays in the accessibility tree');
+    await accessibleLink.focus();
+    assert.ok(
+      await notice.evaluate((element) => element.getBoundingClientRect().width > 1),
+      'Keyboard focus reveals the links',
+    );
+    await accessibleLink.evaluate((element) => element.blur());
+    assert.equal(await notice.locator('[data-agent-markdown]').getAttribute('href'), markdownUrl);
+    assert.equal(
+      await notice
+        .getByRole('link', { name: 'browse the agent index', exact: true })
+        .getAttribute('href'),
+      `${metadata.basePath}llms.txt`,
+    );
+    const alternate = page.locator('head link[rel="alternate"][type="text/markdown"]');
+    assert.equal(await alternate.count(), 1);
+    assert.equal(new URL(await alternate.getAttribute('href'), root).pathname, markdownUrl);
+    const footerLink = page
+      .locator('.reference-footer')
+      .getByRole('link', { name: 'Open page as Markdown', exact: true });
+    assert.equal(await footerLink.isVisible(), true);
+    assert.equal(await footerLink.getAttribute('href'), markdownUrl);
+  };
+  const staticContext = await browser.newContext({ javaScriptEnabled: false });
+  try {
+    const staticPage = await staticContext.newPage();
+    for (const htmlPath of ['', 'components/DataGrid/', 'guides/Package/']) {
+      await staticPage.goto(`${root}${htmlPath}`);
+      await assertDiscovery(staticPage, htmlPath);
+      await page.goto(`${root}${htmlPath}`);
+      await page.locator('[data-reference-ready="true"]').waitFor();
+      await assertDiscovery(page, htmlPath);
+    }
+  } finally {
+    await staticContext.close();
+  }
   await page.goto(componentPage('Button'));
   await page.locator('[data-reference-ready="true"]').waitFor();
   const { indexedPaths, navigationPaths } = await page.evaluate((html) => {
@@ -315,6 +384,7 @@ try {
     navigationPathSet,
     'Search indexes exactly the navigation tree.',
   );
+  await assertDiscovery(page, 'components/Button/');
   const navigation = page.locator('nav[aria-label="Documentation"]');
   const accordionLink = navigation.getByRole('link', { name: 'Accordion', exact: true });
   assert.ok((await accordionLink.getAttribute('class')).includes('fui-LinkButton'));
@@ -322,6 +392,7 @@ try {
   await accordionLink.click();
   await page.locator('[data-reference-ready="true"]').waitFor();
   await page.getByRole('heading', { level: 1, name: 'Accordion', exact: true }).waitFor();
+  await assertDiscovery(page, 'components/Accordion/');
   assert.equal(await page.evaluate(() => globalThis.performance.timeOrigin), timeOrigin);
   assert.equal(await accordionLink.getAttribute('aria-current'), 'page');
   const [newTab] = await Promise.all([
@@ -337,6 +408,7 @@ try {
   await result.click();
   await page.locator('[data-reference-ready="true"]').waitFor();
   await page.getByRole('heading', { level: 1, name: 'Button', exact: true }).waitFor();
+  await assertDiscovery(page, 'components/Button/');
 
   await page.goto(componentPage('Combobox'));
   await page.locator('[data-reference-ready="true"]').waitFor();
@@ -465,7 +537,7 @@ try {
     await fallbackContext.close();
   }
   console.log(
-    'Chromium check: native CoreAI navigation links, client navigation/search, tag labels/focus, blocked storage, malformed fragments and static recovery.',
+    'Chromium check: static/enhanced Markdown discovery, native CoreAI navigation links, client navigation/search, tag labels/focus, blocked storage, malformed fragments and static recovery.',
   );
 } finally {
   if (browser) await browser.close();

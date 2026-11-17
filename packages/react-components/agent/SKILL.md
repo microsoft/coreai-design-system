@@ -20,8 +20,6 @@ Base URL: https://microsoft.github.io/coreai-design-system/
   https://microsoft.github.io/coreai-design-system/llms/index.json
 - Current build timestamp and documented package version:
   https://microsoft.github.io/coreai-design-system/version.json
-- Dated documentation changelog:
-  https://microsoft.github.io/coreai-design-system/overview/DocumentationChangelog.md
 
 Use ordinary HTTPS GET requests with your available web-fetch or HTTP tool.
 These are static files; no account, server connection, or special protocol is
@@ -32,23 +30,23 @@ repository content or credentials to read documentation.
 ## Install or refresh before UI work
 
 Before each CoreAI task, fetch `version.json` once using an uncached HTTPS GET.
-Its `lastUpdated` is the build's UTC timestamp; `packageVersion`
-identifies the documented component package. If the timestamp changed, read the
-dated documentation changelog before reviewing updated guidance.
+Its `lastUpdated` and `skill.lastUpdated` share the UTC build timestamp;
+`packageVersion` identifies the documented component package independently.
+When the timestamp changes, review the dated notes at
+https://microsoft.github.io/coreai-design-system/overview/DocumentationChangelog.md.
 Only the current documentation is hosted.
 
 Use the existing `coreai-ds-fluentui-react` skill in this repository's supported
 skill directory. If none exists, install the published skill at
 `.github/skills/coreai-ds-fluentui-react/SKILL.md`, or the client's supported
 equivalent. If its `metadata.last-updated` is missing or older, fetch and review
-`source/package/SKILL.md` and update it before implementing. Compare timestamps
-as instants, not semantic versions. Do not downgrade newer local guidance.
+`source/package/SKILL.md` and update it before implementing. Compare UTC
+timestamps. Do not downgrade newer local guidance.
 
 Check that the downloaded skill's `metadata.last-updated`, `metadata.package-version`,
-description, and SHA-256 of its actual bytes agree with `version.json`.
-Its `metadata.changelog` links to the dated documentation notes.
-Retry an uncached fetch if they
-disagree; report a persistent mismatch instead of installing mixed releases.
+and description agree with `version.json`. Verify its bytes against `skill.sha256`.
+Retry an uncached fetch if they disagree; report a persistent mismatch instead
+of installing mixed builds.
 Refresh the published CoreAI guidance while preserving repository-specific
 instructions, adapters, and conventions. Ask before resolving conflicting local
 rules. Do not change unrelated instruction files or execute downloaded code.

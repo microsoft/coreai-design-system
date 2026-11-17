@@ -36,6 +36,23 @@
   padding: 80px 48px 64px;
 }
 
+.reference-agent-discovery:focus-within {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0 0 var(--spacingVerticalXL);
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  font-size: var(--fontSizeBase200);
+  line-height: var(--lineHeightBase200);
+}
+
+.app-page--home .reference-agent-discovery:focus-within {
+  margin: 0;
+  padding: var(--spacingVerticalM) var(--spacingHorizontalXL);
+}
+
 .reference-shell .component-markdown > h2,
 .reference-shell .component-markdown > h3,
 .reference-shell .standalone-guidance > h2,
@@ -946,10 +963,8 @@
   padding: 48px;
 }
 
-.reference-footer.sr-only {
-  margin: -1px;
-  padding: 0;
-  border: 0;
+.app-page--home .reference-footer {
+  padding-inline: var(--spacingHorizontalXL);
 }
 
 .reference-shell .app-sidenav__nav .fui-Tab {

@@ -69,6 +69,55 @@ test('search indexes readable Markdown guidance without source code or link dest
   );
 });
 
+test('HTML advertises exact Markdown and agent discovery before page content at both deployment bases', () => {
+  for (const basePath of ['/', '/coreai-design-system/']) {
+    for (const route of ['', 'components/DataGrid', 'guides/Package']) {
+      const markdownPath = route ? `${route}.md` : 'index.md';
+      const html = shell(
+        'Documentation',
+        '<h1>Page content</h1>',
+        {
+          basePath,
+          documentation: { lastUpdated: '2026-11-17T18:00:00.000Z' },
+          versions: {
+            '@coreai-ds/react-components': '0.12.0',
+            '@fluentui/react-components': '9.74.9',
+          },
+        },
+        { css: [], entry: 'assets/Main.js', initialThemeStyles: '', initialThemeScript: '' },
+        '',
+        '[]',
+        route ? `${route}/` : '',
+        markdownPath,
+      );
+      assert.ok(
+        html.includes(
+          `<link rel="alternate" type="text/markdown" href="${basePath}${markdownPath}">`,
+        ),
+      );
+      const notice = html.match(
+        /<p class="reference-agent-discovery sr-only" data-agent-discovery>[\s\S]*?<\/p>/,
+      )?.[0];
+      assert.ok(notice, 'Ordinary page text exposes discovery without a menu or JavaScript.');
+      assert.ok(
+        notice.includes(
+          `<a data-agent-markdown href="${basePath}${markdownPath}">Read this page as Markdown</a>`,
+        ),
+      );
+      assert.ok(notice.includes(`<a href="${basePath}llms.txt">browse the agent index</a>`));
+      assert.ok(html.indexOf(notice) < html.indexOf('<h1>Page content</h1>'));
+      assert.doesNotMatch(notice, /aria-hidden|hidden=|inert/);
+      assert.ok(html.includes(`<a href="${basePath}${markdownPath}">Open page as Markdown</a>`));
+      assert.ok(html.includes('<footer class="reference-footer">'));
+      assert.ok(
+        html.includes('<time datetime="2026-11-17T18:00:00.000Z">2026-11-17T18:00:00.000Z</time>'),
+      );
+      assert.ok(html.includes(`<a href="${basePath}overview/Changelog/">Site updates</a>`));
+      assert.doesNotMatch(html, /Docs\/skill|undefined/);
+    }
+  }
+});
+
 test('component guidance links use published routes, section anchors and the deployment base', () => {
   const html = componentPageGuidanceHtml(
     {

@@ -290,7 +290,10 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
     });
   }
   for (const child of [...root.children]) {
-    if (child === introduction || child.matches('.reference-footer, [data-single-preview]'))
+    if (
+      child === introduction ||
+      child.matches('.reference-footer, [data-single-preview], [data-agent-discovery]')
+    )
       continue;
     extractSamples(
       child as HTMLElement,

@@ -130,6 +130,14 @@ The static output includes:
 The same generated TSX is compiled for previews, shown as source, and published in
 Markdown/downloads. Component and template Markdown puts authored guidance before
 the Default example and API summaries so agents read usage rules before code.
+Every canonical HTML page, including the homepage, starts with visually hidden
+links to its exact Markdown file and `llms.txt`, available to screen readers and
+HTML readers. Keyboard focus reveals these links. A visible footer link opens
+the current page as Markdown, alongside the existing copy menu.
+The document head also advertises that
+file with `rel="alternate" type="text/markdown"`. Both survive enhancement, and
+the alternate URL follows client navigation. Agents do not need to execute
+JavaScript or open the copy menu to discover these resources.
 Literal story-default props are materialized in the downloadable example wrapper;
 dynamic arguments and other unsupported Storybook runtime setup are rejected.
 Source extraction rejects unsupported Storybook runtime setup
