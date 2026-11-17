@@ -1,13 +1,10 @@
 ---
 name: coreai-ds-fluentui-react
 description: >-
-  Docs/skill v0.1.4; package v0.12.0. Use when building, styling, reviewing, or
+  Use when building, styling, reviewing, or
   debugging React UI with @coreai-ds/react-components. Fetch CoreAI Markdown
   documentation over HTTPS for components, APIs, defaults, templates, tokens,
   and accessibility guidance.
-metadata:
-  version: 0.1.4
-  package-version: 0.12.0
 ---
 
 # CoreAI React UI
@@ -21,8 +18,10 @@ Base URL: https://microsoft.github.io/coreai-design-system/
 - Package setup: https://microsoft.github.io/coreai-design-system/guides/Package.md
 - Exact routes, examples, source downloads, API membership, and versions:
   https://microsoft.github.io/coreai-design-system/llms/index.json
-- Current docs/skill and documented package versions:
+- Current build timestamp and documented package version:
   https://microsoft.github.io/coreai-design-system/version.json
+- Dated documentation changelog:
+  https://microsoft.github.io/coreai-design-system/overview/DocumentationChangelog.md
 
 Use ordinary HTTPS GET requests with your available web-fetch or HTTP tool.
 These are static files; no account, server connection, or special protocol is
@@ -33,19 +32,22 @@ repository content or credentials to read documentation.
 ## Install or refresh before UI work
 
 Before each CoreAI task, fetch `version.json` once using an uncached HTTPS GET.
-Its `version` and `skill.version` share the docs/skill release; `packageVersion`
-identifies the documented component package. These are separate version tracks.
+Its `lastUpdated` is the build's UTC timestamp; `packageVersion`
+identifies the documented component package. If the timestamp changed, read the
+dated documentation changelog before reviewing updated guidance.
 Only the current documentation is hosted.
 
 Use the existing `coreai-ds-fluentui-react` skill in this repository's supported
 skill directory. If none exists, install the published skill at
 `.github/skills/coreai-ds-fluentui-react/SKILL.md`, or the client's supported
-equivalent. If its `metadata.version` is missing or older, fetch and review
-`source/package/SKILL.md` and update it before implementing. Compare semantic
-versions, not strings. Do not downgrade a newer local skill.
+equivalent. If its `metadata.last-updated` is missing or older, fetch and review
+`source/package/SKILL.md` and update it before implementing. Compare timestamps
+as instants, not semantic versions. Do not downgrade newer local guidance.
 
-Check that the downloaded skill's `metadata.version`, `metadata.package-version`,
-and description agree with `version.json`. Retry an uncached fetch if they
+Check that the downloaded skill's `metadata.last-updated`, `metadata.package-version`,
+description, and SHA-256 of its actual bytes agree with `version.json`.
+Its `metadata.changelog` links to the dated documentation notes.
+Retry an uncached fetch if they
 disagree; report a persistent mismatch instead of installing mixed releases.
 Refresh the published CoreAI guidance while preserving repository-specific
 instructions, adapters, and conventions. Ask before resolving conflicting local

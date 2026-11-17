@@ -1,6 +1,6 @@
 ---
 name: create-pr
-description: 'Create or update a pull request for this repo. Use when asked to open/raise/make or update a PR. Includes the required per-PR documentation release and relevant changelogs.'
+description: 'Create or update a pull request for this repo. Use when asked to open/raise/make or update a PR. Includes dated documentation notes and relevant changelogs.'
 argument-hint: 'e.g. "open a PR for my changes"'
 ---
 
@@ -11,9 +11,9 @@ argument-hint: 'e.g. "open a PR for my changes"'
 Before opening the PR, resolve its target and inspect all proposed changes, including staged,
 unstaged, and relevant untracked files.
 
-For every PR targeting `main`, follow [release-docs](../release-docs/SKILL.md) before
+For every PR targeting `main`, follow [update-docs-changelog](../update-docs-changelog/SKILL.md) before
 opening or updating it, including maintenance-only PRs. Every merge publishes the
-site. Reuse an existing appropriate docs increment; do not bump again per update.
+site. Reuse the PR's dated changelog section when updating it; no docs version bump is needed.
 
 For consumer-visible CoreAI component changes, follow
 [component-test](../component-test/SKILL.md) in `changed components` mode. Include its status in the

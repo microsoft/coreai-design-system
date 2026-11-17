@@ -30,7 +30,7 @@ copy-and-adapt templates, and UX guidance.
 ## Give your agent CoreAI guidance
 
 Share the [starter prompt](/agent-prompt.txt) with your coding agent. It checks
-[current versions](/version.json) and installs or updates the
+[current build timestamp](/version.json) and installs or updates the
 [repository skill](/source/package/SKILL.md) before UI work. Agents then read
 relevant guidance, APIs, and examples through [llms.txt](/llms.txt) over ordinary
 HTTPS.

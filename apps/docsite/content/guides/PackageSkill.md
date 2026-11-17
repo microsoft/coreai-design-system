@@ -27,18 +27,19 @@ work. The installed skill is the persistent entry point for later CoreAI tasks.
 
 ## Install or update in a consuming repository
 
-1. Read [version.json](/version.json). Its `version` and `skill.version` identify
-   the shared docs/skill release; `packageVersion` identifies the documented
-   component package independently.
+1. Read [version.json](/version.json). Its `lastUpdated` is the UTC build
+   timestamp; `packageVersion` identifies the documented component package.
+   If the timestamp changed, review the [dated changelog](../overview/DocumentationChangelog.md).
 2. Download and review [SKILL.md](/source/package/SKILL.md). Its description
-   and `metadata.version` / `metadata.package-version` must match that manifest.
+   and `metadata.last-updated` / `metadata.package-version` must match that manifest.
+   Verify the SHA-256 of the downloaded bytes against `skill.sha256`.
 3. For clients that support GitHub workspace skills, save it at
    `.github/skills/coreai-ds-fluentui-react/SKILL.md`. Other clients can use their
    equivalent supported skill directory, such as
    `.agents/skills/coreai-ds-fluentui-react/SKILL.md` or
    `.claude/skills/coreai-ds-fluentui-react/SKILL.md`.
-4. If a skill already exists, compare its `metadata.version` as a semantic
-   version and refresh older or unversioned CoreAI guidance. Do not downgrade
+4. If a skill already exists, compare its `metadata.last-updated` as a timestamp
+   and refresh older or unstamped CoreAI guidance. Do not downgrade
    newer local guidance. Merge the published instructions with local rules;
    do not overwrite repository-specific adapters or conventions.
 5. Review and commit the file. Follow your client's instructions to enable or
@@ -56,13 +57,12 @@ skill source is included in future package builds;
 already published npm versions may contain older instructions. Use this download
 for the current workflow.
 
-## Version policy
+## Build metadata
 
-Docs and skill share one version. Instruction-only releases can advance it
-without changing the npm component package. Package releases advance both
-versions. Only the current release is hosted; no archived documentation or skills
-are served. Version labels identify the documented package, not the package
-installed in your project.
+The build stamps the documentation and published skill with one UTC timestamp.
+No documentation semantic version or source skill bump is needed. The npm
+component package retains its own version. Only current documentation and skills
+are hosted. The documented package version is not your installed package version.
 
 ## Skill source
 

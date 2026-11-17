@@ -462,25 +462,6 @@ function releaseSections(elements: Element[], headingTag: 'H3' | 'H4') {
 }
 
 function changelogReleases(document: Document) {
-  const earlierHeading = document.getElementById('guidance-earlier-site-release-summaries');
-  if (!earlierHeading) throw new Error('Missing earlier release summaries.');
-  const curated = new Map<string, { title: string; summary: string }>();
-  const earlierElements = followingUntil(earlierHeading, () => false);
-  for (let index = 0; index < earlierElements.length; index++) {
-    const heading = earlierElements[index];
-    if (heading.tagName !== 'H3') continue;
-    const match = heading.textContent
-      ?.trim()
-      .match(/^(\d+\.\d+\.\d+)\s+—\s+(.+?)\s+\(\d{4}-\d{2}-\d{2}\)$/);
-    if (!match) continue;
-    const summary = earlierElements
-      .slice(index + 1)
-      .find((element) => ['H3', 'H4'].includes(element.tagName) || element.tagName === 'P');
-    curated.set(match[1], {
-      title: match[2],
-      summary: summary?.tagName === 'P' ? (summary.textContent?.trim() ?? '') : '',
-    });
-  }
   const releases: ChangelogRelease[] = [];
   for (const heading of document.querySelectorAll('h2')) {
     const match = heading.textContent
@@ -489,17 +470,12 @@ function changelogReleases(document: Document) {
     if (!match) continue;
     const elements = followingUntil(heading, (candidate) => candidate.tagName === 'H2');
     const sections = releaseSections(elements, 'H3');
-    const details = curated.get(match[1]);
     releases.push({
       id: heading.id,
       version: match[1],
       date: match[2] || undefined,
-      title:
-        details?.title ??
-        (match[1] === 'Unreleased' ? 'Changes planned for the next release' : 'Package update'),
-      summary:
-        details?.summary ||
-        `${sections.map((section) => section.title).join(', ')} updates in this release.`,
+      title: match[1] === 'Unreleased' ? 'Changes planned for the next release' : 'Package update',
+      summary: `${sections.map((section) => section.title).join(', ')} updates in this release.`,
       sections,
     });
   }

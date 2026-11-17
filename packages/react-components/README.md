@@ -133,10 +133,11 @@ older package versions may contain older [bundled instructions](agent/SKILL.md);
 [current skill download](https://microsoft.github.io/coreai-design-system/source/package/SKILL.md)
 contains the current workflow. Review it before installing.
 
-The description and metadata record the shared docs/skill version separately
+The published description and metadata record a UTC build timestamp separately
 from the documented package version. Check the small
 [version manifest](https://microsoft.github.io/coreai-design-system/version.json)
-once per task and refresh older skill guidance; do not downgrade a newer local
+once per task, review its linked dated changelog when the timestamp changes,
+and refresh older skill guidance; do not downgrade a newer local
 skill. Documentation-only updates do not require a new component package.
 
 Compare the documented package version with installed packages. Report missing

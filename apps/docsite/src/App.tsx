@@ -26,11 +26,6 @@ const Introduction = React.lazy(() =>
     default: module.Introduction,
   })),
 );
-const Changelog = React.lazy(() =>
-  import('./pages/Changelog').then((module) => ({
-    default: module.Changelog,
-  })),
-);
 const Colors = React.lazy(() =>
   import('./pages/Colors').then((module) => ({ default: module.Colors })),
 );
@@ -77,7 +72,6 @@ const NotFound = React.lazy(() =>
 
 const routeComponents: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
   home: Introduction,
-  changelog: Changelog,
   colors: Colors,
   typography: Typography,
   content: Content,
@@ -95,6 +89,21 @@ export function App() {
       <Routes>
         <Route element={<Shell />}>
           {pages.map((page) => {
+            if (page.id === 'changelog') {
+              return (
+                <Route
+                  key={page.id}
+                  path={page.slug}
+                  element={
+                    <PageLayout id={page.id}>
+                      <Link href={`${import.meta.env.BASE_URL}overview/Changelog/`}>
+                        Read the package changelog
+                      </Link>
+                    </PageLayout>
+                  }
+                />
+              );
+            }
             if (page.id === 'faqs') {
               return (
                 <Route

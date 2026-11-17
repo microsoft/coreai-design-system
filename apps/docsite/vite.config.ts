@@ -94,11 +94,6 @@ const exposeDataFiles: Plugin = {
     });
     this.emitFile({
       type: 'asset',
-      fileName: 'Changelog.json',
-      source: fs.readFileSync(path.resolve(__dirname, 'Changelog.json')),
-    });
-    this.emitFile({
-      type: 'asset',
       fileName: 'storybook-manifest.json',
       source: fs.readFileSync(storybookManifestPath),
     });

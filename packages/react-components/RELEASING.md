@@ -129,15 +129,11 @@ secret. Do not assume that a configured but untested relationship works.
    ```
 
    Use the approved version for later releases. Follow
-   [release-docs](../../.github/skills/release-docs/SKILL.md) for this PR's docs/skill
-   increment and documentation changelog, just like every other PR to main.
-   Reuse an existing appropriate docs increment instead of adding a second one.
-   Docs/skill and package versions remain independent. The docsite version
-   lifecycle synchronizes the skill description and metadata with both manifests.
-   If the docs increment already exists or scripts were disabled, run
-   `npm --workspace apps/docsite run sync:versions` after changing the package.
-   See the [version policy](../../apps/docsite/README.md#documentation-and-skill-versions).
-   Commit both manifests, the root lockfile, and `agent/SKILL.md`.
+   [update-docs-changelog](../../.github/skills/update-docs-changelog/SKILL.md)
+   for this PR's dated documentation notes, just like every other PR to main.
+   No documentation version bump or skill synchronization is needed: the build
+   derives the documented package version and stamps the published skill.
+   Commit the component manifest and root lockfile together.
    Roll `[Unreleased]` into `[VERSION] - YYYY-MM-DD`, add a fresh
    `[Unreleased]`, and update heading anchors. Add comparison links only when both
    referenced tags/commits actually exist.
@@ -146,7 +142,7 @@ secret. Do not assume that a configured but untested relationship works.
 
    ```bash
    node --test .github/workflows/scripts/release-package.test.mjs
-   npm --workspace apps/docsite run check:versions
+   npm --workspace apps/docsite test
    npm run check:public-source
    npm run license:check
    npm run test:package --workspace packages/react-components
