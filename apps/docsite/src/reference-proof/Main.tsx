@@ -285,6 +285,13 @@ function DocumentationShell({
       'aria-label',
       navigationOpen ? 'Site navigation dialog' : 'Site navigation',
     );
+    const syncSidebarState = () => {
+      const mobile = window.innerWidth <= 1100;
+      sidebar.inert = mobile && !navigationOpen;
+      if (!mobile) setNavigationOpen(false);
+    };
+    syncSidebarState();
+    body.inert = navigationOpen;
     if (navigationOpen) {
       sidebar.setAttribute('role', 'dialog');
       sidebar.setAttribute('aria-modal', 'true');
@@ -293,13 +300,6 @@ function DocumentationShell({
       sidebar.removeAttribute('role');
       sidebar.removeAttribute('aria-modal');
     }
-    body.inert = navigationOpen;
-    const syncSidebarState = () => {
-      const mobile = window.innerWidth <= 1100;
-      sidebar.inert = mobile && !navigationOpen;
-      if (!mobile) setNavigationOpen(false);
-    };
-    syncSidebarState();
     const close = () => {
       setNavigationOpen(false);
       requestAnimationFrame(() => menuButtonRef.current?.focus());
