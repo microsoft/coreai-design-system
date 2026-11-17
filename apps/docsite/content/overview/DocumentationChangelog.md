@@ -15,6 +15,11 @@ these notes are not archived documentation snapshots.
 Tracking starts at 0.1.2. Earlier merges shared docs/skill 0.1.1; their individual
 changes remain recorded in Git history.
 
+## [0.1.4] - 2026-11-17
+
+- Maintenance only: update Vite and align Storybook dependencies, and regenerate
+  the workspace lockfile.
+
 ## [0.1.3] - 2026-11-16
 
 - Add a migration guide from the retired `@coreai/fluentui-react` Azure Artifacts
