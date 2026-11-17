@@ -43,21 +43,21 @@
     "react-router-dom": "^7.18.0"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "10.6.1",
+    "@storybook/addon-a11y": "10.6.2",
     "@storybook/addon-designs": "^11.1.4",
-    "@storybook/addon-docs": "10.6.1",
-    "@storybook/addon-links": "10.6.1",
-    "@storybook/addon-mcp": "10.6.1",
+    "@storybook/addon-docs": "10.6.2",
+    "@storybook/addon-links": "10.6.2",
+    "@storybook/addon-mcp": "10.6.2",
     "@storybook/icons": "^1.3.2",
-    "@storybook/mcp": "10.6.1",
-    "@storybook/react-vite": "10.6.1",
+    "@storybook/mcp": "10.6.2",
+    "@storybook/react-vite": "10.6.2",
     "@types/node": "^20",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
     "@types/react-window": "^1.8.8",
     "react-window": "^1.8.10",
-    "storybook": "10.6.1",
+    "storybook": "10.6.2",
     "typescript": "~5.5.4",
-    "vite": "^6.3.5"
+    "vite": "^6.4.6"
   }
 }
