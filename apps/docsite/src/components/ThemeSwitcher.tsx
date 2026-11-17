@@ -73,11 +73,12 @@ export function ThemeSwitcher({ isApplePlatform }: { isApplePlatform: boolean })
             size="small"
             selectedValue={preference}
             onTabSelect={(_event, data) => {
-              if (data.value === 'light' || data.value === 'dark') {
+              if (data.value === 'light' || data.value === 'dark' || data.value === 'system') {
                 setPreference(data.value);
               }
             }}
           >
+            <Tab value="system">System</Tab>
             <Tab value="dark">Dark</Tab>
             <Tab value="light">Light</Tab>
           </TabList>

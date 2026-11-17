@@ -16,7 +16,7 @@ import {
 import { readStoredValue, writeStoredValue } from '../BrowserState.mjs';
 
 export type ThemeMode = 'light' | 'dark';
-export type ThemePreference = ThemeMode;
+export type ThemePreference = ThemeMode | 'system';
 export type BrandPreference = 'coreai' | 'azure';
 
 const STORAGE_KEY = 'coreai-docsite-theme';
@@ -41,7 +41,10 @@ const ThemeContext = React.createContext<ThemeContextValue | undefined>(undefine
 
 function readStoredPreference(): ThemePreference {
   const stored = readStoredValue('localStorage', STORAGE_KEY);
-  if (stored === 'light' || stored === 'dark') return stored;
+  return stored === 'light' || stored === 'dark' ? stored : 'system';
+}
+
+function readSystemMode(): ThemeMode {
   return typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: light)').matches
     ? 'light'
     : 'dark';
@@ -55,19 +58,15 @@ function readStoredBrand(): BrandPreference {
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [preference, setPreferenceState] = React.useState<ThemePreference>(readStoredPreference);
+  const [systemMode, setSystemMode] = React.useState<ThemeMode>(readSystemMode);
   const [brand, setBrandState] = React.useState<BrandPreference>(readStoredBrand);
-  const mode = preference;
+  const mode = preference === 'system' ? systemMode : preference;
   const theme = brands[brand][mode];
   const brandVariants = brands[brand].variants;
 
   React.useEffect(() => {
     const systemTheme = window.matchMedia('(prefers-color-scheme: light)');
-    const followSystemTheme = () => {
-      const stored = readStoredValue('localStorage', STORAGE_KEY);
-      if (stored !== 'light' && stored !== 'dark') {
-        setPreferenceState(systemTheme.matches ? 'light' : 'dark');
-      }
-    };
+    const followSystemTheme = () => setSystemMode(systemTheme.matches ? 'light' : 'dark');
     systemTheme.addEventListener('change', followSystemTheme);
     followSystemTheme();
     return () => systemTheme.removeEventListener('change', followSystemTheme);
