@@ -60,7 +60,12 @@ standard `index.html` / `index.md` output names.
 
 Frontmatter `id` is an internal content identifier, not a public URL. The file
 location determines the route unless `reference.route` explicitly sets one.
-Documentation has no `complete` or `under-construction` status metadata.
+Pages with no body reuse the animated under-construction view. Set
+`reference.layout: work-in-progress` to show that view while retaining draft
+guidance in an expandable section.
+
+The documentation changelog remains a maintainer release record, but is not
+published as a docsite page or included in navigation and search.
 
 ## Authoring pages
 

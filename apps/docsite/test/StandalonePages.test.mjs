@@ -76,6 +76,60 @@ test('component and template Markdown cannot silently fall out of the catalog', 
   await assert.rejects(readReferencePages(directory), /require reference metadata/);
 });
 
+test('empty and unfinished pages reuse the designed state without dropping authored guidance', () => {
+  const page = {
+    route: 'foundations/Spacing',
+    title: 'Spacing',
+    resources: [],
+    examples: [],
+    guidance: '# Spacing\n\nSpacing guidance.',
+  };
+  const empty = standalonePageHtml(page, { basePath: '/', pages: [] });
+  assert.match(empty, /hidden data-page-header/);
+  assert.match(empty, /data-page-widget="work-in-progress"/);
+  assert.doesNotMatch(empty, /reference-existing-guidance/);
+  const draft = standalonePageHtml(
+    { ...page, layout: 'work-in-progress', guidance: `${page.guidance}\n\n## Draft\n\nKeep this.` },
+    { basePath: '/', pages: [] },
+  );
+  assert.match(draft, /data-page-widget="work-in-progress"/);
+  assert.match(draft, /<details class="reference-existing-guidance">/);
+  assert.match(draft, /id="guidance-draft"/);
+  assert.match(draft, /Keep this\./);
+  const complete = standalonePageHtml(
+    { ...page, guidance: `${page.guidance}\n\nPublished guidance.` },
+    { basePath: '/', pages: [] },
+  );
+  assert.doesNotMatch(complete, /data-page-widget="work-in-progress"/);
+});
+
+test('maintenance release records are not published as documentation pages', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  assert.ok(pages.some((page) => page.route === 'overview/Changelog'));
+  assert.ok(!pages.some((page) => page.id === 'documentation-changelog'));
+});
+
+test('guide accordions retain introductory text, section anchors, and complete code samples', () => {
+  const html = standalonePageHtml(
+    {
+      route: 'guides/Example',
+      title: 'Example',
+      resources: [],
+      examples: [],
+      renderer: 'guide-accordions',
+      guidance:
+        '# Example\n\nSummary.\n\nIntroduction.\n\n## Setup\n\n### Nested\n\n```tsx\nconst value = 1;\n```\n\n## Next\n\nFinish.',
+    },
+    { basePath: '/', pages: [] },
+  );
+  assert.match(html, /data-page-widget="guide-accordions"/);
+  assert.match(html, /Introduction\./);
+  assert.match(html, /id="guidance-setup"/);
+  assert.match(html, /id="guidance-nested"/);
+  assert.match(html, /const value = 1;/);
+  assert.match(html, /Finish\./);
+});
+
 test('local guidance generation excludes stories disabled for documentation manifests', async (t) => {
   const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'coreai-local-guidance-'));
   t.after(() => fs.rm(directory, { recursive: true, force: true }));

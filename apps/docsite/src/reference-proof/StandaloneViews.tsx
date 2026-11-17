@@ -694,36 +694,18 @@ function measureChangelogRails(list: HTMLDivElement): ChangelogRail[] {
   return rails;
 }
 
-const changelogLinkDescriptions: Partial<Record<string, string>> = {
-  'Full history': 'Complete package release history.',
-  'Keep a Changelog': 'Release note format.',
-  'Semantic Versioning': 'Package versioning rules.',
-};
-
 function ChangelogView({ sourceHtml }: PageWidgetProps) {
   const model = React.useMemo(() => {
     const document = documentFrom(sourceHtml);
-    const introductionHeading = document.getElementById('guidance-package-release-history');
-    if (!introductionHeading) throw new Error('Missing package release history.');
-    const releases = changelogReleases(document);
+    const releases = changelogReleases(document).filter(
+      (release) => release.version !== 'Unreleased',
+    );
     const groups = new Map<string, ChangelogRelease[]>();
     for (const release of releases) {
       const month = release.date?.slice(0, 7) ?? 'unreleased';
       groups.set(month, [...(groups.get(month) ?? []), release]);
     }
-    const introduction = followingUntil(
-      introductionHeading,
-      (candidate) => candidate.tagName === 'H2',
-    );
     return {
-      links: introduction
-        .flatMap((element) => [...element.querySelectorAll('a[href]')])
-        .map((link) => ({
-          href: link.getAttribute('href') ?? '',
-          label: link.getAttribute('href')?.endsWith('/CHANGELOG.md')
-            ? 'Full history'
-            : (link.textContent?.trim() ?? ''),
-        })),
       groups: [...groups],
     };
   }, [sourceHtml]);
@@ -745,40 +727,6 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
   }, [model]);
   return (
     <div className="reference-changelog-view">
-      <div className="resources-grid changelog-actions">
-        {model.links.map((link, index) => {
-          const resourceId = `${graphId}-resource-${index}`;
-          const description = changelogLinkDescriptions[link.label];
-          return (
-            <Link
-              className="resource-card-link"
-              href={link.href}
-              key={link.href}
-              aria-labelledby={`${resourceId}-title`}
-              aria-describedby={description ? `${resourceId}-description` : undefined}
-            >
-              <Card className="resource-card" focusMode="off">
-                <Text
-                  as="h3"
-                  className="resource-card__title"
-                  id={`${resourceId}-title`}
-                  size={300}
-                  weight="semibold"
-                  foreground={1}
-                >
-                  {link.label}
-                  <ExternalIcon />
-                </Text>
-                {description ? (
-                  <Text as="p" id={`${resourceId}-description`} size={200} foreground={3}>
-                    {description}
-                  </Text>
-                ) : null}
-              </Card>
-            </Link>
-          );
-        })}
-      </div>
       <div className="changelog-list" ref={listRef}>
         <svg className="changelog-graph" aria-hidden="true">
           {rails.map((rail, index) => (

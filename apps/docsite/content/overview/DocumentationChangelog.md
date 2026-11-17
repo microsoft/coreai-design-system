@@ -3,8 +3,6 @@ id: documentation-changelog
 title: Documentation changelog
 summary: Changes to documentation, agent guidance, and site maintenance in each merged release.
 resources: []
-reference:
-  standalone: true
 ---
 
 Every PR merged to main publishes a new docs/skill version, including maintenance
