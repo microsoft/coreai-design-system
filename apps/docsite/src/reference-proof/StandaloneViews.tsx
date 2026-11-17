@@ -91,8 +91,7 @@ interface ContentPrinciple {
   id: string;
   title: string;
   description: string;
-  bad: string;
-  better: string;
+  examples: Array<{ bad: string; better: string }>;
   details: string[];
 }
 
@@ -962,35 +961,48 @@ function ContentSectionHeader({ title, description }: { title: string; descripti
 function ContentView({ sourceHtml }: PageWidgetProps) {
   const model = React.useMemo(() => {
     const document = documentFrom(sourceHtml);
-    const principles = headingGroups(
-      sectionElements(document, 'guidance-write-clear-useful-content', ['H2']),
-      'H3',
-    ).map(({ heading, body }): ContentPrinciple => {
-      const comparisons = body.filter(
-        (element) => element.tagName === 'P' && element.querySelector('strong'),
-      );
-      const comparisonText = (element: Element | undefined) => {
-        const clone = element?.cloneNode(true) as Element | undefined;
-        clone?.querySelector('strong')?.remove();
-        return clone?.textContent?.replace(/^:\s*/, '').trim() ?? '';
-      };
-      return {
-        id: heading.id,
-        title: heading.textContent?.trim() ?? '',
-        description:
-          body
-            .find((element) => element.tagName === 'P' && !element.querySelector('strong'))
-            ?.textContent?.trim() ?? '',
-        bad: comparisonText(comparisons[0]),
-        better: comparisonText(comparisons[1]),
-        details: body
-          .flatMap((element) => [...element.querySelectorAll('li')])
-          .map((item) => item.textContent?.trim() ?? ''),
-      };
-    });
+    const principleElements = sectionElements(document, 'guidance-write-clear-useful-content', [
+      'H2',
+    ]);
+    const principles = headingGroups(principleElements, 'H3').map(
+      ({ heading, body }): ContentPrinciple => {
+        const comparisons = body.filter(
+          (element) => element.tagName === 'P' && element.querySelector('strong'),
+        );
+        const comparisonText = (element: Element | undefined) => {
+          const clone = element?.cloneNode(true) as Element | undefined;
+          clone?.querySelector('strong')?.remove();
+          return clone?.textContent?.replace(/^:\s*/, '').trim() ?? '';
+        };
+        return {
+          id: heading.id,
+          title: heading.textContent?.trim() ?? '',
+          description:
+            body
+              .find((element) => element.tagName === 'P' && !element.querySelector('strong'))
+              ?.textContent?.trim() ?? '',
+          examples: comparisons
+            .filter((_, index) => index % 2 === 0)
+            .map((element, index) => ({
+              bad: comparisonText(element),
+              better: comparisonText(comparisons[index * 2 + 1]),
+            })),
+          details: body
+            .flatMap((element) => [...element.querySelectorAll('li')])
+            .map((item) => item.textContent?.trim() ?? ''),
+        };
+      },
+    );
     const processElements = sectionElements(document, 'guidance-process-tips', ['H2']);
     const helpElements = sectionElements(document, 'guidance-get-help', ['H2']);
     return {
+      introduction: principleElements
+        .slice(
+          0,
+          principleElements.findIndex((element) => element.tagName === 'H3'),
+        )
+        .map((element) => element.outerHTML)
+        .join(''),
       principles,
       processDescription:
         processElements.find((element) => element.tagName === 'P')?.textContent?.trim() ?? '',
@@ -999,13 +1011,19 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
         helpElements.find((element) => element.tagName === 'P')?.textContent?.trim() ?? '',
       help: contentSteps(document, 'guidance-get-help').map((step) => {
         if (!step.link) throw new Error('Missing content help link.');
-        return { title: step.title, description: step.description, href: step.link.href };
+        return {
+          title: step.title,
+          description: step.description,
+          details: step.details.map((detail) => documentFrom(detail).body.textContent ?? ''),
+          href: step.link.href,
+        };
       }),
     };
   }, [sourceHtml]);
   return (
     <div className="content-page">
       <section className="page-section content-section">
+        <div className="section-intro" dangerouslySetInnerHTML={{ __html: model.introduction }} />
         <Accordion className="content-principle-list" multiple collapsible>
           {model.principles.map((principle, index) => (
             <AccordionItem className="content-principle" key={principle.id} value={principle.id}>
@@ -1025,28 +1043,30 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
               </AccordionHeader>
               <AccordionPanel>
                 <div className="content-principle__content">
-                  <div className="content-example-grid">
-                    <div className="content-example content-example--avoid">
-                      <Badge appearance="filled" color="danger" shape="rounded" size="medium">
-                        Bad example
-                      </Badge>
-                      <div className="content-example__body">
-                        <Text as="p" size={300} foreground={3}>
-                          {principle.bad}
-                        </Text>
+                  {principle.examples.map((example, exampleIndex) => (
+                    <div className="content-example-grid" key={exampleIndex}>
+                      <div className="content-example content-example--avoid">
+                        <Badge appearance="filled" color="danger" shape="rounded" size="medium">
+                          Bad example
+                        </Badge>
+                        <div className="content-example__body">
+                          <Text as="p" size={300} foreground={3}>
+                            {example.bad}
+                          </Text>
+                        </div>
+                      </div>
+                      <div className="content-example content-example--prefer">
+                        <Badge appearance="filled" color="success" shape="rounded" size="medium">
+                          Better example
+                        </Badge>
+                        <div className="content-example__body">
+                          <Text as="p" size={300} foreground={3}>
+                            {example.better}
+                          </Text>
+                        </div>
                       </div>
                     </div>
-                    <div className="content-example content-example--prefer">
-                      <Badge appearance="filled" color="success" shape="rounded" size="medium">
-                        Better example
-                      </Badge>
-                      <div className="content-example__body">
-                        <Text as="p" size={300} foreground={3}>
-                          {principle.better}
-                        </Text>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                   <div className="content-principle__guidance">
                     <Badge
                       id={`content-principle-${index}-tips`}
