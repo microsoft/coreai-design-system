@@ -8,6 +8,7 @@ import { ExternalIcon } from './Icons';
 interface ContentHelpItem {
   title: string;
   description: string;
+  details?: string[];
   href: string;
 }
 
@@ -45,6 +46,17 @@ export function ContentHelpCards({ items }: { items: ContentHelpItem[] }) {
               <Text as="p" id={`${titleId}-description`} size={200} foreground={3}>
                 {item.description}
               </Text>
+              {item.details?.length ? (
+                <ul className="content-guidance-list">
+                  {item.details.map((detail) => (
+                    <li key={detail}>
+                      <Text size={200} foreground={3}>
+                        {detail}
+                      </Text>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </Card>
           </Link>
         );

@@ -341,6 +341,28 @@ try {
     true,
     'Removing a tag focuses the remaining tag.',
   );
+  const contentRecord = metadata.pages.find((record) => record.route === 'foundations/Content');
+  assert.ok(contentRecord, 'Missing content guidelines page');
+  await page.goto(`${root}${contentRecord.htmlPath}`);
+  await page.locator('.content-principle-list').waitFor();
+  for (const trigger of await page.locator('.content-principle button[aria-expanded]').all()) {
+    await trigger.click();
+  }
+  const missingContent = await page.evaluate(async () => {
+    const source = new DOMParser().parseFromString(
+      await (await fetch(location.href)).text(),
+      'text/html',
+    );
+    const normalize = (text) => text.replace(/\s+/g, ' ').trim();
+    const visible = normalize(document.querySelector('.content-page').innerText);
+    return [
+      ...source.querySelectorAll('[data-page-widget="content"] p, [data-page-widget="content"] li'),
+    ]
+      .filter((element) => !element.matches('p:has(> a:only-child)'))
+      .map((element) => normalize(element.textContent.replace(/^(Bad|Better):\s*/, '')))
+      .filter((text) => !visible.includes(text));
+  });
+  assert.deepEqual(missingContent, [], 'Every authored guideline and example remains visible.');
   assert.deepEqual(errors, []);
   await context.close();
 
