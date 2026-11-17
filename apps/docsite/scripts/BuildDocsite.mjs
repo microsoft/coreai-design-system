@@ -738,7 +738,6 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
       layout: scope.layout,
       hideSummary: scope.hideSummary,
       mergedInto: scope.mergedInto,
-      showInSidebar: !scope.mergedInto && data.navigation?.showInSidebar !== false,
       resources: data.resources ?? [],
       aliases: scope.aliases ?? [],
       legacyIds: [
@@ -998,33 +997,31 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
       await fs.readFile(path.join(illiconDirectory, icon.file)),
     );
   }
-  const navigationGroups = groupNavigationEntries(
+  const catalogGroups = groupNavigationEntries(
     pages.map((page) => ({
       path: `/${page.route}${page.route ? '/' : ''}`,
       title: page.label,
       page,
     })),
   );
-  const listedGroups = navigationGroups
+  const navigationGroups = catalogGroups
     .map((group) => ({ ...group, items: group.items.filter(({ page }) => !page.mergedInto) }))
     .filter((group) => group.items.length);
-  const orderedPages = navigationGroups.flatMap((group) => group.items.map((entry) => entry.page));
+  const orderedPages = catalogGroups.flatMap((group) => group.items.map((entry) => entry.page));
   const searchIndex = JSON.stringify(
-    listedGroups.flatMap((group) =>
+    navigationGroups.flatMap((group) =>
       group.items.map(({ path, title, page }) => ({
         path,
         title,
         summary: page.summary,
         searchText: searchableGuidance(page.guidance),
-        showInSidebar: page.showInSidebar,
       })),
     ),
   ).replaceAll('<', '\\u003c');
   const navigation = (currentPath) =>
     navigationGroups
       .map((group) => {
-        const items = group.items.filter(({ page }) => page.showInSidebar);
-        if (!items.length) return '';
+        const items = group.items;
         const active = items.some(
           ({ page }) => `${page.route}${page.route ? '/' : ''}` === currentPath,
         );
@@ -1112,7 +1109,7 @@ ${sourceHtml(source.source, `template-${page.id}-${index}`, source.path, basePat
       await fs.readFile(path.join(appRoot, 'public/logo-effects', frame)),
     );
   }
-  const listing = listedGroups
+  const listing = navigationGroups
     .map(
       (group) =>
         `### ${group.label}\n\n${group.items

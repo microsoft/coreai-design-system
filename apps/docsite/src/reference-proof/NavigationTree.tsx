@@ -21,7 +21,6 @@ export interface NavigationEntry {
   title: string;
   summary: string;
   searchText: string;
-  showInSidebar: boolean;
 }
 
 export interface NavigationTreeHandle {
@@ -41,7 +40,7 @@ export const NavigationTree = React.forwardRef<
 >(function NavigationTree({ entries, query, onSelectResult, onExitSearch }, ref) {
   const location = useLocation();
   const activePath = normalizeReferencePath(location.pathname);
-  const groups = groupNavigationEntries(entries.filter((entry) => entry.showInSidebar));
+  const groups = groupNavigationEntries(entries);
   const resultsRef = React.useRef<HTMLUListElement>(null);
   const activeGroup =
     groups.find((group) => group.items.some((entry) => entry.path === activePath))?.value ??

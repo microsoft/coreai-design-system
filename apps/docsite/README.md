@@ -219,15 +219,17 @@ enhances it with a shared provider, native-link sidebar/search, page tabs, and
 examples. Ordinary links navigate without resetting the shell; modified clicks
 retain native browser behavior. Storage or fragment failures do not blank the
 page, and unexpected enhancement errors restore static content explicitly.
-Search uses a generated index of titles, descriptions, and Markdown guidance for
-every published page, including pages omitted from the sidebar. Title matches
+Search uses the navigation tree to index titles, descriptions, and Markdown
+guidance only for pages in the sidebar. Redirects are not separate results. Title matches
 appear before description and body matches. Press Down
 from the search field to focus results, use arrow keys to move between them,
 and press Escape to clear search and return to the field.
 After building and starting a preview, run
-`node apps/docsite/scripts/verify-search.mjs http://127.0.0.1:8082/coreai-design-system/`
-from the repository root to check search across every published route, both
-themes, client navigation, history, keyboard controls, and mobile navigation.
+`node apps/docsite/scripts/verify-search.mjs http://127.0.0.1:8081/`
+from the repository root to check search against the navigation tree, deleted
+routes, React Router redirects, every published page, both themes, client
+navigation, history, keyboard controls, and mobile navigation. Pass the deployment
+prefix in the URL when previewing a prefixed build.
 
 ```powershell
 npm --workspace apps/docsite test
