@@ -1,12 +1,12 @@
 ---
 name: coreai-ds-fluentui-react
 description: >-
-  Docs/skill v0.1.2; package v0.12.0. Use when building, styling, reviewing, or
+  Docs/skill v0.1.3; package v0.12.0. Use when building, styling, reviewing, or
   debugging React UI with @coreai-ds/react-components. Fetch CoreAI Markdown
   documentation over HTTPS for components, APIs, defaults, templates, tokens,
   and accessibility guidance.
 metadata:
-  version: 0.1.2
+  version: 0.1.3
   package-version: 0.12.0
 ---
 
