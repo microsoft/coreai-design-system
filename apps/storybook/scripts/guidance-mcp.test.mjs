@@ -3,7 +3,9 @@
 
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
+import path from 'node:path';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import { createStorybookMcpHandler } from '@storybook/mcp';
 import { resolveComponentEntry, resolveDocEntry } from 'storybook/internal/toolsets-docs';
 import { assertExpectedManifestProblems } from './verify-manifest-problems.mjs';
@@ -47,6 +49,44 @@ async function callTool(id, name, args) {
     .map((entry) => entry.text)
     .join('\n');
 }
+
+test('composable templates publish their source and resolvable dependency links', async () => {
+  const docs = JSON.parse(await fs.readFile(new URL('manifests/docs.json', root), 'utf8')).docs;
+  const index = JSON.parse(await fs.readFile(new URL('index.json', root), 'utf8'));
+  const templates = (
+    await Promise.all(
+      Object.values(docs).map((doc) => resolveDocEntry(doc, undefined, manifestProvider)),
+    )
+  ).filter((entry) =>
+    /[\\/]templates[\\/](Shell|Search|Pages|DataGridWithFilters)[\\/]/.test(entry.path),
+  );
+  const storybookRoot = fileURLToPath(new URL('../', import.meta.url));
+
+  for (const entry of templates) {
+    const sourcePath = path.resolve(storybookRoot, entry.path.replace(/\.mdx$/, '.tsx'));
+    const source = await fs.readFile(sourcePath, 'utf8');
+    assert.ok(entry.content.includes(source), `${entry.id} must publish the complete source`);
+    for (const match of entry.content.matchAll(/\]\(\?path=\/docs\/([^)]*)\)/g)) {
+      assert.equal(index.entries[match[1]]?.type, 'docs', `Broken dependency link: ${match[1]}`);
+    }
+  }
+
+  const shell = templates.find((entry) => entry.id === 'templates-app-shell--source-code');
+  assert.ok(shell, 'App Shell source page is missing');
+  assert.match(
+    shell.content,
+    /## Required Templates[\s\S]*templates-app-shell-top-nav--source-code/,
+  );
+  assert.match(
+    shell.content,
+    /## Templates Used in Examples[\s\S]*templates-search-search-dialog--source-code/,
+  );
+  const grid = templates.find(
+    (entry) => entry.id === 'templates-data-grid-with-filters--source-code',
+  );
+  assert.ok(grid, 'Data Grid With Filters source page is missing');
+  assert.match(grid.content, /## Required Templates[\s\S]*templates-empty-state--source-code/);
+});
 
 test('generated guidance is absent from Storybook and production MCP', async () => {
   const docs = JSON.parse(await fs.readFile(new URL('manifests/docs.json', root), 'utf8')).docs;

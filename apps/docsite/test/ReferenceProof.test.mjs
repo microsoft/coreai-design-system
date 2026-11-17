@@ -6,6 +6,7 @@ import test from 'node:test';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import ts from 'typescript';
 import { readReferencePages } from '../scripts/ReadReferencePages.mjs';
 import { readSourceCatalog, storyRoot, referencePageName } from '../scripts/sources/Catalog.mjs';
 import { serveReferenceProof } from '../scripts/ServeDocsite.mjs';
@@ -182,6 +183,39 @@ test('the staged Markdown catalog covers every selected core and template group'
     assert.equal(page.examples, undefined, `${page.component}: include all selected examples`);
     if (page.kind === 'templates' && page.component) {
       for (const source of page.sources) await fs.access(path.join(storyRoot, source));
+    }
+  }
+});
+
+test('composable template pages include every local source dependency', async () => {
+  const pages = await readReferencePages(path.resolve(storyRoot, '..', 'docsite', 'content'));
+  for (const id of ['templates-app-shell', 'templates-data-grid-with-filters']) {
+    const page = pages.find((candidate) => candidate.component === id);
+    assert.ok(page, `Missing reference page: ${id}`);
+    const sources = new Set(page.sources);
+    for (const source of sources) {
+      const code = await fs.readFile(path.join(storyRoot, source), 'utf8');
+      const ast = ts.createSourceFile(
+        source,
+        code,
+        ts.ScriptTarget.Latest,
+        true,
+        ts.ScriptKind.TSX,
+      );
+      for (const statement of ast.statements) {
+        if (
+          !(ts.isImportDeclaration(statement) || ts.isExportDeclaration(statement)) ||
+          !statement.moduleSpecifier ||
+          !ts.isStringLiteral(statement.moduleSpecifier) ||
+          !statement.moduleSpecifier.text.startsWith('.')
+        ) {
+          continue;
+        }
+        const dependency = path.posix.normalize(
+          path.posix.join(path.posix.dirname(source), `${statement.moduleSpecifier.text}.tsx`),
+        );
+        assert.ok(sources.has(dependency), `${id}: ${source} requires ${dependency}`);
+      }
     }
   }
 });
@@ -421,7 +455,14 @@ test('Markdown puts authored guidance before examples and APIs without losing so
         props: [{ name: 'label', type: 'string', required: true }],
       },
     ],
-    templateSources: [{ name: 'EmptyState.tsx', path: 'source/templates/EmptyState.tsx', source }],
+    templateSources: [
+      {
+        name: 'EmptyState.tsx',
+        relativePath: 'Shell/EmptyState.tsx',
+        path: 'source/templates/example/Shell/EmptyState.tsx',
+        source,
+      },
+    ],
   };
   const markdown = pageMarkdown(page, {
     basePath: '/repo/',
@@ -437,6 +478,8 @@ test('Markdown puts authored guidance before examples and APIs without losing so
   assert.match(markdown, /not an npm export/);
   assert.match(markdown, /\(\/repo\/guides\/Package\.md\)/);
   assert.match(markdown, /\(\/repo\/source\/examples\/default\.tsx\)/);
+  assert.match(markdown, /## Template source: Shell\/EmptyState\.tsx/);
+  assert.match(markdown, /\(\/repo\/source\/templates\/example\/Shell\/EmptyState\.tsx\)/);
   assert.equal(markdown.split(codeFence(source)).length - 1, 2);
   assert.doesNotMatch(markdown, /<Example|<ApiTable/);
 });

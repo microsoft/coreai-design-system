@@ -103,9 +103,24 @@ async function verifyConsumerPackage() {
     }
     for (const page of metadata.pages) {
       for (const source of page.templateSources) {
-        const target = path.join(directory, 'templates', page.id, source.name);
+        const target = path.join(directory, 'templates', page.id, source.relativePath);
         await fs.mkdir(path.dirname(target), { recursive: true });
-        await fs.copyFile(path.join(outputDirectory, source.path), target);
+        const publishedSource = path.join(outputDirectory, source.path);
+        await fs.copyFile(publishedSource, target);
+        const legacySource = path.join(
+          outputDirectory,
+          'source',
+          'templates',
+          page.id,
+          source.name,
+        );
+        if (legacySource !== publishedSource) {
+          assert.equal(
+            await fs.readFile(legacySource, 'utf8'),
+            await fs.readFile(publishedSource, 'utf8'),
+            `${page.id}: legacy download for ${source.name} differs`,
+          );
+        }
         files.push(target);
       }
     }

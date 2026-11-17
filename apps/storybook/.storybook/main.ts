@@ -225,9 +225,8 @@ const config: StorybookConfig = {
     // real source (see scripts/generate-template-docs.mjs for why — MCP's
     // docs endpoint returns MDX pages as raw text, so this is how agents see
     // the actual component code instead of reconstructed/fabricated usage).
-    // `predev`/`prebuild` already regenerate it once; this watcher keeps it
-    // live while `storybook dev` keeps running, so editing a template's .tsx
-    // and saving immediately refreshes its .mdx without a server restart.
+    // The watcher also regenerates dependency links when story imports or
+    // titles change.
     const templateDocsWatcher: Plugin = {
       name: 'coreai:template-docs-watcher',
       configureServer(server) {
@@ -242,12 +241,8 @@ const config: StorybookConfig = {
           // changed .tsx anywhere — filter to templatesDir itself or the
           // generator would resolve unrelated files (e.g. .storybook/preview.tsx)
           // into a bogus templatesDir/{basename}.mdx.
-          if (
-            normalized.startsWith(templatesDirNormalized) &&
-            normalized.endsWith('.tsx') &&
-            !normalized.endsWith('.stories.tsx')
-          ) {
-            generateTemplateDocs(fs.existsSync(file) ? file : undefined);
+          if (normalized.startsWith(templatesDirNormalized) && normalized.endsWith('.tsx')) {
+            generateTemplateDocs();
           }
         };
         server.watcher.on('add', updateTemplateDocs);

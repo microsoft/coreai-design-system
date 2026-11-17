@@ -22,7 +22,7 @@ export default tseslint.config(
       'apps/prototype/.react-router/**',
       'apps/docsite/src/assets/vendor/**',
       'apps/storybook/fluent-stories/**',
-      'apps/storybook/src/stories/templates/*.mdx',
+      'apps/storybook/src/stories/templates/**/*.mdx',
     ],
   },
   eslint.configs.recommended,

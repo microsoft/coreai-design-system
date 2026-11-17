@@ -87,7 +87,8 @@ Every executable component/template group has one selected Default example.
 Templates declare complete copy-and-adapt `sources` under
 `apps/storybook/src/stories/templates/`; they are not npm exports. Standalone pages
 can opt into the bounded renderer registry for custom foundation and overview
-layouts.
+layouts. Template downloads preserve their paths below that directory so relative
+imports continue to work. Earlier flat download URLs remain available.
 
 Supported directives include:
 

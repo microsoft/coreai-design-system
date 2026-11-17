@@ -440,11 +440,14 @@ build artifact:
 
 #### `{Name}.tsx`
 
-Self-contained — a consumer should be able to drop it into a project with only
-`@coreai-ds/react-components` and `@fluentui/react-icons` installed. **No Storybook imports** (no
-`Meta`, `StoryObj`, or `@storybook/*` references). Use only `tokens.*` values in `makeStyles` —
-no hardcoded colours/sizes/spacing (exception: a `minHeight` with no matching token, commented
-as to why). Declare all styles in a single `useStyles` call at the top of the file.
+A consumer should be able to copy a standalone template with
+`@coreai-ds/react-components` and `@fluentui/react-icons` installed. Router-aware templates also
+require `react-router-dom` v7 and a router host. Composable templates may import other templates:
+copy the linked dependencies too, preserving their relative paths. **No Storybook imports** (no
+`Meta`, `StoryObj`, or `@storybook/*` references). Use tokens for colours, spacing, and typography.
+Document fixed layout dimensions when the design has no matching token. Declare styles in a
+uniquely named `makeStyles` hook near the top of the file so composed examples can combine
+their sources.
 
 #### `{Name}.stories.tsx`
 
@@ -503,11 +506,11 @@ description, then `@summary`:
 #### `{Name}.mdx` — generated Source Code docs page (do not hand-author)
 
 [`scripts/generate-template-docs.mjs`](scripts/generate-template-docs.mjs) generates one `.mdx`
-per `{Name}.tsx`. It's gitignored and regenerated: once via `predev`/`prebuild`; live, on every
-save to a file under `src/stories/templates/`, by a Vite dev-server watcher (`.storybook/main.ts`);
-or on demand via `npm --workspace apps/storybook run docs:templates`. The generated page is
-intentionally bare — just a `<Meta name="Source Code" summary="...">` tag and a fenced code
-block of the real `{Name}.tsx` file content.
+per `{Name}.tsx`. It's gitignored and regenerated: once by `storybook:prepare` during dev and
+build; live, on every save to a file under `src/stories/templates/`, by a Vite dev-server watcher
+(`.storybook/main.ts`); or on demand via `npm --workspace apps/storybook run docs:templates`. The
+generated page contains a `<Meta name="Source Code" summary="...">` tag, links to template
+dependencies when present, and a fenced code block of the real `{Name}.tsx` file content.
 
 Why a separate generated docs page instead of embedding the source in `{Name}.stories.tsx` (via
 `?raw` + `parameters.docs.source.code`, the old convention)? MCP's `docs-show` returns
@@ -520,6 +523,35 @@ approximation. `<Meta name="Source Code">` renames the Docs tab and its id suffi
 
 **Never hand-edit a `.mdx` file under `templates/`** — any edits are silently overwritten on the
 next regeneration. If the content is wrong, fix `{Name}.tsx` or the generator script.
+
+#### Composable app templates
+
+The `Shell/`, `Search/`, `Pages/`, and `DataGridWithFilters/` folders contain copy-and-adapt
+examples. They are not package exports. Each Source Code page links its **Required Templates**
+and any additional **Templates Used in Examples**. Follow these links recursively and preserve
+the relative paths when copying a composition.
+
+| Need                   | Starting point                                                      |
+| ---------------------- | ------------------------------------------------------------------- |
+| Routed app shell       | `Shell/AppShell`                                                    |
+| Search and profile     | `Search/SearchButton`, `Search/SearchDialog`, `Shell/ProfileButton` |
+| Page frame             | `Pages/PageLayout`, `PageHeader`, and `PageBody`                    |
+| Collection and details | `Pages/CollectionPage` or `CollectionDetailsPage`                   |
+| Tabs and sidebars      | `Pages/TabbedPageLayout` or `SidebarLayout`                         |
+| Searchable grid        | `DataGridWithFilters/DataGridWithFilters` and its column helpers    |
+
+The shell supplies bounded height; pages own their insets and scrolling. `LayoutContainer`
+measures available app width for responsive layouts. Keep form and filter state above drawers.
+`GridDetailsContent` and `CollectionDetailsPage` require `getRowId` to return a stable, unique ID.
+Provide stable IDs for other selectable or sortable grids too, and use your app's router instead
+of the stories' `MemoryRouter`. Controlled grid pagination receives an already processed page
+and delegates search, filtering, sorting, and paging to the caller. Authentication, data
+services, and persistence remain caller-owned.
+
+The shell preserves fixed geometry from the original app: a 48px top bar, 218px expanded
+navigation rail, 2px content gap, and 12px content corner. These dimensions have no equivalent
+tokens. The grid is a foundation; a standalone filter bar, overflow drawer, and selection
+manager are not included.
 
 #### Quality checklist
 

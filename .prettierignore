@@ -6,7 +6,7 @@ apps/prototype/build/
 apps/prototype/.react-router/
 packages/*/dist/
 apps/storybook/fluent-stories/
-apps/storybook/src/stories/templates/*.mdx
+apps/storybook/src/stories/templates/**/*.mdx
 apps/docsite/src/assets/vendor/
 .github/compliance/
 .github/skills/

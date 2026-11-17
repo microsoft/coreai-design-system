@@ -20,7 +20,8 @@ improvise a different file layout.
 ## Steps
 
 1. Create `{Name}.tsx` under `apps/storybook/src/stories/templates/` — the
-   self-contained copy-paste component (no Storybook imports).
+   copy-paste component (no Storybook imports). Composed templates can import
+   other templates; the generated Source Code page links those dependencies.
 2. Create `{Name}.stories.tsx` next to it — minimal meta + `Default` story +
    JSDoc, per the README convention.
 3. Run `npm --workspace apps/storybook run docs:templates` (or just save —

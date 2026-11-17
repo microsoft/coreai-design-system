@@ -408,7 +408,7 @@ export function pageMarkdown(page, metadata) {
     ...page.examples.filter((example) => example !== basic).map(exampleMarkdown),
     ...page.templateSources.map((source) =>
       [
-        `## Template source: ${source.name}`,
+        `## Template source: ${source.relativePath ?? source.name}`,
         `[Download ${source.name}](${metadata.basePath}${source.path})`,
         codeFence(source.source),
       ].join('\n\n'),
@@ -725,9 +725,11 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
       );
     for (const source of scope.sources ?? []) {
       const name = path.basename(source);
+      const relativePath = source.slice('src/stories/templates/'.length);
       page.templateSources.push({
         name,
-        path: `source/templates/${scope.id}/${name}`,
+        relativePath,
+        path: `source/templates/${scope.id}/${relativePath}`,
         source: normalizeSource(await fs.readFile(path.join(storyRoot, source), 'utf8')),
       });
     }
@@ -931,9 +933,11 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
       await write(example.sourcePath, example.source);
     }
     for (const [index, source] of page.templateSources.entries()) {
-      body += `<section class="reference-template-source"><h2>Template source: ${escapeHtml(source.name)}</h2><p>Copy this file into your app. Do not import this template from the package.</p>
+      body += `<section class="reference-template-source"><h2>Template source: ${escapeHtml(source.relativePath)}</h2><p>Copy this file into your app. Do not import this template from the package.</p>
 ${sourceHtml(source.source, `template-${page.id}-${index}`, source.path, basePath)}</section>`;
       await write(source.path, source.source);
+      const legacyPath = `source/templates/${page.id}/${source.name}`;
+      if (legacyPath !== source.path) await write(legacyPath, source.source);
     }
     await write(markdownPath, markdown);
     await write(
