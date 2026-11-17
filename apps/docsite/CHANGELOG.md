@@ -7,6 +7,14 @@ these notes are not archived documentation snapshots.
 Earlier changes remain recorded in Git history. These dated notes describe
 meaningful changes, not documentation snapshots or npm package releases.
 
+## Native pull request stacking workflow - 2026-11-17
+
+- Maintenance only: add a reusable skill for ordering existing PRs, resolving
+  shared-file conflicts before review, validating native GitHub stack membership,
+  and handing off an approved tranche for an ordered atomic merge.
+- Preserve existing PR changes and review requirements; do not merge automatically
+  or bump documentation or component package versions.
+
 ## Build timestamps and dated documentation notes - 2026-11-17
 
 - Replace documentation semantic versions and per-PR bump checks with one UTC
