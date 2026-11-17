@@ -115,6 +115,10 @@ function DocumentationShell({
       searchRef.current?.select();
     });
   }, []);
+  const clearSearch = React.useCallback(() => {
+    setQuery('');
+    searchRef.current?.focus();
+  }, []);
   const collapseGroups = React.useCallback(() => {
     setQuery('');
     treeRef.current?.collapseAll();
@@ -347,7 +351,12 @@ function DocumentationShell({
       ) : null}
       {slots.navigation ? (
         <ShellSlot target={slots.navigation} className="reference-live-navigation">
-          <NavigationTree ref={treeRef} entries={entries} query={query} />
+          <NavigationTree
+            ref={treeRef}
+            entries={entries}
+            query={query}
+            onExitSearch={clearSearch}
+          />
         </ShellSlot>
       ) : null}
       {slots.theme ? (
@@ -382,6 +391,17 @@ function DocumentationShell({
             }
             value={query}
             onChange={(_event, data) => setQuery(data.value)}
+            onKeyDown={(event) => {
+              if (!query.trim()) return;
+              if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                treeRef.current?.focusFirstResult();
+              } else if (event.key === 'Escape') {
+                event.preventDefault();
+                event.stopPropagation();
+                clearSearch();
+              }
+            }}
           />
         </ShellSlot>
       ) : null}
