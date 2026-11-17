@@ -48,13 +48,8 @@ try {
     await expect(page.locator('.work-in-progress canvas')).toBeVisible();
     await expect(page.locator('.work-in-progress h1')).toHaveCSS('opacity', '1');
     await expect(page.getByRole('link', { name: /Share a suggestion/ })).toBeVisible();
-    if (route.includes('Surfaces')) {
-      await page.getByText('Existing guidance', { exact: true }).click();
-      await expect(page.getByText(/We use subtle variations in background color/)).toBeVisible();
-      await expect(page.locator('.materials-hero')).toBeVisible();
-    } else {
-      await expect(page.locator('.reference-existing-guidance')).toHaveCount(0);
-    }
+    await expect(page.locator('.reference-existing-guidance')).toHaveCount(0);
+    await expect(page.locator('.standalone-guidance')).toHaveCount(0);
     if (route.includes('Spacing')) await screenshot('docsite-after-spacing.png');
   }
 

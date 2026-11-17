@@ -487,7 +487,7 @@ export function standalonePageHtml(page, metadata) {
   );
   const guidance = `<article class="standalone-guidance">${tokenSwatches(body)}</article>`;
   const content = unfinished
-    ? `<div data-page-widget="work-in-progress" class="reference-work-in-progress"><h1>Page under construction</h1><p>We're still working on this page.</p></div>${parts.body ? `<details class="reference-existing-guidance"><summary>Existing guidance</summary>${guidance}</details>` : ''}`
+    ? `<div data-page-widget="work-in-progress" class="reference-work-in-progress"><h1>Page under construction</h1><p>We're still working on this page.</p></div>`
     : guidance;
   const header = pageTemplateHeader(page, metadata, parts);
   return `<div class="reference-page-introduction${page.renderer === 'home' ? ' reference-home-introduction' : ''}${page.layout ? ` reference-page--${page.layout}` : ''}">${unfinished ? header.replace('data-page-header', 'hidden data-page-header') : header}${pageTemplateResources(page, metadata)}${page.renderer === 'home' ? homeHeroFallback(page, metadata, parts) : content}</div>`;

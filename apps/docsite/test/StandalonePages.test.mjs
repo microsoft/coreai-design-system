@@ -93,9 +93,7 @@ test('empty and unfinished pages reuse the designed state without dropping autho
     { basePath: '/', pages: [] },
   );
   assert.match(draft, /data-page-widget="work-in-progress"/);
-  assert.match(draft, /<details class="reference-existing-guidance">/);
-  assert.match(draft, /id="guidance-draft"/);
-  assert.match(draft, /Keep this\./);
+  assert.doesNotMatch(draft, /reference-existing-guidance|guidance-draft|Keep this/);
   const complete = standalonePageHtml(
     { ...page, guidance: `${page.guidance}\n\nPublished guidance.` },
     { basePath: '/', pages: [] },
