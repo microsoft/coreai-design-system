@@ -197,7 +197,7 @@ Start here for lower-risk work that needs a strong first draft. Use the Foundry 
 
 [Open the Content Design Copilot](https://m365.cloud.microsoft/chat/?titleId=T_3e60de43-9ea8-499c-1f68-30bd3ff0e720)
 
-- There are no legal, data security, or Responsible AI implications.
+- There are no legal, security, or Responsible AI implications.
 - You want to simplify basic jargon or create realistic stand-in content.
 - The work does not involve new UI.
 
@@ -205,7 +205,7 @@ Start here for lower-risk work that needs a strong first draft. Use the Foundry 
 
 Ask for direct support when the work is sensitive, strategic, or needs expert judgment. Work with a content designer when the experience requires content strategy, affects a large audience, or carries significant user or business risk.
 
-- The work has legal, data security, or Responsible AI implications.
+- The work has legal, security, or Responsible AI implications.
 - You do not know where to start.
 - You need help with a larger content strategy, new or redesigned feature, navigation, AI behavior, or content research.
 - The work requires terminology alignment across products or platforms.
