@@ -65,8 +65,20 @@ try {
         .parseFromString(await (await fetch(globalThis.location.href)).text(), 'text/html')
         .querySelector('[data-page-widget="guide-accordions"]');
       return {
-        titles: [...source.querySelectorAll('h2')].map((heading) => heading.textContent),
-        code: [...source.querySelectorAll('pre code')].map((code) => code.textContent),
+        titles: [...source.querySelectorAll('h2')]
+          .filter((heading, index) => {
+            if (index === 0) return true;
+            for (let next = heading.nextElementSibling; next; next = next.nextElementSibling) {
+              if (next.tagName === 'H2') return true;
+              if (next.matches('.preview[data-example-id]')) return false;
+            }
+            return true;
+          })
+          .map((heading) => heading.textContent),
+        code: [...source.querySelectorAll('pre code')].map((code) =>
+          code.textContent.replace(/\n$/, ''),
+        ),
+        examples: source.querySelectorAll('.preview[data-example-id]').length,
         nestedAnchor: source.querySelector('h3[id]')?.id,
       };
     });
@@ -79,9 +91,26 @@ try {
       await expect(header).toHaveAttribute('aria-expanded', 'true');
     }
     assert.deepEqual(
-      await page.locator('.faq-list pre code').allTextContents(),
+      await page
+        .locator('.reference-faqs-view .fui-CodeBlock')
+        .evaluateAll((blocks) =>
+          blocks.map((block) => block.querySelector('pre')?.textContent?.replace(/\n$/, '')),
+        ),
       expected.code,
-      `Code examples remain complete: ${route}`,
+      `Code examples use CodeBlock and remain complete: ${route}`,
+    );
+    assert.equal(
+      await page
+        .locator('.reference-faqs-view pre')
+        .evaluateAll((blocks) => blocks.filter((pre) => !pre.closest('.fui-CodeBlock')).length),
+      0,
+      `No raw code blocks: ${route}`,
+    );
+    await expect(
+      page.locator('.reference-faqs-view blockquote, .reference-faqs-view hr'),
+    ).toHaveCount(0);
+    await expect(page.locator('.reference-faqs-view .guide-example:not(:empty)')).toHaveCount(
+      expected.examples,
     );
     if (expected.nestedAnchor) {
       await visit(`${route}#${expected.nestedAnchor}`);

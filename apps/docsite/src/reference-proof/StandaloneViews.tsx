@@ -347,7 +347,88 @@ function FaqsView({ sourceHtml }: PageWidgetProps) {
   );
 }
 
-function GuideAccordionsView({ sourceHtml }: PageWidgetProps) {
+type RichSegment =
+  | { kind: 'html'; html: string }
+  | { kind: 'code'; code: string; language: string }
+  | { kind: 'callout'; title?: string; html: string }
+  | { kind: 'example'; id: string };
+
+function richSegments(elements: Element[]): RichSegment[] {
+  const segments: RichSegment[] = [];
+  for (const element of elements) {
+    if (element.tagName === 'HR') continue;
+    if (element.tagName === 'PRE') {
+      const code = element.querySelector('code') ?? element;
+      const language = [...code.classList]
+        .find((name) => name.startsWith('language-'))
+        ?.slice('language-'.length);
+      segments.push({
+        kind: 'code',
+        code: (code.textContent ?? '').replace(/\n$/, ''),
+        language: language ?? 'plaintext',
+      });
+    } else if (element.tagName === 'BLOCKQUOTE') {
+      const body = element.cloneNode(true) as Element;
+      const lead = body.querySelector(':scope > p:first-child > strong:first-child');
+      const title = lead?.textContent?.replace(/:\s*$/, '').trim();
+      lead?.remove();
+      segments.push({ kind: 'callout', title, html: body.innerHTML.trim() });
+    } else if (element.matches('.preview[data-example-id]')) {
+      segments.push({ kind: 'example', id: (element as HTMLElement).dataset.exampleId ?? '' });
+    } else {
+      const last = segments.at(-1);
+      if (last?.kind === 'html') last.html += element.outerHTML;
+      else segments.push({ kind: 'html', html: element.outerHTML });
+    }
+  }
+  return segments;
+}
+
+function RichContent({
+  segments,
+  className,
+  renderExample,
+}: {
+  segments: RichSegment[];
+  className?: string;
+  renderExample?: (id: string) => React.ReactNode;
+}) {
+  return (
+    <div className={className}>
+      {segments.map((segment, index) => {
+        if (segment.kind === 'code')
+          return <CodeBlock key={index} code={segment.code} language={segment.language} />;
+        if (segment.kind === 'callout')
+          return (
+            <MessageBar key={index} intent="info" layout="multiline">
+              <MessageBarBody>
+                {segment.title ? <MessageBarTitle>{segment.title}</MessageBarTitle> : null}
+                <span
+                  className="guide-callout__body"
+                  dangerouslySetInnerHTML={{ __html: segment.html }}
+                />
+              </MessageBarBody>
+            </MessageBar>
+          );
+        if (segment.kind === 'example')
+          return (
+            <div key={index} className="preview guide-example" aria-label="Example preview">
+              {renderExample?.(segment.id)}
+            </div>
+          );
+        return (
+          <div
+            key={index}
+            className="guide-rich-html"
+            dangerouslySetInnerHTML={{ __html: segment.html }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function GuideAccordionsView({ sourceHtml, renderExample }: PageWidgetProps) {
   const model = React.useMemo(() => {
     const document = documentFrom(sourceHtml);
     const headings = [...document.querySelectorAll('h2')];
@@ -356,20 +437,36 @@ function GuideAccordionsView({ sourceHtml }: PageWidgetProps) {
       0,
       first ? [...document.body.children].indexOf(first) : undefined,
     );
+    const sections: {
+      id: string;
+      title: string;
+      elements: Element[];
+      anchors: string[];
+    }[] = [];
+    for (const heading of headings) {
+      const elements = followingUntil(heading, (candidate) => candidate.tagName === 'H2');
+      const anchors = elements.flatMap((element) => [
+        element.id,
+        ...[...element.querySelectorAll('[id]')].map((child) => child.id),
+      ]);
+      const previous = sections.at(-1);
+      if (previous && elements.some((element) => element.matches('.preview[data-example-id]'))) {
+        // Live examples belong to the guidance section that embeds them.
+        const subheading = document.createElement('h3');
+        subheading.id = heading.id;
+        subheading.innerHTML = heading.innerHTML;
+        previous.elements.push(subheading, ...elements);
+        previous.anchors.push(heading.id, ...anchors);
+      } else {
+        sections.push({ id: heading.id, title: heading.innerHTML, elements, anchors });
+      }
+    }
     return {
-      introduction: introduction.map((element) => element.outerHTML).join(''),
-      sections: headings.map((heading) => {
-        const elements = followingUntil(heading, (candidate) => candidate.tagName === 'H2');
-        return {
-          id: heading.id,
-          title: heading.innerHTML,
-          html: elements.map((element) => element.outerHTML).join(''),
-          anchors: elements.flatMap((element) => [
-            element.id,
-            ...[...element.querySelectorAll('[id]')].map((child) => child.id),
-          ]),
-        };
-      }),
+      introduction: richSegments(introduction),
+      sections: sections.map((section) => ({
+        ...section,
+        segments: richSegments(section.elements),
+      })),
     };
   }, [sourceHtml]);
   const [openItems, setOpenItems] = React.useState<string[]>([]);
@@ -410,7 +507,13 @@ function GuideAccordionsView({ sourceHtml }: PageWidgetProps) {
   }, [model]);
   return (
     <div className="reference-faqs-view">
-      {model.introduction ? <div dangerouslySetInnerHTML={{ __html: model.introduction }} /> : null}
+      {model.introduction.length ? (
+        <RichContent
+          className="guide-introduction"
+          segments={model.introduction}
+          renderExample={renderExample}
+        />
+      ) : null}
       <Accordion
         className="faq-list"
         multiple
@@ -426,7 +529,11 @@ function GuideAccordionsView({ sourceHtml }: PageWidgetProps) {
               </Text>
             </AccordionHeader>
             <AccordionPanel>
-              <div className="faq-answer" dangerouslySetInnerHTML={{ __html: section.html }} />
+              <RichContent
+                className="faq-answer"
+                segments={section.segments}
+                renderExample={renderExample}
+              />
             </AccordionPanel>
           </AccordionItem>
         ))}

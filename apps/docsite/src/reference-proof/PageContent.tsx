@@ -274,7 +274,7 @@ export function PageContent({
             )?.dataset.exampleId,
           );
         }
-        setTargets(containers);
+        setTargets(containers.filter((container) => !container.closest('[data-page-widget]')));
         onReady(page);
       })
       .catch((error: unknown) => {
@@ -293,6 +293,18 @@ export function PageContent({
     pageTabs.showcase.preview.dataset.showcaseExample =
       selectedPageTab === 'usage' ? selectedShowcase : pageTabs.showcase.defaultId;
   }, [pageTabs, selectedPageTab, selectedShowcase]);
+  const renderExample = React.useCallback(
+    (id: string) => {
+      const Example = examples[id];
+      if (!Example) throw new Error(`Unknown reference example: ${id}`);
+      return (
+        <ExampleBoundary id={id}>
+          <Example />
+        </ExampleBoundary>
+      );
+    },
+    [examples],
+  );
   const handlePageTabChange = React.useCallback(
     (tab: PageTab) => {
       setSelectedPageTab(tab);
@@ -367,7 +379,13 @@ export function PageContent({
         ? widgets.map((widget, index) => {
             const View = views[widget.name];
             if (!View) throw new Error(`Unknown custom page view: ${widget.name}`);
-            const view = <View sourceHtml={widget.sourceHtml} model={presentation.model} />;
+            const view = (
+              <View
+                sourceHtml={widget.sourceHtml}
+                model={presentation.model}
+                renderExample={renderExample}
+              />
+            );
             if (widget.name === 'home')
               return (
                 <HomeWidgetSlot key={`page-view-${index}`} target={widget.element}>
