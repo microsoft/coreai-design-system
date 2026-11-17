@@ -363,6 +363,22 @@ try {
       .filter((text) => !visible.includes(text));
   });
   assert.deepEqual(missingContent, [], 'Every authored guideline and example remains visible.');
+  assert.equal(await page.locator('.content-step:not(.content-step--review)').count(), 3);
+  assert.equal(
+    await page.locator('.content-step--review .content-publish-checklist > li').count(),
+    7,
+  );
+  const reviewLayout = await page.locator('.content-flow--review').evaluate((element) => {
+    const steps = [...element.children];
+    const review = steps.at(-1).getBoundingClientRect();
+    return {
+      spansFlow: Math.abs(review.width - element.getBoundingClientRect().width) < 1,
+      followsDraftSteps: steps
+        .slice(0, -1)
+        .every((step) => step.getBoundingClientRect().bottom <= review.top),
+    };
+  });
+  assert.deepEqual(reviewLayout, { spansFlow: true, followsDraftSteps: true });
   assert.deepEqual(errors, []);
   await context.close();
 

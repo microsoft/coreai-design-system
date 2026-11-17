@@ -913,22 +913,34 @@ function contentSteps(document: Document, sectionId: string): ContentStep[] {
 
 function ContentStepList({ steps }: { steps: ContentStep[] }) {
   return (
-    <div className="content-flow">
+    <div className="content-flow content-flow--review">
       {steps.map((step) => (
-        <div className="content-step" key={step.title}>
+        <div
+          className={`content-step${step.details.length ? ' content-step--review' : ''}`}
+          key={step.title}
+        >
           <div className="content-step__content">
             <Text as="h3" weight="semibold" foreground={1}>
               {step.title}
             </Text>
             <div dangerouslySetInnerHTML={{ __html: step.descriptionHtml }} />
             {step.details.length ? (
-              <ul className="content-guidance-list">
-                {step.details.map((detail, detailIndex) => (
-                  <li
-                    key={`${step.title}-${detailIndex}`}
-                    dangerouslySetInnerHTML={{ __html: detail }}
-                  />
-                ))}
+              <ul className="content-publish-checklist">
+                {step.details.map((detail, detailIndex) => {
+                  const separator = detail.indexOf(':');
+                  return (
+                    <li key={`${step.title}-${detailIndex}`}>
+                      {separator >= 0 ? (
+                        <strong
+                          dangerouslySetInnerHTML={{ __html: detail.slice(0, separator + 1) }}
+                        />
+                      ) : null}
+                      <span
+                        dangerouslySetInnerHTML={{ __html: detail.slice(separator + 1).trim() }}
+                      />
+                    </li>
+                  );
+                })}
               </ul>
             ) : null}
             {step.link ? (
@@ -1023,7 +1035,10 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
   return (
     <div className="content-page">
       <section className="page-section content-section">
-        <div className="section-intro" dangerouslySetInnerHTML={{ __html: model.introduction }} />
+        <div
+          className="content-introduction"
+          dangerouslySetInnerHTML={{ __html: model.introduction }}
+        />
         <Accordion className="content-principle-list" multiple collapsible>
           {model.principles.map((principle, index) => (
             <AccordionItem className="content-principle" key={principle.id} value={principle.id}>
