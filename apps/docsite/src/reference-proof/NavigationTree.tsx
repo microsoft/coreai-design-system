@@ -78,10 +78,10 @@ export const NavigationTree = React.forwardRef<
           <ul className="app-search-results__list">
             {results.map(({ entry, excerpt }) => (
               <li key={entry.path}>
-                <LinkButton
+                <a
                   href={`${import.meta.env.BASE_URL}${entry.path.slice(1)}`}
-                  appearance="subtle"
                   className="app-search-result"
+                  aria-current={entry.path === activePath ? 'page' : undefined}
                 >
                   <span className="app-search-result__title">
                     <HighlightedText text={entry.title} />
@@ -89,7 +89,7 @@ export const NavigationTree = React.forwardRef<
                   <span className="app-search-result__excerpt">
                     <HighlightedText text={excerpt} />
                   </span>
-                </LinkButton>
+                </a>
               </li>
             ))}
           </ul>
