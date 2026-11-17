@@ -60,6 +60,41 @@ export function normalizeReferencePath(pathname) {
   return path.endsWith('/') ? path : `${path}/`;
 }
 
+export function searchNavigationEntries(entries, rawQuery) {
+  const query = rawQuery.trim().toLowerCase();
+  if (!query) return [];
+  return entries
+    .flatMap((entry) => {
+      const title = entry.title.toLowerCase();
+      const summary = entry.summary.toLowerCase();
+      const body = entry.searchText ?? '';
+      const text = `${entry.title} ${entry.path} ${entry.summary} ${body}`.toLowerCase();
+      if (!text.includes(query)) return [];
+      const rank =
+        title === query
+          ? 4
+          : title.startsWith(query)
+            ? 3
+            : title.includes(query)
+              ? 2
+              : summary.includes(query)
+                ? 1
+                : 0;
+      const source =
+        summary.includes(query) || !body.toLowerCase().includes(query) ? entry.summary : body;
+      const match = source.toLowerCase().indexOf(query);
+      const rawStart = Math.max(0, match - 45);
+      const boundary = source.lastIndexOf(' ', rawStart);
+      const start = boundary >= 0 ? boundary + 1 : 0;
+      const end = Math.min(source.length, start + 180);
+      const excerpt = `${start > 0 ? '…' : ''}${source.slice(start, end).trim()}${end < source.length ? '…' : ''}`;
+      return [{ entry, excerpt, rank }];
+    })
+    .sort(
+      (left, right) => right.rank - left.rank || left.entry.title.localeCompare(right.entry.title),
+    );
+}
+
 export function clientNavigationTarget(href, options) {
   if (
     options.button !== 0 ||

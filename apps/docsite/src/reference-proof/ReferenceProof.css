@@ -57,6 +57,7 @@
     .app-sidenav__quick-link,
     .app-sidenav__link,
     .app-sidenav__search-logo,
+    .app-search-result,
     .font-card-link,
     .reference-sample-download,
     .reference-home-action
@@ -1038,10 +1039,66 @@
   color: var(--colorNeutralForeground1Pressed);
 }
 
-.reference-shell .app-search-result.fui-LinkButton {
-  justify-content: flex-start;
+.reference-shell .app-search-results {
+  padding: 12px 8px;
+}
+
+.reference-shell .app-search-results__header {
+  padding: 4px 12px 12px;
+  color: var(--colorNeutralForeground3);
+  font-weight: var(--fontWeightRegular);
+  overflow-wrap: anywhere;
+}
+
+.reference-shell .app-search-results__list {
+  gap: 4px;
+}
+
+.reference-shell .app-search-result {
+  display: flex;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 10px 12px;
+  align-items: stretch;
+  border-radius: var(--borderRadiusMedium);
+  color: var(--colorNeutralForeground1);
+  font-weight: var(--fontWeightRegular);
+  text-align: start;
   text-decoration: none;
   white-space: normal;
+}
+
+.reference-shell .app-search-result:hover {
+  background: var(--colorNeutralBackground1Hover);
+  text-decoration: none;
+}
+
+.reference-shell .app-search-result:active {
+  background: var(--colorNeutralBackground1Pressed);
+}
+
+.reference-shell .app-search-result:focus-visible {
+  outline: 2px solid var(--colorStrokeFocus2);
+  outline-offset: -2px;
+  background: var(--colorNeutralBackground1Hover);
+}
+
+.reference-shell .app-search-result__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reference-shell .app-search-result__excerpt {
+  overflow-wrap: anywhere;
+  -webkit-line-clamp: 3;
+}
+
+.reference-shell .app-search-result mark {
+  border-radius: var(--borderRadiusSmall);
+  background: var(--colorBrandBackground2);
+  color: var(--colorBrandForeground2);
+  font-weight: var(--fontWeightSemibold);
 }
 
 .reference-shell .app-sidenav__footer {

@@ -7,6 +7,7 @@ import {
   groupNavigationEntries,
   clientNavigationTarget,
   normalizeReferencePath,
+  searchNavigationEntries,
 } from '../src/reference-proof/Navigation.mjs';
 
 const options = {
@@ -61,6 +62,52 @@ test('site sections use the requested order with alphabetized component and temp
     groupNavigationEntries([{ path: '/components/Button', title: 'Button' }])[0].value,
     'components',
   );
+});
+
+test('search includes body-only matches and pages omitted from the sidebar', () => {
+  const entries = [
+    {
+      path: '/components/Button/',
+      title: 'Button',
+      summary: 'Trigger an action.',
+      searchText: 'Use the attention-grabbing primary button for the main action.',
+    },
+    {
+      path: '/patterns/Forms/',
+      title: 'Forms',
+      summary: 'Field guidance.',
+      searchText: 'Validate user input.',
+      showInSidebar: false,
+    },
+  ];
+  assert.equal(searchNavigationEntries(entries, '  ATTENTION-GRABBING  ')[0].entry, entries[0]);
+  assert.equal(searchNavigationEntries(entries, 'forms')[0].entry, entries[1]);
+  assert.equal(searchNavigationEntries(entries, 'user input')[0].entry, entries[1]);
+  assert.deepEqual(searchNavigationEntries(entries, '   '), []);
+  assert.deepEqual(searchNavigationEntries(entries, 'missing phrase'), []);
+});
+
+test('search ranks titles before summaries and returns a bounded excerpt around body matches', () => {
+  const entries = [
+    { path: '/components/Other/', title: 'Other', summary: 'Text guidance.' },
+    { path: '/components/Textarea/', title: 'Textarea', summary: 'Enter multiple lines.' },
+    { path: '/components/Text/', title: 'Text', summary: 'Display words.' },
+    {
+      path: '/guides/Body/',
+      title: 'Body guide',
+      summary: 'Long guidance.',
+      searchText: `${'Earlier words. '.repeat(30)}Text matching words.${' Later words.'.repeat(30)}`,
+    },
+  ];
+  const results = searchNavigationEntries(entries, 'text');
+  assert.deepEqual(
+    results.map(({ entry }) => entry.title),
+    ['Text', 'Textarea', 'Other', 'Body guide'],
+  );
+  const excerpt = results.at(-1).excerpt;
+  assert.match(excerpt, /Text matching words/);
+  assert.ok(excerpt.length <= 182);
+  assert.ok(excerpt.startsWith('…') && excerpt.endsWith('…'));
 });
 
 test('client navigation preserves the Pages base path, query and fragment', () => {

@@ -12,6 +12,10 @@ import { build } from 'vite';
 import react from '@vitejs/plugin-react';
 import matter from 'gray-matter';
 import ts from 'typescript';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
+import { toString } from 'mdast-util-to-string';
 import { guidanceMarkdown, renderGuidance } from '../../../shared/guidance.mjs';
 import { extractStorySource } from './sources/StorySource.mjs';
 import { readStoryDescriptions } from './sources/StoryDescriptions.mjs';
@@ -74,6 +78,21 @@ export function normalizeBase(value = '/') {
 
 export function normalizeSource(source) {
   return source.replace(/\r\n?/g, '\n');
+}
+
+export function searchableGuidance(markdown) {
+  const tree = unified().use(remarkParse).use(remarkGfm).parse(markdown);
+  const text = (node) => {
+    if (['code', 'html'].includes(node.type)) return '';
+    if (!node.children) return toString(node);
+    const separator = ['root', 'blockquote', 'list', 'listItem', 'table', 'tableRow'].includes(
+      node.type,
+    )
+      ? ' '
+      : '';
+    return node.children.map(text).join(separator);
+  };
+  return text(tree).replace(/\s+/g, ' ').trim();
 }
 
 export function scopeExampleIds(source, exampleId) {
@@ -523,7 +542,7 @@ export function initialThemeStyles(themes, stylesheets) {
     .join('');
 }
 
-function shell(title, body, metadata, assets, navigation, currentPath = '') {
+function shell(title, body, metadata, assets, navigation, searchIndex, currentPath = '') {
   const home = currentPath === '';
   const logo = `<span class="app-sidenav__search-logo-static" data-shell-fallback><svg viewBox="-0.74 -0.59 44 44" aria-hidden="true" focusable="false"><path d="M27.43 2.896H39.77V15.236H27.43V2.896Z" fill="currentColor"></path><path d="M2.749 2.896H15.089V15.236H2.749V2.896Z" fill="currentColor"></path><path d="M15.09 15.236H27.431V27.576H15.09V15.236Z" fill="currentColor"></path><path d="M2.749 27.576H15.089V39.916H2.749V27.576Z" fill="currentColor"></path><path d="M27.43 27.576H39.77V39.916H27.43V27.576Z" fill="currentColor"></path></svg></span>`;
   const settings = `<span class="reference-theme-fallback" data-shell-fallback aria-hidden="true"><svg fill="currentColor" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M14.95 5a2.5 2.5 0 0 0-4.9 0H2.5a.5.5 0 0 0 0 1h7.55a2.5 2.5 0 0 0 4.9 0h2.55a.5.5 0 0 0 0-1zM12.5 7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m-2.55 7a2.5 2.5 0 0 0-4.9 0H2.5a.5.5 0 0 0 0 1h2.55a2.5 2.5 0 0 0 4.9 0h7.55a.5.5 0 0 0 0-1zM7.5 16a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" fill="currentColor"></path></svg></span>`;
@@ -555,7 +574,7 @@ function shell(title, body, metadata, assets, navigation, currentPath = '') {
 })();
 </script>
 ${assets.css.map((file) => `<link rel="stylesheet" href="${metadata.basePath}${file}">`).join('\n')}
-</head><body><div id="reference-root"><div id="reference-content"><div class="app-shell reference-shell"><a class="skip-link" href="#main">Skip to content</a>
+</head><body><script type="application/json" id="reference-search-index">${searchIndex}</script><div id="reference-root"><div id="reference-content"><div class="app-shell reference-shell"><a class="skip-link" href="#main">Skip to content</a>
 <div class="app-body"><aside class="app-sidenav" id="app-navigation" aria-label="Site navigation">
 <div class="app-sidenav__header"><div class="app-sidenav__search-row"><a class="app-sidenav__search-logo" data-shell-logo href="${metadata.basePath}" aria-label="CoreAI home">${logo}</a>
 <div data-shell-search>${search}</div><div data-shell-theme>${settings}</div><button type="button" class="app-sidenav__dismiss" data-close-navigation aria-label="Close navigation"><span></span><span></span><span></span></button></div></div>
@@ -896,6 +915,17 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
     })),
   );
   const orderedPages = navigationGroups.flatMap((group) => group.items.map((entry) => entry.page));
+  const searchIndex = JSON.stringify(
+    navigationGroups.flatMap((group) =>
+      group.items.map(({ path, title, page }) => ({
+        path,
+        title,
+        summary: page.summary,
+        searchText: searchableGuidance(page.guidance),
+        showInSidebar: page.showInSidebar,
+      })),
+    ),
+  ).replaceAll('<', '\\u003c');
   const navigation = (currentPath) =>
     navigationGroups
       .map((group) => {
@@ -938,7 +968,7 @@ ${sourceHtml(source.source, `template-${page.id}-${index}`, source.path, basePat
     await write(markdownPath, markdown);
     await write(
       `${htmlPath}index.html`,
-      shell(page.title, body, metadata, assets, navigation(htmlPath), htmlPath),
+      shell(page.title, body, metadata, assets, navigation(htmlPath), searchIndex, htmlPath),
     );
     for (const alias of page.aliases) {
       const destination = `${basePath}${htmlPath}`;

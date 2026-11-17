@@ -21,7 +21,23 @@ import {
   componentPageGuidanceHtml,
   scopeExampleIds,
   initialThemeStyles,
+  searchableGuidance,
 } from '../scripts/BuildDocsite.mjs';
+
+test('search indexes readable Markdown guidance without source code or link destinations', () => {
+  assert.equal(
+    searchableGuidance(
+      '# Button\n\nAn **important** action.\n\n[Field guidance](./Field.md).\n\n```tsx\nsecretSource();\n```\n\n<div>Raw HTML</div>',
+    ),
+    'Button An important action. Field guidance.',
+  );
+  assert.equal(
+    searchableGuidance(
+      '- First item.\n- Second item.\n\n| Token | Use |\n| --- | --- |\n| Color | Text |',
+    ),
+    'First item. Second item. Token Use Color Text',
+  );
+});
 
 test('component guidance links use published routes, section anchors and the deployment base', () => {
   const html = componentPageGuidanceHtml(
