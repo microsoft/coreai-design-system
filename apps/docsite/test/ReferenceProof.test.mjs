@@ -22,7 +22,37 @@ import {
   scopeExampleIds,
   initialThemeStyles,
   searchableGuidance,
+  shell,
 } from '../scripts/BuildDocsite.mjs';
+
+test('page shells use the real favicon at the deployment root on home and nested routes', () => {
+  for (const basePath of ['/', '/coreai-design-system/']) {
+    for (const route of ['', 'components/Button/', 'foundations/Spacing/']) {
+      const html = shell(
+        'Example',
+        '<h1>Example</h1>',
+        {
+          basePath,
+          documentation: { version: '0.1.3' },
+          versions: {
+            '@coreai-ds/react-components': '0.12.0',
+            '@fluentui/react-components': '9.74.9',
+          },
+        },
+        { initialThemeStyles: '', css: [], entry: 'assets/main.js' },
+        '',
+        '[]',
+        route,
+      );
+      assert.ok(
+        html.includes(
+          `<link rel="icon" href="${basePath}assets/favicon.svg" type="image/svg+xml">`,
+        ),
+      );
+      assert.doesNotMatch(html, /href="data:,"/);
+    }
+  }
+});
 
 test('search indexes readable Markdown guidance without source code or link destinations', () => {
   assert.equal(

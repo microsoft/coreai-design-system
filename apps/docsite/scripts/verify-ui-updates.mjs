@@ -109,6 +109,18 @@ try {
   );
   await screenshot('docsite-after-changelog.png');
   const metadata = await (await fetch(new URL('llms/index.json', root))).json();
+  for (const entry of metadata.pages) {
+    const response = await page.request.get(new URL(entry.htmlPath, root).href);
+    assert.ok(
+      (await response.text()).includes(
+        `<link rel="icon" href="${root.pathname}assets/favicon.svg" type="image/svg+xml">`,
+      ),
+      `Favicon uses the deployment root: ${entry.htmlPath}`,
+    );
+  }
+  const icon = await page.request.get(new URL('assets/favicon.svg', root).href);
+  assert.equal(icon.status(), 200);
+  assert.match(icon.headers()['content-type'], /image\/svg\+xml/);
   assert.ok(!metadata.pages.some((entry) => /DocumentationChangelog/.test(entry.htmlPath)));
   assert.ok(!metadata.pages.some((entry) => entry.title === 'Documentation changelog'));
   const removed = await page.request.get(new URL('overview/DocumentationChangelog/', root).href);

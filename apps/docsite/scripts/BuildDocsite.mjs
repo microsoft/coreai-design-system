@@ -548,7 +548,7 @@ export function initialThemeStyles(themes, stylesheets) {
     .join('');
 }
 
-function shell(title, body, metadata, assets, navigation, searchIndex, currentPath = '') {
+export function shell(title, body, metadata, assets, navigation, searchIndex, currentPath = '') {
   const home = currentPath === '';
   const logo = `<span class="app-sidenav__search-logo-static" data-shell-fallback><svg viewBox="-0.74 -0.59 44 44" aria-hidden="true" focusable="false"><path d="M27.43 2.896H39.77V15.236H27.43V2.896Z" fill="currentColor"></path><path d="M2.749 2.896H15.089V15.236H2.749V2.896Z" fill="currentColor"></path><path d="M15.09 15.236H27.431V27.576H15.09V15.236Z" fill="currentColor"></path><path d="M2.749 27.576H15.089V39.916H2.749V27.576Z" fill="currentColor"></path><path d="M27.43 27.576H39.77V39.916H27.43V27.576Z" fill="currentColor"></path></svg></span>`;
   const settings = `<span class="reference-theme-fallback" data-shell-fallback aria-hidden="true"><svg fill="currentColor" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M14.95 5a2.5 2.5 0 0 0-4.9 0H2.5a.5.5 0 0 0 0 1h7.55a2.5 2.5 0 0 0 4.9 0h2.55a.5.5 0 0 0 0-1zM12.5 7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m-2.55 7a2.5 2.5 0 0 0-4.9 0H2.5a.5.5 0 0 0 0 1h2.55a2.5 2.5 0 0 0 4.9 0h7.55a.5.5 0 0 0 0-1zM7.5 16a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" fill="currentColor"></path></svg></span>`;
@@ -556,7 +556,7 @@ function shell(title, body, metadata, assets, navigation, searchIndex, currentPa
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeHtml(title)} | CoreAI design system</title>
-<link rel="icon" href="data:,">
+<link rel="icon" href="${metadata.basePath}assets/favicon.svg" type="image/svg+xml">
 <style>${assets.initialThemeStyles}</style>
 <script>
 (() => {
@@ -980,7 +980,7 @@ ${sourceHtml(source.source, `template-${page.id}-${index}`, source.path, basePat
       const destination = `${basePath}${htmlPath}`;
       await write(
         `${alias.slice(1)}index.html`,
-        `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=${destination}"><link rel="canonical" href="${destination}"><title>${escapeHtml(page.title)}</title></head><body><a href="${destination}">Continue to ${escapeHtml(page.title)}</a></body></html>`,
+        `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=${destination}"><link rel="canonical" href="${destination}"><link rel="icon" href="${basePath}assets/favicon.svg" type="image/svg+xml"><title>${escapeHtml(page.title)}</title></head><body><a href="${destination}">Continue to ${escapeHtml(page.title)}</a></body></html>`,
       );
       await write(`${alias.slice(1, -1)}.md`, markdown);
     }
