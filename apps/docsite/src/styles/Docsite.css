@@ -1825,12 +1825,46 @@ code:not(pre code) {
   list-style: disc;
 }
 
-.content-page .content-help-cards.resources-grid {
-  align-items: stretch;
+.content-help-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .content-page .content-help-cards .resource-card {
-  height: 100%;
+  display: grid;
+  height: auto;
+  align-items: start;
+  gap: 24px;
+  padding: 24px;
+}
+
+.content-help-card:has(.content-guidance-list) {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+}
+
+.content-help-card__summary {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.content-help-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.content-help-card__link svg {
+  width: 14px;
+  height: 14px;
+}
+
+.content-page .content-help-card .content-guidance-list {
+  gap: 8px;
+  padding-inline-start: 16px;
 }
 
 .content-publish-checklist {
@@ -1854,6 +1888,10 @@ code:not(pre code) {
 
 @media (max-width: 900px) {
   .content-flow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .content-help-card:has(.content-guidance-list) {
     grid-template-columns: minmax(0, 1fr);
   }
 }

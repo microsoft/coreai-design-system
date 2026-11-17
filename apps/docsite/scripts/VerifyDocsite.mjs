@@ -379,6 +379,12 @@ try {
     };
   });
   assert.deepEqual(reviewLayout, { spansFlow: true, followsDraftSteps: true });
+  assert.equal(await page.locator('.content-help-card').count(), 2);
+  assert.equal(await page.locator('.content-help-card > a').count(), 0);
+  assert.deepEqual(await page.locator('.content-help-card__link').allTextContents(), [
+    'Open the Content Design Copilot (opens in a new tab)',
+    'Open the content design desk (opens in a new tab)',
+  ]);
   assert.deepEqual(errors, []);
   await context.close();
 

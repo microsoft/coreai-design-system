@@ -1028,6 +1028,7 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
           description: step.description,
           details: step.details.map((detail) => documentFrom(detail).body.textContent ?? ''),
           href: step.link.href,
+          linkLabel: step.link.label,
         };
       }),
     };
