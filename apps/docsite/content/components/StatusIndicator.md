@@ -1,6 +1,6 @@
 ---
 id: status-indicator
-title: Status indicator
+title: StatusIndicator
 navigation:
   group: Components
   showInSidebar: true

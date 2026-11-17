@@ -1,6 +1,6 @@
 ---
 id: interaction-tag
-title: Interaction tag
+title: InteractionTag
 summary: >-
   A tag is a representation of a value that someone has picked, like recipients
   for an email or categories on a planner task.

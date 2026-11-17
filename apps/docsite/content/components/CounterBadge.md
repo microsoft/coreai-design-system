@@ -1,6 +1,6 @@
 ---
 id: counter-badge
-title: Counter Badge
+title: CounterBadge
 summary: Badge that displays a numerical count.
 resources: []
 reference:

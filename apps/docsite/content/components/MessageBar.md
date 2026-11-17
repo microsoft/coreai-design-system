@@ -1,6 +1,6 @@
 ---
 id: message-bar
-title: Message bar
+title: MessageBar
 navigation:
   group: Components
   showInSidebar: true

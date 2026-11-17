@@ -1,6 +1,6 @@
 ---
 id: info-label
-title: Info label
+title: InfoLabel
 navigation:
   group: Components
   showInSidebar: true

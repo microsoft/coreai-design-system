@@ -1,6 +1,6 @@
 ---
 id: radio-group
-title: Radio group
+title: RadioGroup
 navigation:
   group: Components
   showInSidebar: true

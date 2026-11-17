@@ -1,6 +1,6 @@
 ---
 id: data-grid-cell-medium
-title: Data grid
+title: DataGrid
 navigation:
   group: Components
   showInSidebar: true

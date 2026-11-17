@@ -15,6 +15,13 @@ meaningful changes, not documentation snapshots or npm package releases.
 - Use the current Markdown agent guidance and skill download in onboarding links.
 - Keep publishing link updates within the docsite without changing Storybook or package sources.
 
+## Component and template page names - 2026-11-17
+
+- Match navigation, heading, search, and agent-index titles to component and
+  template code names, including AvatarGroup, DataGrid, DetailsList, and CardLink.
+- Remove the standalone toMountNodeProps utility page without changing the
+  exported library API.
+
 ## Accessible Markdown discovery - 2026-11-17
 
 - Advertise each page's Markdown and the agent index near the beginning of every

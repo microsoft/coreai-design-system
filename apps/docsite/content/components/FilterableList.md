@@ -1,6 +1,6 @@
 ---
 id: filter-bar
-title: Filter bar
+title: FilterableList
 navigation:
   group: Components
   showInSidebar: true

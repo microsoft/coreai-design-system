@@ -1,6 +1,6 @@
 ---
 id: react-router-tab-link-list
-title: Tab Link List
+title: TabLinkList
 summary: Route-aware CoreAI TabList for React Router navigation.
 resources: []
 reference:

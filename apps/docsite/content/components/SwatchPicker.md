@@ -1,6 +1,6 @@
 ---
 id: swatch-picker
-title: Swatch picker
+title: SwatchPicker
 navigation:
   group: Components
   showInSidebar: true

@@ -1,6 +1,6 @@
 ---
 id: presence-badge
-title: Presence badge
+title: PresenceBadge
 summary: Presence indicates the user's current availability and status.
 resources:
   - label: Figma component

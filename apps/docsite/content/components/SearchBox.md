@@ -1,6 +1,6 @@
 ---
 id: search-box
-title: Search box
+title: SearchBox
 navigation:
   group: Components
   showInSidebar: true

@@ -1,6 +1,6 @@
 ---
 id: react-router-link-button
-title: Link Button
+title: LinkButton
 summary: Button-styled adapter for React Router navigation.
 resources: []
 reference:

@@ -1,6 +1,6 @@
 ---
 id: react-router-card-link
-title: Card Link
+title: CardLink
 summary: CardLink adapter for accessible React Router navigation.
 resources: []
 reference:

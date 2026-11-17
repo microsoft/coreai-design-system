@@ -1,6 +1,6 @@
 ---
 id: teaching-popover
-title: Teaching popover
+title: TeachingPopover
 navigation:
   group: Components
   showInSidebar: true

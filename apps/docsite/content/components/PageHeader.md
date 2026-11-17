@@ -1,6 +1,6 @@
 ---
 id: page-header
-title: Page header
+title: PageHeader
 navigation:
   group: Templates
   showInSidebar: true
