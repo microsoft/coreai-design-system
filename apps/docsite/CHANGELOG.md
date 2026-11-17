@@ -20,6 +20,11 @@ meaningful changes, not documentation snapshots or npm package releases.
   Preserve the unique 0.1.x historical notes in the canonical package changelog.
 - Keep component npm versions independent and unchanged.
 
+## Dependency maintenance - 2026-11-17
+
+- Maintenance only: update Vite and align Storybook dependencies, and regenerate
+  the workspace lockfile.
+
 ## Public npm migration guide - 2026-11-16
 
 - Add a migration guide from the retired `@coreai/fluentui-react` Azure Artifacts

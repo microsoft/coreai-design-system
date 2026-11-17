@@ -33,6 +33,7 @@ headings in this changelog.
 
 ### Changed
 
+- Update the Vite development dependency to 6.4.6.
 - `iconToDotGrid` sampling defaults to SVG viewBox dimensions times `multiplier` (default 2), replacing the fixed-24-cell default and supersampled center-point sampling. Use `multiplier: 1` for native resolution or explicit `columns`/`rows` for a custom grid, not both. Regenerating data can change dimensions and occupancy; existing saved grids and designer artwork remain unchanged.
 
 ## [0.12.0] - 2026-10-16
