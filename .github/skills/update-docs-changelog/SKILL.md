@@ -7,7 +7,7 @@ description: 'Update dated documentation changelog notes for a PR targeting main
 
 Before opening or updating a PR targeting `main`, inspect the full proposed
 change and preserve unrelated edits. Add or update a concise section in
-[DocumentationChangelog.md](../../../apps/docsite/content/overview/DocumentationChangelog.md)
+[apps/docsite/CHANGELOG.md](../../../apps/docsite/CHANGELOG.md)
 using `## Description - YYYY-MM-DD`. Describe meaningful changes across the PR.
 For maintenance-only work, say so without implying product changes.
 

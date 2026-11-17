@@ -173,6 +173,52 @@ test('Markdown includes and generated sections expand without evaluating code fe
   await assert.rejects(expandStandaloneMarkdown('<!-- include: ../outside -->', {}), /Malformed/);
 });
 
+test('documentation and package changelogs publish their separate canonical sources once', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  const documentation = pages.find((page) => page.route === 'overview/DocumentationChangelog');
+  const packagePage = pages.find((page) => page.route === 'overview/Changelog');
+  const wrapper = matter(
+    await fs.readFile(path.join(appRoot, 'content', documentation.guidance), 'utf8'),
+  );
+  assert.equal(wrapper.content.trim(), '<!-- include: documentation-changelog -->');
+  const canonical = matter(await fs.readFile(path.join(appRoot, 'CHANGELOG.md'), 'utf8'));
+  assert.deepEqual(canonical.data, {});
+  const expanded = await expandStandaloneMarkdown(wrapper.content, {
+    route: documentation.route,
+    pages,
+    basePath: '/repo/',
+    fence: codeFence,
+  });
+  const headings = [...canonical.content.matchAll(/^## (.+)$/gm)].map((match) => match[1]);
+  assert.ok(headings.length > 0);
+  assert.deepEqual(
+    [...expanded.matchAll(/^## (.+)$/gm)].map((match) => match[1]),
+    headings,
+  );
+  assert.match(expanded, /\[package changelog\]\(\/repo\/overview\/Changelog\.md\)/);
+  const packageSource = matter(
+    await fs.readFile(path.join(appRoot, 'content', packagePage.guidance), 'utf8'),
+  );
+  const packageMarkdown = await expandStandaloneMarkdown(packageSource.content, {
+    route: packagePage.route,
+    pages,
+    basePath: '/repo/',
+    fence: codeFence,
+  });
+  for (const version of ['0.7.2', '0.1.2', '0.1.1', '0.1.0']) {
+    const releaseHeadings = [...packageMarkdown.matchAll(/^## (.+)$/gm)];
+    assert.equal(
+      releaseHeadings.filter((match) => match[1].startsWith(`[${version}]`)).length,
+      1,
+      `Package history must publish ${version} once`,
+    );
+  }
+  assert.doesNotMatch(
+    packageMarkdown,
+    /Earlier site release summaries|generated: release-summaries/,
+  );
+});
+
 test('agent handoff installs the current skill and uses HTTP documentation discovery', async () => {
   const skillPath = path.resolve(appRoot, '../../packages/react-components/agent/SKILL.md');
   const source = await fs.readFile(skillPath, 'utf8');

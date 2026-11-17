@@ -36,6 +36,8 @@ subsequent builds use the pinned local checkout.
 
 - Canonical guidance and page metadata: [`content/`](content).
 - Shared tables and starter prompt: [`content/data/`](content/data).
+- Dated documentation notes: [`CHANGELOG.md`](CHANGELOG.md), included by the
+  `content/overview/DocumentationChangelog.md` page wrapper.
 - Package setup, changelog, and consumer skill: the package's canonical files,
   included at build time rather than copied by authors.
 - Build and source tooling: [`scripts/`](scripts).
@@ -151,7 +153,7 @@ keeps its independent version; documentation changes do not bump it.
 Follow [update-docs-changelog](../../.github/skills/update-docs-changelog/SKILL.md)
 before opening or updating a PR to main. Add meaningful notes under a
 `## Description - YYYY-MM-DD` heading in the
-[documentation changelog](content/overview/DocumentationChangelog.md), including
+[documentation changelog](CHANGELOG.md), including
 maintenance changes. No PR number or version is needed. Keep historical notes
 and reuse the PR's section when updating it. Package release notes remain separate.
 

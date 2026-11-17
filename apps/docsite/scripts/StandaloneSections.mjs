@@ -125,8 +125,7 @@ export async function standaloneSections({
       ]),
     ),
   ].join('\n\n');
-  const [history, colorsSource, typographySource] = await Promise.all([
-    fs.readFile(path.join(appRoot, 'Changelog.json'), 'utf8').then(JSON.parse),
+  const [colorsSource, typographySource] = await Promise.all([
     fs.readFile(path.join(appRoot, 'src/pages/Colors.tsx'), 'utf8'),
     fs.readFile(path.join(appRoot, 'src/pages/Typography.tsx'), 'utf8'),
   ]);
@@ -184,12 +183,6 @@ export async function standaloneSections({
             .sort((first, second) => first.route.localeCompare(second.route))
             .map((page) => `- [${page.title}](/${page.route}.md): ${page.summary}`)
             .join('\n')}`,
-      )
-      .join('\n\n'),
-    'release-summaries': history.entries
-      .map(
-        (entry) =>
-          `### ${entry.version} — ${entry.title} (${entry.date})\n\n${entry.summary}\n\n${entry.sections.map((section) => `#### ${section.title}\n\n${section.items.map((item) => `- ${item}`).join('\n')}`).join('\n\n')}`,
       )
       .join('\n\n'),
   };
