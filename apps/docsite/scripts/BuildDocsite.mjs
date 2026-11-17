@@ -485,7 +485,7 @@ export function standalonePageHtml(page, metadata) {
       ]),
     }).html,
   );
-  const guidance = `<article class="standalone-guidance">${tokenSwatches(body)}</article>`;
+  const guidance = `<article class="standalone-guidance"${page.showMergedPreviews ? ' data-inline-example-list' : ''}>${tokenSwatches(body)}</article>`;
   const content = unfinished
     ? `<div data-page-widget="work-in-progress" class="reference-work-in-progress"><h1>Page under construction</h1><p>We're still working on this page.</p></div>`
     : guidance;
@@ -899,7 +899,11 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
         page,
         await resolveStandalonePage(page, { pages, basePath, generated, allExamples }),
       );
-      page.examples.push(...(mergedSections.examples.get(page.route) ?? []));
+      const mergedExamples = mergedSections.examples.get(page.route);
+      if (mergedExamples) {
+        page.examples.push(...mergedExamples);
+        page.showMergedPreviews = true;
+      }
     } else {
       page.guidance = await expandStandaloneMarkdown(page.guidance, {
         route: page.route,

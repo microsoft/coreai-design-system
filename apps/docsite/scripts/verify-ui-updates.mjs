@@ -52,10 +52,28 @@ try {
   await visit('templates/ReactRouter/');
   for (const name of [...routerSections, 'Shared helper'])
     await expect(page.getByRole('heading', { level: 2, name, exact: true })).toHaveCount(1);
-  const previews = page.locator('.preview[data-example-id]');
+  const guidance = page.locator('[data-page-panel="usage"]');
+  const samples = page.locator('[data-page-panel="samples"]');
+  const previews = guidance.locator('.preview[data-example-id]');
   await expect(previews).toHaveCount(routerSections.length);
-  for (const preview of await previews.all())
+  for (const name of routerSections) {
+    const section = guidance.getByRole('heading', { level: 2, name, exact: true }).locator('..');
+    const preview = section.locator(':scope > .preview[data-example-id]');
+    await expect(preview).toBeVisible();
     await expect(preview.locator('> :not(p)').first()).toBeAttached();
+  }
+  await page.getByRole('tab', { name: 'Samples', exact: true }).click();
+  await expect(samples.locator('.preview[data-example-id]')).toHaveCount(routerSections.length);
+  for (const name of routerSections) {
+    const section = samples
+      .locator('.reference-sample-section')
+      .filter({ has: page.getByRole('heading', { name, exact: true }) });
+    await expect(section.locator('.preview[data-example-id]')).toBeVisible();
+    await expect(section.locator('.reference-page-code-block')).toBeVisible();
+  }
+  await page.getByRole('tab', { name: 'Guidance', exact: true }).click();
+  await expect(previews).toHaveCount(routerSections.length);
+  for (const preview of await previews.all()) await expect(preview).toBeVisible();
   await page.goto(new URL('templates/ReactRouterCardLink/', root).href);
   await page.waitForURL(/\/templates\/ReactRouter\/#guidance-card-link$/);
   await page.locator('[data-reference-ready="true"]').waitFor();

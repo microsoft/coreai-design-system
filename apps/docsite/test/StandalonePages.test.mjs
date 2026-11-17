@@ -510,7 +510,7 @@ test('React Router templates share setup notes and retain the helper source', as
       basePath: '/',
       fence: codeFence,
     });
-    assert.match(markdown, /Copy all files listed under \*\*Code\*\*/);
+    assert.match(markdown, /Copy all files listed under \*\*Samples\*\*/);
     assert.match(markdown, /`RouterLinkSlots\.tsx`/);
     assert.match(markdown, /not an\nnpm export/);
     assert.doesNotMatch(markdown, /<!-- include:/);
