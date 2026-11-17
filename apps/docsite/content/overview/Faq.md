@@ -77,7 +77,7 @@ prompt that installs or updates the repository skill before UI work. The skill
 checks the [current docs/skill version](/version.json) once per task. Its version
 can change independently of the component package.
 
-- [Agent workflow](/guides/AgentWorkflow.md)
+- [Agent workflow and reusable skill](/source/package/SKILL.md)
 
 ### How can I give my agent the guidance on a component page?
 
@@ -89,7 +89,7 @@ Check the page URL, network connection, and whether your agent has a web-fetch o
 
 If the server is unavailable, have your agent use the installed package README, changelog, and skill, and state that it cannot access live docs. Report persistent connection problems through GitHub issues.
 
-- [Agent workflow](/guides/AgentWorkflow.md)
+- [Agent workflow and reusable skill](/source/package/SKILL.md)
 
 ## Help and feedback
 

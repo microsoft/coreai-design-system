@@ -3666,48 +3666,6 @@ a.theme-crossfade:hover {
   max-width: 960px;
 }
 
-.mcp-guide {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  max-width: 920px;
-}
-
-.mcp-section {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.mcp-client-tabs {
-  width: fit-content;
-}
-
-.coreai-skill-view {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-width: 0;
-}
-
-.coreai-skill-intro {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-width: 760px;
-}
-
-.coreai-skill-intro :is(h2, p) {
-  margin: 0;
-}
-
-.coreai-skill-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
 .colors-theme-scope {
   --mf-brand-70: var(--colorBrandBackground);
   --mf-brand-80: var(--colorBrandBackground);
@@ -3977,10 +3935,6 @@ a.theme-crossfade:hover {
 
   .app-content--home {
     padding: 0;
-  }
-
-  .mcp-guide {
-    gap: 24px;
   }
 
   .do-dont-grid,

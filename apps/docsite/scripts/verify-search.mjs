@@ -4,8 +4,9 @@
 import assert from 'node:assert/strict';
 import { chromium, expect } from 'playwright/test';
 
-const root = new URL(process.argv[2] ?? 'http://127.0.0.1:8082/coreai-design-system/');
+const root = new URL(process.argv[2] ?? 'http://127.0.0.1:8081/');
 const metadata = await (await fetch(new URL('llms/index.json', root))).json();
+const pages = metadata.pages.filter((record) => !record.mergedInto);
 const browser = await chromium.launch();
 let routeChecks = 0;
 try {
@@ -17,11 +18,32 @@ try {
   const results = page.locator('.app-search-result');
   const resultFor = (path) =>
     page.locator(`.app-search-result[href="${new URL(path, root).pathname}"]`);
+  const html = await (await fetch(root)).text();
+  await page.goto(root.href);
+  const { indexedPaths, navigationPaths } = await page.evaluate((source) => {
+    const document = new globalThis.DOMParser().parseFromString(source, 'text/html');
+    const index = JSON.parse(document.getElementById('reference-search-index').textContent);
+    return {
+      indexedPaths: index.map((entry) => entry.path),
+      navigationPaths: [...document.querySelectorAll('[data-navigation-entry]')].map(
+        (link) => new URL(link.getAttribute('href'), globalThis.location.href).pathname,
+      ),
+    };
+  }, html);
+  const navPaths = new Set(navigationPaths);
+  assert.deepEqual(
+    new Set(indexedPaths.map((path) => new URL(path.slice(1), root).pathname)),
+    navPaths,
+    'Search indexes exactly the navigation tree, never unlisted pages or redirects.',
+  );
+  assert.deepEqual(
+    navPaths,
+    new Set(pages.map((record) => new URL(record.htmlPath, root).pathname)),
+    'Every published non-redirect page appears in navigation.',
+  );
   const ready = async () => {
     const pathname = new URL(page.url()).pathname.replace(/index\.html$/, '');
-    const record = metadata.pages.find(
-      (entry) => new URL(entry.htmlPath, root).pathname === pathname,
-    );
+    const record = pages.find((entry) => new URL(entry.htmlPath, root).pathname === pathname);
     assert.ok(record, `Known route: ${pathname}`);
     await expect(page).toHaveTitle(`${record.title} | CoreAI design system`);
     await page.locator('[data-reference-ready="true"]').waitFor();
@@ -33,12 +55,15 @@ try {
       'attention-grabbing',
     );
     await search.fill('Forms');
-    await expect(resultFor('patterns/Forms/')).toBeVisible();
+    await expect(resultFor('components/Field/')).toBeVisible();
+    await expect(resultFor('patterns/Forms/')).toHaveCount(0);
     await search.fill('tex');
     await expect(results.first().locator('.app-search-result__title')).toHaveText('Text');
+    for (const href of await results.evaluateAll((links) => links.map((link) => link.pathname)))
+      assert.ok(navPaths.has(href), `Search result is in navigation: ${href}`);
   };
 
-  for (const record of metadata.pages) {
+  for (const record of pages) {
     await page.goto(new URL(record.htmlPath, root).href);
     await ready();
     await assertSearch();
@@ -50,10 +75,10 @@ try {
     'overview/Introduction/',
     'foundations/Typography/',
     'components/Button/',
-    'patterns/Forms/',
+    'components/Field/',
     'templates/EmptyState/',
     'templates/ShellAndNavigation/',
-    'guides/AgentWorkflow/',
+    'guides/Migration/',
   ];
   for (const theme of ['light', 'dark']) {
     await page.evaluate((value) => localStorage.setItem('coreai-docsite-theme', value), theme);
@@ -115,15 +140,21 @@ try {
       await search.fill('tex');
       await expect(page.locator('.app-search-results__header')).toBeInViewport();
       await expect(results.first()).toBeInViewport();
-      await results.first().hover();
-      const hover = await results
-        .first()
-        .evaluate((element) => globalThis.getComputedStyle(element).backgroundColor);
       await search.hover();
-      const idle = await results
-        .first()
-        .evaluate((element) => globalThis.getComputedStyle(element).backgroundColor);
-      assert.notEqual(hover, idle, `${theme}: hover is visible`);
+      const idle = await results.first().evaluate(async (element) => {
+        await Promise.all(element.getAnimations().map((animation) => animation.finished));
+        return globalThis.getComputedStyle(element).backgroundColor;
+      });
+      await results.first().hover();
+      await expect
+        .poll(() =>
+          results
+            .first()
+            .evaluate((element) => globalThis.getComputedStyle(element).backgroundColor),
+        )
+        .not.toBe(idle);
+      await search.hover();
+      await expect(results.first()).toHaveCSS('background-color', idle);
       routeChecks++;
     }
     await page.goBack();
@@ -149,6 +180,40 @@ try {
   await search.fill('Text');
   await resultFor('components/Text/').click();
   await expect(search).toHaveValue('');
+
+  for (const route of [
+    'guides/UseWithAgents',
+    'guides/PackageSkill',
+    'guides/AgentWorkflow',
+    'guides/RouterLinkSlots',
+    'patterns/Forms',
+    'mcp-server',
+    'guides/mcp-setup',
+    'coreai-skill',
+    'agent-skill',
+    'foundational-skill',
+    'design-md',
+    'overview/resources',
+    'resources',
+    'prototyping',
+  ]) {
+    for (const suffix of ['/', '.md'])
+      assert.equal(
+        (await fetch(new URL(`${route}${suffix}`, root))).status,
+        404,
+        `Deleted route must not be served: ${route}${suffix}`,
+      );
+  }
+  const redirects = metadata.pages.filter((record) => record.mergedInto);
+  assert.equal(redirects.length, 7, 'Keep all seven React Router adapter redirects.');
+  for (const record of redirects) {
+    await page.goto(new URL(record.htmlPath, root).href);
+    await page.waitForURL(/\/templates\/ReactRouter\/#guidance-/);
+    await ready();
+    assert.ok(!navPaths.has(new URL(record.htmlPath, root).pathname));
+    const anchor = page.locator(new URL(page.url()).hash);
+    await expect(anchor).toBeInViewport();
+  }
 
   await page.setViewportSize({ width: 390, height: 844 });
   for (const route of ['', 'templates/EmptyState/']) {

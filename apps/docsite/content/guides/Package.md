@@ -35,6 +35,6 @@ rather than publishing Aptos files.
 
 The following content is included from the package README during the build,
 not copied into a second maintained guide. Start with the
-[agent workflow](./AgentWorkflow.md) for targeted Markdown documentation lookup.
+[agent workflow](/source/package/SKILL.md) for targeted Markdown documentation lookup.
 
 <!-- include: package-readme -->

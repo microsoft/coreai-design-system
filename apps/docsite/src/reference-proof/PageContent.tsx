@@ -33,8 +33,6 @@ const standaloneViewNames = new Set([
   'faqs',
   'package',
   'changelog',
-  'package-skill',
-  'agent-workflow',
   'content',
   'work-in-progress',
   'guide-accordions',

@@ -113,6 +113,41 @@ test('maintenance release records are not published as documentation pages', asy
   assert.ok(!pages.some((page) => page.id === 'documentation-changelog'));
 });
 
+test('deleted pages have no content, legacy registry entry, or route alias', async () => {
+  const removed = [
+    'guides/UseWithAgents',
+    'guides/PackageSkill',
+    'guides/AgentWorkflow',
+    'guides/RouterLinkSlots',
+    'patterns/Forms',
+  ];
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  const routes = new Set(pages.flatMap((page) => [`/${page.route}/`, ...page.aliases]));
+  for (const route of removed) {
+    assert.ok(!routes.has(`/${route}/`), route);
+    await assert.rejects(fs.access(path.join(appRoot, 'content', `${route}.md`)), {
+      code: 'ENOENT',
+    });
+  }
+  for (const alias of [
+    '/mcp-server/',
+    '/guides/mcp-setup/',
+    '/coreai-skill/',
+    '/agent-skill/',
+    '/foundational-skill/',
+    '/design-md/',
+    '/overview/resources/',
+    '/resources/',
+  ])
+    assert.ok(!routes.has(alias), alias);
+  const registry = JSON.parse(await fs.readFile(path.join(appRoot, 'SiteRegistry.json'), 'utf8'));
+  const legacyIds = new Set(registry.pages.map((page) => page.id));
+  for (const id of ['mcp-server', 'coreai-skill', 'prototyping', 'resources'])
+    assert.ok(!legacyIds.has(id), id);
+  for (const filename of ['McpServer.tsx', 'CoreAISkill.tsx'])
+    await assert.rejects(fs.access(path.join(appRoot, 'src/pages', filename)), { code: 'ENOENT' });
+});
+
 test('guide accordions retain introductory text, section anchors, and complete code samples', () => {
   const html = standalonePageHtml(
     {
@@ -201,7 +236,7 @@ test('local guidance generation excludes stories disabled for documentation mani
 
 test('Markdown includes and generated sections expand without evaluating code fences', async () => {
   const input =
-    '## Colors\n\n<!-- generated: colors -->\n\n```md\n<!-- generated: unknown -->\n```\n\n<!-- include: router-link-slots -->';
+    '## Colors\n\n<!-- generated: colors -->\n\n```md\n<!-- generated: unknown -->\n```\n\n<!-- include: agent-prompt -->';
   const output = await expandStandaloneMarkdown(input, {
     route: 'foundations/Colors',
     pages: [],
@@ -214,8 +249,12 @@ test('Markdown includes and generated sections expand without evaluating code fe
   });
   assert.match(output, /A real token table/);
   assert.match(output, /<!-- generated: unknown -->/);
-  assert.match(output, /export function useRouterLinkSlot/);
-  assert.match(output, /registerPlugin|useRouterNavLinkSlot/);
+  assert.match(output, /```text/);
+  assert.ok(
+    output.includes(
+      (await fs.readFile(path.join(appRoot, 'content/data/AgentPrompt.md'), 'utf8')).trim(),
+    ),
+  );
   await assert.rejects(
     expandStandaloneMarkdown('<!-- include: secrets -->', { fence: codeFence }),
     /Unknown included/,
@@ -252,20 +291,12 @@ test('agent handoff installs the current skill and uses HTTP documentation disco
   assert.match(prompt, /update the existing CoreAI skill.*before implementing/);
   assert.match(prompt, /Preserve repository-specific rules/);
   const expanded = await expandStandaloneMarkdown('<!-- include: agent-prompt -->', {
-    route: 'guides/UseWithAgents',
+    route: 'overview/Introduction',
     pages: [],
     basePath: '/repo/',
     fence: codeFence,
   });
   assert.ok(expanded.includes(prompt));
-  const pages = await readReferencePages(path.join(appRoot, 'content'));
-  assert.equal(
-    pages.find((page) => page.route === 'guides/mcp-setup'),
-    undefined,
-  );
-  const entry = pages.find((page) => page.route === 'guides/UseWithAgents');
-  assert.ok(entry.aliases.includes('/mcp-server/'));
-  assert.ok(entry.aliases.includes('/guides/mcp-setup/'));
 });
 
 test('site release notes omit retired integration entries without changing package history', () => {
@@ -400,8 +431,6 @@ test('overview pages opt into their Markdown-backed rich views', async () => {
     ...introductionSource.data,
     body: introductionSource.content.trim(),
   });
-  assert.ok(introduction?.aliases.includes('/overview/resources/'));
-  assert.ok(introduction?.aliases.includes('/resources/'));
   assert.doesNotMatch(introductionGuidance, /Why CoreAI has a shared design system/);
   assert.match(introductionGuidance, /<!-- view:resources -->/);
   assert.match(
@@ -536,33 +565,22 @@ test('package guidance opts into its Markdown-backed setup view', async () => {
   assert.match(guidance, /<!-- include: package-readme -->/);
 });
 
-test('release and skill pages opt into scanning views without duplicating their sources', async () => {
+test('release notes use a scanning view without duplicating their source', async () => {
   const pages = await readReferencePages(path.join(appRoot, 'content'));
   const changelog = pages.find((candidate) => candidate.route === 'overview/Changelog');
-  const skill = pages.find((candidate) => candidate.route === 'guides/PackageSkill');
   assert.equal(changelog?.renderer, 'changelog');
-  assert.equal(skill?.renderer, 'package-skill');
   const changelogSource = await fs.readFile(
     path.join(appRoot, 'content', changelog.guidance),
     'utf8',
   );
-  const skillSource = await fs.readFile(path.join(appRoot, 'content', skill.guidance), 'utf8');
   assert.match(changelogSource, /<!-- include: package-release-notes -->/);
-  assert.match(skillSource, /<!-- include: package-skill -->/);
 });
 
-test('workflow and content pages use bounded views backed by their complete Markdown', async () => {
+test('content uses a bounded view backed by its complete Markdown', async () => {
   const pages = await readReferencePages(path.join(appRoot, 'content'));
-  const workflow = pages.find((candidate) => candidate.route === 'guides/AgentWorkflow');
   const content = pages.find((candidate) => candidate.route === 'foundations/Content');
-  assert.equal(workflow?.renderer, 'agent-workflow');
   assert.equal(content?.renderer, 'content');
-  const workflowSource = await fs.readFile(
-    path.join(appRoot, 'content', workflow.guidance),
-    'utf8',
-  );
   const contentSource = await fs.readFile(path.join(appRoot, 'content', content.guidance), 'utf8');
-  assert.match(workflowSource, /\*\*Refresh the skill\.\*\*/);
   assert.match(contentSource, /\*\*Bad:\*\*[\s\S]*\*\*Better:\*\*/);
   assert.match(contentSource, /## Get help/);
 });
@@ -613,10 +631,11 @@ test('custom foundation views and published Markdown share authored tokens, pres
 
 test('Storybook snapshots embed canonical Markdown for manifest-only readers without a second authored copy', async () => {
   const mirrors = await generateStandaloneDocs();
-  assert.equal(mirrors.length, 4);
+  const filenames = ['Theming', 'VariationsFromFluent', 'StylingWithCssModules'];
+  assert.deepEqual(new Set(mirrors), new Set(filenames.map((filename) => `${filename}.mdx`)));
   assert.ok(!mirrors.includes('ReactGrab.mdx'));
   const pages = await readReferencePages(path.join(appRoot, 'content'));
-  for (const filename of ['Theming', 'VariationsFromFluent', 'StylingWithCssModules', 'MCPSetup']) {
+  for (const filename of filenames) {
     const snapshot = await fs.readFile(path.join(standaloneDocsRoot, `${filename}.mdx`), 'utf8');
     const page = pages.find((page) =>
       page.migratedFrom?.some((source) => source.endsWith(`/docs/${filename}.mdx`)),

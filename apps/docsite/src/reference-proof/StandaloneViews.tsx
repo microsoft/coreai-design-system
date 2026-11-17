@@ -14,13 +14,10 @@ import {
   CopyButton,
   Link,
   LinkButton,
-  Markdown,
   MessageBar,
   MessageBarActions,
   MessageBarBody,
   MessageBarTitle,
-  Tab,
-  TabList,
   Text,
 } from '@coreai-ds/react-components';
 import {
@@ -947,81 +944,6 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
   );
 }
 
-function stripFrontmatter(source: string) {
-  return source.replace(/^---\n[\s\S]*?\n---\n/, '').trimStart();
-}
-
-function PackageSkillView({ sourceHtml }: PageWidgetProps) {
-  const [view, setView] = React.useState<'markdown' | 'text'>('markdown');
-  const model = React.useMemo(() => {
-    const document = documentFrom(sourceHtml);
-    const sourceHeading = document.getElementById('guidance-skill-source');
-    if (!sourceHeading) throw new Error('Missing skill source.');
-    const source = followingUntil(sourceHeading, () => false)
-      .find((element) => element.tagName === 'PRE')
-      ?.querySelector('code')?.textContent;
-    const download = document.querySelector<HTMLAnchorElement>(
-      'a[href$="/source/package/SKILL.md"]',
-    );
-    if (!source || !download) throw new Error('Missing downloadable skill source.');
-    return {
-      guidanceHtml: [...document.querySelectorAll('h2')]
-        .filter((heading) => heading !== sourceHeading)
-        .flatMap((heading) => [
-          heading.outerHTML,
-          ...followingUntil(heading, (candidate) => candidate.tagName === 'H2').map(
-            (element) => element.outerHTML,
-          ),
-        ])
-        .join(''),
-      source,
-      downloadHref: download.href,
-    };
-  }, [sourceHtml]);
-  return (
-    <div className="coreai-skill-view">
-      <div
-        className="coreai-skill-guidance standalone-guidance"
-        dangerouslySetInnerHTML={{ __html: model.guidanceHtml }}
-      />
-      <div className="coreai-skill-toolbar">
-        <TabList
-          appearance="elevated"
-          selectedValue={view}
-          onTabSelect={(_event, data) => setView(data.value as 'markdown' | 'text')}
-        >
-          <Tab value="markdown">Markdown</Tab>
-          <Tab value="text">Rendered</Tab>
-        </TabList>
-        <Button
-          as="a"
-          href={model.downloadHref}
-          download="SKILL.md"
-          appearance="outline"
-          icon={<ArrowDownload20Regular />}
-        >
-          Download
-        </Button>
-      </div>
-      {view === 'markdown' ? (
-        <CodeBlock
-          className="coreai-skill-code"
-          code={model.source}
-          language="markdown"
-          header={
-            <Text preset="heading6" foreground={3}>
-              .github/skills/coreai-ds-fluentui-react/SKILL.md
-            </Text>
-          }
-          headerAppearance="subtle"
-        />
-      ) : (
-        <Markdown content={stripFrontmatter(model.source)} />
-      )}
-    </div>
-  );
-}
-
 function headingGroups(elements: Element[], tagName: 'H3' | 'H4') {
   return elements
     .map((element, index) => {
@@ -1265,94 +1187,6 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
   );
 }
 
-function AgentWorkflowView({ sourceHtml }: PageWidgetProps) {
-  const model = React.useMemo(() => {
-    const document = documentFrom(sourceHtml);
-    const startElements = sectionElements(document, 'guidance-start-here', ['H2']);
-    const steps = [
-      ...(startElements.find((element) => element.tagName === 'OL')?.children ?? []),
-    ].map((item) => {
-      const clone = item.cloneNode(true) as Element;
-      const heading = clone.querySelector('strong');
-      const title = heading?.textContent?.replace(/\.$/, '').trim() ?? '';
-      heading?.remove();
-      return { title, html: clone.innerHTML.trim() };
-    });
-    const mappingElements = sectionElements(document, 'guidance-direct-url-mapping', ['H2']);
-    const mapping = mappingElements
-      .flatMap((element) => [...element.querySelectorAll('li')])
-      .map((item) => item.textContent?.trim() ?? '')
-      .join('\n');
-    const remaining = [...document.querySelectorAll('h2')]
-      .filter(
-        (heading) => !['guidance-start-here', 'guidance-direct-url-mapping'].includes(heading.id),
-      )
-      .map((heading) => ({
-        id: heading.id,
-        title: heading.textContent?.trim() ?? '',
-        html: followingUntil(heading, (candidate) => candidate.tagName === 'H2')
-          .map((element) => element.outerHTML)
-          .join(''),
-      }));
-    return {
-      baseHtml: startElements.find((element) => element.tagName === 'P')?.innerHTML ?? '',
-      steps,
-      mapping,
-      mappingHtml: mappingElements
-        .filter((element) => element.tagName !== 'UL')
-        .map((element) => element.outerHTML)
-        .join(''),
-      remaining,
-    };
-  }, [sourceHtml]);
-  return (
-    <div className="agent-workflow-view">
-      <MessageBar intent="brand" layout="multiline" icon={null}>
-        <MessageBarBody>
-          <MessageBarTitle>Use CoreAI Markdown over ordinary HTTPS.</MessageBarTitle>
-          <span dangerouslySetInnerHTML={{ __html: model.baseHtml }} />
-        </MessageBarBody>
-      </MessageBar>
-      <div className="package-install">
-        {model.steps.map((step, index) => (
-          <div className="package-step" key={step.title}>
-            <span className="package-step__number">{index + 1}</span>
-            <div className="package-step__content">
-              <Text as="h3" weight="semibold" foreground={1}>
-                {step.title}
-              </Text>
-              <div dangerouslySetInnerHTML={{ __html: step.html }} />
-            </div>
-          </div>
-        ))}
-      </div>
-      <section className="agent-workflow-mapping">
-        <Text as="h2" preset="heading3" foreground={1}>
-          Direct URL mapping
-        </Text>
-        <CodeBlock code={model.mapping} language="text" />
-        <div
-          className="standalone-guidance"
-          dangerouslySetInnerHTML={{ __html: model.mappingHtml }}
-        />
-      </section>
-      <div className="agent-workflow-sections">
-        {model.remaining.map((section) => (
-          <section className="agent-workflow-section" id={section.id} key={section.id}>
-            <Text as="h2" preset="heading3" foreground={1}>
-              {section.title}
-            </Text>
-            <div
-              className="standalone-guidance"
-              dangerouslySetInnerHTML={{ __html: section.html }}
-            />
-          </section>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export const standaloneViews: Record<string, React.ComponentType<PageWidgetProps>> = {
   'work-in-progress': () => <WorkInProgress standalone />,
   'guide-accordions': GuideAccordionsView,
@@ -1362,7 +1196,5 @@ export const standaloneViews: Record<string, React.ComponentType<PageWidgetProps
   faqs: FaqsView,
   package: PackageView,
   changelog: ChangelogView,
-  'package-skill': PackageSkillView,
   content: ContentView,
-  'agent-workflow': AgentWorkflowView,
 };

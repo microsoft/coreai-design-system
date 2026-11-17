@@ -27,8 +27,7 @@ test('site sections use the requested order with alphabetized component and temp
   const entries = [
     { path: '/components/Button/', title: 'Button' },
     { path: '/templates/EmptyState/', title: 'Empty State' },
-    { path: '/guides/UseWithAgents/', title: 'Build with your agent' },
-    { path: '/patterns/Forms/', title: 'Forms' },
+    { path: '/guides/Migration/', title: 'Migration' },
     { path: '/foundations/Content/', title: 'Content' },
     { path: '/foundations/Theming/', title: 'Theming' },
     { path: '/overview/Faq/', title: 'FAQ' },
@@ -54,7 +53,7 @@ test('site sections use the requested order with alphabetized component and temp
       ['Typography', 'Colors', 'Content', 'Surfaces', 'Spacing', 'Layout'],
       ['Button'],
       ['Empty State'],
-      ['Build with your agent', 'Forms', 'Theming'],
+      ['Migration', 'Theming'],
     ],
   );
   assert.equal(groups.flatMap((group) => group.items).length, entries.length);
@@ -64,7 +63,7 @@ test('site sections use the requested order with alphabetized component and temp
   );
 });
 
-test('search includes body-only matches and pages omitted from the sidebar', () => {
+test('search includes body-only matches in navigation entries', () => {
   const entries = [
     {
       path: '/components/Button/',
@@ -73,15 +72,14 @@ test('search includes body-only matches and pages omitted from the sidebar', () 
       searchText: 'Use the attention-grabbing primary button for the main action.',
     },
     {
-      path: '/patterns/Forms/',
-      title: 'Forms',
+      path: '/components/Field/',
+      title: 'Field',
       summary: 'Field guidance.',
       searchText: 'Validate user input.',
-      showInSidebar: false,
     },
   ];
   assert.equal(searchNavigationEntries(entries, '  ATTENTION-GRABBING  ')[0].entry, entries[0]);
-  assert.equal(searchNavigationEntries(entries, 'forms')[0].entry, entries[1]);
+  assert.equal(searchNavigationEntries(entries, 'field')[0].entry, entries[1]);
   assert.equal(searchNavigationEntries(entries, 'user input')[0].entry, entries[1]);
   assert.deepEqual(searchNavigationEntries(entries, '   '), []);
   assert.deepEqual(searchNavigationEntries(entries, 'missing phrase'), []);

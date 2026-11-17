@@ -7,7 +7,6 @@ import {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
-  Card,
   Link,
   Text,
 } from '@coreai-ds/react-components';
@@ -16,8 +15,6 @@ import { Shell } from './components/Shell';
 import { PageLayout } from './components/PageLayout';
 import { Section } from './components/Section';
 import { WorkInProgress } from './components/WorkInProgress';
-import { ExternalIcon } from './components/Icons';
-import { resourceGroups } from './data/Resources';
 import { faqGroups } from './data/Faqs';
 import { pages, redirects } from './data/Registry';
 
@@ -54,19 +51,9 @@ const Component = React.lazy(() =>
     default: module.Component,
   })),
 );
-const CoreAISkill = React.lazy(() =>
-  import('./pages/CoreAISkill').then((module) => ({
-    default: module.CoreAISkill,
-  })),
-);
 const Package = React.lazy(() =>
   import('./pages/Package').then((module) => ({
     default: module.Package,
-  })),
-);
-const McpServer = React.lazy(() =>
-  import('./pages/McpServer').then((module) => ({
-    default: module.McpServer,
   })),
 );
 const NotFound = React.lazy(() =>
@@ -82,12 +69,10 @@ const routeComponents: Record<string, React.LazyExoticComponent<React.ComponentT
   typography: Typography,
   content: Content,
   materials: Materials,
-  'coreai-skill': CoreAISkill,
   package: Package,
-  'mcp-server': McpServer,
 };
 
-const blankPageIds = new Set(['prototyping', 'content', 'materials']);
+const blankPageIds = new Set(['content', 'materials']);
 
 export function App() {
   return (
@@ -139,69 +124,6 @@ export function App() {
                               </AccordionItem>
                             ))}
                           </Accordion>
-                        </Section>
-                      ))}
-                    </PageLayout>
-                  }
-                />
-              );
-            }
-            if (page.id === 'resources') {
-              return (
-                <Route
-                  key={page.id}
-                  path={page.slug}
-                  element={
-                    <PageLayout id={page.id}>
-                      {resourceGroups.map((group) => (
-                        <Section key={group.id} id={group.id} title={group.title}>
-                          <div className="resources-grid">
-                            {group.resources.map((resource) => (
-                              <a
-                                key={resource.id}
-                                href={resource.href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="resource-card-link"
-                                aria-labelledby={`resource-${resource.id}-title`}
-                                aria-describedby={`resource-${resource.id}-description resource-${resource.id}-destination`}
-                              >
-                                <Card
-                                  appearance="filled-alternative"
-                                  focusMode="off"
-                                  className="resource-card"
-                                >
-                                  <span className="resource-card__icon" aria-hidden="true">
-                                    <resource.icon />
-                                  </span>
-                                  <Text
-                                    as="h3"
-                                    id={`resource-${resource.id}-title`}
-                                    size={500}
-                                    weight="regular"
-                                    foreground={1}
-                                  >
-                                    {resource.title}
-                                  </Text>
-                                  <Text
-                                    as="p"
-                                    id={`resource-${resource.id}-description`}
-                                    size={300}
-                                    foreground={3}
-                                  >
-                                    {resource.description}
-                                  </Text>
-                                  <div className="resource-card__destination">
-                                    <Text id={`resource-${resource.id}-destination`} size={200}>
-                                      {resource.destination}
-                                      <span className="sr-only"> (opens in a new tab)</span>
-                                    </Text>
-                                    <ExternalIcon />
-                                  </div>
-                                </Card>
-                              </a>
-                            ))}
-                          </div>
                         </Section>
                       ))}
                     </PageLayout>

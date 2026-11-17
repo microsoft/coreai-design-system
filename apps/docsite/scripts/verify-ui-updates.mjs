@@ -21,7 +21,7 @@ try {
       await page.screenshot({ path: path.join(screenshots, name), animations: 'disabled' });
   };
 
-  await visit('guides/RouterLinkSlots/');
+  await visit('overview/Introduction/');
   await page.getByRole('button', { name: 'Templates', exact: true }).click();
   const templateLinks = page.locator('.reference-navigation-link');
   await expect(templateLinks.filter({ hasText: /^React Router$/ })).toHaveCount(1);

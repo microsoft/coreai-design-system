@@ -16,8 +16,6 @@ export const standaloneRendererNames = [
   'faqs',
   'package',
   'changelog',
-  'package-skill',
-  'agent-workflow',
   'content',
   'guide-accordions',
 ];
@@ -27,8 +25,6 @@ export const wholePageRendererNames = [
   'faqs',
   'package',
   'changelog',
-  'package-skill',
-  'agent-workflow',
   'content',
   'guide-accordions',
 ];

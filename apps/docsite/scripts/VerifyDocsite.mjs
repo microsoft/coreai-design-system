@@ -190,8 +190,8 @@ try {
     'Homepage starter prompt uses the canonical source.',
   );
   assert.ok(
-    (await (await read('guides/UseWithAgents.md')).text()).includes(starterPrompt),
-    'Agent onboarding includes the same starter prompt.',
+    (await (await read('overview/Introduction.md')).text()).includes(starterPrompt),
+    'Introduction includes the same starter prompt.',
   );
   for (const filename of ['paper-shaders-license.txt', 'paper-shaders-notice.txt']) {
     assert.equal(
@@ -243,7 +243,15 @@ try {
       );
     }
     const html = await (await read(record.htmlPath)).text();
-    assert.ok(html.includes('id="main"'), record.htmlPath);
+    if (record.mergedInto) {
+      assert.ok(
+        html.includes(`url=${metadata.basePath}${record.mergedInto}/#guidance-`),
+        `${record.htmlPath}: redirect to the combined page section`,
+      );
+      assert.ok(!html.includes('id="reference-search-index"'), record.htmlPath);
+    } else {
+      assert.ok(html.includes('id="main"'), record.htmlPath);
+    }
     for (const [, href] of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
       checkLink(href.replaceAll('&amp;', '&'), `${record.htmlPath}index.html`);
     }
@@ -286,6 +294,22 @@ try {
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto(componentPage('Button'));
   await page.locator('[data-reference-ready="true"]').waitFor();
+  const { indexedPaths, navigationPaths } = await page.evaluate((html) => {
+    const source = new globalThis.DOMParser().parseFromString(html, 'text/html');
+    const entries = JSON.parse(source.getElementById('reference-search-index').textContent);
+    return {
+      indexedPaths: entries.map((entry) => entry.path),
+      navigationPaths: [...source.querySelectorAll('[data-navigation-entry]')].map(
+        (link) => new URL(link.getAttribute('href'), globalThis.location.href).pathname,
+      ),
+    };
+  }, home);
+  const navigationPathSet = new Set(navigationPaths);
+  assert.deepEqual(
+    new Set(indexedPaths.map((path) => new URL(path.slice(1), root).pathname)),
+    navigationPathSet,
+    'Search indexes exactly the navigation tree.',
+  );
   const navigation = page.locator('nav[aria-label="Documentation"]');
   const accordionLink = navigation.getByRole('link', { name: 'Accordion', exact: true });
   assert.ok((await accordionLink.getAttribute('class')).includes('fui-LinkButton'));
@@ -297,14 +321,14 @@ try {
   assert.equal(await accordionLink.getAttribute('aria-current'), 'page');
   const [newTab] = await Promise.all([
     context.waitForEvent('page'),
-    accordionLink.click({ modifiers: ['Control'] }),
+    accordionLink.click({ modifiers: ['ControlOrMeta'] }),
   ]);
   await newTab.waitForLoadState('domcontentloaded');
   assert.equal(newTab.url(), componentPage('Accordion'));
   await newTab.close();
   await page.getByRole('searchbox', { name: 'Search navigation' }).fill('Button');
   const result = navigation.locator('a.app-search-result').first();
-  assert.ok((await result.getAttribute('class')).includes('fui-LinkButton'));
+  assert.ok(navigationPathSet.has(new URL(await result.getAttribute('href'), root).pathname));
   await result.click();
   await page.locator('[data-reference-ready="true"]').waitFor();
   await page.getByRole('heading', { level: 1, name: 'Button', exact: true }).waitFor();
@@ -349,12 +373,12 @@ try {
     await trigger.click();
   }
   const missingContent = await page.evaluate(async () => {
-    const source = new DOMParser().parseFromString(
-      await (await fetch(location.href)).text(),
+    const source = new globalThis.DOMParser().parseFromString(
+      await (await fetch(globalThis.location.href)).text(),
       'text/html',
     );
     const normalize = (text) => text.replace(/\s+/g, ' ').trim();
-    const visible = normalize(document.querySelector('.content-page').innerText);
+    const visible = normalize(globalThis.document.querySelector('.content-page').innerText);
     return [
       ...source.querySelectorAll('[data-page-widget="content"] p, [data-page-widget="content"] li'),
     ]
