@@ -10,22 +10,54 @@ import {
   azureLightTheme,
   azureDarkTheme,
   azureBrandVariants,
+  createCoreAIDarkTheme,
+  createCoreAILightTheme,
   type BrandVariants,
   type CoreAITheme,
 } from '@coreai-ds/react-components';
 import { readStoredValue, writeStoredValue } from '../BrowserState.mjs';
+import { createBrandRamp, normalizeHex } from '../utils/BrandRamp.mjs';
 
 export type ThemeMode = 'light' | 'dark';
 export type ThemePreference = ThemeMode | 'system';
-export type BrandPreference = 'coreai' | 'azure';
+export type BrandPreference = 'coreai' | 'azure' | 'custom';
 
 const STORAGE_KEY = 'coreai-docsite-theme';
 const BRAND_STORAGE_KEY = 'coreai-docsite-brand';
+const CUSTOM_COLOR_STORAGE_KEY = 'coreai-docsite-custom-color';
+export const DEFAULT_CUSTOM_COLOR = '#0F7C8C';
 
 const brands = {
   coreai: { light: coreaiLightTheme, dark: coreaiDarkTheme, variants: coreaiBrandVariants },
   azure: { light: azureLightTheme, dark: azureDarkTheme, variants: azureBrandVariants },
 };
+
+/**
+ * Builds light and dark themes from a custom key color. The ramp goes through
+ * the same CoreAI theme factories as the shipped brands, then gets the same
+ * brand overrides as the CoreAI purple themes. Neutral tokens are untouched.
+ */
+function createCustomBrand(color: string) {
+  const variants = createBrandRamp(color) as BrandVariants;
+  const light: CoreAITheme = {
+    ...createCoreAILightTheme(variants),
+    colorBrandBackground: variants[70],
+    colorBrandBackgroundHover: variants[60],
+    colorBrandBackgroundPressed: variants[40],
+    colorBrandBackgroundSelected: variants[50],
+  };
+  const dark: CoreAITheme = {
+    ...createCoreAIDarkTheme(variants),
+    colorBrandForeground1: variants[110],
+    colorBrandForeground2: variants[120],
+    colorBrandForegroundLink: variants[140],
+    colorNeutralForeground2BrandHover: variants[120],
+    colorNeutralForeground2BrandSelected: variants[120],
+    colorNeutralForeground3BrandHover: variants[120],
+    colorNeutralForeground3BrandSelected: variants[120],
+  };
+  return { light, dark, variants };
+}
 
 interface ThemeContextValue {
   preference: ThemePreference;
@@ -33,8 +65,10 @@ interface ThemeContextValue {
   brand: BrandPreference;
   theme: CoreAITheme;
   brandVariants: BrandVariants;
+  customColor: string;
   setPreference: (preference: ThemePreference) => void;
   setBrand: (brand: BrandPreference) => void;
+  setCustomColor: (color: string) => void;
 }
 
 const ThemeContext = React.createContext<ThemeContextValue | undefined>(undefined);
@@ -52,17 +86,31 @@ function readSystemMode(): ThemeMode {
 
 function readStoredBrand(): BrandPreference {
   const stored = readStoredValue('localStorage', BRAND_STORAGE_KEY);
-  if (stored === 'coreai' || stored === 'azure') return stored;
+  if (stored === 'coreai' || stored === 'azure' || stored === 'custom') return stored;
   return 'coreai';
+}
+
+function readStoredCustomColor(): string {
+  return (
+    normalizeHex(readStoredValue('localStorage', CUSTOM_COLOR_STORAGE_KEY)) ?? DEFAULT_CUSTOM_COLOR
+  );
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [preference, setPreferenceState] = React.useState<ThemePreference>(readStoredPreference);
   const [systemMode, setSystemMode] = React.useState<ThemeMode>(readSystemMode);
   const [brand, setBrandState] = React.useState<BrandPreference>(readStoredBrand);
+  const [customColor, setCustomColorState] = React.useState<string>(readStoredCustomColor);
+  // Dragging the color picker updates the picker at once; the site theme follows.
+  const deferredCustomColor = React.useDeferredValue(customColor);
   const mode = preference === 'system' ? systemMode : preference;
-  const theme = brands[brand][mode];
-  const brandVariants = brands[brand].variants;
+  const customBrand = React.useMemo(
+    () => (brand === 'custom' ? createCustomBrand(deferredCustomColor) : undefined),
+    [brand, deferredCustomColor],
+  );
+  const activeBrand = customBrand ?? brands[brand as Exclude<BrandPreference, 'custom'>];
+  const theme = activeBrand[mode];
+  const brandVariants = activeBrand.variants;
 
   React.useEffect(() => {
     const systemTheme = window.matchMedia('(prefers-color-scheme: light)');
@@ -96,14 +144,41 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     writeStoredValue('localStorage', STORAGE_KEY, next);
   }, []);
 
+  const setCustomColor = React.useCallback((next: string) => {
+    const color = normalizeHex(next);
+    if (!color) return;
+    setCustomColorState(color);
+    writeStoredValue('localStorage', CUSTOM_COLOR_STORAGE_KEY, color);
+  }, []);
+
   const setBrand = React.useCallback((next: BrandPreference) => {
     setBrandState(next);
     writeStoredValue('localStorage', BRAND_STORAGE_KEY, next);
   }, []);
 
   const value = React.useMemo<ThemeContextValue>(
-    () => ({ preference, mode, brand, theme, brandVariants, setPreference, setBrand }),
-    [preference, mode, brand, theme, brandVariants, setPreference, setBrand],
+    () => ({
+      preference,
+      mode,
+      brand,
+      theme,
+      brandVariants,
+      customColor,
+      setPreference,
+      setBrand,
+      setCustomColor,
+    }),
+    [
+      preference,
+      mode,
+      brand,
+      theme,
+      brandVariants,
+      customColor,
+      setPreference,
+      setBrand,
+      setCustomColor,
+    ],
   );
 
   return (
