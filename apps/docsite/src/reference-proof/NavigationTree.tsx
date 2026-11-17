@@ -10,12 +10,18 @@ import {
   LinkButton,
 } from '@coreai-ds/react-components';
 import { useLocation } from 'react-router-dom';
-import { groupNavigationEntries, normalizeReferencePath } from './Navigation.mjs';
+import {
+  groupNavigationEntries,
+  normalizeReferencePath,
+  searchNavigationEntries,
+} from './Navigation.mjs';
 
 export interface NavigationEntry {
   path: string;
   title: string;
   summary: string;
+  searchText: string;
+  showInSidebar: boolean;
 }
 
 export interface NavigationTreeHandle {
@@ -25,11 +31,14 @@ export interface NavigationTreeHandle {
 
 export const NavigationTree = React.forwardRef<
   NavigationTreeHandle,
-  { entries: NavigationEntry[]; query: string }
+  {
+    entries: NavigationEntry[];
+    query: string;
+  }
 >(function NavigationTree({ entries, query }, ref) {
   const location = useLocation();
   const activePath = normalizeReferencePath(location.pathname);
-  const groups = groupNavigationEntries(entries);
+  const groups = groupNavigationEntries(entries.filter((entry) => entry.showInSidebar));
   const activeGroup =
     groups.find((group) => group.items.some((entry) => entry.path === activePath))?.value ??
     'getting-started';
@@ -41,13 +50,7 @@ export const NavigationTree = React.forwardRef<
     expandAll: () => setOpenItems(groups.map((group) => group.value)),
   }));
   const needle = query.trim().toLowerCase();
-  const results = entries.filter(
-    (entry) =>
-      !needle ||
-      entry.title.toLowerCase().includes(needle) ||
-      entry.path.toLowerCase().includes(needle) ||
-      entry.summary.toLowerCase().includes(needle),
-  );
+  const results = searchNavigationEntries(entries, needle);
 
   React.useEffect(() => {
     setOpenItems((current) => [...new Set([...current, activeGroup])]);
@@ -73,7 +76,7 @@ export const NavigationTree = React.forwardRef<
         </div>
         {results.length ? (
           <ul className="app-search-results__list">
-            {results.map((entry) => (
+            {results.map(({ entry, excerpt }) => (
               <li key={entry.path}>
                 <LinkButton
                   href={`${import.meta.env.BASE_URL}${entry.path.slice(1)}`}
@@ -84,7 +87,7 @@ export const NavigationTree = React.forwardRef<
                     <HighlightedText text={entry.title} />
                   </span>
                   <span className="app-search-result__excerpt">
-                    <HighlightedText text={entry.summary} />
+                    <HighlightedText text={excerpt} />
                   </span>
                 </LinkButton>
               </li>

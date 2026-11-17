@@ -35,17 +35,9 @@ const initialPage: ReferencePage = {
 };
 main.replaceChildren();
 const shellHtml = parsed.body.innerHTML;
-const entries: NavigationEntry[] = [
-  ...parsed.querySelectorAll<HTMLAnchorElement>('nav[aria-label="Documentation"] a'),
-].map((link) => ({
-  path: normalizeReferencePath(
-    new URL(link.getAttribute('href') ?? '', window.location.href).pathname.slice(
-      basePath.length - 1,
-    ),
-  ),
-  title: link.textContent?.trim() ?? '',
-  summary: link.dataset.navigationSummary ?? '',
-}));
+const searchIndex = document.getElementById('reference-search-index');
+if (!searchIndex?.textContent) throw new Error('Missing documentation search index.');
+const entries: NavigationEntry[] = JSON.parse(searchIndex.textContent);
 const paths = new Set(entries.map((entry) => entry.path));
 const logoEffectFrames = [
   'single-logo-effect1-white.png',
