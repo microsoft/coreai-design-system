@@ -1001,8 +1001,8 @@
   display: grid;
   width: 100%;
   min-width: 0;
-  min-height: auto;
-  height: 32px;
+  min-height: 32px;
+  height: auto;
   padding: 6px 10px 6px 16px;
   border: 0;
   border-radius: var(--borderRadiusMedium);
@@ -1014,6 +1014,8 @@
   justify-content: flex-start;
   text-align: left;
   text-decoration: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .reference-shell .app-sidenav__nav .reference-navigation-link[aria-current='page'] {
