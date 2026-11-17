@@ -79,6 +79,7 @@ interface ChangelogRelease {
 }
 
 interface ContentStep {
+  id: string;
   title: string;
   description: string;
   descriptionHtml: string;
@@ -966,6 +967,7 @@ function contentSteps(document: Document, sectionId: string): ContentStep[] {
         .at(-1);
       const description = body.find((element) => element.tagName === 'P');
       return {
+        id: heading.id,
         title: heading.textContent?.trim() ?? '',
         description: description?.textContent?.trim() ?? '',
         descriptionHtml: description?.innerHTML ?? '',
@@ -980,44 +982,49 @@ function contentSteps(document: Document, sectionId: string): ContentStep[] {
 
 function ContentStepList({ steps }: { steps: ContentStep[] }) {
   return (
-    <div className="content-flow content-flow--review">
-      {steps.map((step) => (
-        <div
-          className={`content-step${step.details.length ? ' content-step--review' : ''}`}
-          key={step.title}
-        >
-          <div className="content-step__content">
-            <Text as="h3" weight="semibold" foreground={1}>
-              {step.title}
-            </Text>
-            <div dangerouslySetInnerHTML={{ __html: step.descriptionHtml }} />
-            {step.details.length ? (
-              <ul className="content-publish-checklist">
-                {step.details.map((detail, detailIndex) => {
-                  const separator = detail.indexOf(':');
-                  return (
-                    <li key={`${step.title}-${detailIndex}`}>
-                      {separator >= 0 ? (
-                        <strong
-                          dangerouslySetInnerHTML={{ __html: detail.slice(0, separator + 1) }}
-                        />
-                      ) : null}
-                      <span
-                        dangerouslySetInnerHTML={{ __html: detail.slice(separator + 1).trim() }}
-                      />
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : null}
-            {step.link ? (
-              <Link href={step.link.href} external>
-                {step.link.label}
-              </Link>
-            ) : null}
-          </div>
-        </div>
-      ))}
+    <div className="content-process-layout">
+      <ol className="content-flow content-flow--review">
+        {steps.map((step) => (
+          <li
+            className={`content-step${step.details.length ? ' content-step--review' : ''}`}
+            id={step.id}
+            key={step.title}
+          >
+            <div className="content-step__content">
+              <Text as="h3" id={`${step.id}-title`} weight="semibold" foreground={1}>
+                {step.title}
+              </Text>
+              <div dangerouslySetInnerHTML={{ __html: step.descriptionHtml }} />
+              {step.link ? (
+                <Link href={step.link.href} external>
+                  {step.link.label}
+                </Link>
+              ) : null}
+            </div>
+          </li>
+        ))}
+      </ol>
+      {steps
+        .filter((step) => step.details.length)
+        .map((step) => (
+          <ul
+            className="content-publish-checklist"
+            aria-labelledby={`${step.id}-title`}
+            key={step.id}
+          >
+            {step.details.map((detail, detailIndex) => {
+              const separator = detail.indexOf(':');
+              return (
+                <li key={`${step.title}-${detailIndex}`}>
+                  {separator >= 0 ? (
+                    <strong dangerouslySetInnerHTML={{ __html: detail.slice(0, separator + 1) }} />
+                  ) : null}
+                  <span dangerouslySetInnerHTML={{ __html: detail.slice(separator + 1).trim() }} />
+                </li>
+              );
+            })}
+          </ul>
+        ))}
     </div>
   );
 }
@@ -1074,12 +1081,18 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
     );
     const processElements = sectionElements(document, 'guidance-process-tips', ['H2']);
     const helpElements = sectionElements(document, 'guidance-get-help', ['H2']);
+    const introduction = principleElements.slice(
+      0,
+      principleElements.findIndex((element) => element.tagName === 'H3'),
+    );
+    const help = contentSteps(document, 'guidance-get-help');
     return {
-      introduction: principleElements
-        .slice(
-          0,
-          principleElements.findIndex((element) => element.tagName === 'H3'),
-        )
+      lead: introduction[0]?.outerHTML ?? '',
+      specialistNote: introduction[1]?.innerHTML ?? '',
+      principlesTitle:
+        document.getElementById('guidance-write-clear-useful-content')?.textContent ?? '',
+      introduction: introduction
+        .slice(2)
         .map((element) => element.outerHTML)
         .join(''),
       principles,
@@ -1088,12 +1101,18 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
       process: contentSteps(document, 'guidance-process-tips'),
       helpDescription:
         helpElements.find((element) => element.tagName === 'P')?.textContent?.trim() ?? '',
-      help: contentSteps(document, 'guidance-get-help').map((step) => {
+      contact: help
+        .flatMap((step) => step.details)
+        .filter((detail) => detail.startsWith('Contact Content Design'))
+        .join(''),
+      help: help.map((step) => {
         if (!step.link) throw new Error('Missing content help link.');
         return {
           title: step.title,
           description: step.description,
-          details: step.details.map((detail) => documentFrom(detail).body.textContent ?? ''),
+          details: step.details
+            .filter((detail) => !detail.startsWith('Contact Content Design'))
+            .map((detail) => documentFrom(detail).body.textContent ?? ''),
           href: step.link.href,
           linkLabel: step.link.label,
         };
@@ -1101,12 +1120,25 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
     };
   }, [sourceHtml]);
   return (
-    <div className="content-page">
-      <section className="page-section content-section">
-        <div
-          className="content-introduction"
-          dangerouslySetInnerHTML={{ __html: model.introduction }}
-        />
+    <div className="content-page content-page--layout-mockup">
+      <div className="content-opening">
+        <div className="content-lead" dangerouslySetInnerHTML={{ __html: model.lead }} />
+        <MessageBar intent="brand" layout="multiline">
+          <MessageBarBody>
+            <span dangerouslySetInnerHTML={{ __html: model.specialistNote }} />
+          </MessageBarBody>
+        </MessageBar>
+      </div>
+      <section className="page-section content-section" id="guidance-write-clear-useful-content">
+        <div className="content-section__header">
+          <Text as="h2" size={500} weight="semibold" foreground={1}>
+            {model.principlesTitle}
+          </Text>
+          <div
+            className="content-principles-intro"
+            dangerouslySetInnerHTML={{ __html: model.introduction }}
+          />
+        </div>
         <Accordion className="content-principle-list" multiple collapsible>
           {model.principles.map((principle, index) => (
             <AccordionItem className="content-principle" key={principle.id} value={principle.id}>
@@ -1175,13 +1207,17 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
           ))}
         </Accordion>
       </section>
-      <section className="page-section content-section content-section--primary">
+      <section
+        className="page-section content-section content-section--primary"
+        id="guidance-process-tips"
+      >
         <ContentSectionHeader title="Process tips" description={model.processDescription} />
         <ContentStepList steps={model.process} />
       </section>
-      <section className="page-section content-section">
+      <section className="page-section content-section" id="guidance-get-help">
         <ContentSectionHeader title="Get help" description={model.helpDescription} />
         <ContentHelpCards items={model.help} />
+        <div className="content-help-contact" dangerouslySetInnerHTML={{ __html: model.contact }} />
       </section>
     </div>
   );
