@@ -2,13 +2,8 @@
 // Licensed under the MIT license.
 
 import * as React from 'react';
-import { useThemeMode, type ThemePreference } from '../theme/ThemeProvider';
+import { useThemeMode } from '../theme/ThemeProvider';
 import { getShortcutAction } from '../utils/ShortcutAction.mjs';
-
-const THEME_CYCLE: Record<ThemePreference, ThemePreference> = {
-  dark: 'light',
-  light: 'dark',
-};
 
 function isEditableTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) {
@@ -43,14 +38,14 @@ export function useDocsiteInteractions({
   onFocusSearch: () => void;
   isApplePlatform: boolean;
 }): void {
-  const { preference, setPreference } = useThemeMode();
+  const { mode, setPreference } = useThemeMode();
 
-  // Keep the latest preference in a ref so the keydown handler (bound once)
+  // Keep the resolved mode in a ref so the keydown handler (bound once)
   // always reads the current value without re-binding.
-  const preferenceRef = React.useRef(preference);
+  const modeRef = React.useRef(mode);
   React.useEffect(() => {
-    preferenceRef.current = preference;
-  }, [preference]);
+    modeRef.current = mode;
+  }, [mode]);
 
   // Scrollbar fade: capture nested scroll regions, then remove the visible
   // scrollbar state after scrolling stops.
@@ -159,7 +154,8 @@ export function useDocsiteInteractions({
           onFocusSearch();
           break;
         case 'cycle-theme':
-          setPreference(THEME_CYCLE[preferenceRef.current] ?? 'dark');
+          // The shortcut flips the visible mode, which also leaves System mode.
+          setPreference(modeRef.current === 'dark' ? 'light' : 'dark');
           break;
       }
     };
