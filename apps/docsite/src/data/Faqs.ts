@@ -33,11 +33,11 @@ const sources = {
   },
   skill: {
     label: 'Agent skill',
-    href: siteLinks.storybookDocs.agentSkill,
+    href: `${siteLinks.docsite}source/package/SKILL.md`,
   },
   agentGuide: {
     label: 'Working with agents',
-    href: siteLinks.storybookDocs.agentGuide,
+    href: `${siteLinks.docsite}overview/Introduction/#guidance-working-with-agents`,
   },
   package: {
     label: 'Package README',

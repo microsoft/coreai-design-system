@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 import assert from 'node:assert/strict';
-import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
@@ -101,12 +100,6 @@ export async function verifyReviewRegressions(rootUrl, browser) {
       `${skill}\n${packageGuide}`,
       /guides\/(?:AgentWorkflow|PackageSkill|UseWithAgents)/,
     );
-    const storybookIntroduction = await fs.readFile(
-      new URL('../../storybook/src/stories/docs/IntroductionPage.tsx', import.meta.url),
-      'utf8',
-    );
-    assert.match(storybookIntroduction, /siteLinks\.storybookDocs\.agentGuide/);
-    assert.doesNotMatch(storybookIntroduction, /docs-mcp-setup/);
   } finally {
     await context.close();
   }

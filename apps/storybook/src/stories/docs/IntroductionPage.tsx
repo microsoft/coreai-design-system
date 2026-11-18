@@ -245,11 +245,11 @@ export function IntroductionPage() {
       </header>
 
       <aside className={styles.callout}>
-        Using an AI coding agent? See{' '}
-        <a className={styles.link} href={siteLinks.storybookDocs.agentGuide}>
-          Working with agents
-        </a>{' '}
-        for setup and guidance.
+        Using an AI coding agent? Connect the component-docs server with{' '}
+        <a className={styles.link} href="?path=/docs/docs-mcp-setup--docs">
+          Docs / MCP Setup
+        </a>
+        .
       </aside>
 
       <div className={styles.cards}>

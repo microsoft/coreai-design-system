@@ -397,6 +397,14 @@ test('only registered live examples become preview slots in authored guidance', 
   }).html;
   assert.match(html, /data-example-id="components-text--presets"/);
   assert.match(html, /class="preview"/);
+  const widget = renderGuidance(
+    '<!-- view:theming -->\n\n<!-- live-example:theme-preview -->\n\n<!-- /view:theming -->',
+    {
+      views: { theming: true },
+      examples: { 'theme-preview': { id: 'theme-preview', name: 'Theme' } },
+    },
+  ).html;
+  assert.match(widget, /data-page-widget="theming"[\s\S]*data-example-id="theme-preview"/);
   assert.throws(() => renderGuidance('<!-- live-example:unknown -->'), /Missing live example/);
   assert.throws(() => renderGuidance('<!-- live-example:constructor -->'), /Missing live example/);
   const referenced = renderGuidance(
@@ -605,6 +613,14 @@ test('package guidance opts into its Markdown-backed setup view', async () => {
   const guidance = await fs.readFile(path.join(appRoot, 'content', page.guidance), 'utf8');
   assert.match(guidance, /## Let your agent handle setup/);
   assert.match(guidance, /<!-- include: package-readme -->/);
+  const expanded = await expandStandaloneMarkdown(guidance, {
+    route: page.route,
+    pages,
+    basePath: '/',
+    fence: codeFence,
+  });
+  assert.match(expanded, /overview\/Introduction\/#guidance-working-with-agents/);
+  assert.doesNotMatch(expanded, /guides\/UseWithAgents/);
 });
 
 test('release notes use a scanning view without duplicating their source', async () => {

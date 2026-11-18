@@ -5,7 +5,10 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
 import matter from 'gray-matter';
-import { createDocumentationMetadata } from '../scripts/DocumentationMetadata.mjs';
+import {
+  createDocumentationMetadata,
+  readDocumentationMetadata,
+} from '../scripts/DocumentationMetadata.mjs';
 
 const source = matter.stringify('\n# Instructions\n\nKeep these rules.\n', {
   name: 'coreai-ds-fluentui-react',
@@ -43,4 +46,14 @@ test('rebuilds change the stamp and provenance without a documentation version b
   assert.equal(first.documentation.packageVersion, second.documentation.packageVersion);
   assert.throws(() => createDocumentationMetadata(source, '0.12.0', '2026-11-17'));
   assert.throws(() => createDocumentationMetadata(source, '0.12.0', 'invalid'));
+});
+
+test('published skill uses current docsite guidance without changing the package source', async () => {
+  const { skillSource } = await readDocumentationMetadata({
+    lastUpdated: '2026-11-18T01:00:00.000Z',
+  });
+  assert.match(skillSource, /overview\/Introduction\.md#working-with-agents/);
+  assert.match(skillSource, /overview\/Changelog\.md/);
+  assert.match(skillSource, /reject HTML when Markdown was expected/);
+  assert.doesNotMatch(skillSource, /guides\/AgentWorkflow|overview\/DocumentationChangelog/);
 });

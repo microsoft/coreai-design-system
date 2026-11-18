@@ -112,7 +112,13 @@ export async function expandStandaloneMarkdown(
         throw new Error(`Unknown included Markdown source: ${key}`);
       const source = includedSources[key];
       const raw = await fs.readFile(path.join(repositoryRoot, source), 'utf8');
-      const text = key === 'package-release-notes' ? currentReleaseNotes(raw) : raw;
+      const text =
+        key === 'package-release-notes'
+          ? currentReleaseNotes(raw)
+          : raw.replace(
+              'See [Build with your agent](https://microsoft.github.io/coreai-design-system/guides/UseWithAgents/)',
+              'See [Working with agents](https://microsoft.github.io/coreai-design-system/overview/Introduction/#guidance-working-with-agents)',
+            );
       replacement =
         key === 'agent-prompt'
           ? fence(raw, 'text')

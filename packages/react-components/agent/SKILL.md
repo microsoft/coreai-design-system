@@ -14,17 +14,16 @@ description: >-
 Base URL: https://microsoft.github.io/coreai-design-system/
 
 - Start here: https://microsoft.github.io/coreai-design-system/llms.txt
-- Agent workflow: https://microsoft.github.io/coreai-design-system/overview/Introduction.md#working-with-agents
+- Agent workflow: https://microsoft.github.io/coreai-design-system/guides/AgentWorkflow.md
 - Package setup: https://microsoft.github.io/coreai-design-system/guides/Package.md
 - Exact routes, examples, source downloads, API membership, and versions:
   https://microsoft.github.io/coreai-design-system/llms/index.json
 - Current build timestamp and documented package version:
   https://microsoft.github.io/coreai-design-system/version.json
-- Site updates in the changelog:
-  https://microsoft.github.io/coreai-design-system/overview/Changelog.md
+- Dated documentation changelog:
+  https://microsoft.github.io/coreai-design-system/overview/DocumentationChangelog.md
 
 Use ordinary HTTPS GET requests with your available web-fetch or HTTP tool.
-Check the HTTP status and reject HTML when Markdown was expected.
 These are static files; no account, server connection, or special protocol is
 needed. This does not replace normal app dependency setup. Follow the
 repository's package manager, lockfile, and approval rules. Do not upload

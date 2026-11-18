@@ -113,7 +113,7 @@ see the [font setup and licensing guide](src/fonts/README.md).
 Start at the [CoreAI Markdown index](https://microsoft.github.io/coreai-design-system/llms.txt).
 Agents use ordinary HTTPS to read guidance, APIs, examples, templates, and package
 versions. No login, special protocol, or client configuration is needed.
-See [Working with agents](https://microsoft.github.io/coreai-design-system/overview/Introduction/#guidance-working-with-agents)
+See [Build with your agent](https://microsoft.github.io/coreai-design-system/guides/UseWithAgents/)
 for a starter prompt.
 
 Install the [current skill](https://microsoft.github.io/coreai-design-system/source/package/SKILL.md)

@@ -13,6 +13,7 @@ meaningful changes, not documentation snapshots or npm package releases.
   across the documentation site.
 - Combine site updates and package releases in one chronological changelog.
 - Use the current Markdown agent guidance and skill download in onboarding links.
+- Keep publishing link updates within the docsite without changing Storybook or package sources.
 
 ## Native pull request stacking workflow - 2026-11-17
 
