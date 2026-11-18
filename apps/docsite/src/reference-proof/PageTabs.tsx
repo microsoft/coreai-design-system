@@ -283,7 +283,9 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
   if (markdown) {
     extractSamples(markdown, references, codeBlocks, {
       movePreviews: true,
-      inlinePreviews: markdown.hasAttribute('data-inline-example-list') ? inlinePreviews : undefined,
+      inlinePreviews: markdown.hasAttribute('data-inline-example-list')
+        ? inlinePreviews
+        : undefined,
       removeSources: true,
     });
   }
