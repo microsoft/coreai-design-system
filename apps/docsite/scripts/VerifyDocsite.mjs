@@ -21,6 +21,7 @@ import {
 } from './BuildDocsite.mjs';
 import { serveReferenceProof } from './ServeDocsite.mjs';
 import { readDocumentationMetadata } from './DocumentationMetadata.mjs';
+import { verifyReviewRegressions } from './verify-review-regressions.mjs';
 
 const require = createRequire(import.meta.url);
 const metadata = JSON.parse(
@@ -291,6 +292,7 @@ try {
     return `${root}${record.htmlPath}`;
   };
   browser = await chromium.launch({ headless: true });
+  await verifyReviewRegressions(root, browser);
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
   const page = await context.newPage();
   const errors = [];
@@ -392,14 +394,17 @@ try {
   assert.deepEqual(missingContent, [], 'Every authored guideline and example remains visible.');
   assert.equal(await page.locator('.content-step:not(.content-step--review)').count(), 3);
   assert.equal(
-    await page.locator('.content-step--review .content-publish-checklist > li').count(),
+    await page.locator('.content-process-layout .content-publish-checklist > li').count(),
     7,
   );
   const reviewLayout = await page.locator('.content-flow--review').evaluate((element) => {
     const steps = [...element.children];
     const review = steps.at(-1).getBoundingClientRect();
+    const style = globalThis.getComputedStyle(element);
+    const contentWidth =
+      element.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
     return {
-      spansFlow: Math.abs(review.width - element.getBoundingClientRect().width) < 1,
+      spansFlow: Math.abs(review.width - contentWidth) < 1,
       followsDraftSteps: steps
         .slice(0, -1)
         .every((step) => step.getBoundingClientRect().bottom <= review.top),

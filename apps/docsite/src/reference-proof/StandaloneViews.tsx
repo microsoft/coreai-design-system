@@ -522,7 +522,7 @@ function GuideAccordionsView({ sourceHtml, renderExample }: PageWidgetProps) {
       >
         {model.sections.map((section) => (
           <AccordionItem id={section.id} key={section.id} value={section.id}>
-            <AccordionHeader expandIconPosition="end" size="large">
+            <AccordionHeader as="h2" expandIconPosition="end" size="large">
               <Text size={400} weight="regular" foreground={1}>
                 <span dangerouslySetInnerHTML={{ __html: section.title }} />
               </Text>

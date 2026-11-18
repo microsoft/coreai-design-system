@@ -7,6 +7,13 @@ these notes are not archived documentation snapshots.
 Earlier changes remain recorded in Git history. These dated notes describe
 meaningful changes, not documentation snapshots or npm package releases.
 
+## Documentation experience and agent guidance - 2026-11-18
+
+- Improve navigation, search, theme settings, content guidance, and live examples
+  across the documentation site.
+- Combine site updates and package releases in one chronological changelog.
+- Use the current Markdown agent guidance and skill download in onboarding links.
+
 ## Native pull request stacking workflow - 2026-11-17
 
 - Maintenance only: add a reusable skill for ordering existing PRs, resolving

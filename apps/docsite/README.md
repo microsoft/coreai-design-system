@@ -63,8 +63,8 @@ standard `index.html` / `index.md` output names.
 Frontmatter `id` is an internal content identifier, not a public URL. The file
 location determines the route unless `reference.route` explicitly sets one.
 Pages with no body reuse the animated under-construction view. Set
-`reference.layout: work-in-progress` to show that view while retaining draft
-guidance in an expandable section.
+`reference.layout: work-in-progress` to show that view while keeping draft
+guidance in the source until it is ready to publish.
 
 The Changelog page includes site updates and package releases from their
 separate canonical sources. There is no separate documentation changelog page.

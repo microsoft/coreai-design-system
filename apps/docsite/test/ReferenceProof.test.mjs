@@ -33,13 +33,13 @@ test('page shells use the real favicon at the deployment root on home and nested
         '<h1>Example</h1>',
         {
           basePath,
-          documentation: { version: '0.1.3' },
+          documentation: { lastUpdated: '2026-11-17T00:00:00Z' },
           versions: {
             '@coreai-ds/react-components': '0.12.0',
             '@fluentui/react-components': '9.74.9',
           },
         },
-        { initialThemeStyles: '', css: [], entry: 'assets/main.js' },
+        { initialThemeStyles: '', initialThemeScript: '', css: [], entry: 'assets/main.js' },
         '',
         '[]',
         route,

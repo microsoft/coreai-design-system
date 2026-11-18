@@ -12,8 +12,8 @@ export const siteLinks = {
   storybookDocs: {
     variationsFromFluent: `${docsite}guides/VariationsFromFluent/`,
     theming: `${docsite}foundations/Theming/`,
-    agentSkill: `${docsite}guides/PackageSkill/`,
-    mcpSetup: `${docsite}guides/UseWithAgents/`,
+    agentSkill: `${docsite}source/package/SKILL.md`,
+    agentGuide: `${docsite}overview/Introduction/#guidance-working-with-agents`,
   },
   mcp: `${storybook}mcp`,
   packageReadme: `${repo}/blob/main/packages/react-components/README.md`,

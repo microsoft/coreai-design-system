@@ -20,16 +20,21 @@ try {
     page.locator(`.app-search-result[href="${new URL(path, root).pathname}"]`);
   const html = await (await fetch(root)).text();
   await page.goto(root.href);
-  const { indexedPaths, navigationPaths } = await page.evaluate((source) => {
+  const { index, indexedPaths, navigationPaths } = await page.evaluate((source) => {
     const document = new globalThis.DOMParser().parseFromString(source, 'text/html');
     const index = JSON.parse(document.getElementById('reference-search-index').textContent);
     return {
+      index,
       indexedPaths: index.map((entry) => entry.path),
       navigationPaths: [...document.querySelectorAll('[data-navigation-entry]')].map(
         (link) => new URL(link.getAttribute('href'), globalThis.location.href).pathname,
       ),
     };
   }, html);
+  const changelog = index.find((entry) => entry.path === '/overview/Changelog/');
+  assert.ok(changelog, 'The changelog is indexed.');
+  assert.match(changelog.summary, /Full package changelog/);
+  assert.doesNotMatch(changelog.summary, /\[|\]\(|https?:\/\//);
   const navPaths = new Set(navigationPaths);
   assert.deepEqual(
     new Set(indexedPaths.map((path) => new URL(path.slice(1), root).pathname)),

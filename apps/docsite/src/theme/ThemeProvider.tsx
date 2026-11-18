@@ -10,13 +10,14 @@ import {
   azureLightTheme,
   azureDarkTheme,
   azureBrandVariants,
-  createCoreAIDarkTheme,
-  createCoreAILightTheme,
   type BrandVariants,
   type CoreAITheme,
 } from '@coreai-ds/react-components';
 import { readStoredValue, writeStoredValue } from '../BrowserState.mjs';
-import { createBrandRamp, normalizeHex } from '../utils/BrandRamp.mjs';
+import { normalizeHex } from '../utils/BrandRamp.mjs';
+import { createCustomBrand, DEFAULT_CUSTOM_COLOR } from './custom-brand.mjs';
+
+export { DEFAULT_CUSTOM_COLOR } from './custom-brand.mjs';
 
 export type ThemeMode = 'light' | 'dark';
 export type ThemePreference = ThemeMode | 'system';
@@ -25,39 +26,11 @@ export type BrandPreference = 'coreai' | 'azure' | 'custom';
 const STORAGE_KEY = 'coreai-docsite-theme';
 const BRAND_STORAGE_KEY = 'coreai-docsite-brand';
 const CUSTOM_COLOR_STORAGE_KEY = 'coreai-docsite-custom-color';
-export const DEFAULT_CUSTOM_COLOR = '#0F7C8C';
 
 const brands = {
   coreai: { light: coreaiLightTheme, dark: coreaiDarkTheme, variants: coreaiBrandVariants },
   azure: { light: azureLightTheme, dark: azureDarkTheme, variants: azureBrandVariants },
 };
-
-/**
- * Builds light and dark themes from a custom key color. The ramp goes through
- * the same CoreAI theme factories as the shipped brands, then gets the same
- * brand overrides as the CoreAI purple themes. Neutral tokens are untouched.
- */
-function createCustomBrand(color: string) {
-  const variants = createBrandRamp(color) as BrandVariants;
-  const light: CoreAITheme = {
-    ...createCoreAILightTheme(variants),
-    colorBrandBackground: variants[70],
-    colorBrandBackgroundHover: variants[60],
-    colorBrandBackgroundPressed: variants[40],
-    colorBrandBackgroundSelected: variants[50],
-  };
-  const dark: CoreAITheme = {
-    ...createCoreAIDarkTheme(variants),
-    colorBrandForeground1: variants[110],
-    colorBrandForeground2: variants[120],
-    colorBrandForegroundLink: variants[140],
-    colorNeutralForeground2BrandHover: variants[120],
-    colorNeutralForeground2BrandSelected: variants[120],
-    colorNeutralForeground3BrandHover: variants[120],
-    colorNeutralForeground3BrandSelected: variants[120],
-  };
-  return { light, dark, variants };
-}
 
 interface ThemeContextValue {
   preference: ThemePreference;

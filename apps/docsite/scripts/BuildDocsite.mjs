@@ -558,27 +558,7 @@ export function shell(title, body, metadata, assets, navigation, searchIndex, cu
 <title>${escapeHtml(title)} | CoreAI design system</title>
 <link rel="icon" href="${metadata.basePath}assets/favicon.svg" type="image/svg+xml">
 <style>${assets.initialThemeStyles}</style>
-<script>
-(() => {
-  const root = document.documentElement;
-  root.dataset.referenceEnhanced = 'true';
-  window.addEventListener('error', (event) => {
-    if (!document.getElementById('reference-content')) return;
-    if (event instanceof ErrorEvent || event.target instanceof HTMLScriptElement)
-      delete root.dataset.referenceEnhanced;
-  }, true);
-  let stored;
-  let brand;
-  try {
-    stored = localStorage.getItem('coreai-docsite-theme');
-    brand = localStorage.getItem('coreai-docsite-brand');
-  } catch { stored = null; brand = null; }
-  root.dataset.brand = brand === 'azure' ? 'azure' : 'coreai';
-  root.dataset.theme = stored === 'light' || stored === 'dark'
-    ? stored
-    : matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-})();
-</script>
+<script>${assets.initialThemeScript}</script>
 ${assets.css.map((file) => `<link rel="stylesheet" href="${metadata.basePath}${file}">`).join('\n')}
 </head><body><script type="application/json" id="reference-search-index">${searchIndex}</script><div id="reference-root"><div id="reference-content"><div class="app-shell reference-shell"><a class="skip-link" href="#main">Skip to content</a>
 <div class="app-body"><aside class="app-sidenav" id="app-navigation" aria-label="Site navigation">
@@ -978,6 +958,21 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
   const entry = Object.values(manifest).find((entry) => entry.isEntry);
   if (!entry) throw new Error('Reference proof bundle has no entry point.');
   const assets = { entry: entry.file, css: entry.css ?? [] };
+  const initialThemeBundle = await build({
+    configFile: false,
+    root: appRoot,
+    logLevel: 'error',
+    build: {
+      write: false,
+      rollupOptions: {
+        input: path.join(appRoot, 'src/theme/initial-theme.mjs'),
+        output: { format: 'iife', inlineDynamicImports: true },
+      },
+    },
+  });
+  const initialThemeChunk = initialThemeBundle.output.find((output) => output.type === 'chunk');
+  if (!initialThemeChunk) throw new Error('Initial theme bundle has no script.');
+  assets.initialThemeScript = initialThemeChunk.code.replace(/<\/script/gi, '<\\/script');
   const { coreaiLightTheme, coreaiDarkTheme, azureLightTheme, azureDarkTheme } =
     await import('@coreai-ds/react-components');
   const stylesheets = await Promise.all(
@@ -1017,7 +1012,7 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
       group.items.map(({ path, title, page }) => ({
         path,
         title,
-        summary: page.summary,
+        summary: searchableGuidance(page.summary),
         searchText: searchableGuidance(page.guidance),
       })),
     ),

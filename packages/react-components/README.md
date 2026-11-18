@@ -113,7 +113,7 @@ see the [font setup and licensing guide](src/fonts/README.md).
 Start at the [CoreAI Markdown index](https://microsoft.github.io/coreai-design-system/llms.txt).
 Agents use ordinary HTTPS to read guidance, APIs, examples, templates, and package
 versions. No login, special protocol, or client configuration is needed.
-See [Build with your agent](https://microsoft.github.io/coreai-design-system/guides/UseWithAgents/)
+See [Working with agents](https://microsoft.github.io/coreai-design-system/overview/Introduction/#guidance-working-with-agents)
 for a starter prompt.
 
 Install the [current skill](https://microsoft.github.io/coreai-design-system/source/package/SKILL.md)
@@ -133,10 +133,11 @@ older package versions may contain older [bundled instructions](agent/SKILL.md);
 [current skill download](https://microsoft.github.io/coreai-design-system/source/package/SKILL.md)
 contains the current workflow. Review it before installing.
 
-The description and metadata record the shared docs/skill version separately
+The published description and metadata record a UTC build timestamp separately
 from the documented package version. Check the small
 [version manifest](https://microsoft.github.io/coreai-design-system/version.json)
-once per task and refresh older skill guidance; do not downgrade a newer local
+once per task, review its linked dated changelog when the timestamp changes,
+and refresh older skill guidance; do not downgrade a newer local
 skill. Documentation-only updates do not require a new component package.
 
 Compare the documented package version with installed packages. Report missing

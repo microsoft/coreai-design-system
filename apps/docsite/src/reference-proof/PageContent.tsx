@@ -201,6 +201,9 @@ export function PageContent({
     const containers = [
       ...(contentRef.current?.querySelectorAll<HTMLElement>('[data-example-id]') ?? []),
     ];
+    const portalTargets = containers.filter(
+      (container) => !container.closest('[data-page-widget]'),
+    );
     const root = contentRef.current;
     if (!root) throw new Error('Missing page content.');
     const tabs = preparePageTabs(root);
@@ -272,7 +275,7 @@ export function PageContent({
             )?.dataset.exampleId,
           );
         }
-        setTargets(containers.filter((container) => !container.closest('[data-page-widget]')));
+        setTargets(portalTargets.filter((container) => root.contains(container)));
         onReady(page);
       })
       .catch((error: unknown) => {
