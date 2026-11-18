@@ -24,7 +24,6 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
-          fetch-depth: 0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
@@ -32,11 +31,6 @@ jobs:
       - name: Check public source and license headers
         run: npm run check:public-source && npm run license:check
       - run: npm ci --prefer-offline
-      - name: Check per-PR documentation release
-        if: github.event_name == 'pull_request' || github.event_name == 'push'
-        env:
-          DOCS_RELEASE_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
-        run: npm --workspace apps/docsite run check:release -- --base="$DOCS_RELEASE_BASE"
       - name: Build static documentation
         run: npm --workspace apps/docsite run build -- --base=/coreai-design-system/
       - name: Test documentation contracts
@@ -89,13 +83,25 @@ jobs:
               assert.equal(index.coreaiSourceRef, process.env.GITHUB_SHA);
               assert.equal(index.basePath, '/coreai-design-system/');
               const release = JSON.parse((await read('version.json')).text);
+              assert.deepEqual(release, {
+                schemaVersion: 1,
+                ...index.documentation,
+                sourceRef: process.env.GITHUB_SHA,
+              });
               assert.equal(release.sourceRef, process.env.GITHUB_SHA);
-              assert.equal(release.version, index.documentation.version);
-              assert.equal(release.skill.version, release.version);
+              assert.equal(release.lastUpdated, index.documentation.lastUpdated);
+              assert.equal(new Date(release.lastUpdated).toISOString(), release.lastUpdated);
+              assert.equal(release.skill.lastUpdated, release.lastUpdated);
               assert.equal(release.packageVersion, index.versions['@coreai-ds/react-components']);
               const skill = (await read(release.skill.path)).text;
               assert.equal(createHash('sha256').update(skill).digest('hex'), release.skill.sha256);
-              assert.match((await read('')).text, /CoreAI Design System/);
+              assert.ok(skill.includes(release.lastUpdated));
+              assert.ok(skill.includes(release.changelog));
+              const home = (await read('')).text;
+              assert.match(home, /CoreAI Design System/);
+              assert.ok(home.includes(`datetime="${release.lastUpdated}"`));
+              assert.ok(home.includes('overview/Changelog/'));
+              assert.match((await read('overview/Changelog.md')).text, /Site updates/);
               const markdown = await read('components/DataGrid.md');
               assert.ok(!markdown.type.includes('text/html'));
               assert.match(markdown.text, /DataGridProps/);

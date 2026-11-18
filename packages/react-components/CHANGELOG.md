@@ -33,6 +33,7 @@ headings in this changelog.
 
 ### Changed
 
+- Update the Vite development dependency to 6.4.6.
 - `iconToDotGrid` sampling defaults to SVG viewBox dimensions times `multiplier` (default 2), replacing the fixed-24-cell default and supersampled center-point sampling. Use `multiplier: 1` for native resolution or explicit `columns`/`rows` for a custom grid, not both. Regenerating data can change dimensions and occupancy; existing saved grids and designer artwork remain unchanged.
 
 ## [0.12.0] - 2026-10-16
@@ -264,6 +265,31 @@ Initial release to the Azure DevOps **coreai** Artifacts feed (org `coreaidesign
 - `customStyleHooks_unstable` style-hook registry (Card, Overlay, Dialog, Table, …).
 - Aptos / Aptos Mono `@font-face` declarations shipped via `@coreai-ds/react-components/fonts/fonts.css`.
 
+## [0.1.2] - 2026-06-05
+
+### Changed
+
+- Install guidance moved to GitHub CLI authentication with user-level credentials and project-level registry configuration.
+- Storybook now starts in dark mode and avoids a white first-paint flash.
+
+## [0.1.1] - 2026-06-05
+
+### Fixed
+
+- React and React DOM peer ranges now support versions from 16.14 through 19.
+
+### Changed
+
+- Removed unused Storybook dependencies that forced legacy React peer resolution.
+- Publishing now runs automatically when a new package version lands on main and creates the matching tag after success.
+
+## [0.1.0] - 2026-06-04
+
+### Added
+
+- Initial package publishing workflow for the CoreAI themed Fluent UI React package.
+- Consumer installation and release documentation for the first package distribution flow.
+
 [Unreleased]: #unreleased
 [0.12.0]: #0120---2026-10-16
 [0.11.2]: #0112---2026-10-05
@@ -282,3 +308,6 @@ Initial release to the Azure DevOps **coreai** Artifacts feed (org `coreaidesign
 [0.3.0]: #030---2026-07-09
 [0.2.1]: #021---2026-06-23
 [0.2.0]: #020---2026-06-23
+[0.1.2]: #012---2026-06-05
+[0.1.1]: #011---2026-06-05
+[0.1.0]: #010---2026-06-04

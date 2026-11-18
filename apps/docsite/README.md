@@ -36,6 +36,8 @@ subsequent builds use the pinned local checkout.
 
 - Canonical guidance and page metadata: [`content/`](content).
 - Shared tables and starter prompt: [`content/data/`](content/data).
+- Dated documentation notes: [`CHANGELOG.md`](CHANGELOG.md), included by the
+  `content/overview/Changelog.md` page wrapper.
 - Package setup, changelog, and consumer skill: the package's canonical files,
   included at build time rather than copied by authors.
 - Build and source tooling: [`scripts/`](scripts).
@@ -64,8 +66,8 @@ Pages with no body reuse the animated under-construction view. Set
 `reference.layout: work-in-progress` to show that view while retaining draft
 guidance in an expandable section.
 
-The documentation changelog remains a maintainer release record, but is not
-published as a docsite page or included in navigation and search.
+The Changelog page includes site updates and package releases from their
+separate canonical sources. There is no separate documentation changelog page.
 
 ## Authoring pages
 
@@ -115,13 +117,13 @@ The static output includes:
 | Output                                           | Purpose                                                           |
 | ------------------------------------------------ | ----------------------------------------------------------------- |
 | Physical directory HTML and paired `.md` files   | Human and agent documentation                                     |
-| `llms.txt`                                       | Targeted discovery, docs/skill and package versions               |
-| `version.json`                                   | Small current-release manifest for skill update checks            |
+| `llms.txt`                                       | Targeted discovery, build timestamp and package versions          |
+| `version.json`                                   | Build timestamp, package version and skill provenance             |
 | `llms/index.json`                                | Exact routes, APIs, source hashes, coverage, and build provenance |
 | `source/examples/*.tsx`                          | Complete generated example modules                                |
 | `source/templates/`                              | Complete copy-and-adapt template files                            |
 | `source/setup/App.tsx`                           | Provider setup                                                    |
-| `source/package/SKILL.md` and `agent-prompt.txt` | Versioned repository skill and install/update starter prompt      |
+| `source/package/SKILL.md` and `agent-prompt.txt` | Build-stamped repository skill and install/update starter prompt  |
 | `THIRD-PARTY-NOTICES.txt` and `third-party/`     | Dependency attribution and license material                       |
 | `.nojekyll`                                      | Direct static publishing                                          |
 
@@ -145,72 +147,33 @@ generates the registry first. Original SVG downloads under `assets/illicons/`
 retain the source bytes. Local gallery and verification stories marked
 `!manifest` are explicitly excluded from component examples.
 
-## Documentation and skill versions
+## Documentation build metadata and changelog
 
-The docsite manifest owns one semantic version shared by the documentation and
-consumer skill. The component package has its own independent version. A
-documentation-only change advances docs/skill without republishing the package.
-A package release advances both tracks. Only the current release is hosted.
+Documentation has no semantic release version. Each build creates one UTC
+`lastUpdated` timestamp shared by `version.json`, `llms/index.json`, `llms.txt`,
+the site footer, and the published consumer skill. A rebuild gets a new
+timestamp, even when source content is unchanged. The component npm package
+keeps its independent version; documentation changes do not bump it.
 
-Every PR targeting `main` must advance docs/skill and update the
-[documentation changelog](content/overview/DocumentationChangelog.md), even when
-it changes only maintenance or infrastructure. Each merge deploys the site.
-The [release-docs skill](../../.github/skills/release-docs/SKILL.md) owns this
-procedure and is required by create-pr and package releases. Use one increment
-per PR, not per commit, review update, or deployment retry. Package release notes
-remain separate.
+Follow [update-docs-changelog](../../.github/skills/update-docs-changelog/SKILL.md)
+before opening or updating a PR to main. Add meaningful notes under a
+`## Description - YYYY-MM-DD` heading in the
+[documentation changelog](CHANGELOG.md), including
+maintenance changes. No PR number or version is needed. Keep historical notes
+and reuse the PR's section when updating it. Package release notes remain separate.
 
-The skill description includes both versions so clients can see them before
-loading the body. `metadata.version` is the docs/skill version;
-`metadata.package-version` identifies the package documented by that skill.
-These labels describe the site, not a consuming app's installed package.
+The canonical consumer skill has no documentation version or authored build
+timestamp. The build stamps its published description and metadata with
+`last-updated`, `package-version`, and a dated changelog link. It hashes the
+actual published bytes into `skill.sha256`; authored source is not rewritten.
+`version.json` also records `packageVersion`, `skill.path`, `skill.lastUpdated`,
+the changelog link, and source revision.
 
-For a PR that still needs its docs/skill increment, run from the repository root:
-
-```powershell
-npm version patch --workspace apps/docsite --no-git-tag-version
-```
-
-Use the approved semantic increment or explicit version. npm updates the
-workspace manifest and root lockfile, then the `version` lifecycle synchronizes
-the skill's description/metadata. If lifecycle scripts were disabled, run:
-
-```powershell
-npm --workspace apps/docsite run sync:versions
-```
-
-For a package release, change the package version first where possible, then
-follow the same procedure. If the PR already has an appropriate docs increment,
-keep it and run synchronization after changing the package. Commit the affected
-manifests, root lockfile, skill, and documentation changelog together.
-See the [package release procedure](../../packages/react-components/RELEASING.md).
-
-Before opening/updating the PR and again after integrating current main:
-
-```powershell
-git fetch origin main
-npm --workspace apps/docsite run check:release -- --base=origin/main
-```
-
-The check requires a docs version higher than the target, synchronized labels
-and lockfile, and a non-empty dated changelog entry for that version. It applies
-to every PR, without published-input path filters. If another merged PR used
-the same version, choose the next version and reconcile the changelog.
-Documentation CI compares PRs with their event's base commit and main pushes
-with the previous push head; both revisions are fetched. Manual redeployments
-skip the increment check and retain the original version. Checks never bump
-versions themselves. Repository administrators should require **Validate
-documentation** and an up-to-date branch or equivalent merge queue to prevent
-stale green PRs from merging with duplicate versions; this code does not change
-repository settings.
-
-Build and type-check reject version-label drift; they do not silently rewrite
-authored files. `version.json` contains the docs version, documented package
-version, skill version/path/SHA-256, and source revision. The same release
-metadata appears in `llms/index.json`, `llms.txt`, and human page footers.
-Agents check the small manifest once per task, then review and update only older
-CoreAI skill guidance while preserving local instructions. Failed retrieval or
-conflicting edits require an explicit report rather than a silent skip.
+Agents check the small manifest once per task, compare timestamps as instants,
+then read the dated changelog when it changed. They review and refresh older or
+unstamped skill guidance, verify the downloaded bytes, and preserve local rules.
+Only current documentation is hosted. Failed retrieval or conflicting edits
+require an explicit report rather than a silent skip.
 
 ## Runtime and validation
 

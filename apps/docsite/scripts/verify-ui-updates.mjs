@@ -166,10 +166,22 @@ try {
   await visit('overview/Changelog/');
   await expect(page.locator('.changelog-actions')).toHaveCount(0);
   await expect(page.locator('.changelog-month').filter({ hasText: 'Unreleased' })).toHaveCount(0);
-  await expect(page.locator('.page-summary a', { hasText: 'Full changelog' })).toHaveAttribute(
+  await expect(
+    page.locator('.page-summary a', { hasText: 'Full package changelog' }),
+  ).toHaveAttribute(
     'href',
     'https://github.com/microsoft/coreai-design-system/blob/main/packages/react-components/CHANGELOG.md',
   );
+  await expect(page.locator('.changelog-list')).toHaveCount(1);
+  await expect(
+    page.locator('.changelog-entry__version a', { hasText: 'Site update' }).first(),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Package release', exact: true }).first(),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: /Build timestamps and dated documentation notes/ }),
+  ).toHaveCount(1);
   await screenshot('docsite-after-changelog.png');
   const metadata = await (await fetch(new URL('llms/index.json', root))).json();
   for (const entry of metadata.pages) {

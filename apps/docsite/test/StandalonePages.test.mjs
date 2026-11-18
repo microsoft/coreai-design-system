@@ -270,6 +270,48 @@ test('Markdown includes and generated sections expand without evaluating code fe
   await assert.rejects(expandStandaloneMarkdown('<!-- include: ../outside -->', {}), /Malformed/);
 });
 
+test('one changelog publishes the canonical site and package histories once', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  const packagePage = pages.find((page) => page.route === 'overview/Changelog');
+  assert.ok(packagePage);
+  assert.ok(!pages.some((page) => page.route === 'overview/DocumentationChangelog'));
+  const wrapper = matter(
+    await fs.readFile(path.join(appRoot, 'content', packagePage.guidance), 'utf8'),
+  );
+  assert.match(wrapper.content, /## Site updates\n\n<!-- include: documentation-changelog -->/);
+  assert.match(wrapper.content, /## Package releases\n\n<!-- include: package-changelog -->/);
+  const canonical = matter(await fs.readFile(path.join(appRoot, 'CHANGELOG.md'), 'utf8'));
+  assert.deepEqual(canonical.data, {});
+  const expanded = await expandStandaloneMarkdown(wrapper.content, {
+    route: packagePage.route,
+    pages,
+    basePath: '/repo/',
+    fence: codeFence,
+  });
+  const headings = [...canonical.content.matchAll(/^## (.+)$/gm)].map((match) => match[1]);
+  assert.ok(headings.length > 0);
+  const expandedHeadings = [...expanded.matchAll(/^## (.+)$/gm)].map((match) => match[1]);
+  for (const heading of headings)
+    assert.equal(expandedHeadings.filter((candidate) => candidate === heading).length, 1);
+  assert.match(expanded, /\[package changelog\]\(\/repo\/overview\/Changelog\.md\)/);
+  const packageSource = await fs.readFile(
+    path.join(appRoot, '../../packages/react-components/CHANGELOG.md'),
+    'utf8',
+  );
+  const versions = [...packageSource.matchAll(/^## \[(\d+\.\d+\.\d+)\]/gm)].map(
+    (match) => match[1],
+  );
+  assert.ok(versions.includes('0.1.0'));
+  for (const version of versions) {
+    assert.equal(
+      expandedHeadings.filter((heading) => heading.startsWith(`[${version}]`)).length,
+      1,
+      `Package history must publish ${version} once`,
+    );
+  }
+  assert.doesNotMatch(expanded, /Earlier site release summaries|generated: release-summaries/);
+});
+
 test('agent handoff installs the current skill and uses HTTP documentation discovery', async () => {
   const skillPath = path.resolve(appRoot, '../../packages/react-components/agent/SKILL.md');
   const source = await fs.readFile(skillPath, 'utf8');
@@ -281,14 +323,14 @@ test('agent handoff installs the current skill and uses HTTP documentation disco
   assert.match(source, /llms\/index\.json/);
   assert.match(source, /once per task/);
   assert.match(source, /user's approval before writing instructions/);
-  assert.match(source, /metadata\.version/);
+  assert.match(source, /metadata\.last-updated/);
   assert.match(source, /version\.json/);
   assert.doesNotMatch(source, /docs-list|docs-show|azurewebsites/i);
   const prompt = (
     await fs.readFile(path.join(appRoot, 'content/data/AgentPrompt.md'), 'utf8')
   ).trim();
   assert.match(prompt, /Install it at \.github\/skills\/coreai-ds-fluentui-react\/SKILL\.md/);
-  assert.match(prompt, /update the existing CoreAI skill.*before implementing/);
+  assert.match(prompt, /refresh older existing CoreAI guidance.*before implementing/);
   assert.match(prompt, /Preserve repository-specific rules/);
   const expanded = await expandStandaloneMarkdown('<!-- include: agent-prompt -->', {
     route: 'overview/Introduction',
@@ -573,7 +615,8 @@ test('release notes use a scanning view without duplicating their source', async
     path.join(appRoot, 'content', changelog.guidance),
     'utf8',
   );
-  assert.match(changelogSource, /<!-- include: package-release-notes -->/);
+  assert.match(changelogSource, /<!-- include: documentation-changelog -->/);
+  assert.match(changelogSource, /<!-- include: package-changelog -->/);
 });
 
 test('content uses a bounded view backed by its complete Markdown', async () => {

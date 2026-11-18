@@ -71,10 +71,11 @@ interface ChangelogSection {
 
 interface ChangelogRelease {
   id: string;
-  version: string;
+  version?: string;
   date?: string;
   title: string;
-  summary: string;
+  summary?: string;
+  introduction?: string;
   sections: ChangelogSection[];
 }
 
@@ -655,49 +656,53 @@ function releaseSections(elements: Element[], headingTag: 'H3' | 'H4') {
   return sections;
 }
 
-function changelogReleases(document: Document) {
-  const earlierHeading = document.getElementById('guidance-earlier-site-release-summaries');
-  if (!earlierHeading) throw new Error('Missing earlier release summaries.');
-  const curated = new Map<string, { title: string; summary: string }>();
-  const earlierElements = followingUntil(earlierHeading, () => false);
-  for (let index = 0; index < earlierElements.length; index++) {
-    const heading = earlierElements[index];
-    if (heading.tagName !== 'H3') continue;
-    const match = heading.textContent
-      ?.trim()
-      .match(/^(\d+\.\d+\.\d+)\s+—\s+(.+?)\s+\(\d{4}-\d{2}-\d{2}\)$/);
-    if (!match) continue;
-    const summary = earlierElements
-      .slice(index + 1)
-      .find((element) => ['H3', 'H4'].includes(element.tagName) || element.tagName === 'P');
-    curated.set(match[1], {
-      title: match[2],
-      summary: summary?.tagName === 'P' ? (summary.textContent?.trim() ?? '') : '',
-    });
-  }
+function changelogReleases(elements: Element[]) {
   const releases: ChangelogRelease[] = [];
-  for (const heading of document.querySelectorAll('h2')) {
+  for (const heading of elements) {
+    if (heading.tagName !== 'H2') continue;
     const match = heading.textContent
       ?.trim()
       .match(/^(Unreleased|\d+\.\d+\.\d+)(?:\s+-\s+(\d{4}-\d{2}-\d{2}))?$/);
     if (!match) continue;
     const elements = followingUntil(heading, (candidate) => candidate.tagName === 'H2');
     const sections = releaseSections(elements, 'H3');
-    const details = curated.get(match[1]);
+    const firstSection = elements.findIndex((element) => element.tagName === 'H3');
     releases.push({
       id: heading.id,
       version: match[1],
       date: match[2] || undefined,
-      title:
-        details?.title ??
-        (match[1] === 'Unreleased' ? 'Changes planned for the next release' : 'Package update'),
-      summary:
-        details?.summary ||
-        `${sections.map((section) => section.title).join(', ')} updates in this release.`,
+      title: match[1] === 'Unreleased' ? 'Changes planned for the next release' : 'Package release',
+      summary: `${sections.map((section) => section.title).join(', ')} updates in this release.`,
+      introduction: elements
+        .slice(0, firstSection < 0 ? undefined : firstSection)
+        .map((element) => element.outerHTML)
+        .join(''),
       sections,
     });
   }
   return releases;
+}
+
+function changelogSiteUpdates(elements: Element[]): ChangelogRelease[] {
+  return elements
+    .filter((element) => element.tagName === 'H2')
+    .map((heading) => {
+      const match = heading.textContent?.trim().match(/^(.+?)\s+-\s+(\d{4}-\d{2}-\d{2})$/);
+      if (!match) throw new Error('A site changelog entry is missing its date.');
+      const content = followingUntil(heading, (candidate) => candidate.tagName === 'H2');
+      const items = content.flatMap((element) => {
+        if (element.tagName !== 'UL' && element.tagName !== 'OL') return [element.outerHTML];
+        return [...element.children]
+          .filter((child) => child.tagName === 'LI')
+          .map((item) => item.innerHTML);
+      });
+      return {
+        id: heading.id,
+        date: match[2],
+        title: match[1],
+        sections: [{ title: 'Updated', items }],
+      };
+    });
 }
 
 const monthFormatter = new Intl.DateTimeFormat('en-US', {
@@ -802,17 +807,23 @@ function measureChangelogRails(list: HTMLDivElement): ChangelogRail[] {
 function ChangelogView({ sourceHtml }: PageWidgetProps) {
   const model = React.useMemo(() => {
     const document = documentFrom(sourceHtml);
-    const releases = changelogReleases(document).filter(
-      (release) => release.version !== 'Unreleased',
-    );
+    const siteHeading = document.getElementById('guidance-site-updates');
+    const packageHeading = document.getElementById('guidance-package-releases');
+    if (!siteHeading || !packageHeading) throw new Error('Missing changelog history sections.');
+    const siteElements = followingUntil(siteHeading, (element) => element === packageHeading);
+    const packageElements = followingUntil(packageHeading, () => false);
+    const releases = [
+      ...changelogSiteUpdates(siteElements),
+      ...changelogReleases(packageElements).filter((release) => release.version !== 'Unreleased'),
+    ].sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''));
+    if (!releases.some((release) => release.version))
+      throw new Error('Missing package release history.');
     const groups = new Map<string, ChangelogRelease[]>();
     for (const release of releases) {
       const month = release.date?.slice(0, 7) ?? 'unreleased';
       groups.set(month, [...(groups.get(month) ?? []), release]);
     }
-    return {
-      groups: [...groups],
-    };
+    return { groups: [...groups] };
   }, [sourceHtml]);
   const listRef = React.useRef<HTMLDivElement>(null);
   const graphId = React.useId();
@@ -882,12 +893,10 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
             </summary>
             <div className="changelog-month__entries">
               {releases.map((release) => (
-                <article className="changelog-entry" id={release.id} key={release.version}>
+                <article className="changelog-entry" id={release.id} key={release.id}>
                   <div className="changelog-entry__version">
                     <a href={`#${release.id}`}>
-                      {release.version === 'Unreleased'
-                        ? 'Unreleased'
-                        : `Version ${release.version}`}
+                      {release.version ? `Version ${release.version}` : 'Site update'}
                     </a>
                     {release.date ? (
                       <Badge appearance="tint" color="subtle" shape="rounded">
@@ -902,16 +911,24 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
                       <Text as="h3" weight="semibold" foreground={1}>
                         {release.title}
                       </Text>
-                      <Text as="p" foreground={3}>
-                        {release.summary}
-                      </Text>
+                      {release.summary ? (
+                        <Text as="p" foreground={3}>
+                          {release.summary}
+                        </Text>
+                      ) : null}
+                      {release.introduction ? (
+                        <div
+                          className="standalone-guidance"
+                          dangerouslySetInnerHTML={{ __html: release.introduction }}
+                        />
+                      ) : null}
                     </div>
                     <div className="changelog-entry__sections">
-                      {release.sections.map((section) => (
+                      {release.sections.map((section, index) => (
                         <section
                           className="changelog-entry__section"
                           data-change={section.title}
-                          key={section.title}
+                          key={`${section.title}-${index}`}
                         >
                           <Text as="h4" weight="semibold" foreground={1}>
                             <Badge

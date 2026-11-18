@@ -2,30 +2,21 @@
 id: changelog
 title: Changelog
 summary: >-
-  Release notes for @coreai-ds/react-components, grouped by version.
-  [Full changelog](https://github.com/microsoft/coreai-design-system/blob/main/packages/react-components/CHANGELOG.md)
+  Updates to the CoreAI site and @coreai-ds/react-components.
+  [Full package changelog](https://github.com/microsoft/coreai-design-system/blob/main/packages/react-components/CHANGELOG.md)
 resources: []
 reference:
   renderer: changelog
   aliases: [/changelog/]
   migratedFrom:
-    - apps/docsite/src/pages/Changelog.tsx
-    - apps/docsite/Changelog.json
+    - apps/docsite/CHANGELOG.md
     - packages/react-components/CHANGELOG.md
 ---
 
-## Package release history
+## Site updates
 
-This history is included from the package changelog during the build. Entries
-about retired documentation integrations are omitted from this site. The
-[complete historical changelog](https://github.com/microsoft/coreai-design-system/blob/main/packages/react-components/CHANGELOG.md)
-remains in the repository. This is not a set of archived API documentation snapshots.
+<!-- include: documentation-changelog -->
 
-<!-- include: package-release-notes -->
+## Package releases
 
-## Earlier site release summaries
-
-The previous site's curated summaries are retained below. The package changelog
-above is the current release record.
-
-<!-- generated: release-summaries -->
+<!-- include: package-changelog -->
