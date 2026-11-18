@@ -23,10 +23,8 @@ export const includedSources = {
   'package-readme': 'packages/react-components/README.md',
   'package-changelog': 'packages/react-components/CHANGELOG.md',
   'package-release-notes': 'packages/react-components/CHANGELOG.md',
-  'package-skill': 'packages/react-components/agent/SKILL.md',
   'agent-prompt': 'apps/docsite/content/data/AgentPrompt.md',
   'router-link-notes': 'apps/docsite/content/data/RouterLinkNotes.md',
-  'router-link-slots': 'apps/storybook/src/stories/templates/react-router/RouterLinkSlots.tsx',
 };
 
 export function rewriteDocumentationLinks(
@@ -114,15 +112,22 @@ export async function expandStandaloneMarkdown(
         throw new Error(`Unknown included Markdown source: ${key}`);
       const source = includedSources[key];
       const raw = await fs.readFile(path.join(repositoryRoot, source), 'utf8');
-      const text = key === 'package-release-notes' ? currentReleaseNotes(raw) : raw;
-      replacement = ['router-link-slots', 'package-skill', 'agent-prompt'].includes(key)
-        ? fence(raw, key === 'package-skill' ? 'markdown' : key === 'agent-prompt' ? 'text' : 'tsx')
-        : rewriteDocumentationLinks(matter(text).content.replace(/^# .+\r?\n/, ''), {
-            route,
-            pages,
-            basePath,
-            sourceFile: source,
-          });
+      const text =
+        key === 'package-release-notes'
+          ? currentReleaseNotes(raw)
+          : raw.replace(
+              'See [Build with your agent](https://microsoft.github.io/coreai-design-system/guides/UseWithAgents/)',
+              'See [Working with agents](https://microsoft.github.io/coreai-design-system/overview/Introduction/#guidance-working-with-agents)',
+            );
+      replacement =
+        key === 'agent-prompt'
+          ? fence(raw, 'text')
+          : rewriteDocumentationLinks(matter(text).content.replace(/^# .+\r?\n/, ''), {
+              route,
+              pages,
+              basePath,
+              sourceFile: source,
+            });
     } else if (kind === 'generated') {
       if (!Object.hasOwn(generated, key))
         throw new Error(`Unknown generated Markdown section: ${key}`);

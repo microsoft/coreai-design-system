@@ -22,7 +22,7 @@ export async function assertReferenceTextTokens(page, label) {
     const groups = [
       [
         1,
-        '.page-header h1, .home-heading h1, .work-in-progress :is(h1,h2), .component-markdown :is(h1,h2,h3,h4,h5,h6,th), .standalone-guidance :is(h1,h2,h3,h4,h5,h6,th), .reference-color-view h3, .reference-resources-view :is(h2,h3), .reference-faqs-view h2, .reference-changelog-view :is(h2,h3,h4), .package-step__content > h3, .content-page :is(h2,h3), .agent-workflow-view :is(h2,h3), .type-table__example, .example > h2, .reference-template-source > h2',
+        '.page-header h1, .home-heading h1, .work-in-progress :is(h1,h2), .component-markdown :is(h1,h2,h3,h4,h5,h6,th), .standalone-guidance :is(h1,h2,h3,h4,h5,h6,th), .reference-color-view h3, .reference-resources-view :is(h2,h3), .reference-faqs-view h2, .reference-changelog-view :is(h2,h3,h4), .package-step__content > h3, .content-page :is(h2,h3), .type-table__example, .example > h2, .reference-template-source > h2',
       ],
       [2, '.fui-CodeBlock__pre'],
       [

@@ -18,7 +18,13 @@ import {
   stripPresentationMarkers,
   currentReleaseNotes,
 } from '../scripts/StandaloneMarkdown.mjs';
-import { appRoot, codeFence, standalonePageHtml, pageMarkdown } from '../scripts/BuildDocsite.mjs';
+import {
+  appRoot,
+  codeFence,
+  mergedTemplateSections,
+  standalonePageHtml,
+  pageMarkdown,
+} from '../scripts/BuildDocsite.mjs';
 import {
   pageGuidanceParts,
   pageTemplateHeader,
@@ -74,6 +80,93 @@ test('component and template Markdown cannot silently fall out of the catalog', 
     }),
   );
   await assert.rejects(readReferencePages(directory), /require reference metadata/);
+});
+
+test('empty and unfinished pages reuse the designed state without dropping authored guidance', () => {
+  const page = {
+    route: 'foundations/Spacing',
+    title: 'Spacing',
+    resources: [],
+    examples: [],
+    guidance: '# Spacing\n\nSpacing guidance.',
+  };
+  const empty = standalonePageHtml(page, { basePath: '/', pages: [] });
+  assert.match(empty, /hidden data-page-header/);
+  assert.match(empty, /data-page-widget="work-in-progress"/);
+  assert.doesNotMatch(empty, /reference-existing-guidance/);
+  const draft = standalonePageHtml(
+    { ...page, layout: 'work-in-progress', guidance: `${page.guidance}\n\n## Draft\n\nKeep this.` },
+    { basePath: '/', pages: [] },
+  );
+  assert.match(draft, /data-page-widget="work-in-progress"/);
+  assert.doesNotMatch(draft, /reference-existing-guidance|guidance-draft|Keep this/);
+  const complete = standalonePageHtml(
+    { ...page, guidance: `${page.guidance}\n\nPublished guidance.` },
+    { basePath: '/', pages: [] },
+  );
+  assert.doesNotMatch(complete, /data-page-widget="work-in-progress"/);
+});
+
+test('maintenance release records are not published as documentation pages', async () => {
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  assert.ok(pages.some((page) => page.route === 'overview/Changelog'));
+  assert.ok(!pages.some((page) => page.id === 'documentation-changelog'));
+});
+
+test('deleted pages have no content, legacy registry entry, or route alias', async () => {
+  const removed = [
+    'guides/UseWithAgents',
+    'guides/PackageSkill',
+    'guides/AgentWorkflow',
+    'guides/RouterLinkSlots',
+    'patterns/Forms',
+  ];
+  const pages = await readReferencePages(path.join(appRoot, 'content'));
+  const routes = new Set(pages.flatMap((page) => [`/${page.route}/`, ...page.aliases]));
+  for (const route of removed) {
+    assert.ok(!routes.has(`/${route}/`), route);
+    await assert.rejects(fs.access(path.join(appRoot, 'content', `${route}.md`)), {
+      code: 'ENOENT',
+    });
+  }
+  for (const alias of [
+    '/mcp-server/',
+    '/guides/mcp-setup/',
+    '/coreai-skill/',
+    '/agent-skill/',
+    '/foundational-skill/',
+    '/design-md/',
+    '/overview/resources/',
+    '/resources/',
+  ])
+    assert.ok(!routes.has(alias), alias);
+  const registry = JSON.parse(await fs.readFile(path.join(appRoot, 'SiteRegistry.json'), 'utf8'));
+  const legacyIds = new Set(registry.pages.map((page) => page.id));
+  for (const id of ['mcp-server', 'coreai-skill', 'prototyping', 'resources'])
+    assert.ok(!legacyIds.has(id), id);
+  for (const filename of ['McpServer.tsx', 'CoreAISkill.tsx'])
+    await assert.rejects(fs.access(path.join(appRoot, 'src/pages', filename)), { code: 'ENOENT' });
+});
+
+test('guide accordions retain introductory text, section anchors, and complete code samples', () => {
+  const html = standalonePageHtml(
+    {
+      route: 'guides/Example',
+      title: 'Example',
+      resources: [],
+      examples: [],
+      renderer: 'guide-accordions',
+      guidance:
+        '# Example\n\nSummary.\n\nIntroduction.\n\n## Setup\n\n### Nested\n\n```tsx\nconst value = 1;\n```\n\n## Next\n\nFinish.',
+    },
+    { basePath: '/', pages: [] },
+  );
+  assert.match(html, /data-page-widget="guide-accordions"/);
+  assert.match(html, /Introduction\./);
+  assert.match(html, /id="guidance-setup"/);
+  assert.match(html, /id="guidance-nested"/);
+  assert.match(html, /const value = 1;/);
+  assert.match(html, /Finish\./);
 });
 
 test('local guidance generation excludes stories disabled for documentation manifests', async (t) => {
@@ -143,7 +236,7 @@ test('local guidance generation excludes stories disabled for documentation mani
 
 test('Markdown includes and generated sections expand without evaluating code fences', async () => {
   const input =
-    '## Colors\n\n<!-- generated: colors -->\n\n```md\n<!-- generated: unknown -->\n```\n\n<!-- include: router-link-slots -->';
+    '## Colors\n\n<!-- generated: colors -->\n\n```md\n<!-- generated: unknown -->\n```\n\n<!-- include: agent-prompt -->';
   const output = await expandStandaloneMarkdown(input, {
     route: 'foundations/Colors',
     pages: [],
@@ -156,8 +249,12 @@ test('Markdown includes and generated sections expand without evaluating code fe
   });
   assert.match(output, /A real token table/);
   assert.match(output, /<!-- generated: unknown -->/);
-  assert.match(output, /export function useRouterLinkSlot/);
-  assert.match(output, /registerPlugin|useRouterNavLinkSlot/);
+  assert.match(output, /```text/);
+  assert.ok(
+    output.includes(
+      (await fs.readFile(path.join(appRoot, 'content/data/AgentPrompt.md'), 'utf8')).trim(),
+    ),
+  );
   await assert.rejects(
     expandStandaloneMarkdown('<!-- include: secrets -->', { fence: codeFence }),
     /Unknown included/,
@@ -173,50 +270,46 @@ test('Markdown includes and generated sections expand without evaluating code fe
   await assert.rejects(expandStandaloneMarkdown('<!-- include: ../outside -->', {}), /Malformed/);
 });
 
-test('documentation and package changelogs publish their separate canonical sources once', async () => {
+test('one changelog publishes the canonical site and package histories once', async () => {
   const pages = await readReferencePages(path.join(appRoot, 'content'));
-  const documentation = pages.find((page) => page.route === 'overview/DocumentationChangelog');
   const packagePage = pages.find((page) => page.route === 'overview/Changelog');
+  assert.ok(packagePage);
+  assert.ok(!pages.some((page) => page.route === 'overview/DocumentationChangelog'));
   const wrapper = matter(
-    await fs.readFile(path.join(appRoot, 'content', documentation.guidance), 'utf8'),
+    await fs.readFile(path.join(appRoot, 'content', packagePage.guidance), 'utf8'),
   );
-  assert.equal(wrapper.content.trim(), '<!-- include: documentation-changelog -->');
+  assert.match(wrapper.content, /## Site updates\n\n<!-- include: documentation-changelog -->/);
+  assert.match(wrapper.content, /## Package releases\n\n<!-- include: package-changelog -->/);
   const canonical = matter(await fs.readFile(path.join(appRoot, 'CHANGELOG.md'), 'utf8'));
   assert.deepEqual(canonical.data, {});
   const expanded = await expandStandaloneMarkdown(wrapper.content, {
-    route: documentation.route,
+    route: packagePage.route,
     pages,
     basePath: '/repo/',
     fence: codeFence,
   });
   const headings = [...canonical.content.matchAll(/^## (.+)$/gm)].map((match) => match[1]);
   assert.ok(headings.length > 0);
-  assert.deepEqual(
-    [...expanded.matchAll(/^## (.+)$/gm)].map((match) => match[1]),
-    headings,
-  );
+  const expandedHeadings = [...expanded.matchAll(/^## (.+)$/gm)].map((match) => match[1]);
+  for (const heading of headings)
+    assert.equal(expandedHeadings.filter((candidate) => candidate === heading).length, 1);
   assert.match(expanded, /\[package changelog\]\(\/repo\/overview\/Changelog\.md\)/);
-  const packageSource = matter(
-    await fs.readFile(path.join(appRoot, 'content', packagePage.guidance), 'utf8'),
+  const packageSource = await fs.readFile(
+    path.join(appRoot, '../../packages/react-components/CHANGELOG.md'),
+    'utf8',
   );
-  const packageMarkdown = await expandStandaloneMarkdown(packageSource.content, {
-    route: packagePage.route,
-    pages,
-    basePath: '/repo/',
-    fence: codeFence,
-  });
-  for (const version of ['0.7.2', '0.1.2', '0.1.1', '0.1.0']) {
-    const releaseHeadings = [...packageMarkdown.matchAll(/^## (.+)$/gm)];
+  const versions = [...packageSource.matchAll(/^## \[(\d+\.\d+\.\d+)\]/gm)].map(
+    (match) => match[1],
+  );
+  assert.ok(versions.includes('0.1.0'));
+  for (const version of versions) {
     assert.equal(
-      releaseHeadings.filter((match) => match[1].startsWith(`[${version}]`)).length,
+      expandedHeadings.filter((heading) => heading.startsWith(`[${version}]`)).length,
       1,
       `Package history must publish ${version} once`,
     );
   }
-  assert.doesNotMatch(
-    packageMarkdown,
-    /Earlier site release summaries|generated: release-summaries/,
-  );
+  assert.doesNotMatch(expanded, /Earlier site release summaries|generated: release-summaries/);
 });
 
 test('agent handoff installs the current skill and uses HTTP documentation discovery', async () => {
@@ -240,20 +333,12 @@ test('agent handoff installs the current skill and uses HTTP documentation disco
   assert.match(prompt, /refresh older existing CoreAI guidance.*before implementing/);
   assert.match(prompt, /Preserve repository-specific rules/);
   const expanded = await expandStandaloneMarkdown('<!-- include: agent-prompt -->', {
-    route: 'guides/UseWithAgents',
+    route: 'overview/Introduction',
     pages: [],
     basePath: '/repo/',
     fence: codeFence,
   });
   assert.ok(expanded.includes(prompt));
-  const pages = await readReferencePages(path.join(appRoot, 'content'));
-  assert.equal(
-    pages.find((page) => page.route === 'guides/mcp-setup'),
-    undefined,
-  );
-  const entry = pages.find((page) => page.route === 'guides/UseWithAgents');
-  assert.ok(entry.aliases.includes('/mcp-server/'));
-  assert.ok(entry.aliases.includes('/guides/mcp-setup/'));
 });
 
 test('site release notes omit retired integration entries without changing package history', () => {
@@ -312,6 +397,14 @@ test('only registered live examples become preview slots in authored guidance', 
   }).html;
   assert.match(html, /data-example-id="components-text--presets"/);
   assert.match(html, /class="preview"/);
+  const widget = renderGuidance(
+    '<!-- view:theming -->\n\n<!-- live-example:theme-preview -->\n\n<!-- /view:theming -->',
+    {
+      views: { theming: true },
+      examples: { 'theme-preview': { id: 'theme-preview', name: 'Theme' } },
+    },
+  ).html;
+  assert.match(widget, /data-page-widget="theming"[\s\S]*data-example-id="theme-preview"/);
   assert.throws(() => renderGuidance('<!-- live-example:unknown -->'), /Missing live example/);
   assert.throws(() => renderGuidance('<!-- live-example:constructor -->'), /Missing live example/);
   const referenced = renderGuidance(
@@ -388,8 +481,6 @@ test('overview pages opt into their Markdown-backed rich views', async () => {
     ...introductionSource.data,
     body: introductionSource.content.trim(),
   });
-  assert.ok(introduction?.aliases.includes('/overview/resources/'));
-  assert.ok(introduction?.aliases.includes('/resources/'));
   assert.doesNotMatch(introductionGuidance, /Why CoreAI has a shared design system/);
   assert.match(introductionGuidance, /<!-- view:resources -->/);
   assert.match(
@@ -469,12 +560,49 @@ test('React Router templates share setup notes and retain the helper source', as
       basePath: '/',
       fence: codeFence,
     });
-    assert.match(markdown, /Copy all files listed under \*\*Code\*\*/);
+    assert.match(markdown, /Copy all files listed under \*\*Samples\*\*/);
     assert.match(markdown, /`RouterLinkSlots\.tsx`/);
     assert.match(markdown, /not an\nnpm export/);
     assert.doesNotMatch(markdown, /<!-- include:/);
     assert.ok(page.sources.some((file) => file.endsWith('/RouterLinkSlots.tsx')));
   }
+});
+
+test('React Router templates merge into one page with each example and source once', async () => {
+  const scope = await readReferencePages(path.join(appRoot, 'content'));
+  const merged = scope.filter((page) => page.mergedInto);
+  assert.equal(merged.length, 7);
+  assert.ok(merged.every((page) => page.mergedInto === 'templates/ReactRouter'));
+  const source = (name) => ({ name, path: `source/templates/x/${name}`, source: `// ${name}` });
+  const pages = [
+    { route: 'templates/ReactRouter', standalone: true },
+    ...['Tab Link List', 'Tab Link', 'Link'].map((label) => {
+      const id = `templates-${label.toLowerCase().replaceAll(' ', '-')}--default`;
+      return {
+        label,
+        summary: `${label} summary.`,
+        mergedInto: 'templates/ReactRouter',
+        defaultExampleId: id,
+        examples: [{ id, sourcePath: `source/examples/${id}.tsx`, source: `// ${id}` }],
+        templateSources: [
+          source(`${label.replaceAll(' ', '')}.tsx`),
+          ...(label === 'Tab Link List' ? [source('TabLink.tsx')] : []),
+          source('RouterLinkSlots.tsx'),
+        ],
+      };
+    }),
+  ];
+  const { generated, examples } = mergedTemplateSections(pages);
+  const markdown = generated['merged-reactrouter'];
+  assert.deepEqual(
+    [...markdown.matchAll(/^## (.+)$/gm)].map((match) => match[1]),
+    ['Link', 'Tab Link', 'Tab Link List', 'Shared helper'],
+  );
+  assert.equal(examples.get('templates/ReactRouter').length, 3);
+  assert.equal(markdown.match(/<!-- live-example:/g).length, 3);
+  for (const name of ['TabLink.tsx', 'RouterLinkSlots.tsx'])
+    assert.equal(markdown.split(`### Template source: ${name}`).length, 2);
+  assert.match(markdown, /Also copy `TabLink\.tsx` from \[Tab Link\]\(#guidance-tab-link\)/);
 });
 
 test('package guidance opts into its Markdown-backed setup view', async () => {
@@ -485,35 +613,33 @@ test('package guidance opts into its Markdown-backed setup view', async () => {
   const guidance = await fs.readFile(path.join(appRoot, 'content', page.guidance), 'utf8');
   assert.match(guidance, /## Let your agent handle setup/);
   assert.match(guidance, /<!-- include: package-readme -->/);
+  const expanded = await expandStandaloneMarkdown(guidance, {
+    route: page.route,
+    pages,
+    basePath: '/',
+    fence: codeFence,
+  });
+  assert.match(expanded, /overview\/Introduction\/#guidance-working-with-agents/);
+  assert.doesNotMatch(expanded, /guides\/UseWithAgents/);
 });
 
-test('release and skill pages opt into scanning views without duplicating their sources', async () => {
+test('release notes use a scanning view without duplicating their source', async () => {
   const pages = await readReferencePages(path.join(appRoot, 'content'));
   const changelog = pages.find((candidate) => candidate.route === 'overview/Changelog');
-  const skill = pages.find((candidate) => candidate.route === 'guides/PackageSkill');
   assert.equal(changelog?.renderer, 'changelog');
-  assert.equal(skill?.renderer, 'package-skill');
   const changelogSource = await fs.readFile(
     path.join(appRoot, 'content', changelog.guidance),
     'utf8',
   );
-  const skillSource = await fs.readFile(path.join(appRoot, 'content', skill.guidance), 'utf8');
-  assert.match(changelogSource, /<!-- include: package-release-notes -->/);
-  assert.match(skillSource, /<!-- include: package-skill -->/);
+  assert.match(changelogSource, /<!-- include: documentation-changelog -->/);
+  assert.match(changelogSource, /<!-- include: package-changelog -->/);
 });
 
-test('workflow and content pages use bounded views backed by their complete Markdown', async () => {
+test('content uses a bounded view backed by its complete Markdown', async () => {
   const pages = await readReferencePages(path.join(appRoot, 'content'));
-  const workflow = pages.find((candidate) => candidate.route === 'guides/AgentWorkflow');
   const content = pages.find((candidate) => candidate.route === 'foundations/Content');
-  assert.equal(workflow?.renderer, 'agent-workflow');
   assert.equal(content?.renderer, 'content');
-  const workflowSource = await fs.readFile(
-    path.join(appRoot, 'content', workflow.guidance),
-    'utf8',
-  );
   const contentSource = await fs.readFile(path.join(appRoot, 'content', content.guidance), 'utf8');
-  assert.match(workflowSource, /\*\*Refresh the skill\.\*\*/);
   assert.match(contentSource, /\*\*Bad:\*\*[\s\S]*\*\*Better:\*\*/);
   assert.match(contentSource, /## Get help/);
 });
@@ -564,10 +690,11 @@ test('custom foundation views and published Markdown share authored tokens, pres
 
 test('Storybook snapshots embed canonical Markdown for manifest-only readers without a second authored copy', async () => {
   const mirrors = await generateStandaloneDocs();
-  assert.equal(mirrors.length, 4);
+  const filenames = ['Theming', 'VariationsFromFluent', 'StylingWithCssModules'];
+  assert.deepEqual(new Set(mirrors), new Set(filenames.map((filename) => `${filename}.mdx`)));
   assert.ok(!mirrors.includes('ReactGrab.mdx'));
   const pages = await readReferencePages(path.join(appRoot, 'content'));
-  for (const filename of ['Theming', 'VariationsFromFluent', 'StylingWithCssModules', 'MCPSetup']) {
+  for (const filename of filenames) {
     const snapshot = await fs.readFile(path.join(standaloneDocsRoot, `${filename}.mdx`), 'utf8');
     const page = pages.find((page) =>
       page.migratedFrom?.some((source) => source.endsWith(`/docs/${filename}.mdx`)),

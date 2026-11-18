@@ -5,7 +5,10 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
 import matter from 'gray-matter';
-import { createDocumentationMetadata } from '../scripts/DocumentationMetadata.mjs';
+import {
+  createDocumentationMetadata,
+  readDocumentationMetadata,
+} from '../scripts/DocumentationMetadata.mjs';
 
 const source = matter.stringify('\n# Instructions\n\nKeep these rules.\n', {
   name: 'coreai-ds-fluentui-react',
@@ -22,6 +25,10 @@ test('one UTC timestamp stamps the published skill and hashes its actual bytes',
   assert.equal(skill.data.metadata['last-updated'], lastUpdated);
   assert.equal(skill.data.metadata['package-version'], '0.12.0');
   assert.equal(skill.data.metadata.changelog, documentation.changelog);
+  assert.equal(
+    documentation.changelog,
+    'https://microsoft.github.io/coreai-design-system/overview/Changelog.md',
+  );
   assert.ok(skill.data.description.includes(lastUpdated));
   assert.equal(skill.content, matter(source).content);
   assert.equal(skill.data.metadata.owner, 'documentation');
@@ -39,4 +46,14 @@ test('rebuilds change the stamp and provenance without a documentation version b
   assert.equal(first.documentation.packageVersion, second.documentation.packageVersion);
   assert.throws(() => createDocumentationMetadata(source, '0.12.0', '2026-11-17'));
   assert.throws(() => createDocumentationMetadata(source, '0.12.0', 'invalid'));
+});
+
+test('published skill uses current docsite guidance without changing the package source', async () => {
+  const { skillSource } = await readDocumentationMetadata({
+    lastUpdated: '2026-11-18T01:00:00.000Z',
+  });
+  assert.match(skillSource, /overview\/Introduction\.md#working-with-agents/);
+  assert.match(skillSource, /overview\/Changelog\.md/);
+  assert.match(skillSource, /reject HTML when Markdown was expected/);
+  assert.doesNotMatch(skillSource, /guides\/AgentWorkflow|overview\/DocumentationChangelog/);
 });

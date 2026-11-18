@@ -14,13 +14,10 @@ import {
   CopyButton,
   Link,
   LinkButton,
-  Markdown,
   MessageBar,
   MessageBarActions,
   MessageBarBody,
   MessageBarTitle,
-  Tab,
-  TabList,
   Text,
 } from '@coreai-ds/react-components';
 import {
@@ -33,6 +30,8 @@ import type { PageWidgetProps } from './FoundationViews';
 import { IntroFeatureCards } from './IntroFeatureCards';
 import { ContentHelpCards } from '../components/ContentHelpCards';
 import { ContentPrincipleConnector } from '../components/ContentPrincipleConnector';
+import { WorkInProgress } from '../components/WorkInProgress';
+import { fragmentId } from '../BrowserState.mjs';
 
 interface ResourceItem {
   title: string;
@@ -72,14 +71,16 @@ interface ChangelogSection {
 
 interface ChangelogRelease {
   id: string;
-  version: string;
+  version?: string;
   date?: string;
   title: string;
-  summary: string;
+  summary?: string;
+  introduction?: string;
   sections: ChangelogSection[];
 }
 
 interface ContentStep {
+  id: string;
   title: string;
   description: string;
   descriptionHtml: string;
@@ -91,8 +92,7 @@ interface ContentPrinciple {
   id: string;
   title: string;
   description: string;
-  bad: string;
-  better: string;
+  examples: Array<{ bad: string; better: string }>;
   details: string[];
 }
 
@@ -346,6 +346,201 @@ function FaqsView({ sourceHtml }: PageWidgetProps) {
   );
 }
 
+type RichSegment =
+  | { kind: 'html'; html: string }
+  | { kind: 'code'; code: string; language: string }
+  | { kind: 'callout'; title?: string; html: string }
+  | { kind: 'example'; id: string };
+
+function richSegments(elements: Element[]): RichSegment[] {
+  const segments: RichSegment[] = [];
+  for (const element of elements) {
+    if (element.tagName === 'HR') continue;
+    if (element.tagName === 'PRE') {
+      const code = element.querySelector('code') ?? element;
+      const language = [...code.classList]
+        .find((name) => name.startsWith('language-'))
+        ?.slice('language-'.length);
+      segments.push({
+        kind: 'code',
+        code: (code.textContent ?? '').replace(/\n$/, ''),
+        language: language ?? 'plaintext',
+      });
+    } else if (element.tagName === 'BLOCKQUOTE') {
+      const body = element.cloneNode(true) as Element;
+      const lead = body.querySelector(':scope > p:first-child > strong:first-child');
+      const title = lead?.textContent?.replace(/:\s*$/, '').trim();
+      lead?.remove();
+      segments.push({ kind: 'callout', title, html: body.innerHTML.trim() });
+    } else if (element.matches('.preview[data-example-id]')) {
+      segments.push({ kind: 'example', id: (element as HTMLElement).dataset.exampleId ?? '' });
+    } else {
+      const last = segments.at(-1);
+      if (last?.kind === 'html') last.html += element.outerHTML;
+      else segments.push({ kind: 'html', html: element.outerHTML });
+    }
+  }
+  return segments;
+}
+
+function RichContent({
+  segments,
+  className,
+  renderExample,
+}: {
+  segments: RichSegment[];
+  className?: string;
+  renderExample?: (id: string) => React.ReactNode;
+}) {
+  return (
+    <div className={className}>
+      {segments.map((segment, index) => {
+        if (segment.kind === 'code')
+          return <CodeBlock key={index} code={segment.code} language={segment.language} />;
+        if (segment.kind === 'callout')
+          return (
+            <MessageBar key={index} intent="info" layout="multiline">
+              <MessageBarBody>
+                {segment.title ? <MessageBarTitle>{segment.title}</MessageBarTitle> : null}
+                <span
+                  className="guide-callout__body"
+                  dangerouslySetInnerHTML={{ __html: segment.html }}
+                />
+              </MessageBarBody>
+            </MessageBar>
+          );
+        if (segment.kind === 'example')
+          return (
+            <div key={index} className="preview guide-example" aria-label="Example preview">
+              {renderExample?.(segment.id)}
+            </div>
+          );
+        return (
+          <div
+            key={index}
+            className="guide-rich-html"
+            dangerouslySetInnerHTML={{ __html: segment.html }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function GuideAccordionsView({ sourceHtml, renderExample }: PageWidgetProps) {
+  const model = React.useMemo(() => {
+    const document = documentFrom(sourceHtml);
+    const headings = [...document.querySelectorAll('h2')];
+    const first = headings[0];
+    const introduction = [...document.body.children].slice(
+      0,
+      first ? [...document.body.children].indexOf(first) : undefined,
+    );
+    const sections: {
+      id: string;
+      title: string;
+      elements: Element[];
+      anchors: string[];
+    }[] = [];
+    for (const heading of headings) {
+      const elements = followingUntil(heading, (candidate) => candidate.tagName === 'H2');
+      const anchors = elements.flatMap((element) => [
+        element.id,
+        ...[...element.querySelectorAll('[id]')].map((child) => child.id),
+      ]);
+      const previous = sections.at(-1);
+      if (previous && elements.some((element) => element.matches('.preview[data-example-id]'))) {
+        // Live examples belong to the guidance section that embeds them.
+        const subheading = document.createElement('h3');
+        subheading.id = heading.id;
+        subheading.innerHTML = heading.innerHTML;
+        previous.elements.push(subheading, ...elements);
+        previous.anchors.push(heading.id, ...anchors);
+      } else {
+        sections.push({ id: heading.id, title: heading.innerHTML, elements, anchors });
+      }
+    }
+    return {
+      introduction: richSegments(introduction),
+      sections: sections.map((section) => ({
+        ...section,
+        segments: richSegments(section.elements),
+      })),
+    };
+  }, [sourceHtml]);
+  const [openItems, setOpenItems] = React.useState<string[]>([]);
+  React.useEffect(() => {
+    let frame = 0;
+    const reveal = (hash: string) => {
+      const id = fragmentId(hash);
+      const section = model.sections.find(
+        (item) => item.id === id || item.anchors.includes(id ?? ''),
+      );
+      if (!id || !section) return;
+      setOpenItems((current) => [...new Set([...current, section.id])]);
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() =>
+        document.getElementById(id)?.scrollIntoView({ block: 'start' }),
+      );
+    };
+    const locationChanged = () => reveal(window.location.hash);
+    const followAnchor = (event: MouseEvent) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+        return;
+      const link = event.target instanceof Element ? event.target.closest('a[href]') : null;
+      if (!link) return;
+      const url = new URL(link.getAttribute('href') ?? '', window.location.href);
+      if (url.origin === window.location.origin && url.pathname === window.location.pathname)
+        reveal(url.hash);
+    };
+    locationChanged();
+    window.addEventListener('hashchange', locationChanged);
+    window.addEventListener('popstate', locationChanged);
+    document.addEventListener('click', followAnchor);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('hashchange', locationChanged);
+      window.removeEventListener('popstate', locationChanged);
+      document.removeEventListener('click', followAnchor);
+    };
+  }, [model]);
+  return (
+    <div className="reference-faqs-view">
+      {model.introduction.length ? (
+        <RichContent
+          className="guide-introduction"
+          segments={model.introduction}
+          renderExample={renderExample}
+        />
+      ) : null}
+      <Accordion
+        className="faq-list"
+        multiple
+        collapsible
+        openItems={openItems}
+        onToggle={(_event, data) => setOpenItems(data.openItems.map(String))}
+      >
+        {model.sections.map((section) => (
+          <AccordionItem id={section.id} key={section.id} value={section.id}>
+            <AccordionHeader as="h2" expandIconPosition="end" size="large">
+              <Text size={400} weight="regular" foreground={1}>
+                <span dangerouslySetInnerHTML={{ __html: section.title }} />
+              </Text>
+            </AccordionHeader>
+            <AccordionPanel>
+              <RichContent
+                className="faq-answer"
+                segments={section.segments}
+                renderExample={renderExample}
+              />
+            </AccordionPanel>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </div>
+  );
+}
+
 function PackageStep({
   number,
   title,
@@ -461,25 +656,53 @@ function releaseSections(elements: Element[], headingTag: 'H3' | 'H4') {
   return sections;
 }
 
-function changelogReleases(document: Document) {
+function changelogReleases(elements: Element[]) {
   const releases: ChangelogRelease[] = [];
-  for (const heading of document.querySelectorAll('h2')) {
+  for (const heading of elements) {
+    if (heading.tagName !== 'H2') continue;
     const match = heading.textContent
       ?.trim()
       .match(/^(Unreleased|\d+\.\d+\.\d+)(?:\s+-\s+(\d{4}-\d{2}-\d{2}))?$/);
     if (!match) continue;
     const elements = followingUntil(heading, (candidate) => candidate.tagName === 'H2');
     const sections = releaseSections(elements, 'H3');
+    const firstSection = elements.findIndex((element) => element.tagName === 'H3');
     releases.push({
       id: heading.id,
       version: match[1],
       date: match[2] || undefined,
-      title: match[1] === 'Unreleased' ? 'Changes planned for the next release' : 'Package update',
+      title: match[1] === 'Unreleased' ? 'Changes planned for the next release' : 'Package release',
       summary: `${sections.map((section) => section.title).join(', ')} updates in this release.`,
+      introduction: elements
+        .slice(0, firstSection < 0 ? undefined : firstSection)
+        .map((element) => element.outerHTML)
+        .join(''),
       sections,
     });
   }
   return releases;
+}
+
+function changelogSiteUpdates(elements: Element[]): ChangelogRelease[] {
+  return elements
+    .filter((element) => element.tagName === 'H2')
+    .map((heading) => {
+      const match = heading.textContent?.trim().match(/^(.+?)\s+-\s+(\d{4}-\d{2}-\d{2})$/);
+      if (!match) throw new Error('A site changelog entry is missing its date.');
+      const content = followingUntil(heading, (candidate) => candidate.tagName === 'H2');
+      const items = content.flatMap((element) => {
+        if (element.tagName !== 'UL' && element.tagName !== 'OL') return [element.outerHTML];
+        return [...element.children]
+          .filter((child) => child.tagName === 'LI')
+          .map((item) => item.innerHTML);
+      });
+      return {
+        id: heading.id,
+        date: match[2],
+        title: match[1],
+        sections: [{ title: 'Updated', items }],
+      };
+    });
 }
 
 const monthFormatter = new Intl.DateTimeFormat('en-US', {
@@ -581,38 +804,26 @@ function measureChangelogRails(list: HTMLDivElement): ChangelogRail[] {
   return rails;
 }
 
-const changelogLinkDescriptions: Partial<Record<string, string>> = {
-  'Full history': 'Complete package release history.',
-  'Keep a Changelog': 'Release note format.',
-  'Semantic Versioning': 'Package versioning rules.',
-};
-
 function ChangelogView({ sourceHtml }: PageWidgetProps) {
   const model = React.useMemo(() => {
     const document = documentFrom(sourceHtml);
-    const introductionHeading = document.getElementById('guidance-package-release-history');
-    if (!introductionHeading) throw new Error('Missing package release history.');
-    const releases = changelogReleases(document);
+    const siteHeading = document.getElementById('guidance-site-updates');
+    const packageHeading = document.getElementById('guidance-package-releases');
+    if (!siteHeading || !packageHeading) throw new Error('Missing changelog history sections.');
+    const siteElements = followingUntil(siteHeading, (element) => element === packageHeading);
+    const packageElements = followingUntil(packageHeading, () => false);
+    const releases = [
+      ...changelogSiteUpdates(siteElements),
+      ...changelogReleases(packageElements).filter((release) => release.version !== 'Unreleased'),
+    ].sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''));
+    if (!releases.some((release) => release.version))
+      throw new Error('Missing package release history.');
     const groups = new Map<string, ChangelogRelease[]>();
     for (const release of releases) {
       const month = release.date?.slice(0, 7) ?? 'unreleased';
       groups.set(month, [...(groups.get(month) ?? []), release]);
     }
-    const introduction = followingUntil(
-      introductionHeading,
-      (candidate) => candidate.tagName === 'H2',
-    );
-    return {
-      links: introduction
-        .flatMap((element) => [...element.querySelectorAll('a[href]')])
-        .map((link) => ({
-          href: link.getAttribute('href') ?? '',
-          label: link.getAttribute('href')?.endsWith('/CHANGELOG.md')
-            ? 'Full history'
-            : (link.textContent?.trim() ?? ''),
-        })),
-      groups: [...groups],
-    };
+    return { groups: [...groups] };
   }, [sourceHtml]);
   const listRef = React.useRef<HTMLDivElement>(null);
   const graphId = React.useId();
@@ -632,40 +843,6 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
   }, [model]);
   return (
     <div className="reference-changelog-view">
-      <div className="resources-grid changelog-actions">
-        {model.links.map((link, index) => {
-          const resourceId = `${graphId}-resource-${index}`;
-          const description = changelogLinkDescriptions[link.label];
-          return (
-            <Link
-              className="resource-card-link"
-              href={link.href}
-              key={link.href}
-              aria-labelledby={`${resourceId}-title`}
-              aria-describedby={description ? `${resourceId}-description` : undefined}
-            >
-              <Card className="resource-card" focusMode="off">
-                <Text
-                  as="h3"
-                  className="resource-card__title"
-                  id={`${resourceId}-title`}
-                  size={300}
-                  weight="semibold"
-                  foreground={1}
-                >
-                  {link.label}
-                  <ExternalIcon />
-                </Text>
-                {description ? (
-                  <Text as="p" id={`${resourceId}-description`} size={200} foreground={3}>
-                    {description}
-                  </Text>
-                ) : null}
-              </Card>
-            </Link>
-          );
-        })}
-      </div>
       <div className="changelog-list" ref={listRef}>
         <svg className="changelog-graph" aria-hidden="true">
           {rails.map((rail, index) => (
@@ -716,12 +893,10 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
             </summary>
             <div className="changelog-month__entries">
               {releases.map((release) => (
-                <article className="changelog-entry" id={release.id} key={release.version}>
+                <article className="changelog-entry" id={release.id} key={release.id}>
                   <div className="changelog-entry__version">
                     <a href={`#${release.id}`}>
-                      {release.version === 'Unreleased'
-                        ? 'Unreleased'
-                        : `Version ${release.version}`}
+                      {release.version ? `Version ${release.version}` : 'Site update'}
                     </a>
                     {release.date ? (
                       <Badge appearance="tint" color="subtle" shape="rounded">
@@ -736,16 +911,24 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
                       <Text as="h3" weight="semibold" foreground={1}>
                         {release.title}
                       </Text>
-                      <Text as="p" foreground={3}>
-                        {release.summary}
-                      </Text>
+                      {release.summary ? (
+                        <Text as="p" foreground={3}>
+                          {release.summary}
+                        </Text>
+                      ) : null}
+                      {release.introduction ? (
+                        <div
+                          className="standalone-guidance"
+                          dangerouslySetInnerHTML={{ __html: release.introduction }}
+                        />
+                      ) : null}
                     </div>
                     <div className="changelog-entry__sections">
-                      {release.sections.map((section) => (
+                      {release.sections.map((section, index) => (
                         <section
                           className="changelog-entry__section"
                           data-change={section.title}
-                          key={section.title}
+                          key={`${section.title}-${index}`}
                         >
                           <Text as="h4" weight="semibold" foreground={1}>
                             <Badge
@@ -779,81 +962,6 @@ function ChangelogView({ sourceHtml }: PageWidgetProps) {
   );
 }
 
-function stripFrontmatter(source: string) {
-  return source.replace(/^---\n[\s\S]*?\n---\n/, '').trimStart();
-}
-
-function PackageSkillView({ sourceHtml }: PageWidgetProps) {
-  const [view, setView] = React.useState<'markdown' | 'text'>('markdown');
-  const model = React.useMemo(() => {
-    const document = documentFrom(sourceHtml);
-    const sourceHeading = document.getElementById('guidance-skill-source');
-    if (!sourceHeading) throw new Error('Missing skill source.');
-    const source = followingUntil(sourceHeading, () => false)
-      .find((element) => element.tagName === 'PRE')
-      ?.querySelector('code')?.textContent;
-    const download = document.querySelector<HTMLAnchorElement>(
-      'a[href$="/source/package/SKILL.md"]',
-    );
-    if (!source || !download) throw new Error('Missing downloadable skill source.');
-    return {
-      guidanceHtml: [...document.querySelectorAll('h2')]
-        .filter((heading) => heading !== sourceHeading)
-        .flatMap((heading) => [
-          heading.outerHTML,
-          ...followingUntil(heading, (candidate) => candidate.tagName === 'H2').map(
-            (element) => element.outerHTML,
-          ),
-        ])
-        .join(''),
-      source,
-      downloadHref: download.href,
-    };
-  }, [sourceHtml]);
-  return (
-    <div className="coreai-skill-view">
-      <div
-        className="coreai-skill-guidance standalone-guidance"
-        dangerouslySetInnerHTML={{ __html: model.guidanceHtml }}
-      />
-      <div className="coreai-skill-toolbar">
-        <TabList
-          appearance="elevated"
-          selectedValue={view}
-          onTabSelect={(_event, data) => setView(data.value as 'markdown' | 'text')}
-        >
-          <Tab value="markdown">Markdown</Tab>
-          <Tab value="text">Rendered</Tab>
-        </TabList>
-        <Button
-          as="a"
-          href={model.downloadHref}
-          download="SKILL.md"
-          appearance="outline"
-          icon={<ArrowDownload20Regular />}
-        >
-          Download
-        </Button>
-      </div>
-      {view === 'markdown' ? (
-        <CodeBlock
-          className="coreai-skill-code"
-          code={model.source}
-          language="markdown"
-          header={
-            <Text preset="heading6" foreground={3}>
-              .github/skills/coreai-ds-fluentui-react/SKILL.md
-            </Text>
-          }
-          headerAppearance="subtle"
-        />
-      ) : (
-        <Markdown content={stripFrontmatter(model.source)} />
-      )}
-    </div>
-  );
-}
-
 function headingGroups(elements: Element[], tagName: 'H3' | 'H4') {
   return elements
     .map((element, index) => {
@@ -876,6 +984,7 @@ function contentSteps(document: Document, sectionId: string): ContentStep[] {
         .at(-1);
       const description = body.find((element) => element.tagName === 'P');
       return {
+        id: heading.id,
         title: heading.textContent?.trim() ?? '',
         description: description?.textContent?.trim() ?? '',
         descriptionHtml: description?.innerHTML ?? '',
@@ -890,32 +999,49 @@ function contentSteps(document: Document, sectionId: string): ContentStep[] {
 
 function ContentStepList({ steps }: { steps: ContentStep[] }) {
   return (
-    <div className="content-flow">
-      {steps.map((step) => (
-        <div className="content-step" key={step.title}>
-          <div className="content-step__content">
-            <Text as="h3" weight="semibold" foreground={1}>
-              {step.title}
-            </Text>
-            <div dangerouslySetInnerHTML={{ __html: step.descriptionHtml }} />
-            {step.details.length ? (
-              <ul className="content-guidance-list">
-                {step.details.map((detail, detailIndex) => (
-                  <li
-                    key={`${step.title}-${detailIndex}`}
-                    dangerouslySetInnerHTML={{ __html: detail }}
-                  />
-                ))}
-              </ul>
-            ) : null}
-            {step.link ? (
-              <Link href={step.link.href} external>
-                {step.link.label}
-              </Link>
-            ) : null}
-          </div>
-        </div>
-      ))}
+    <div className="content-process-layout">
+      <ol className="content-flow content-flow--review">
+        {steps.map((step) => (
+          <li
+            className={`content-step${step.details.length ? ' content-step--review' : ''}`}
+            id={step.id}
+            key={step.title}
+          >
+            <div className="content-step__content">
+              <Text as="h3" id={`${step.id}-title`} weight="semibold" foreground={1}>
+                {step.title}
+              </Text>
+              <div dangerouslySetInnerHTML={{ __html: step.descriptionHtml }} />
+              {step.link ? (
+                <Link href={step.link.href} external>
+                  {step.link.label}
+                </Link>
+              ) : null}
+            </div>
+          </li>
+        ))}
+      </ol>
+      {steps
+        .filter((step) => step.details.length)
+        .map((step) => (
+          <ul
+            className="content-publish-checklist"
+            aria-labelledby={`${step.id}-title`}
+            key={step.id}
+          >
+            {step.details.map((detail, detailIndex) => {
+              const separator = detail.indexOf(':');
+              return (
+                <li key={`${step.title}-${detailIndex}`}>
+                  {separator >= 0 ? (
+                    <strong dangerouslySetInnerHTML={{ __html: detail.slice(0, separator + 1) }} />
+                  ) : null}
+                  <span dangerouslySetInnerHTML={{ __html: detail.slice(separator + 1).trim() }} />
+                </li>
+              );
+            })}
+          </ul>
+        ))}
     </div>
   );
 }
@@ -938,50 +1064,98 @@ function ContentSectionHeader({ title, description }: { title: string; descripti
 function ContentView({ sourceHtml }: PageWidgetProps) {
   const model = React.useMemo(() => {
     const document = documentFrom(sourceHtml);
-    const principles = headingGroups(
-      sectionElements(document, 'guidance-write-clear-useful-content', ['H2']),
-      'H3',
-    ).map(({ heading, body }): ContentPrinciple => {
-      const comparisons = body.filter(
-        (element) => element.tagName === 'P' && element.querySelector('strong'),
-      );
-      const comparisonText = (element: Element | undefined) => {
-        const clone = element?.cloneNode(true) as Element | undefined;
-        clone?.querySelector('strong')?.remove();
-        return clone?.textContent?.replace(/^:\s*/, '').trim() ?? '';
-      };
-      return {
-        id: heading.id,
-        title: heading.textContent?.trim() ?? '',
-        description:
-          body
-            .find((element) => element.tagName === 'P' && !element.querySelector('strong'))
-            ?.textContent?.trim() ?? '',
-        bad: comparisonText(comparisons[0]),
-        better: comparisonText(comparisons[1]),
-        details: body
-          .flatMap((element) => [...element.querySelectorAll('li')])
-          .map((item) => item.textContent?.trim() ?? ''),
-      };
-    });
+    const principleElements = sectionElements(document, 'guidance-write-clear-useful-content', [
+      'H2',
+    ]);
+    const principles = headingGroups(principleElements, 'H3').map(
+      ({ heading, body }): ContentPrinciple => {
+        const comparisons = body.filter(
+          (element) => element.tagName === 'P' && element.querySelector('strong'),
+        );
+        const comparisonText = (element: Element | undefined) => {
+          const clone = element?.cloneNode(true) as Element | undefined;
+          clone?.querySelector('strong')?.remove();
+          return clone?.textContent?.replace(/^:\s*/, '').trim() ?? '';
+        };
+        return {
+          id: heading.id,
+          title: heading.textContent?.trim() ?? '',
+          description:
+            body
+              .find((element) => element.tagName === 'P' && !element.querySelector('strong'))
+              ?.textContent?.trim() ?? '',
+          examples: comparisons
+            .filter((_, index) => index % 2 === 0)
+            .map((element, index) => ({
+              bad: comparisonText(element),
+              better: comparisonText(comparisons[index * 2 + 1]),
+            })),
+          details: body
+            .flatMap((element) => [...element.querySelectorAll('li')])
+            .map((item) => item.textContent?.trim() ?? ''),
+        };
+      },
+    );
     const processElements = sectionElements(document, 'guidance-process-tips', ['H2']);
     const helpElements = sectionElements(document, 'guidance-get-help', ['H2']);
+    const introduction = principleElements.slice(
+      0,
+      principleElements.findIndex((element) => element.tagName === 'H3'),
+    );
+    const help = contentSteps(document, 'guidance-get-help');
     return {
+      lead: introduction[0]?.outerHTML ?? '',
+      specialistNote: introduction[1]?.innerHTML ?? '',
+      principlesTitle:
+        document.getElementById('guidance-write-clear-useful-content')?.textContent ?? '',
+      introduction: introduction
+        .slice(2)
+        .map((element) => element.outerHTML)
+        .join(''),
       principles,
       processDescription:
         processElements.find((element) => element.tagName === 'P')?.textContent?.trim() ?? '',
       process: contentSteps(document, 'guidance-process-tips'),
       helpDescription:
         helpElements.find((element) => element.tagName === 'P')?.textContent?.trim() ?? '',
-      help: contentSteps(document, 'guidance-get-help').map((step) => {
+      contact: help
+        .flatMap((step) => step.details)
+        .filter((detail) => detail.startsWith('Contact Content Design'))
+        .join(''),
+      help: help.map((step) => {
         if (!step.link) throw new Error('Missing content help link.');
-        return { title: step.title, description: step.description, href: step.link.href };
+        return {
+          title: step.title,
+          description: step.description,
+          details: step.details
+            .filter((detail) => !detail.startsWith('Contact Content Design'))
+            .map((detail) => documentFrom(detail).body.textContent ?? ''),
+          href: step.link.href,
+          linkLabel: step.link.label,
+        };
       }),
     };
   }, [sourceHtml]);
   return (
-    <div className="content-page">
-      <section className="page-section content-section">
+    <div className="content-page content-page--layout-mockup">
+      <div className="content-opening">
+        <div className="content-lead" dangerouslySetInnerHTML={{ __html: model.lead }} />
+        <MessageBar intent="brand" layout="multiline">
+          <MessageBarBody>
+            <span dangerouslySetInnerHTML={{ __html: model.specialistNote }} />
+          </MessageBarBody>
+        </MessageBar>
+      </div>
+      <section className="page-section content-section" id="guidance-write-clear-useful-content">
+        <div className="content-section__header">
+          <Text as="h2" size={500} weight="semibold" foreground={1}>
+            {model.principlesTitle}
+          </Text>
+          <div
+            className="content-principles-intro"
+            dangerouslySetInnerHTML={{ __html: model.introduction }}
+          />
+        </div>
         <Accordion className="content-principle-list" multiple collapsible>
           {model.principles.map((principle, index) => (
             <AccordionItem className="content-principle" key={principle.id} value={principle.id}>
@@ -1001,28 +1175,30 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
               </AccordionHeader>
               <AccordionPanel>
                 <div className="content-principle__content">
-                  <div className="content-example-grid">
-                    <div className="content-example content-example--avoid">
-                      <Badge appearance="filled" color="danger" shape="rounded" size="medium">
-                        Bad example
-                      </Badge>
-                      <div className="content-example__body">
-                        <Text as="p" size={300} foreground={3}>
-                          {principle.bad}
-                        </Text>
+                  {principle.examples.map((example, exampleIndex) => (
+                    <div className="content-example-grid" key={exampleIndex}>
+                      <div className="content-example content-example--avoid">
+                        <Badge appearance="filled" color="danger" shape="rounded" size="medium">
+                          Bad example
+                        </Badge>
+                        <div className="content-example__body">
+                          <Text as="p" size={300} foreground={3}>
+                            {example.bad}
+                          </Text>
+                        </div>
+                      </div>
+                      <div className="content-example content-example--prefer">
+                        <Badge appearance="filled" color="success" shape="rounded" size="medium">
+                          Better example
+                        </Badge>
+                        <div className="content-example__body">
+                          <Text as="p" size={300} foreground={3}>
+                            {example.better}
+                          </Text>
+                        </div>
                       </div>
                     </div>
-                    <div className="content-example content-example--prefer">
-                      <Badge appearance="filled" color="success" shape="rounded" size="medium">
-                        Better example
-                      </Badge>
-                      <div className="content-example__body">
-                        <Text as="p" size={300} foreground={3}>
-                          {principle.better}
-                        </Text>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                   <div className="content-principle__guidance">
                     <Badge
                       id={`content-principle-${index}-tips`}
@@ -1048,114 +1224,30 @@ function ContentView({ sourceHtml }: PageWidgetProps) {
           ))}
         </Accordion>
       </section>
-      <section className="page-section content-section content-section--primary">
+      <section
+        className="page-section content-section content-section--primary"
+        id="guidance-process-tips"
+      >
         <ContentSectionHeader title="Process tips" description={model.processDescription} />
         <ContentStepList steps={model.process} />
       </section>
-      <section className="page-section content-section">
+      <section className="page-section content-section" id="guidance-get-help">
         <ContentSectionHeader title="Get help" description={model.helpDescription} />
         <ContentHelpCards items={model.help} />
+        <div className="content-help-contact" dangerouslySetInnerHTML={{ __html: model.contact }} />
       </section>
-    </div>
-  );
-}
-
-function AgentWorkflowView({ sourceHtml }: PageWidgetProps) {
-  const model = React.useMemo(() => {
-    const document = documentFrom(sourceHtml);
-    const startElements = sectionElements(document, 'guidance-start-here', ['H2']);
-    const steps = [
-      ...(startElements.find((element) => element.tagName === 'OL')?.children ?? []),
-    ].map((item) => {
-      const clone = item.cloneNode(true) as Element;
-      const heading = clone.querySelector('strong');
-      const title = heading?.textContent?.replace(/\.$/, '').trim() ?? '';
-      heading?.remove();
-      return { title, html: clone.innerHTML.trim() };
-    });
-    const mappingElements = sectionElements(document, 'guidance-direct-url-mapping', ['H2']);
-    const mapping = mappingElements
-      .flatMap((element) => [...element.querySelectorAll('li')])
-      .map((item) => item.textContent?.trim() ?? '')
-      .join('\n');
-    const remaining = [...document.querySelectorAll('h2')]
-      .filter(
-        (heading) => !['guidance-start-here', 'guidance-direct-url-mapping'].includes(heading.id),
-      )
-      .map((heading) => ({
-        id: heading.id,
-        title: heading.textContent?.trim() ?? '',
-        html: followingUntil(heading, (candidate) => candidate.tagName === 'H2')
-          .map((element) => element.outerHTML)
-          .join(''),
-      }));
-    return {
-      baseHtml: startElements.find((element) => element.tagName === 'P')?.innerHTML ?? '',
-      steps,
-      mapping,
-      mappingHtml: mappingElements
-        .filter((element) => element.tagName !== 'UL')
-        .map((element) => element.outerHTML)
-        .join(''),
-      remaining,
-    };
-  }, [sourceHtml]);
-  return (
-    <div className="agent-workflow-view">
-      <MessageBar intent="brand" layout="multiline" icon={null}>
-        <MessageBarBody>
-          <MessageBarTitle>Use CoreAI Markdown over ordinary HTTPS.</MessageBarTitle>
-          <span dangerouslySetInnerHTML={{ __html: model.baseHtml }} />
-        </MessageBarBody>
-      </MessageBar>
-      <div className="package-install">
-        {model.steps.map((step, index) => (
-          <div className="package-step" key={step.title}>
-            <span className="package-step__number">{index + 1}</span>
-            <div className="package-step__content">
-              <Text as="h3" weight="semibold" foreground={1}>
-                {step.title}
-              </Text>
-              <div dangerouslySetInnerHTML={{ __html: step.html }} />
-            </div>
-          </div>
-        ))}
-      </div>
-      <section className="agent-workflow-mapping">
-        <Text as="h2" preset="heading3" foreground={1}>
-          Direct URL mapping
-        </Text>
-        <CodeBlock code={model.mapping} language="text" />
-        <div
-          className="standalone-guidance"
-          dangerouslySetInnerHTML={{ __html: model.mappingHtml }}
-        />
-      </section>
-      <div className="agent-workflow-sections">
-        {model.remaining.map((section) => (
-          <section className="agent-workflow-section" id={section.id} key={section.id}>
-            <Text as="h2" preset="heading3" foreground={1}>
-              {section.title}
-            </Text>
-            <div
-              className="standalone-guidance"
-              dangerouslySetInnerHTML={{ __html: section.html }}
-            />
-          </section>
-        ))}
-      </div>
     </div>
   );
 }
 
 export const standaloneViews: Record<string, React.ComponentType<PageWidgetProps>> = {
+  'work-in-progress': () => <WorkInProgress standalone />,
+  'guide-accordions': GuideAccordionsView,
   resources: ResourcesView,
   includes: IntroFeatureCards,
   'agent-cards': IntroAgentCards,
   faqs: FaqsView,
   package: PackageView,
   changelog: ChangelogView,
-  'package-skill': PackageSkillView,
   content: ContentView,
-  'agent-workflow': AgentWorkflowView,
 };

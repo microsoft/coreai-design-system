@@ -15,8 +15,7 @@ export function createDocumentationMetadata(source, packageVersion, lastUpdated)
   const skill = matter(source);
   if (typeof skill.data.description !== 'string' || !skill.data.description.trim())
     throw new Error('The skill must have a description.');
-  const changelog =
-    'https://microsoft.github.io/coreai-design-system/overview/DocumentationChangelog.md';
+  const changelog = 'https://microsoft.github.io/coreai-design-system/overview/Changelog.md';
   const skillSource = matter.stringify(skill.content, {
     ...skill.data,
     description: `Last updated ${lastUpdated}; package v${packageVersion}. ${skill.data.description}`,
@@ -47,5 +46,19 @@ export async function readDocumentationMetadata({ lastUpdated = new Date().toISO
     fs.readFile(path.join(packageRoot, 'package.json'), 'utf8').then(JSON.parse),
     fs.readFile(path.join(packageRoot, 'agent/SKILL.md'), 'utf8'),
   ]);
-  return createDocumentationMetadata(source, componentPackage.version, lastUpdated);
+  const publishedSource = source
+    .replaceAll(
+      'https://microsoft.github.io/coreai-design-system/guides/AgentWorkflow.md',
+      'https://microsoft.github.io/coreai-design-system/overview/Introduction.md#working-with-agents',
+    )
+    .replaceAll(
+      'https://microsoft.github.io/coreai-design-system/overview/DocumentationChangelog.md',
+      'https://microsoft.github.io/coreai-design-system/overview/Changelog.md',
+    )
+    .replace('- Dated documentation changelog:', '- Site updates in the changelog:')
+    .replace(
+      'These are static files;',
+      'Check the HTTP status and reject HTML when Markdown was expected.\nThese are static files;',
+    );
+  return createDocumentationMetadata(publishedSource, componentPackage.version, lastUpdated);
 }

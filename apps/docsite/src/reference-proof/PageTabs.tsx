@@ -28,6 +28,11 @@ export interface PageTabTargets {
       label: string;
     }[];
   };
+  inlinePreviews: {
+    preview: HTMLElement;
+    home: Comment;
+    sample: HTMLElement;
+  }[];
   codeBlocks: {
     host: HTMLElement;
     code: string;
@@ -128,10 +133,12 @@ function extractSamples(
   codeBlocks: PageTabTargets['codeBlocks'],
   {
     movePreviews = false,
+    inlinePreviews,
     preserveHeadingIds = false,
     removeSources = false,
   }: {
     movePreviews?: boolean;
+    inlinePreviews?: PageTabTargets['inlinePreviews'];
     preserveHeadingIds?: boolean;
     removeSources?: boolean;
   } = {},
@@ -167,7 +174,13 @@ function extractSamples(
       const preview = movePreviews
         ? section.querySelector<HTMLElement>(':scope > .preview[data-example-id]')
         : null;
-      if (preview) group.append(preview);
+      if (preview && inlinePreviews) {
+        const home = document.createComment('');
+        preview.after(home);
+        inlinePreviews.push({ preview, home, sample: group });
+      } else if (preview) {
+        group.append(preview);
+      }
       samples.append(group);
       groups.set(context, group);
     }
@@ -233,6 +246,7 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
   const samples = document.createElement('div');
   const references = document.createElement('div');
   const codeBlocks: PageTabTargets['codeBlocks'] = [];
+  const inlinePreviews: PageTabTargets['inlinePreviews'] = [];
   const prefix = `${header.dataset.headingId}-content`;
   for (const [name, panel] of [
     ['usage', usage],
@@ -269,6 +283,9 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
   if (markdown) {
     extractSamples(markdown, references, codeBlocks, {
       movePreviews: true,
+      inlinePreviews: markdown.hasAttribute('data-inline-example-list')
+        ? inlinePreviews
+        : undefined,
       removeSources: true,
     });
   }
@@ -323,7 +340,7 @@ export function preparePageTabs(root: HTMLElement): PageTabTargets | null {
     }
   }
   introduction.append(host, usage, samples);
-  return { host, usage, samples, prefix, showcase, codeBlocks };
+  return { host, usage, samples, prefix, showcase, inlinePreviews, codeBlocks };
 }
 
 function hashTarget(hash = window.location.hash): HTMLElement | null {
@@ -358,6 +375,13 @@ export function PageTabs({
   React.useLayoutEffect(() => {
     targets.usage.hidden = selected !== 'usage';
     targets.samples.hidden = selected !== 'samples';
+  }, [selected, targets]);
+  React.useLayoutEffect(() => {
+    for (const { preview, home, sample } of targets.inlinePreviews) {
+      if (selected === 'samples')
+        sample.insertBefore(preview, sample.querySelector('.reference-page-code-block-host'));
+      else home.before(preview);
+    }
   }, [selected, targets]);
   React.useLayoutEffect(() => {
     const showcase = targets.showcase;

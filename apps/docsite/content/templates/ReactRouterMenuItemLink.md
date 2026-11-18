@@ -9,6 +9,7 @@ reference:
     - src/stories/templates/react-router/MenuItemLink.tsx
     - src/stories/templates/react-router/RouterLinkSlots.tsx
   route: templates/ReactRouterMenuItemLink
+  mergedInto: templates/ReactRouter
 ---
 
 <!-- include: router-link-notes -->

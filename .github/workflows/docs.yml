@@ -100,8 +100,8 @@ jobs:
               const home = (await read('')).text;
               assert.match(home, /CoreAI Design System/);
               assert.ok(home.includes(`datetime="${release.lastUpdated}"`));
-              assert.ok(home.includes('overview/DocumentationChangelog/'));
-              assert.match((await read('overview/DocumentationChangelog.md')).text, /Documentation changelog/);
+              assert.ok(home.includes('overview/Changelog/'));
+              assert.match((await read('overview/Changelog.md')).text, /Site updates/);
               const markdown = await read('components/DataGrid.md');
               assert.ok(!markdown.type.includes('text/html'));
               assert.match(markdown.text, /DataGridProps/);

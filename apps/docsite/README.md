@@ -37,7 +37,7 @@ subsequent builds use the pinned local checkout.
 - Canonical guidance and page metadata: [`content/`](content).
 - Shared tables and starter prompt: [`content/data/`](content/data).
 - Dated documentation notes: [`CHANGELOG.md`](CHANGELOG.md), included by the
-  `content/overview/DocumentationChangelog.md` page wrapper.
+  `content/overview/Changelog.md` page wrapper.
 - Package setup, changelog, and consumer skill: the package's canonical files,
   included at build time rather than copied by authors.
 - Build and source tooling: [`scripts/`](scripts).
@@ -62,7 +62,12 @@ standard `index.html` / `index.md` output names.
 
 Frontmatter `id` is an internal content identifier, not a public URL. The file
 location determines the route unless `reference.route` explicitly sets one.
-Documentation has no `complete` or `under-construction` status metadata.
+Pages with no body reuse the animated under-construction view. Set
+`reference.layout: work-in-progress` to show that view while keeping draft
+guidance in the source until it is ready to publish.
+
+The Changelog page includes site updates and package releases from their
+separate canonical sources. There is no separate documentation changelog page.
 
 ## Authoring pages
 
@@ -177,6 +182,17 @@ enhances it with a shared provider, native-link sidebar/search, page tabs, and
 examples. Ordinary links navigate without resetting the shell; modified clicks
 retain native browser behavior. Storage or fragment failures do not blank the
 page, and unexpected enhancement errors restore static content explicitly.
+Search uses the navigation tree to index titles, descriptions, and Markdown
+guidance only for pages in the sidebar. Redirects are not separate results. Title matches
+appear before description and body matches. Press Down
+from the search field to focus results, use arrow keys to move between them,
+and press Escape to clear search and return to the field.
+After building and starting a preview, run
+`node apps/docsite/scripts/verify-search.mjs http://127.0.0.1:8081/`
+from the repository root to check search against the navigation tree, deleted
+routes, React Router redirects, every published page, both themes, client
+navigation, history, keyboard controls, and mobile navigation. Pass the deployment
+prefix in the URL when previewing a prefixed build.
 
 ```powershell
 npm --workspace apps/docsite test

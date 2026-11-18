@@ -223,7 +223,10 @@ export function renderGuidance(markdown, { examples = {}, views = {}, sections =
       data: { hName: 'div', hProperties: { dataPageWidget: marker[1] } },
     });
   }
-  for (const node of tree.children) {
+  const blocks = tree.children.flatMap((node) =>
+    node.data?.hProperties?.dataPageWidget ? [node, ...node.children] : [node],
+  );
+  for (const node of blocks) {
     if (node.type !== 'html') continue;
     const marker = node.value.match(/^<!-- live-example:([\w-]+) -->$/);
     if (!marker) continue;

@@ -11,6 +11,8 @@ import {
   azureDarkTheme,
   azureBrandVariants,
 } from '@coreai-ds/react-components';
+import { createCustomBrand, DEFAULT_CUSTOM_COLOR } from '../src/theme/custom-brand.mjs';
+import { normalizeHex } from '../src/utils/BrandRamp.mjs';
 
 const root = new URL(process.argv[2] ?? 'http://127.0.0.1:8080/');
 const brands = {
@@ -20,15 +22,16 @@ const brands = {
 const metadata = await (await fetch(new URL('llms/index.json', root))).json();
 const route = (id) => new URL(metadata.pages.find((page) => page.id === id).htmlPath, root);
 
-async function seed(context, brand, mode) {
+async function seed(context, brand, mode, color) {
   await context.addInitScript(
-    ({ brand, mode }) => {
+    ({ brand, mode, color }) => {
       if (sessionStorage.getItem('theme-check-seeded')) return;
       localStorage.setItem('coreai-docsite-brand', brand);
       localStorage.setItem('coreai-docsite-theme', mode);
+      if (color) localStorage.setItem('coreai-docsite-custom-color', color);
       sessionStorage.setItem('theme-check-seeded', 'true');
     },
-    { brand, mode },
+    { brand, mode, color },
   );
 }
 
@@ -90,24 +93,31 @@ async function assertCubeColors(page, brand) {
 
 const browser = await chromium.launch();
 try {
-  for (const [brand, mode, expectedBrand, expectedMode] of [
+  for (const [brand, mode, expectedBrand, expectedMode, color] of [
     ['coreai', 'light', 'coreai', 'light'],
     ['coreai', 'dark', 'coreai', 'dark'],
     ['azure', 'light', 'azure', 'light'],
     ['azure', 'dark', 'azure', 'dark'],
+    ['custom', 'light', 'custom', 'light', '#0F6CBD'],
+    ['custom', 'dark', 'custom', 'dark', '#B43848'],
+    ['custom', 'light', 'custom', 'light', 'invalid'],
     ['invalid', 'light', 'coreai', 'light'],
     ['azure', 'invalid', 'azure', 'dark'],
   ]) {
     const context = await browser.newContext({
       colorScheme: mode === 'dark' ? 'light' : 'dark',
     });
-    await seed(context, brand, mode);
+    await seed(context, brand, mode, color);
     await context.route('**/*.js', (request) => request.abort());
     const page = await context.newPage();
     await page.goto(root.href);
     assert.equal(await page.locator('html').getAttribute('data-brand'), expectedBrand);
     assert.equal(await page.locator('html').getAttribute('data-theme'), expectedMode);
-    await assertTokens(page.locator('html'), brands[expectedBrand][expectedMode]);
+    const expected =
+      expectedBrand === 'custom'
+        ? createCustomBrand(normalizeHex(color) ?? DEFAULT_CUSTOM_COLOR)[expectedMode]
+        : brands[expectedBrand][expectedMode];
+    await assertTokens(page.locator('html'), expected);
     await context.close();
   }
 

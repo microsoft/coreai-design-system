@@ -12,6 +12,7 @@ import type { PagePresentation } from './PagePresentation';
 export interface PageWidgetProps {
   sourceHtml: string;
   model: PagePresentation;
+  renderExample?: (id: string) => React.ReactNode;
 }
 
 const brandSteps = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160] as const;

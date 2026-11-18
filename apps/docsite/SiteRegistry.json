@@ -8,18 +8,6 @@
     {
       "from": "/accordions/",
       "to": "/accordion/"
-    },
-    {
-      "from": "/foundational-skill/",
-      "to": "/coreai-skill/"
-    },
-    {
-      "from": "/agent-skill/",
-      "to": "/coreai-skill/"
-    },
-    {
-      "from": "/design-md/",
-      "to": "/coreai-skill/"
     }
   ],
   "pages": [
@@ -42,23 +30,6 @@
       ]
     },
     {
-      "id": "resources",
-      "slug": "/resources/",
-      "group": "Overview",
-      "navLabel": "Resources",
-      "headerLabel": "Resources",
-      "title": "Resources",
-      "summary": "Libraries, tools, and community links for working with CoreAI.",
-      "eyebrow": "",
-      "showInSidebar": true,
-      "showInHeader": false,
-      "anchors": [
-        { "id": "assets", "label": "Assets" },
-        { "id": "code", "label": "Code" },
-        { "id": "connect", "label": "Connect" }
-      ]
-    },
-    {
       "id": "faqs",
       "slug": "/faqs/",
       "group": "Overview",
@@ -76,19 +47,6 @@
         { "id": "working-with-agents", "label": "Working with agents" },
         { "id": "help-and-feedback", "label": "Help and feedback" }
       ]
-    },
-    {
-      "id": "prototyping",
-      "slug": "/prototyping/",
-      "group": "For humans",
-      "navLabel": "Prototyping",
-      "headerLabel": "Prototyping",
-      "title": "Prototyping",
-      "summary": "",
-      "eyebrow": "",
-      "showInSidebar": true,
-      "showInHeader": false,
-      "anchors": []
     },
     {
       "id": "changelog",
@@ -213,19 +171,6 @@
       ]
     },
     {
-      "id": "mcp-server",
-      "slug": "/mcp-server/",
-      "group": "For agents",
-      "navLabel": "MCP server",
-      "headerLabel": "MCP server",
-      "title": "MCP server",
-      "summary": "Connect any MCP-capable client to CoreAI component documentation and implementation guidance.",
-      "eyebrow": "UI kit",
-      "showInSidebar": true,
-      "showInHeader": false,
-      "anchors": []
-    },
-    {
       "id": "package",
       "slug": "/package/",
       "group": "For humans",
@@ -233,19 +178,6 @@
       "headerLabel": "NPM Package",
       "title": "NPM Package",
       "summary": "Get access, install the package, and apply CoreAI styling to your app.",
-      "eyebrow": "UI kit",
-      "showInSidebar": true,
-      "showInHeader": false,
-      "anchors": []
-    },
-    {
-      "id": "coreai-skill",
-      "slug": "/coreai-skill/",
-      "group": "For agents",
-      "navLabel": "Package skill",
-      "headerLabel": "Package skill",
-      "title": "Package skill",
-      "summary": "Packaged CoreAI implementation guidance for coding agents and contributors.",
       "eyebrow": "UI kit",
       "showInSidebar": true,
       "showInHeader": false,

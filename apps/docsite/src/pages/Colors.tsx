@@ -21,7 +21,7 @@ import { useThemeMode } from '../theme/ThemeProvider';
 
 const brandSteps = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160] as const;
 
-type BrandId = 'coreai' | 'azure';
+type BrandId = 'coreai' | 'azure' | 'custom';
 
 const brands = {
   coreai: {
@@ -453,8 +453,11 @@ function AccessibilityCards() {
 }
 
 export function Colors() {
-  const { mode, brand: brandId, setBrand } = useThemeMode();
-  const brand = brands[brandId];
+  const { mode, brand: brandId, setBrand, theme: activeTheme, brandVariants } = useThemeMode();
+  const brand =
+    brandId === 'custom'
+      ? { variants: brandVariants, lightTheme: activeTheme, darkTheme: activeTheme }
+      : brands[brandId];
   const theme = mode === 'dark' ? brand.darkTheme : brand.lightTheme;
   const surfaceRows = getColorRows(theme, surfaceTokens);
   const textRows = getColorRows(theme, textTokens);
@@ -481,6 +484,7 @@ export function Colors() {
               {entry.label}
             </Tab>
           ))}
+          {brandId === 'custom' && <Tab value="custom">Custom theme</Tab>}
         </TabList>
 
         <div className="colors-theme-content">

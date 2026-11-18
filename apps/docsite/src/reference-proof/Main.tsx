@@ -35,17 +35,9 @@ const initialPage: ReferencePage = {
 };
 main.replaceChildren();
 const shellHtml = parsed.body.innerHTML;
-const entries: NavigationEntry[] = [
-  ...parsed.querySelectorAll<HTMLAnchorElement>('nav[aria-label="Documentation"] a'),
-].map((link) => ({
-  path: normalizeReferencePath(
-    new URL(link.getAttribute('href') ?? '', window.location.href).pathname.slice(
-      basePath.length - 1,
-    ),
-  ),
-  title: link.textContent?.trim() ?? '',
-  summary: link.dataset.navigationSummary ?? '',
-}));
+const searchIndex = document.getElementById('reference-search-index');
+if (!searchIndex?.textContent) throw new Error('Missing documentation search index.');
+const entries: NavigationEntry[] = JSON.parse(searchIndex.textContent);
 const paths = new Set(entries.map((entry) => entry.path));
 const logoEffectFrames = [
   'single-logo-effect1-white.png',
@@ -123,6 +115,10 @@ function DocumentationShell({
       searchRef.current?.select();
     });
   }, []);
+  const clearSearch = React.useCallback(() => {
+    setQuery('');
+    searchRef.current?.focus();
+  }, []);
   const collapseGroups = React.useCallback(() => {
     setQuery('');
     treeRef.current?.collapseAll();
@@ -168,6 +164,10 @@ function DocumentationShell({
     sidebar?.classList.toggle('is-collapsed', collapsed && window.innerWidth > 1100);
     writeStoredValue('localStorage', 'coreai-docsite-sidebar-collapsed', String(collapsed));
   }, [collapsed, slots]);
+
+  React.useLayoutEffect(() => {
+    if (query.trim() && slots.navigation) slots.navigation.scrollTop = 0;
+  }, [query, slots.navigation]);
 
   React.useLayoutEffect(() => {
     const home = page.path === '/' && page.status === 'ready';
@@ -285,6 +285,13 @@ function DocumentationShell({
       'aria-label',
       navigationOpen ? 'Site navigation dialog' : 'Site navigation',
     );
+    const syncSidebarState = () => {
+      const mobile = window.innerWidth <= 1100;
+      sidebar.inert = mobile && !navigationOpen;
+      if (!mobile) setNavigationOpen(false);
+    };
+    syncSidebarState();
+    body.inert = navigationOpen;
     if (navigationOpen) {
       sidebar.setAttribute('role', 'dialog');
       sidebar.setAttribute('aria-modal', 'true');
@@ -293,13 +300,6 @@ function DocumentationShell({
       sidebar.removeAttribute('role');
       sidebar.removeAttribute('aria-modal');
     }
-    body.inert = navigationOpen;
-    const syncSidebarState = () => {
-      const mobile = window.innerWidth <= 1100;
-      sidebar.inert = mobile && !navigationOpen;
-      if (!mobile) setNavigationOpen(false);
-    };
-    syncSidebarState();
     const close = () => {
       setNavigationOpen(false);
       requestAnimationFrame(() => menuButtonRef.current?.focus());
@@ -355,7 +355,16 @@ function DocumentationShell({
       ) : null}
       {slots.navigation ? (
         <ShellSlot target={slots.navigation} className="reference-live-navigation">
-          <NavigationTree ref={treeRef} entries={entries} query={query} />
+          <NavigationTree
+            ref={treeRef}
+            entries={entries}
+            query={query}
+            onSelectResult={() => {
+              setQuery('');
+              setNavigationOpen(false);
+            }}
+            onExitSearch={clearSearch}
+          />
         </ShellSlot>
       ) : null}
       {slots.theme ? (
@@ -390,6 +399,17 @@ function DocumentationShell({
             }
             value={query}
             onChange={(_event, data) => setQuery(data.value)}
+            onKeyDown={(event) => {
+              if (!query.trim()) return;
+              if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                treeRef.current?.focusFirstResult();
+              } else if (event.key === 'Escape') {
+                event.preventDefault();
+                event.stopPropagation();
+                clearSearch();
+              }
+            }}
           />
         </ShellSlot>
       ) : null}

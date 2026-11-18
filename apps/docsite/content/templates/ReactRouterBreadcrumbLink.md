@@ -9,6 +9,7 @@ reference:
     - src/stories/templates/react-router/BreadcrumbLink.tsx
     - src/stories/templates/react-router/RouterLinkSlots.tsx
   route: templates/ReactRouterBreadcrumbLink
+  mergedInto: templates/ReactRouter
 ---
 
 <!-- include: router-link-notes -->

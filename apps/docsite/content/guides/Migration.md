@@ -3,7 +3,8 @@ id: migration
 title: Migrate from Azure Artifacts
 summary: Move from the retired private package to the public CoreAI npm package.
 resources: []
-reference: {}
+reference:
+  renderer: guide-accordions
 ---
 
 The CoreAI Design System now lives at
@@ -93,7 +94,7 @@ dependency that brings it in before removing its feed authentication.
 
 Replace old repository, hosted Storybook, and authenticated MCP links with the
 [public documentation](https://microsoft.github.io/coreai-design-system/).
-Update agent setup using [Build with your agent](./UseWithAgents.md).
+Update agent setup using [Working with agents](../overview/Introduction.md#working-with-agents).
 File new issues in the
 [current issue tracker](https://github.com/microsoft/coreai-design-system/issues).
 Historical issues remain in the former tracker; they are not transferred by this

@@ -21,7 +21,53 @@ import {
   componentPageGuidanceHtml,
   scopeExampleIds,
   initialThemeStyles,
+  searchableGuidance,
+  shell,
 } from '../scripts/BuildDocsite.mjs';
+
+test('page shells use the real favicon at the deployment root on home and nested routes', () => {
+  for (const basePath of ['/', '/coreai-design-system/']) {
+    for (const route of ['', 'components/Button/', 'foundations/Spacing/']) {
+      const html = shell(
+        'Example',
+        '<h1>Example</h1>',
+        {
+          basePath,
+          documentation: { lastUpdated: '2026-11-17T00:00:00Z' },
+          versions: {
+            '@coreai-ds/react-components': '0.12.0',
+            '@fluentui/react-components': '9.74.9',
+          },
+        },
+        { initialThemeStyles: '', initialThemeScript: '', css: [], entry: 'assets/main.js' },
+        '',
+        '[]',
+        route,
+      );
+      assert.ok(
+        html.includes(
+          `<link rel="icon" href="${basePath}assets/favicon.svg" type="image/svg+xml">`,
+        ),
+      );
+      assert.doesNotMatch(html, /href="data:,"/);
+    }
+  }
+});
+
+test('search indexes readable Markdown guidance without source code or link destinations', () => {
+  assert.equal(
+    searchableGuidance(
+      '# Button\n\nAn **important** action.\n\n[Field guidance](./Field.md).\n\n```tsx\nsecretSource();\n```\n\n<div>Raw HTML</div>',
+    ),
+    'Button An important action. Field guidance.',
+  );
+  assert.equal(
+    searchableGuidance(
+      '- First item.\n- Second item.\n\n| Token | Use |\n| --- | --- |\n| Color | Text |',
+    ),
+    'First item. Second item. Token Use Color Text',
+  );
+});
 
 test('component guidance links use published routes, section anchors and the deployment base', () => {
   const html = componentPageGuidanceHtml(

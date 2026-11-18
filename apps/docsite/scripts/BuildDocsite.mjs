@@ -12,6 +12,10 @@ import { build } from 'vite';
 import react from '@vitejs/plugin-react';
 import matter from 'gray-matter';
 import ts from 'typescript';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
+import { toString } from 'mdast-util-to-string';
 import { guidanceMarkdown, renderGuidance } from '../../../shared/guidance.mjs';
 import { extractStorySource } from './sources/StorySource.mjs';
 import { readStoryDescriptions } from './sources/StoryDescriptions.mjs';
@@ -74,6 +78,21 @@ export function normalizeBase(value = '/') {
 
 export function normalizeSource(source) {
   return source.replace(/\r\n?/g, '\n');
+}
+
+export function searchableGuidance(markdown) {
+  const tree = unified().use(remarkParse).use(remarkGfm).parse(markdown);
+  const text = (node) => {
+    if (['code', 'html'].includes(node.type)) return '';
+    if (!node.children) return toString(node);
+    const separator = ['root', 'blockquote', 'list', 'listItem', 'table', 'tableRow'].includes(
+      node.type,
+    )
+      ? ' '
+      : '';
+    return node.children.map(text).join(separator);
+  };
+  return text(tree).replace(/\s+/g, ' ').trim();
 }
 
 export function scopeExampleIds(source, exampleId) {
@@ -450,6 +469,7 @@ export function standalonePageHtml(page, metadata) {
     html: true,
   });
   const parts = pageGuidanceParts(markdown, page.resources);
+  const unfinished = page.layout === 'work-in-progress' || !parts.body;
   const bodyMarkdown = wholePageRendererNames.includes(page.renderer)
     ? `<!-- view:${page.renderer} -->\n\n${parts.body}\n\n<!-- /view:${page.renderer} -->`
     : parts.body;
@@ -465,7 +485,12 @@ export function standalonePageHtml(page, metadata) {
       ]),
     }).html,
   );
-  return `<div class="reference-page-introduction${page.renderer === 'home' ? ' reference-home-introduction' : ''}${page.layout ? ` reference-page--${page.layout}` : ''}">${pageTemplateHeader(page, metadata, parts)}${pageTemplateResources(page, metadata)}${page.renderer === 'home' ? homeHeroFallback(page, metadata, parts) : `<article class="standalone-guidance">${tokenSwatches(body)}</article>`}</div>`;
+  const guidance = `<article class="standalone-guidance"${page.showMergedPreviews ? ' data-inline-example-list' : ''}>${tokenSwatches(body)}</article>`;
+  const content = unfinished
+    ? `<div data-page-widget="work-in-progress" class="reference-work-in-progress"><h1>Page under construction</h1><p>We're still working on this page.</p></div>`
+    : guidance;
+  const header = pageTemplateHeader(page, metadata, parts);
+  return `<div class="reference-page-introduction${page.renderer === 'home' ? ' reference-home-introduction' : ''}${page.layout ? ` reference-page--${page.layout}` : ''}">${unfinished ? header.replace('data-page-header', 'hidden data-page-header') : header}${pageTemplateResources(page, metadata)}${page.renderer === 'home' ? homeHeroFallback(page, metadata, parts) : content}</div>`;
 }
 
 function lowerBestPracticesHeading(html) {
@@ -523,7 +548,7 @@ export function initialThemeStyles(themes, stylesheets) {
     .join('');
 }
 
-function shell(title, body, metadata, assets, navigation, currentPath = '') {
+export function shell(title, body, metadata, assets, navigation, searchIndex, currentPath = '') {
   const home = currentPath === '';
   const logo = `<span class="app-sidenav__search-logo-static" data-shell-fallback><svg viewBox="-0.74 -0.59 44 44" aria-hidden="true" focusable="false"><path d="M27.43 2.896H39.77V15.236H27.43V2.896Z" fill="currentColor"></path><path d="M2.749 2.896H15.089V15.236H2.749V2.896Z" fill="currentColor"></path><path d="M15.09 15.236H27.431V27.576H15.09V15.236Z" fill="currentColor"></path><path d="M2.749 27.576H15.089V39.916H2.749V27.576Z" fill="currentColor"></path><path d="M27.43 27.576H39.77V39.916H27.43V27.576Z" fill="currentColor"></path></svg></span>`;
   const settings = `<span class="reference-theme-fallback" data-shell-fallback aria-hidden="true"><svg fill="currentColor" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M14.95 5a2.5 2.5 0 0 0-4.9 0H2.5a.5.5 0 0 0 0 1h7.55a2.5 2.5 0 0 0 4.9 0h2.55a.5.5 0 0 0 0-1zM12.5 7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m-2.55 7a2.5 2.5 0 0 0-4.9 0H2.5a.5.5 0 0 0 0 1h2.55a2.5 2.5 0 0 0 4.9 0h7.55a.5.5 0 0 0 0-1zM7.5 16a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" fill="currentColor"></path></svg></span>`;
@@ -531,40 +556,101 @@ function shell(title, body, metadata, assets, navigation, currentPath = '') {
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeHtml(title)} | CoreAI design system</title>
-<link rel="icon" href="data:,">
+<link rel="icon" href="${metadata.basePath}assets/favicon.svg" type="image/svg+xml">
 <style>${assets.initialThemeStyles}</style>
-<script>
-(() => {
-  const root = document.documentElement;
-  root.dataset.referenceEnhanced = 'true';
-  window.addEventListener('error', (event) => {
-    if (!document.getElementById('reference-content')) return;
-    if (event instanceof ErrorEvent || event.target instanceof HTMLScriptElement)
-      delete root.dataset.referenceEnhanced;
-  }, true);
-  let stored;
-  let brand;
-  try {
-    stored = localStorage.getItem('coreai-docsite-theme');
-    brand = localStorage.getItem('coreai-docsite-brand');
-  } catch { stored = null; brand = null; }
-  root.dataset.brand = brand === 'azure' ? 'azure' : 'coreai';
-  root.dataset.theme = stored === 'light' || stored === 'dark'
-    ? stored
-    : matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-})();
-</script>
+<script>${assets.initialThemeScript}</script>
 ${assets.css.map((file) => `<link rel="stylesheet" href="${metadata.basePath}${file}">`).join('\n')}
-</head><body><div id="reference-root"><div id="reference-content"><div class="app-shell reference-shell"><a class="skip-link" href="#main">Skip to content</a>
+</head><body><script type="application/json" id="reference-search-index">${searchIndex}</script><div id="reference-root"><div id="reference-content"><div class="app-shell reference-shell"><a class="skip-link" href="#main">Skip to content</a>
 <div class="app-body"><aside class="app-sidenav" id="app-navigation" aria-label="Site navigation">
 <div class="app-sidenav__header"><div class="app-sidenav__search-row"><a class="app-sidenav__search-logo" data-shell-logo href="${metadata.basePath}" aria-label="CoreAI home">${logo}</a>
 <div data-shell-search>${search}</div><div data-shell-theme>${settings}</div><button type="button" class="app-sidenav__dismiss" data-close-navigation aria-label="Close navigation"><span></span><span></span><span></span></button></div></div>
 <nav class="app-sidenav__nav" id="app-navigation-links" aria-label="Documentation">${navigation}</nav>
 <div class="app-sidenav__footer"><a class="app-sidenav__link" href="https://github.com/microsoft/coreai-design-system/issues">Questions?</a><a class="app-sidenav__link" href="https://github.com/microsoft/coreai-design-system/issues/new">Feedback</a></div></aside>
 <div class="app-content${home ? ' app-content--home' : ''}"><div data-shell-header></div><div class="app-page${home ? ' app-page--home' : ''}"><main class="site-main" id="main" tabindex="-1">${body}
-<footer class="reference-footer">Last updated <time datetime="${escapeHtml(metadata.documentation.lastUpdated)}">${escapeHtml(metadata.documentation.lastUpdated)}</time>; <a href="${metadata.basePath}overview/DocumentationChangelog/">Documentation changelog</a>; CoreAI ${escapeHtml(metadata.versions['@coreai-ds/react-components'])}; Fluent ${escapeHtml(metadata.versions['@fluentui/react-components'])}.
+<footer class="reference-footer${currentPath === '' ? ' sr-only' : ''}"${currentPath === '' ? ' aria-hidden="true" inert' : ''}>Last updated <time datetime="${escapeHtml(metadata.documentation.lastUpdated)}">${escapeHtml(metadata.documentation.lastUpdated)}</time>; <a href="${metadata.basePath}overview/Changelog/">Site updates</a>; CoreAI ${escapeHtml(metadata.versions['@coreai-ds/react-components'])}; Fluent ${escapeHtml(metadata.versions['@fluentui/react-components'])}.
 <a href="${metadata.basePath}llms.txt">Agent index</a> · <a href="${metadata.basePath}llms/index.json">Coverage and provenance</a> · <a href="${metadata.basePath}THIRD-PARTY-NOTICES.txt">License</a></footer>
 </main></div></div></div></div><div class="copy-toast" role="status"></div></div></div><script type="module" src="${metadata.basePath}${assets.entry}"></script></body></html>\n`;
+}
+
+function redirectHtml(destination, title, basePath) {
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=${destination}"><link rel="canonical" href="${destination}"><link rel="icon" href="${basePath}assets/favicon.svg" type="image/svg+xml"><title>${escapeHtml(title)}</title></head><body><a href="${destination}">Continue to ${escapeHtml(title)}</a></body></html>`;
+}
+
+const slug = (value) =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+function mergedSectionId(page) {
+  return `guidance-${slug(page.label)}`;
+}
+
+// Combined template pages embed each merged page's default example and its copyable sources.
+export function mergedTemplateSections(pages) {
+  const generated = {};
+  const examples = new Map();
+  const targets = [...new Set(pages.map((page) => page.mergedInto).filter(Boolean))];
+  for (const route of targets) {
+    const target = pages.find((page) => page.route === route);
+    if (!target?.standalone)
+      throw new Error(`${route}: mergedInto must name a standalone page in the catalog.`);
+    const merged = pages
+      .filter((page) => page.mergedInto === route)
+      .sort((first, second) => first.label.localeCompare(second.label));
+    const counts = new Map();
+    for (const source of merged.flatMap((page) => page.templateSources))
+      counts.set(source.name, (counts.get(source.name) ?? 0) + 1);
+    const shown = new Map();
+    const sourceMarkdown = (source) =>
+      [
+        `### Template source: ${source.name}`,
+        `[Download ${source.name}](/${source.path})`,
+        codeFence(source.source),
+      ].join('\n\n');
+    const sections = merged.map((page) => {
+      const example = page.examples.find((item) => item.id === page.defaultExampleId);
+      const own = page.templateSources.filter((source) => counts.get(source.name) === 1);
+      const reused = page.templateSources.filter(
+        (source) => counts.get(source.name) > 1 && source.name !== 'RouterLinkSlots.tsx',
+      );
+      const parts = [`## ${page.label}`, page.summary];
+      parts.push(
+        `<!-- live-example:${example.id} -->`,
+        `[Download example source](/${example.sourcePath})`,
+        codeFence(example.source),
+      );
+      for (const source of own) parts.push(sourceMarkdown(source));
+      for (const source of reused) {
+        if (shown.has(source.name)) {
+          parts.push(
+            `Also copy \`${source.name}\` from [${shown.get(source.name).label}](#${mergedSectionId(shown.get(source.name))}).`,
+          );
+        } else {
+          shown.set(source.name, page);
+          parts.push(sourceMarkdown(source));
+        }
+      }
+      return parts.join('\n\n');
+    });
+    const shared = merged
+      .flatMap((page) => page.templateSources)
+      .find((source) => source.name === 'RouterLinkSlots.tsx' && counts.get(source.name) > 1);
+    if (shared)
+      sections.push(
+        [
+          '## Shared helper',
+          'Every adapter on this page imports `RouterLinkSlots.tsx`. Copy it once alongside the adapters you use.',
+          sourceMarkdown(shared),
+        ].join('\n\n'),
+      );
+    generated[`merged-${slug(route.split('/').pop())}`] = sections.join('\n\n');
+    examples.set(
+      route,
+      merged.map((page) => page.examples.find((item) => item.id === page.defaultExampleId)),
+    );
+  }
+  return { generated, examples };
 }
 
 function sourceHtml(source, id, downloadPath, base) {
@@ -631,7 +717,7 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
       renderer: scope.renderer,
       layout: scope.layout,
       hideSummary: scope.hideSummary,
-      showInSidebar: data.navigation?.showInSidebar !== false,
+      mergedInto: scope.mergedInto,
       resources: data.resources ?? [],
       aliases: scope.aliases ?? [],
       legacyIds: [
@@ -785,12 +871,19 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
         `### ${markdownLabel(icon.title)}\n\n![${markdownLabel(icon.title)}](${basePath}assets/illicons/${icon.file})\n\n[Download original SVG](${basePath}assets/illicons/${icon.file})\n\nTags: ${icon.tags.map(markdownLabel).join(', ') || 'none'}.`,
     )
     .join('\n\n');
+  const mergedSections = mergedTemplateSections(pages);
+  Object.assign(generated, mergedSections.generated);
   for (const page of pages) {
     if (page.standalone) {
       Object.assign(
         page,
         await resolveStandalonePage(page, { pages, basePath, generated, allExamples }),
       );
+      const mergedExamples = mergedSections.examples.get(page.route);
+      if (mergedExamples) {
+        page.examples.push(...mergedExamples);
+        page.showMergedPreviews = true;
+      }
     } else {
       page.guidance = await expandStandaloneMarkdown(page.guidance, {
         route: page.route,
@@ -865,6 +958,21 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
   const entry = Object.values(manifest).find((entry) => entry.isEntry);
   if (!entry) throw new Error('Reference proof bundle has no entry point.');
   const assets = { entry: entry.file, css: entry.css ?? [] };
+  const initialThemeBundle = await build({
+    configFile: false,
+    root: appRoot,
+    logLevel: 'error',
+    build: {
+      write: false,
+      rollupOptions: {
+        input: path.join(appRoot, 'src/theme/initial-theme.mjs'),
+        output: { format: 'iife', inlineDynamicImports: true },
+      },
+    },
+  });
+  const initialThemeChunk = initialThemeBundle.output.find((output) => output.type === 'chunk');
+  if (!initialThemeChunk) throw new Error('Initial theme bundle has no script.');
+  assets.initialThemeScript = initialThemeChunk.code.replace(/<\/script/gi, '<\\/script');
   const { coreaiLightTheme, coreaiDarkTheme, azureLightTheme, azureDarkTheme } =
     await import('@coreai-ds/react-components');
   const stylesheets = await Promise.all(
@@ -888,19 +996,31 @@ export async function buildReferenceProof({ basePath = '/', outDir = outputDirec
       await fs.readFile(path.join(illiconDirectory, icon.file)),
     );
   }
-  const navigationGroups = groupNavigationEntries(
+  const catalogGroups = groupNavigationEntries(
     pages.map((page) => ({
       path: `/${page.route}${page.route ? '/' : ''}`,
-      title: page.id.startsWith('react-router-') ? `React Router / ${page.label}` : page.label,
+      title: page.label,
       page,
     })),
   );
-  const orderedPages = navigationGroups.flatMap((group) => group.items.map((entry) => entry.page));
+  const navigationGroups = catalogGroups
+    .map((group) => ({ ...group, items: group.items.filter(({ page }) => !page.mergedInto) }))
+    .filter((group) => group.items.length);
+  const orderedPages = catalogGroups.flatMap((group) => group.items.map((entry) => entry.page));
+  const searchIndex = JSON.stringify(
+    navigationGroups.flatMap((group) =>
+      group.items.map(({ path, title, page }) => ({
+        path,
+        title,
+        summary: searchableGuidance(page.summary),
+        searchText: searchableGuidance(page.guidance),
+      })),
+    ),
+  ).replaceAll('<', '\\u003c');
   const navigation = (currentPath) =>
     navigationGroups
       .map((group) => {
-        const items = group.items.filter(({ page }) => page.showInSidebar);
-        if (!items.length) return '';
+        const items = group.items;
         const active = items.some(
           ({ page }) => `${page.route}${page.route ? '/' : ''}` === currentPath,
         );
@@ -936,16 +1056,18 @@ ${sourceHtml(source.source, `template-${page.id}-${index}`, source.path, basePat
       await write(source.path, source.source);
     }
     await write(markdownPath, markdown);
+    const mergedDestination = page.mergedInto
+      ? `${basePath}${page.mergedInto}/#${mergedSectionId(page)}`
+      : undefined;
     await write(
       `${htmlPath}index.html`,
-      shell(page.title, body, metadata, assets, navigation(htmlPath), htmlPath),
+      mergedDestination
+        ? redirectHtml(mergedDestination, page.title, basePath)
+        : shell(page.title, body, metadata, assets, navigation(htmlPath), searchIndex, htmlPath),
     );
     for (const alias of page.aliases) {
-      const destination = `${basePath}${htmlPath}`;
-      await write(
-        `${alias.slice(1)}index.html`,
-        `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=${destination}"><link rel="canonical" href="${destination}"><title>${escapeHtml(page.title)}</title></head><body><a href="${destination}">Continue to ${escapeHtml(page.title)}</a></body></html>`,
-      );
+      const destination = mergedDestination ?? `${basePath}${htmlPath}`;
+      await write(`${alias.slice(1)}index.html`, redirectHtml(destination, page.title, basePath));
       await write(`${alias.slice(1, -1)}.md`, markdown);
     }
     for (const id of page.legacyIds) await write(`llms/${id}.md`, markdown);
@@ -1000,7 +1122,7 @@ ${sourceHtml(source.source, `template-${page.id}-${index}`, source.path, basePat
   const introduction = `# CoreAI design system\n\nHelp designers code and help engineers design.\n\nExplore component guidance, working examples, and copy-and-adapt templates. This catalog contains ${pages.length} pages and ${imports.length} examples.\n\n[Get started](${basePath}guides/Package.md)\n\n${listing}\n`;
   await write(
     'llms.txt',
-    `# CoreAI documentation for agents\n\nLast updated ${documentation.lastUpdated}; documented @coreai-ds/react-components v${documentation.packageVersion}.\n\nUse ordinary HTTPS GET to read these static Markdown files. Reading needs no login or client connection. Install or update the repository skill before implementing UI; preserve local instructions.\n\n## Start here\n\n- [Build metadata](${basePath}version.json): check lastUpdated once per task, then review the dated changelog if it changed.\n- [Documentation changelog](${basePath}overview/DocumentationChangelog.md): dated guidance and maintenance changes.\n- [Reusable skill](${basePath}source/package/SKILL.md): review and install or update before UI work.\n- [Agent workflow](${basePath}guides/AgentWorkflow.md): targeted retrieval, timestamp checks, imports, and fallbacks.\n- [Build with your agent](${basePath}guides/UseWithAgents.md): starter prompt and skill setup.\n- [Starter prompt](${basePath}agent-prompt.txt): add the user's task and paste into an agent.\n- [Exact routes and source metadata](${basePath}llms/index.json): use only when needed; do not fetch every page.\n\nFetch this index once per task. Choose the relevant pages below; reuse fetched documents. Human directory URLs map to .md files, preserving ${basePath}; the homepage maps to ${basePath}index.md. CoreAI UX guidance overrides upstream demonstrations. Check installed package versions before implementing. Templates are copy-and-adapt source, not package exports. Report retrieval failures; never invent APIs.\n\n${introduction}\n## Build metadata\n\n- Last updated: ${documentation.lastUpdated}\n\n${Object.entries(
+    `# CoreAI documentation for agents\n\nLast updated ${documentation.lastUpdated}; documented @coreai-ds/react-components v${documentation.packageVersion}.\n\nUse ordinary HTTPS GET to read these static Markdown files. Reading needs no login or client connection. Install or update the repository skill before implementing UI; preserve local instructions.\n\n## Start here\n\n- [Build metadata](${basePath}version.json): check lastUpdated once per task, then review the dated changelog if it changed.\n- [Site updates](${basePath}overview/Changelog.md): dated guidance and maintenance changes.\n- [Reusable skill and agent workflow](${basePath}source/package/SKILL.md): review and install or update before UI work; targeted retrieval, timestamp checks, imports, and fallbacks.\n- [Working with agents](${basePath}overview/Introduction.md#working-with-agents): starter prompt and skill setup.\n- [Starter prompt](${basePath}agent-prompt.txt): add the user's task and paste into an agent.\n- [Exact routes and source metadata](${basePath}llms/index.json): use only when needed; do not fetch every page.\n\nFetch this index once per task. Choose the relevant pages below; reuse fetched documents. Human directory URLs map to .md files, preserving ${basePath}; the homepage maps to ${basePath}index.md. CoreAI UX guidance overrides upstream demonstrations. Check installed package versions before implementing. Templates are copy-and-adapt source, not package exports. Report retrieval failures; never invent APIs.\n\n${introduction}\n## Build metadata\n\n- Last updated: ${documentation.lastUpdated}\n\n${Object.entries(
       metadata.versions,
     )
       .map(([name, version]) => `- ${name}: ${version}`)

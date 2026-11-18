@@ -33,11 +33,11 @@ const sources = {
   },
   skill: {
     label: 'Agent skill',
-    href: siteLinks.storybookDocs.agentSkill,
+    href: `${siteLinks.docsite}source/package/SKILL.md`,
   },
-  mcp: {
-    label: 'MCP setup',
-    href: siteLinks.storybookDocs.mcpSetup,
+  agentGuide: {
+    label: 'Working with agents',
+    href: `${siteLinks.docsite}overview/Introduction/#guidance-working-with-agents`,
   },
   package: {
     label: 'Package README',
@@ -157,29 +157,29 @@ export const faqGroups: FaqGroup[] = [
         id: 'package-skill-and-mcp',
         question: 'What does my coding agent need to use CoreAI?',
         answer: [
-          'CoreAI agent setup requires the package, its installed agent skill, and the CoreAI documentation MCP server.',
-          'The CoreAI MCP combines selected Fluent stories with CoreAI stories and overrides. Report missing documentation rather than guessing APIs. Follow the agent skill and MCP setup guides.',
+          'Install the package to build an application. Agents can read CoreAI guidance and examples through the Markdown endpoints with ordinary HTTPS.',
+          'Use the starter prompt to install or update the agent skill before UI work. Report missing documentation rather than guessing APIs.',
         ],
-        sources: [sources.package, sources.skill, sources.mcp],
-        links: [sources.skill, sources.mcp],
+        sources: [sources.package, sources.skill, sources.agentGuide],
+        links: [sources.skill, sources.agentGuide],
       },
       {
         id: 'copy-guidance-for-agent',
         question: 'How can I give my agent the guidance on a component page?',
         answer: [
-          'On the component page, select Copy for LLM, then Copy .md. Paste it into your agent conversation to point it at specific guidance. This supplements the installed skill and connected documentation servers.',
+          'Use View .md on a page, or replace its trailing slash with .md. Preserve the deployment base path and share the URL with your agent.',
         ],
         sources: [sources.skill],
       },
       {
         id: 'mcp-sign-in',
-        question: 'What if the documentation server will not connect?',
+        question: 'What if the agent cannot fetch documentation?',
         answer: [
-          'Check the endpoint URL and your network connection against the MCP setup guide.',
+          'Check the page URL, network connection, and whether your agent has a web-fetch or HTTP tool.',
           'If the server is unavailable, have your agent use the installed package README, changelog, and skill, and state that it cannot access live docs. Report persistent connection problems through GitHub issues.',
         ],
-        sources: [sources.mcp, sources.skill],
-        links: [sources.mcp],
+        sources: [sources.agentGuide, sources.skill],
+        links: [sources.agentGuide],
       },
     ],
   },
