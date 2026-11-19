@@ -1,6 +1,6 @@
 ---
 id: react-router-tab-link
-title: Tab Link
+title: TabLink
 summary: CoreAI Tab adapter for React Router navigation.
 resources: []
 reference:

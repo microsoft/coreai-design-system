@@ -15,6 +15,28 @@ meaningful changes, not documentation snapshots or npm package releases.
 - Use the current Markdown agent guidance and skill download in onboarding links.
 - Keep publishing link updates within the docsite without changing Storybook or package sources.
 
+## Retire local Storybook MCP - 2026-11-17
+
+- Remove the Storybook MCP server, packages, and setup guidance. Prototype agents
+  use the existing HTTPS documentation; Storybook's static export remains available.
+- Restore the docsite Vite minimum to 6.4.6 after the documentation metadata update.
+
+## Component and template page names - 2026-11-17
+
+- Match navigation, heading, search, and agent-index titles to component and
+  template code names, including AvatarGroup, DataGrid, DetailsList, and CardLink.
+- Remove the standalone toMountNodeProps utility page without changing the
+  exported library API.
+
+## Accessible Markdown discovery - 2026-11-17
+
+- Advertise each page's Markdown and the agent index near the beginning of every
+  HTML page, including the homepage, with screen-reader-accessible links that
+  reveal on keyboard focus. Keep a visible page Markdown link in the footer
+  alongside the build timestamp and documentation changelog.
+- Publish Markdown alternate metadata and synchronize it during client navigation.
+  Preserve the agent hint when switching component page tabs.
+
 ## Native pull request stacking workflow - 2026-11-17
 
 - Maintenance only: add a reusable skill for ordering existing PRs, resolving

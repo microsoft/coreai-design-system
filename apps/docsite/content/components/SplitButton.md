@@ -1,6 +1,6 @@
 ---
 id: split-button
-title: Split button
+title: SplitButton
 summary: >-
   A split button lets someone take one of several related actions. The dominant
   action is the button label and additional actions are tucked away in a menu.

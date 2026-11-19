@@ -14,7 +14,7 @@ Before writing any files, read
 [apps/storybook/README.md#creating-a-template](../../../apps/storybook/README.md#creating-a-template) —
 it's the source of truth for the file convention (`{Name}.tsx` +
 `{Name}.stories.tsx` + generated `{Name}.mdx`), the CSF3 story rules, the
-JSDoc→MCP mapping, and the quality checklist. Follow it exactly; don't
+documentation conventions, and the quality checklist. Follow it exactly; don't
 improvise a different file layout.
 
 ## Steps
@@ -63,7 +63,7 @@ One paragraph — what was built and why.
 ## Changes
 ### Storybook — {Name}
 - `{Name}.tsx` — the copy-paste component (single source of truth)
-- `{Name}.stories.tsx` — Storybook meta, stories, JSDoc for MCP
+- `{Name}.stories.tsx` — Storybook meta, stories, and JSDoc
 
 ## Features
 ### {Key decision 1}

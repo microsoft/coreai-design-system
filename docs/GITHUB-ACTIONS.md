@@ -22,7 +22,7 @@ Documentation validation builds the static site directly from canonical
 Markdown, pinned source examples, and package types. It runs content/regression
 tests, a type check, packed-consumer compilation, static artifact checks, and
 representative Chromium interactions. It does not require a Storybook build or
-public MCP service.
+running Storybook server.
 
 Pull requests validate without deploying. Main runs upload the verified
 `apps/docsite/dist/` artifact and publish it to

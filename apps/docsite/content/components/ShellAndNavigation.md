@@ -1,6 +1,6 @@
 ---
 id: vertical-nav-tabs
-title: Shell and navigation
+title: ShellAndNavigation
 navigation:
   group: Templates
   showInSidebar: true

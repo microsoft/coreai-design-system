@@ -1,6 +1,6 @@
 ---
 id: tag-picker
-title: Tag picker
+title: TagPicker
 navigation:
   group: Components
   showInSidebar: true

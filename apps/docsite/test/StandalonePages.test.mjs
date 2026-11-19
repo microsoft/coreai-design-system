@@ -693,6 +693,9 @@ test('Storybook snapshots embed canonical Markdown for manifest-only readers wit
   const filenames = ['Theming', 'VariationsFromFluent', 'StylingWithCssModules'];
   assert.deepEqual(new Set(mirrors), new Set(filenames.map((filename) => `${filename}.mdx`)));
   assert.ok(!mirrors.includes('ReactGrab.mdx'));
+  await assert.rejects(fs.access(path.join(standaloneDocsRoot, 'MCPSetup.mdx')), {
+    code: 'ENOENT',
+  });
   const pages = await readReferencePages(path.join(appRoot, 'content'));
   for (const filename of filenames) {
     const snapshot = await fs.readFile(path.join(standaloneDocsRoot, `${filename}.mdx`), 'utf8');

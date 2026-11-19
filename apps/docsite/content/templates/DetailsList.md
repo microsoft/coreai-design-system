@@ -1,6 +1,6 @@
 ---
 id: details-list
-title: Details List
+title: DetailsList
 summary: 'Accessible, responsive, copy-paste starter for details panels with 2 variants.'
 resources: []
 reference:

@@ -1,6 +1,6 @@
 ---
 id: spin-button
-title: Spin button
+title: SpinButton
 navigation:
   group: Components
   showInSidebar: true

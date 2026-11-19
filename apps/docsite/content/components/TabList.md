@@ -1,6 +1,6 @@
 ---
 id: horizontal-tab-list
-title: Tabs
+title: TabList
 navigation:
   group: Components
   showInSidebar: true

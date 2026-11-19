@@ -1,6 +1,6 @@
 ---
 id: compound-button
-title: Compound button
+title: CompoundButton
 summary: >-
   A compound button includes a main title and an additional description of the
   title. Use it when it’s helpful to include more detail.

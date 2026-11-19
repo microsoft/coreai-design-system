@@ -1,6 +1,6 @@
 ---
 id: info-button
-title: Info button
+title: InfoButton
 summary: A button that reveals supplemental information in a popover.
 resources:
   - label: Figma component

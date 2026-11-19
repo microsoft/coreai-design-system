@@ -1,6 +1,6 @@
 ---
 id: react-router-breadcrumb-link
-title: Breadcrumb Link
+title: BreadcrumbLink
 summary: CoreAI BreadcrumbButton adapter for React Router navigation.
 resources: []
 reference:

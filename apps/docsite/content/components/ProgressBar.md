@@ -1,6 +1,6 @@
 ---
 id: animated-progress-bar
-title: Progress bar
+title: ProgressBar
 navigation:
   group: Components
   showInSidebar: true

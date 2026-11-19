@@ -1,6 +1,6 @@
 ---
 id: top-nav
-title: Top nav
+title: TopNav
 navigation:
   group: Templates
   showInSidebar: true

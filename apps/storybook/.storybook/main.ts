@@ -46,11 +46,6 @@ const config: StorybookConfig = {
     // Adds a "Design" tab to each story that embeds the linked Figma frame.
     // Per-story wiring lives in `parameters.design` (see src/utils/figma.ts).
     '@storybook/addon-designs',
-    // Exposes an MCP server at /mcp so AI agents can read this design system's
-    // component docs/manifests, generate stories, and (with the optional
-    // Vitest addon) run story tests. Authoring docs: apps/storybook/README.md
-    // ("MCP for AI agents"); hosting/auth: docs/CI-CD-SETUP.md.
-    '@storybook/addon-mcp',
   ],
 
   framework: {
@@ -71,11 +66,8 @@ const config: StorybookConfig = {
   },
 
   features: {
-    // Generates the component and docs manifests consumed by Storybook's MCP
-    // docs toolset in both development and production.
+    // The static Markdown exporter reads these manifests and docgen snapshots.
     componentsManifest: true,
-    // Extracts component APIs and static snippets on the server, with
-    // per-component manifest snapshots for the public MCP docs tools.
     experimentalDocgenServer: true,
   },
 
@@ -222,9 +214,7 @@ const config: StorybookConfig = {
 
     // Templates/{Name}.tsx is the single source of truth for its copy-paste
     // component; Templates/{Name}.mdx is a generated doc page that shows the
-    // real source (see scripts/generate-template-docs.mjs for why — MCP's
-    // docs endpoint returns MDX pages as raw text, so this is how agents see
-    // the actual component code instead of reconstructed/fabricated usage).
+    // real source for the Storybook page and static Markdown export.
     // `predev`/`prebuild` already regenerate it once; this watcher keeps it
     // live while `storybook dev` keeps running, so editing a template's .tsx
     // and saving immediately refreshes its .mdx without a server restart.
@@ -259,7 +249,7 @@ const config: StorybookConfig = {
     // agent/SKILL.md (in the theme package) is the single source of truth for
     // Docs/Agent Skill; mirrors it into a generated .mdx on every save so
     // editing the shipped skill doc doesn't require a dev-server restart to
-    // see it reflected in Storybook/MCP (see scripts/generate-skill-doc.mjs).
+    // see it reflected in Storybook (see scripts/generate-skill-doc.mjs).
     const skillDocWatcher: Plugin = {
       name: 'coreai:skill-doc-watcher',
       configureServer(server) {

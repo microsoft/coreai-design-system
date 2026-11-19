@@ -1,6 +1,6 @@
 ---
 id: avatar-group
-title: Avatar group
+title: AvatarGroup
 summary: >-
   Represent multiple people or groups with an avatar spread, stack, or compact
   pie; show overflow when space is limited.

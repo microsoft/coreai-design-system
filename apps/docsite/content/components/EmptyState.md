@@ -1,6 +1,6 @@
 ---
 id: empty-state
-title: Empty state
+title: EmptyState
 reference:
   component: templates-empty-state
   route: templates/EmptyState

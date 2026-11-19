@@ -1,6 +1,6 @@
 ---
 id: react-router-menu-item-link
-title: Menu Item Link
+title: MenuItemLink
 summary: CoreAI MenuItemLink adapter for React Router navigation.
 resources: []
 reference:

@@ -154,7 +154,7 @@ export const faqGroups: FaqGroup[] = [
     title: 'Working with agents',
     items: [
       {
-        id: 'package-skill-and-mcp',
+        id: 'package-skill-and-docs',
         question: 'What does my coding agent need to use CoreAI?',
         answer: [
           'Install the package to build an application. Agents can read CoreAI guidance and examples through the Markdown endpoints with ordinary HTTPS.',
@@ -172,11 +172,11 @@ export const faqGroups: FaqGroup[] = [
         sources: [sources.skill],
       },
       {
-        id: 'mcp-sign-in',
+        id: 'documentation-unavailable',
         question: 'What if the agent cannot fetch documentation?',
         answer: [
           'Check the page URL, network connection, and whether your agent has a web-fetch or HTTP tool.',
-          'If the server is unavailable, have your agent use the installed package README, changelog, and skill, and state that it cannot access live docs. Report persistent connection problems through GitHub issues.',
+          'If the documentation is unavailable, have your agent use the installed package README, changelog, and skill, and state that it cannot access live docs. Report persistent problems through GitHub issues.',
         ],
         sources: [sources.agentGuide, sources.skill],
         links: [sources.agentGuide],

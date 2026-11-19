@@ -2,7 +2,7 @@
 
 Static CoreAI documentation for people and agents. GitHub Pages serves the same
 Markdown-owned guidance as physical HTML pages, Markdown downloads, and live React
-examples. Public delivery does not require Storybook, MCP, or a Node server.
+examples. Public delivery does not require Storybook or a Node server.
 Storybook remains available for local component development.
 
 Public site: <https://microsoft.github.io/coreai-design-system/>.
@@ -130,6 +130,14 @@ The static output includes:
 The same generated TSX is compiled for previews, shown as source, and published in
 Markdown/downloads. Component and template Markdown puts authored guidance before
 the Default example and API summaries so agents read usage rules before code.
+Every canonical HTML page, including the homepage, starts with visually hidden
+links to its exact Markdown file and `llms.txt`, available to screen readers and
+HTML readers. Keyboard focus reveals these links. A visible footer link opens
+the current page as Markdown, alongside the existing copy menu.
+The document head also advertises that
+file with `rel="alternate" type="text/markdown"`. Both survive enhancement, and
+the alternate URL follows client navigation. Agents do not need to execute
+JavaScript or open the copy menu to discover these resources.
 Literal story-default props are materialized in the downloadable example wrapper;
 dynamic arguments and other unsupported Storybook runtime setup are rejected.
 Source extraction rejects unsupported Storybook runtime setup
@@ -215,7 +223,7 @@ Known heading-anchor and broader architecture options are tracked in
 [The documentation workflow](../../.github/workflows/docs.yml) validates pull
 requests and deploys verified `main` output to GitHub Pages. Pull requests never
 deploy. Manual deployment also requires `main`. No separate documentation server
-or public Storybook/MCP host is used.
+or public Storybook host is used.
 
 See [hosting setup](../../docs/CI-CD-SETUP.md) and
 [workflow operations](../../docs/GITHUB-ACTIONS.md).

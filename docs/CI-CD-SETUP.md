@@ -3,8 +3,7 @@
 The public documentation site is
 <https://microsoft.github.io/coreai-design-system/>.
 GitHub Pages is the only documentation hosting target. Storybook is a local
-development tool; neither Storybook nor a documentation MCP service is deployed
-publicly by this repository.
+development tool and is not deployed publicly by this repository.
 
 ## Repository setup
 
