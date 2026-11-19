@@ -130,9 +130,15 @@ local validations ran and whether GitHub checks are still pending.
 
 - Ask reviewers to inspect the focused layers bottom-to-top and approve each PR.
   Each layer still has to satisfy the trunk's rules.
-- Once every layer qualifies, selecting the top PR's native stack merge can land
-  the full contiguous tranche atomically, in order. A lower PR merges only the
-  prefix through that PR. A middle PR cannot merge in isolation.
+- **Merge from the top down.** In every handoff, remind the user to get every
+  layer approved, then merge the top PR. GitHub then lands that PR and every PR
+  below it in order, in one operation. Merging a middle PR lands it and every PR
+  below it. A middle PR cannot merge in isolation. The user can also enable
+  auto-merge on the top PR, so the whole stack merges once all requirements pass.
+- **Do not merge from the bottom up.** After a lower PR merges, GitHub retargets
+  and updates the PRs above it. Because this repository requires approval of the
+  latest push, every remaining PR then needs approval again, even without code
+  changes.
 - Use GitHub's native stack merge UI, a supported `gh stack merge` command, or the
   documented asynchronous merge API. Do not use the legacy synchronous merge API
   for stacks. Do not merge, enable auto-merge, or bypass rules without the user's
