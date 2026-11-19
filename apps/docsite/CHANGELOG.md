@@ -7,6 +7,11 @@ these notes are not archived documentation snapshots.
 Earlier changes remain recorded in Git history. These dated notes describe
 meaningful changes, not documentation snapshots or npm package releases.
 
+## Stack merge guidance - 2026-11-19
+
+- Maintenance only: the PR stacking skill now recommends merging a fully approved
+  stack from the top PR, and explains why bottom-up merges need reapproval.
+
 ## Documentation experience and agent guidance - 2026-11-18
 
 - Improve navigation, search, theme settings, content guidance, and live examples
